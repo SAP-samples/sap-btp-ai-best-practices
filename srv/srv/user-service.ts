@@ -89,9 +89,9 @@ const getUserInfoHandlerCdc = async (req: Request) => {
     firstName: user?.attr.givenName,
     lastName: user?.attr.familyName,
     email: user?.attr.email,
-    companyId: user?.attr.sapBpidOrg?.[0],
-    company: user?.attr.company?.[0],
-    type: user?.attr.type?.[0]
+    companyId: user?.attr.sapBpidOrg,
+    company: user?.attr.company,
+    type: user?.attr.type
   };
 
   // 1. Search for user in Gigya
