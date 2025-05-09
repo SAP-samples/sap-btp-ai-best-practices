@@ -1,6 +1,7 @@
 import { useLocation, useHistory } from "@docusaurus/router";
 import React, { createContext, useState, useContext, useEffect, useMemo } from "react";
 import siteConfig from "@generated/docusaurus.config";
+import { unlinkEmailFromTrackingData, linkEmailToTrackingData } from "@site/src/lib/trackingTool/trackingStorage";
 
 const BTP_API = siteConfig.customFields.apiUrl as string;
 
@@ -48,6 +49,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    unlinkEmailFromTrackingData();
     setIsLoggedIn(false);
     setUser(null);
     setToken("");
@@ -108,6 +110,9 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // console.log(dataUser);
             setUser(dataUser);
             setIsLoggedIn(true);
+
+            // Update Tracking Tool User
+            linkEmailToTrackingData({ email: dataUser.email });
           } else {
             console.error("Failed to fetch user info, potentially invalid token");
             logout();
@@ -116,6 +121,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error("Error during auth check:", error);
           logout();
         }
+      } else {
+        unlinkEmailFromTrackingData();
       }
       setIsLoading(false);
     };
