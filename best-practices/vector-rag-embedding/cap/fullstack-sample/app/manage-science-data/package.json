@@ -1,0 +1,25 @@
+{
+  "name": "ui5.manage.sciencedata",
+  "version": "1.0.0",
+  "description": "Showcase of a setup for developing UI5 applications",
+  "author": "SAP SE",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "ui5 build --clean-dest --dest ../router/dist",
+    "build:opt": "ui5 build self-contained --clean-dest --all",
+    "start": "ui5 serve --port 8080 -o index.html",
+    "start-coverage": "ui5 serve --port 8080 --config ui5-coverage.yaml",
+    "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
+    "lint": "eslint webapp"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^4",
+    "@ui5/linter": "^1.5.0",
+    "babel-plugin-istanbul": "^7.0.0",
+    "eslint": "^9.19.0",
+    "globals": "^15.14.0",
+    "ui5-middleware-livereload": "^3",
+    "ui5-middleware-simpleproxy": "^3",
+    "ui5-test-runner": "^5.4.3"
+  }
+}

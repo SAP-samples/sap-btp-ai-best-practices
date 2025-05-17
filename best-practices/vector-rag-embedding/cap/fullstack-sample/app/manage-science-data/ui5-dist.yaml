@@ -1,0 +1,16 @@
+specVersion: "4.0"
+metadata:
+  name: ui5.manage.sciencedata
+type: application
+resources:
+  configuration:
+    paths:
+      webapp: dist
+framework:
+  name: OpenUI5
+  version: "1.135.1"
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ui.unified
+    - name: themelib_sap_horizon

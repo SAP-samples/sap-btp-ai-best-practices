@@ -1,0 +1,26 @@
+<core:FragmentDefinition xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:u="sap.ui.unified">
+    <Dialog id="uploadDialog" contentWidth="640px" contentHeight="320px" title="Upload Science Data" resizable="false" class="sapUiResponsivePadding--content sapUiResponsivePadding--header sapUiResponsivePadding--footer sapUiResponsivePadding--subHeader" core:require="{handler: 'ui5/manage/sciencedata/ext/CustomActions'}">
+        <beginButton>
+            <Button text="Cancel" type="Default" press="handler.onCancel"></Button>
+        </beginButton>
+        <endButton>
+            <Button text="Upload" type="Emphasized" press="handler.onSave"></Button>
+        </endButton>
+
+        <f:SimpleForm id="splitForm" editable="false" layout="ResponsiveGridLayout" title="" labelSpanXL="4" labelSpanL="4" labelSpanM="4" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0" emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="3" columnsL="2" columnsM="2" singleContainerFullSize="false">
+            <f:content>
+                <Title id="lblUploadInfo" wrapping="true" text="*NOTE: The AI Best Practices sample code includes a sample upload file in the /best-practices/vector-rag-embedding/sample_files folder called 'science-data-sample.csv'" />
+
+                <Label id="lblUpload" text="Select a .csv file to upload" labelFor="fileUploader" design="Bold" />
+                <u:FileUploader  width="100%" id="fileUploader" name="fileUploader" sendXHR="true" httpRequestMethod="Put" useMultipart="false" fileType="csv" mimeType="text/csv" tooltip="Upload a .csv file" uploadUrl="{uploadModel>/uploadUrl}" value="{uploadModel>/fileName}" uploadComplete="handler.onUploadComplete" >
+                    <u:headerParameters>
+                        <u:FileUploaderParameter name="Content-Type" value="text/csv"/>
+                    </u:headerParameters>
+                </u:FileUploader>
+            </f:content>
+        </f:SimpleForm>
+    </Dialog>
+</core:FragmentDefinition>   

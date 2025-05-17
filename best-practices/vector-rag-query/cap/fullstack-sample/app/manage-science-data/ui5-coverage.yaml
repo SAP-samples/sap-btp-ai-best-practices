@@ -1,0 +1,16 @@
+specVersion: "4.0"
+metadata:
+  name: ui5.manage.sciencedata
+type: application
+framework:
+  name: OpenUI5
+  version: "1.135.1"
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ui.unified
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: ui5-middleware-livereload
+      afterMiddleware: compression

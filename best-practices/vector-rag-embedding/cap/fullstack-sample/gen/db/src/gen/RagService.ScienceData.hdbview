@@ -1,0 +1,6 @@
+VIEW RagService_ScienceData AS SELECT
+  Science_Data_0.ID,
+  Science_Data_0.Topic,
+  Science_Data_0.DifficultyLevel,
+  Science_Data_0.Category
+FROM ai_db_Science_Data AS Science_Data_0

@@ -1,0 +1,8 @@
+COLUMN TABLE ai_db_Science_Data (
+  ID NVARCHAR(36) NOT NULL,
+  Topic NVARCHAR(5000),
+  DifficultyLevel NVARCHAR(100),
+  Category NVARCHAR(100),
+  Embedding REAL_VECTOR,
+  PRIMARY KEY(ID)
+)

@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Content Filtering - CAP (backend)
 
-This project demonstrates best practices for accessing generative AI models through a CAP (Cloud Application Programming model) application using the SAP Cloud SDK for AI. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
+This project demonstrates best practices for using content filtering with generative AI models using the SAP AI SDK. Content filtering is a critical process that ensures the quality and relevance of input data. It involves evaluating and selecting data to prevent low-quality or irrelevant inputs from affecting model performance. This process is essential for maintaining the accuracy and reliability of LLMs, especially when they are used for real-time applications or sensitive tasks.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ backend-sample/
 │   └── orchestration.ts     # Service implementation with AI SDK integration
 ├── package.json             # Project dependencies and scripts
 ├── tsconfig.json            # TypeScript configuration
-├── manifest.yml             # CF deployment configuration
+├── mta.yml                  # CF deployment configuration
 └── README.md                # Project documentation
 ```
 

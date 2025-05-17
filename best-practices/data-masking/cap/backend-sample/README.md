@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Data Masking - CAP (backend)
 
-This project demonstrates best practices for accessing generative AI models through a CAP (Cloud Application Programming model) application using the SAP Cloud SDK for AI. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
+This project demonstrates best practices for data masking with AI models through SAP BTP services. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
 
 ## Prerequisites
 

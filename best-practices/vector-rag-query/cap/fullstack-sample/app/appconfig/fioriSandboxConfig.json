@@ -1,0 +1,61 @@
+{
+  "services": {
+    "LaunchPage": {
+      "adapter": {
+        "config": {
+          "catalogs": [],
+          "groups": [
+            {
+              "id": "ScienceDataManager",
+              "title": "Science Data Manager",
+              "isPreset": true,
+              "isVisible": true,
+              "isGroupLocked": false,
+              "tiles": [
+                {
+                  "id": "ManageScienceData",
+                  "tileType": "sap.ushell.ui.tile.StaticTile",
+                  "properties": {
+                    "title": "Manage Science Data",
+                    "targetURL": "#ScienceData-manage"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "NavTargetResolution": {
+      "config": {
+        "enableClientSideTargetResolution": true
+      }
+    },
+    "ClientSideTargetResolution": {
+      "adapter": {
+        "config": {
+          "inbounds": {
+            "ManageScienceData": {
+              "semanticObject": "ScienceData",
+              "action": "manage",
+              "title": "Manage Science Data",
+              "signature": {
+                "parameters": {
+                  "ScienceData.ID": {
+                    "renameTo": "ID"
+                  }
+                },
+                "additionalParameters": "ignored"
+              },
+              "resolutionResult": {
+                "applicationType": "SAPUI5",
+                "additionalInformation": "SAPUI5.Component=ui5.manage.sciencedata",
+                "url": "manage-science-data/webapp"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

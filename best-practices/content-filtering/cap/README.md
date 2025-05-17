@@ -1,6 +1,6 @@
 # CAP Implementations for Generative AI Access
 
-This directory contains Cloud Application Programming (CAP) model implementations that demonstrate best practices for accessing generative AI models through SAP BTP services.
+This directory contains Cloud Application Programming (CAP) model implementations that demonstrate best practices for using content filtering with generative AI models using the SAP AI SDK. Content filtering is a critical process that ensures the quality and relevance of input data. It involves evaluating and selecting data to prevent low-quality or irrelevant inputs from affecting model performance. This process is essential for maintaining the accuracy and reliability of LLMs, especially when they are used for real-time applications or sensitive tasks.
 
 ## Available Samples
 

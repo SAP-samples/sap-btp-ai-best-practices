@@ -17,13 +17,17 @@ The application requires proper configuration to connect to the SAP AI Core serv
 
 ```
 backend-sample/
-├── srv/                     # Service layer containing CAP services
-│   ├── orchestration.cds    # CDS service definitions for AI orchestration
-│   └── orchestration.ts     # Service implementation with AI SDK integration
-├── package.json             # Project dependencies and scripts
-├── tsconfig.json            # TypeScript configuration
-├── manifest.yml             # CF deployment configuration
-└── README.md                # Project documentation
+├── srv/                                      # Service layer containing CAP services
+│   ├── orchestration/                     
+│   │      ├── orchestration-service.cds      # CDS service definitions for AI orchestration
+│   │      └── orchestration-service.ts       # Service implementation with AI SDK integration
+│   ├── prompt-registry/                     
+│   │      ├── prompt-registry-service.cds    # CDS service definitions for AI orchestration
+│   │      └── prompt-registry-service.ts     # Service implementation with AI SDK integration
+├── package.json                              # Project dependencies and scripts
+├── tsconfig.json                             # TypeScript configuration
+├── mta.yml                                   # CF deployment configuration
+└── README.md                                 # Project documentation
 ```
 
 ## Local Deployment
@@ -69,7 +73,7 @@ This is a one-time setup step, and could also be created manually in the AI Laun
 *NOTE: Save the ID from this step, so you can use it in the last step to delete the prompt from the registry.
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/odata/v4/prompt-registry/createPromptTemplate \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/prompt-registry/createPromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "name": "askCapitalOfCountry",
@@ -82,7 +86,7 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/askCapitalOfCountry \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/orchestration/askCapitalOfCountry \
   --header "Content-Type: application/json" \
   --data '{
   "country": "United States"
@@ -94,7 +98,7 @@ This is just to show it can be deleted. It can also be deleted manually in the A
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/odata/v4/prompt-registry/deletePromptTemplate \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/prompt-registry/deletePromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "id": "$PROMPT_ID$"

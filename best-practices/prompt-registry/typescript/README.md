@@ -9,9 +9,9 @@ typescript
 ├── src
 │   ├── server.ts               # Entry point of the application
 │   ├── services
-│   │   └── aiOrchestration.ts # Contains the orchestration logic for AI model access
+│   │   └── aiOrchestration.ts  # Contains the orchestration logic for AI model access
 │   └── utils
-│       └── logger.ts          # Logger utility for logging messages
+│       └── logger.ts           # Logger utility for logging messages
 ├── .env.example                # Template for environment variables
 ├── .gitignore                  # Specifies files to ignore in Git
 ├── package.json                # NPM configuration file
@@ -28,7 +28,7 @@ The application requires proper configuration to connect to the SAP AI Core serv
 
    ```bash
    git clone https://github.com/sap-btp-ai-best-practices.git
-   cd sap-btp-ai-best-practices/best-practices/prompt-templating/typescript
+   cd sap-btp-ai-best-practices/best-practices/prompt-registry/typescript
    ```
 
 2. **Install dependencies:**
@@ -63,7 +63,7 @@ The application requires proper configuration to connect to the SAP AI Core serv
 
 The application will serve the `/askCapitalOfCountry` API, which uses prompt templating, then sends a prompt to the AI model and logs the response. 
 
-For local deployment, set `SAMPLE_HOST` as `http://localhost:3000`. For remote deployment, set `SAMPLE_HOST` as the value returned from the deployment step.
+For local deployment, set `$SAMPLE_HOST` as `http://localhost:3000`. For remote deployment, set `$SAMPLE_HOST` as the value returned from the deployment step.
 
 #### Create Prompt Registry Template
 This is a one-time setup step, and could also be created manually in the AI Launchpad.
@@ -71,7 +71,7 @@ This is a one-time setup step, and could also be created manually in the AI Laun
 *NOTE: Save the ID from this step, so you can use it in the last step to delete the prompt from the registry.
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/createPromptTemplate \
+  --url http://$SAMPLE_HOST/createPromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "name": "askCapitalOfCountry",
@@ -84,7 +84,7 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/askCapitalOfCountry \
+  --url http://$SAMPLE_HOST/askCapitalOfCountry \
   --header "Content-Type: application/json" \
   --data '{
    "country": "France"
@@ -95,7 +95,7 @@ This is just to show it can be deleted. It can also be deleted manually in the A
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/deletePromptTemplate \
+  --url http://$SAMPLE_HOST/deletePromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "id": "$PROMPT_ID$"

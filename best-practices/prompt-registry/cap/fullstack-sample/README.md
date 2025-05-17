@@ -75,13 +75,12 @@ fullstack-sample/
 6. Open URL of the `ai-prompt-registry-cap-fullstack-demo` in the browser to access the application.
 
 ## Usage
+The application will serve the `/askCapitalOfCountry` API, which uses prompt templating, then sends a prompt to the AI model and logs the response. 
 
 > [!IMPORTANT] 
 > In order to run the fiori application, make sure to execute the [Create Prompt Registry Template](#create-prompt-registry-template) request first.
 
-For local deployment, the backend services are available at `http://localhost:4004` and the UI5 application at `http://localhost:8080`.
-
-For remote deployment, access the application at the url returned during the deployment or found in the BTP cockpit.
+For local deployment, set `SAMPLE_CAP_HOST` as `http://localhost:4004`. For remote deployment, set `SAMPLE_CAP_HOST` as the value returned from the deployment step.
 
 ### Sample UI - Request
 ![alt text](readme-image-1.png)
@@ -96,7 +95,7 @@ This is a one-time setup step, and could also be created manually in the AI Laun
 *NOTE: Save the ID from this step, so you can use it in the last step to delete the prompt from the registry.
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/odata/v4/prompt-registry/createPromptTemplate \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/prompt-registry/createPromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "name": "askCapitalOfCountry",
@@ -109,7 +108,7 @@ curl --request POST \
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_CAP_HOST$//odata/v4/orchestration/askCapitalOfCountry \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/orchestration/askCapitalOfCountry \
   --header "Content-Type: application/json" \
   --data '{
   "country": "United States"
@@ -121,7 +120,7 @@ This is just to show it can be deleted. It can also be deleted manually in the A
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/odata/v4/prompt-registry/deletePromptTemplate \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/prompt-registry/deletePromptTemplate \
   --header "Content-Type: application/json" \
   --data '{
    "id": "$PROMPT_ID$"

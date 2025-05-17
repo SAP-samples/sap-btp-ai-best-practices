@@ -9,9 +9,9 @@ typescript
 ├── src
 │   ├── server.ts               # Entry point of the application
 │   ├── services
-│   │   └── aiOrchestration.ts # Contains the orchestration logic for AI model access
+│   │   └── aiOrchestration.ts  # Contains the orchestration logic for AI model access
 │   └── utils
-│       └── logger.ts          # Logger utility for logging messages
+│       └── logger.ts           # Logger utility for logging messages
 ├── .env.example                # Template for environment variables
 ├── .gitignore                  # Specifies files to ignore in Git
 ├── package.json                # NPM configuration file
@@ -69,7 +69,7 @@ For local deployment, set `SAMPLE_HOST` as `http://localhost:3000`. For remote d
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_HOST$/askCapitalOfCountry \
+  --url http://$SAMPLE_HOST/askCapitalOfCountry \
   --header "Content-Type: application/json" \
   --data '{
   "country": "United States"

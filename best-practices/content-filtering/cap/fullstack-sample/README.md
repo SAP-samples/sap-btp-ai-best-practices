@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Content Filtering - CAP (full stack)
 
-This project demonstrates best practices for accessing generative AI models through a CAP (Cloud Application Programming model) application using the SAP Cloud SDK for AI. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
+This project demonstrates best practices for using content filtering with generative AI models using the SAP AI SDK. Content filtering is a critical process that ensures the quality and relevance of input data. It involves evaluating and selecting data to prevent low-quality or irrelevant inputs from affecting model performance. This process is essential for maintaining the accuracy and reliability of LLMs, especially when they are used for real-time applications or sensitive tasks.
 
 ## Prerequisites
 
@@ -18,16 +18,17 @@ The application requires proper configuration to connect to the SAP AI Core serv
 ```
 fullstack-sample/
 ├── app/                     # UI5 frontend applications
-│   └── ask-agent/         # TypeScript UI5 application 
+│   └── ask-agent/           # TypeScript UI5 application 
 │       ├── webapp/          # UI5 application source code
 │       ├── package.json     # Frontend dependencies
 │       ├── ui5.yaml         # UI5 tooling configuration
 │       └── README.md        # Frontend documentation
+│   └── router/              # Approuter configuration
 ├── srv/                     # Service layer containing CAP services
 │   ├── orchestration.cds    # CDS service definitions for AI orchestration
 │   └── orchestration.js     # Service implementation with AI SDK integration
 ├── package.json             # Project dependencies and scripts
-├── manifest.yml             # CF deployment configuration
+├── mta.yml                  # CF deployment configuration
 └── README.md                # Project documentation
 ```
 
@@ -64,7 +65,7 @@ fullstack-sample/
 > Apply proper authentication mechanisms to avoid unauthorized access.
 
 1. Install dependencies using `npm install`.
-2. In the `mta.yml`, under the `resources` section on the `fullstack-sample-test-aicore`, modify the `service-name` from `best-practices-aicore` to the name of your AI Core Service instance.
+2. In the `mta.yml`, under the `resources` section on the `best-practices-aicore`, modify the `service-name` from `best-practices-aicore` to the name of your AI Core Service instance.
 3. Transpile the CAP application using `npm run build`.
 4. Login using `cf login -a API_ENDPOINT -o ORG -s SPACE`
 5. Deploy the application using `npm run deploy`

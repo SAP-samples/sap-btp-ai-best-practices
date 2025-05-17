@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Prompt Templating - CAP (backend)
 
-This project demonstrates best practices for accessing generative AI models through a CAP (Cloud Application Programming model) application using the SAP Cloud SDK for AI. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
+This project demonstrates best practices for using prompt templating with AI models through SAP BTP services.
 
 ## Prerequisites
 
@@ -17,13 +17,14 @@ The application requires proper configuration to connect to the SAP AI Core serv
 
 ```
 backend-sample/
-├── srv/                     # Service layer containing CAP services
-│   ├── orchestration.cds    # CDS service definitions for AI orchestration
-│   └── orchestration.ts     # Service implementation with AI SDK integration
-├── package.json             # Project dependencies and scripts
-├── tsconfig.json            # TypeScript configuration
-├── manifest.yml             # CF deployment configuration
-└── README.md                # Project documentation
+├── srv/                                      # Service layer containing CAP services
+│   ├── orchestration/                     
+│   │      ├── orchestration-service.cds      # CDS service definitions for AI orchestration
+│   │      └── orchestration-service.ts       # Service implementation with AI SDK integration
+├── package.json                              # Project dependencies and scripts
+├── tsconfig.json                             # TypeScript configuration
+├── manifest.yml                              # CF deployment configuration
+└── README.md                                 # Project documentation
 ```
 
 ## Local Deployment
@@ -53,6 +54,7 @@ backend-sample/
 5. Deploy the application using `npm run deploy`.
 
 ## Usage
+The application will serve the `/askCapitalOfCountry` API, which uses prompt templating, then sends a prompt to the AI model and logs the response. 
 
 For local deployment, set `SAMPLE_CAP_HOST` as `http://localhost:4004`. For remote deployment, set `SAMPLE_CAP_HOST` as the value returned from the deployment step.
 
@@ -64,7 +66,7 @@ For local deployment, set `SAMPLE_CAP_HOST` as `http://localhost:4004`. For remo
 
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/askCapitalOfCountry \
+  --url http://$SAMPLE_CAP_HOST/odata/v4/orchestration/askCapitalOfCountry \
   --header "Content-Type: application/json" \
   --data '{
   "country": "United States"

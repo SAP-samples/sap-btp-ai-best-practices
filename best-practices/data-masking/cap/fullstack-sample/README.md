@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Data Masking - CAP (full stack)
 
-This project demonstrates best practices for accessing generative AI models through a CAP (Cloud Application Programming model) application using the SAP Cloud SDK for AI. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
+This project demonstrates best practices for data masking with AI models through SAP BTP services. It provides examples of how to interact with language models to obtain responses based on user prompts within a CAP service context.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ The application requires proper configuration to connect to the SAP AI Core serv
 ```
 fullstack-sample/
 ├── app/                     # UI5 frontend applications
-│   └── ask-capital/         # TypeScript UI5 application for querying capitals
+│   └── ask-email/           # TypeScript UI5 application for generating email
 │       ├── webapp/          # UI5 application source code
 │       ├── package.json     # Frontend dependencies
 │       ├── ui5.yaml         # UI5 tooling configuration
@@ -64,7 +64,7 @@ fullstack-sample/
 > Apply proper authentication mechanisms to avoid unauthorized access.
 
 1. Install dependencies using `npm install`.
-2. In the `mta.yml`, under the `resources` section on the `fullstack-sample-test-aicore`, modify the `service-name` from `best-practices-aicore` to the name of your AI Core Service instance.
+2. In the `mta.yml`, under the `resources` section on the `best-practices-aicore`, modify the `service-name` from `best-practices-aicore` to the name of your AI Core Service instance.
 3. Transpile the CAP application using `npm run build`.
 4. Login using `cf login -a API_ENDPOINT -o ORG -s SPACE`
 5. Deploy the application using `npm run deploy`

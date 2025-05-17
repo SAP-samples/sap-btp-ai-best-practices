@@ -1,6 +1,6 @@
 # SAP BTP AI Best Practice Demo - Content Filtering - Typescript
 
-This project demonstrates best practices for using content filtering with generative AI models using the SAP AI SDK. It provides a simple example of how to interact with a language model to obtain responses based on user prompts.
+This project demonstrates best practices for using content filtering with generative AI models using the SAP AI SDK. Content filtering is a critical process that ensures the quality and relevance of input data. It involves evaluating and selecting data to prevent low-quality or irrelevant inputs from affecting model performance. This process is essential for maintaining the accuracy and reliability of LLMs, especially when they are used for real-time applications or sensitive tasks.
 
 ## Project Structure
 
@@ -14,6 +14,7 @@ typescript
 │       └── logger.ts          # Logger utility for logging messages
 ├── .env.example                # Template for environment variables
 ├── .gitignore                  # Specifies files to ignore in Git
+├── manifest.yml                # Deployment configuration file
 ├── package.json                # NPM configuration file
 ├── tsconfig.json               # TypeScript configuration file
 └── README.md                   # Project documentation

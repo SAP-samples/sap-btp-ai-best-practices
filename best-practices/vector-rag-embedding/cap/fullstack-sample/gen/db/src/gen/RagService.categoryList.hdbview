@@ -1,0 +1,3 @@
+VIEW RagService_categoryList AS SELECT DISTINCT
+  Science_Data_0.Category
+FROM ai_db_Science_Data AS Science_Data_0

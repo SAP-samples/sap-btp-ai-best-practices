@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Manage Science Data</title>
+		<style>
+			html,
+			body,
+			body > div,
+			#container,
+			#container-uiarea {
+				height: 100%;
+			}
+		</style>
+		<script
+			id="sap-ui-bootstrap"
+			src="https://ui5.sap.com/resources/sap-ui-core.js"
+			data-sap-ui-resource-roots='{
+	            "ui5.manage.sciencedata": "./"
+	        }'
+			data-sap-ui-theme="sap_fiori_3"
+			data-sap-ui-libs="sap.m, sap.ushell, sap.collaboration, sap.ui.layout"
+			data-sap-ui-compat-version="edge"
+			data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
+			data-sap-ui-async="true"
+			data-sap-ui-xx-waitForTheme="true"
+			data-sap-ui-xx-supportedLanguages="en,de"
+			data-sap-ui-frameOptions="trusted"
+		></script>
+	</head>
+	<body class="sapUiBody" id="content">
+		<div
+			data-sap-ui-component
+			data-name="ui5.manage.sciencedata"
+			data-id="container"
+			data-settings='{"id" : "ui5.manage.sciencedata"}'
+		></div>
+	</body>
+</html>
