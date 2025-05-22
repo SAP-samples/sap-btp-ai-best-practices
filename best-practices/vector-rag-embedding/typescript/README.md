@@ -30,7 +30,7 @@ typescript
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/sap-btp-ai-best-practices.git
+   git clone https://github.com/SAP-samples/sap-btp-ai-best-practices.git
    cd sap-btp-ai-best-practices/best-practices/vector-rag-embedding/typescript
    ```
 
