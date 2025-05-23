@@ -109,7 +109,7 @@
 								<goal>java</goal>
 							</goals>
 							<configuration>
-								<mainClass>com.yourpackage.App</mainClass>
+								<mainClass>com.sap.ai.core.sample.App</mainClass>
 
 							</configuration>
 						</execution>
