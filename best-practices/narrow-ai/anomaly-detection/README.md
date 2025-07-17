@@ -8,9 +8,10 @@ Overall, the following tasks take place:
 - Accessing and visually exploring SAP HANA data using **HANA dataframes** in Python
 - Training various **anomaly detection models** including Isolation Forest, DBSCAN, One-Class SVM, and K-means clustering using **hana-ml Predictive Analysis Library** (PAL) functions
 - Implementing **time series anomaly detection** with specialized algorithms for temporal data
+- Implementing **anomaly detection for regression models** for linear and tree-based models
 - Performing **Model Evaluation** to assess the effectiveness of anomaly detection
 
-The article related to this topic is: [Narrow AI - Anomaly Detection [TODO: Add link]](#TODO)
+The article related to this topic is: [Narrow AI - Anomaly Detection](https://btp-ai-bp.docs.sap/docs/technical-view/narrow-ai/anomaly-detection)
 
 ## Language-Specific Examples
 
