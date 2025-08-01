@@ -11,7 +11,8 @@
     },
     "andrii-rzhaksynskyi": {
       "name": "Rzhaksynskyi, Andrii",
-      "photo": "/img/contributors/andrii-rzhaksynskyi.jpg"
+      "photo": "/img/contributors/andrii-rzhaksynskyi.jpg",
+      "link": "https://www.linkedin.com/in/andreyrzhaksinskiy/"
     },
     "velizar-stoyanov": {
       "name": "Stoyanov, Velizar",
@@ -56,6 +57,13 @@
     "bhagabat-prasad-behera": {
       "name": "Behera, Bhagabat Prasad",
       "photo": "/img/contributors/bhagabat-prasad-behera.jpg"
+    },
+    "sergio-pacheco-sanchez": {
+      "name": "Pacheco-Sanchez, Sergio"
+    },
+    "rajeshwari-kute": {
+      "name": "Kute, Rajeshwari",
+      "photo": "/img/contributors/rajeshwari-kute.jpg"
     }
   }
 }

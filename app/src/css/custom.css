@@ -137,6 +137,18 @@ h6,
   font-family: var(--sapFontFamily) !important;
 }
 
+.markdown > h4 {
+  --ifm-h4-font-size: 1.25rem;
+}
+
+.markdown > h5 {
+  --ifm-h5-font-size: 1rem;
+}
+
+.markdown > h6 {
+  --ifm-h6-font-size: 0.875rem;
+}
+
 /* Navbar */
 
 .navbar__item.navbar__link {

@@ -2,7 +2,6 @@
 title: "Anomaly Detection"
 description: ""
 hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -23,15 +22,6 @@ import PageContributors from "@site/src/components/PageContributors";
 <div className="hero-header">
   <h1>Anomaly Detection</h1>
 </div>
-
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
 
 <div className="section-with-background">
   <div className="row">
@@ -55,9 +45,9 @@ Don't forget to remove this message.
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/videos/BTP AI Best Practices - Anomaly Detection (intro)_external.mp4")}>
             <Icon name="video" />
-            <span>Teaser [TODO]</span>
+            <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
@@ -68,9 +58,9 @@ Don't forget to remove this message.
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/pdfs/BTP AI Best Practices - Anomaly Detection.pdf")}>
               <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
+              <span>Webinar (PDF Presentation)</span>
             </Link>
           </li>
         </LoginWall>
@@ -94,36 +84,212 @@ Don't forget to remove this message.
 
 ### Description
 
-...
+Anomaly detection is the process of **identifying data points, events, or patterns that deviate significantly from the expected or normal behavior** within a dataset. In the SAP ecosystem, this involves leveraging tools within **SAP HANA ML** (PAL, hana-ml) to find data points that "do not follow the collective common pattern of the majority of data points". This practice covers implementing these techniques effectively.
 
 ### Expected Outcome
 
-...
+To successfully **identify and flag unusual behavior or outliers** in various types of data (e.g., transactional data, sensor readings, time series, API traffic) residing within or connected to the SAP landscape. This enables proactive responses to potential risks or opportunities.
 
 <LoginWall>
 
 ### Benefits
 
-...
+- **Mitigate Risks:** Detect fraud, system failures, security breaches, or compliance violations early.
+- **Optimize Processes:** Identify operational inefficiencies, improve data quality, understand unexpected process variations, and enable predictive maintenance.
+- **Enhance Decision Making:** Gain insights from unexpected deviations, understand emerging trends, and react faster to critical events.
 
-### Key Concepts
+### Key Algorithms
 
-...
+#### General Anomaly Detection Functions
+
+- **DBSCAN** (Density-Based Spatial Clustering of Applications with Noise) is a density-based clustering algorithm. It groups together points that are closely packed together (having many neighbors within a certain distance) and marks points that lie alone in low-density regions as outliers. It can discover clusters of arbitrary shape and is robust to noise.
+- **Isolation Forest** is an unsupervised anomaly detection algorithm. It works by randomly partitioning the data space and isolating observations. The core idea is that anomalies are "few and different", making them easier to isolate compared to normal points. Points that require fewer random partitions to be isolated are considered more likely to be anomalies and receive a higher anomaly score.
+- **One-Class Support Vector Machine** (SVM) is an unsupervised algorithm primarily used for novelty or outlier detection. It learns a decision boundary that encompasses the majority of the training data (the "normal" points). New data points falling outside this boundary are classified as anomalies or outliers.
+  <br />
+  The algorithm aims to find a hyperplane in a high-dimensional feature space (potentially transformed by a kernel function) that separates the data points from the origin with maximum
+  margin. Points lying on the "wrong" side of the hyperplane or too far from it are considered outliers.
+- **K-Means clustering** can be used as a basis for outlier detection. The core idea is that outliers will typically be far away from the centroids (centers) of the clusters formed by the majority of the data. The function first performs K-Means clustering and then calculates a distance-based score for each point. Points with the highest scores (i.e., farthest from cluster centers, considering the specified distance metric and aggregation method) are flagged as outliers based on a specified contamination fraction or distance threshold.
+
+#### Timeseries Anomalies Detection Functions
+
+- **Time series outlier detection** identifies data points that deviate significantly from the general pattern of the series. The OutlierDetectionTS algorithm works in two steps:
+  1. **Residual Extraction:** A model (e.g., smoothing, seasonal decomposition) is fitted to the time series, and the residuals (the differences between the actual values and the fitted values) are calculated.
+  2. **Outlier Detection on Residuals:** An outlier detection method (like [z-score](https://en.wikipedia.org/wiki/Standard_score), [IQR](https://en.wikipedia.org/wiki/Interquartile_range), [MAD](https://en.wikipedia.org/wiki/Median_absolute_deviation), Isolation Forest, DBSCAN) is applied to the residuals. Points whose residuals have high outlier scores are flagged as anomalies in the original time series.
+
+#### Regression Anomalies Detection Functions
+
+- **Outlier Detection Regression** identifies data points that deviate significantly from the expected pattern in regression models. The algorithm works in two steps:
+  1. **Residual Extraction:** A regression model (either linear or tree-based) is fitted to the data, and residuals (differences between actual and predicted values) are calculated.
+  2. **Outlier Scoring:** Each data point receives an outlier score based on its residual. For linear models, the score is the deleted [studentized residual](https://en.wikipedia.org/wiki/Studentized_residual). For tree models, the score is the [z-score](https://en.wikipedia.org/wiki/Standard_score) of the residual. Points whose scores exceed a specified threshold are flagged as outliers.
+
+This approach recognizes that outliers in regression are points that don't follow the general behavior pattern established by the model, making them distinguishable through their unusually large residuals.
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+### Supported SAP HANA Versions and Editions
+
+HanaML capabilities, including both the Predictive Analysis Library (PAL) and the Automated Predictive Library (APL), are supported on various SAP HANA versions and editions. Key supported platforms include:
+
+    - **SAP HANA Cloud:** Fully supported and recommended platform due to easier management of components like PAL and APL. More information on [HANA Cloud and Setup process](/docs/technology/sap-hana-cloud#setup).
+
+[Prerequisites](https://support.sap.com/en/alm/sap-cloud-alm/operations/expert-portal/setup-managed-services/setup-hana-cloud.html?anchorId=section_2065216453_c#section_copy_copy):
+You need to have access to SAP BTP Cockpit ([Setup Guide](/docs/technology/sap-business-technology-platform#setup-guide)).
+Your user in BTP Cockpit needs to be a member with the space role "Space Developer" for the space in which you want to create the SAP HANA Cloud database instance was created - **SAP HANA express edition:** Used for development and testing. [Installation instructions for SAP HANA](https://developers.sap.com/group.hxe-install-clients.html) and [Installation instructions for Client API](https://developers.sap.com/tutorials/hxe-ua-install-python-ml-api..html). - **SAP Datasphere (formerly Data Warehouse Cloud):** Supports PAL and API functions, provided underlying [SAP HANA Cloud Script Server](https://help.sap.com/docs/SAP_DATASPHERE/9f804b8efa8043539289f42f372c4862/287194276a7d4d778ec98fdde5f61335.html) is enabled for the tenant
+
+Note, PAL and APL are also available from [SAP HANA Platform 2.0 SPS 04](https://help.sap.com/doc/9c87e50e69c744f785f41ec5568b47d8/2.0.04/en-US/SAP_HANA_Machine_Learning_Overview_Guide_en.pdf) as well as SAP HANA express edition
+
+### Required SAP HANA Components
+
+- **SAP HANA Cloud:** PAL and APL are pre-installed within the SAP HANA Cloud environment. During configuration of the database instance, the necessary services need to be enabled and user permissions to be granted
+- **Predictive Analysis Library (PAL):** it provides a wide range of common and specialized native in-database functions for predictive analysis and machine learning in scenarios like classification, regression, time series forecasting, outlier detection, text processing and analysis as well as text embedding
+- **Automated Predictive Library (APL):** it provides native in-database functions for creating predictive models in a simplified manner due to the automation of many of the steps.
+
+### Required User Authorizations and Roles
+
+Executing PAL and APL functions requires specific database privileges. These are granted via predefined roles:
+
+- For [PAL](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/security-security-253f2b5?locale=en-US): You must be assigned one of the following roles to execute PAL procedures
+  - `AFL__SYS_AFL_AFLPAL_EXECUTE`
+  - `AFL__SYS_AFL_AFLPAL_EXECUTE_WITH_GRANT_OPTION`
+- For [APL](https://help.sap.com/docs/apl/419fd47c26b345239fdbb5e476a6bc54/654f4d920c5846b6b56903c7b06b0785.html):
+  - SAP HANA Cloud: The database role `sap.pa.apl.base.roles::APL_EXECUTE` is required. This role grants privileges to execute APL stored procedures, access related schemas, and use the APL cache. It should be granted by a database administrator to the APL user
+- **General Privileges:** Beyond specific PAL/APL roles, users will need standard SQL privileges to access the data tables used as input for the algorithms (e.g., SELECT on relevant schemas/tables) and potentially privileges to create temporary tables or views depending on the workflow (e.g., CREATE TEMPORARY TABLE).
+
+### Summary
+
+| Prerequisite Category            | Item                                               | Notes                                                                                          |
+|----------------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------|
+| **SAP HANA Cloud Environment**   | SAP HANA Cloud, SAP HANA Cloud trial and free-tier | See trial / free-tier limitations.                                                             |
+| **SAP HANA Cloud Configuration** | Enabled services                                   | Script Server and NLP services                                                                 |
+| **User Authorizations**          | PAL Execution Role Granted                         | User needs `AFL__SYS_AFL_AFLPAL_EXECUTE` (Cloud/On-Prem) role.                                 |
+|                                  | APL Execution Role Granted                         | User needs `sap.pa.apl.base.roles::APL_EXECUTE` (Cloud/On-Prem Procedure) or direct AFL roles. |
+|                                  | Data Access Privileges (SELECT)                    | User needs `SELECT` access on input data tables/views.                                         |
+|                                  | Object Creation Privileges (Optional)              | May need `CREATE TEMPORARY TABLE` etc., depending on workflow.                                 |
+
+### High-level Reference Architecture
+
+![High-level Reference Architecture](@site/static/narrow-ai/anomaly-detection/images/arch.png)
+
+### Calling PAL and APL Functions
+
+- PAL functions can be called through the SQL interface or using the Python or R Machine Learning clients (hana-ml).
+- APL functions can be called through the SQL interface or using the Python Machine Learning client (hana-ml).
+- The Natural Language Processing functions for Text Analysis, Named Entity Recognition or Part of Speech tagging can be called via PAL functions. In addition, the Text Embedding function can be called via PAL functions as well as the SQL function [VECTOR_EMBEDDING()](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-vector-engine-guide/creating-text-embeddings-in-sap-hana-cloud).
+- Both PAL and APL functions can be called out of the box in the HANA Cloud Database Core Container, or as part of the HANA Cloud Elastic Compute Nodes.
+- SAP BTP Applications can embed use of PAL or APL functions as part of standard SQLScript design-time artifacts, e.g. multi-target or full-stack CAP applications. Furthermore, usage of PAL and APL functions may also be utilized via applications leveraging Python runtimes and scripts using the Python Machine Learning client (hana-ml)
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+Implementing anomaly detection effectively involves several key decisions and adherence to best practices:
+
+### Understand Your Data and Anomaly Type
+
+- **Define "Anomaly":** Clearly specify what constitutes an anomaly in your business context. Is it a point, contextual, or collective anomaly?
+- **Analyze Data:** Understand data characteristics (time series, high-dimensional, source, volume) to guide algorithm selection.
+
+### Leverage In-Database Detection When Possible
+
+- **Prioritize HANA ML:** If your data resides in SAP HANA (Cloud/on-premise) or SAP Datasphere, using hana-ml is generally the most efficient approach due to minimized data movement and optimized performance.
+
+### Algorithm Selection
+
+#### General Anomaly Detection Functions
+
+### DBSCAN
+
+| When it excels                                                                  | Why                                                                                           | Concrete example                                                                                                                                                                                       |
+|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Irregular, non-convex shapes** in the “normal” data                           | Density connectivity is shape-agnostic; no centroid assumption                                | To detect illegal fishing, vessel GPS pings are analyzed: clusters of pings typically follow winding, coast-hugging routes, while those that appear outside designated zones are flagged as suspicious |
+| **Varying cluster sizes/densities** where noise should be labeled explicitly    | Points with < `minPts` neighbors inside ε are automatically “noise”—no extra threshold tuning | For quality control on semiconductor wafers, pixel-level defect maps often show dense clusters of similar defects, while isolated hot pixels are treated as noise by the DBSCAN algorithm              |
+| **Low/medium-dimensional data** (≤ 20 dims) with a _meaningful distance metric_ | ε radius grows counter-intuitively in very high-dimensional spaces                            | Spatial point patterns, image coordinates, RFID-tag positions, etc.                                                                                                                                    |
+
+<br />
+### Isolation Forest
+
+| When it excels                                                 | Why                                                                                                                                                                                                                                 | Concrete example                                                                                                                                                                         |
+|----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **For High-Dimensional Data Sets** (10 – hundreds of features) | Isolation Forest works well because it splits data along random axes. This approach avoids the "curse of dimensionality" problem that affects distance-based methods.                                                               | Detecting credit card fraud in real-time, where you might analyze hundreds of variables including merchant information, device data, transaction amounts, and customer behavior patterns |
+| **For Large Data Sets** (10⁵ – 10⁶+ rows)                      | Isolation Forest is efficient because it operates in O(n log n) time. Can even sample down to just 256 trees without losing much accuracy                                                                                           | Analyzing web server logs to find anomalies across gigabytes of hourly request records, Isolation Forest provides both speed and accuracy                                                |
+| **For Detecting Isolated Anomalies**                           | When anomalies are rare but spread throughout your data (not clustered together), Isolation Forest excels by creating short isolation paths to identify individual outlier points, even when they appear alone in the feature space | Predictive maintenance of machinery, when looking for rare combinations of vibration frequencies and temperatures that indicate potential failures                                       |
+
+<br />
+### One-Class SVM
+
+| When it excels                                                                                              | Why                                                                                                                                                | Concrete example                                                                                                                           |
+|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| **For Abundant Normal Data with Few Anomalies** (pure novelty detection)                                    | When you have plenty of “normal” data but almost no labeled anomalies, One-Class SVM works well because it learns the boundary of normal behavior  | Network intrusion detection where you can train on months of clean traffic data to later identify novel exploit patterns                   |
+| **For Moderate-Sized, Complex Data Sets** (up to ~50k samples, 10²–10³ dims) where kernel methods add value | One-Class SVM with RBF or polynomial kernels creates effective non-linear boundaries, though computational costs increase approximately with O(n²) | Distinguishing subtle differences in manufactured lens characteristics where the decision boundary between normal and abnormal is complex  |
+| **When Theoretical Soundness Matters**                                                                      | One-Class SVM provides the same margin-maximizing approach as standard SVMs. This creates interpretable support vectors you can examine            | In medical imaging, this helps clinicians understand which “normal” images lie on the boundary between normal and abnormal classifications |
+
+<br />
+### K‑Means‑Based Outlier Scoring
+
+| When it excels                                                                                                                | Why                                                                                                                                                                                                                                                                                                                                                                               | Concrete example                                                                                                                                                                                                |
+|-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **For Well-Formed, Evenly Sized Clusters**                                                                                    | When your data naturally forms compact, convex, and similarly sized groups, K-Means-Based Outlier Scoring works effectively because the distance to cluster centroids accurately represents how typical a data point is                                                                                                                                                           | In customer segmentation, this approach excels at identifying rare “whale” customers who stand out due to their unusual purchase frequency and spending patterns that position them far from any cluster center |
+| **When K is Known in Advance** (business-defined segments, product tiers) and want a _fast_ baseline                          | [Lloyd’s algorithm](https://en.wikipedia.org/wiki/K-means_clustering#:~:text=Lloyd%27s%20algorithm%20is%20therefore%20often%2csuperpolynomial%20when%20performed%20until%20convergence.&text=iterations%2c%20so%20that%20the%20worst%2cof%20Lloyd%27s%20algorithm%20is%20superpolynomial) runs in O(n k d i) time complexity and can be easily parallelized for faster processing | IoT sensor monitoring where devices are grouped by type (K = the number of device families) to efficiently flag units producing measurements outside normal parameters                                          |
+| **When Explanation Clarity Matters** — K-Means excels because distance to a centroid provides an intuitive explanation format | You can clearly communicate that “this reading is an outlier because it is 3 times farther from its assigned cluster center than 95% of points.”                                                                                                                                                                                                                                  | Call center metrics analysis, where agent performance data typically forms tiers, and outliers may indicate agents requiring additional coaching                                                                |
+
+**Quick decision checklist**
+
+- Irregular shapes / density gaps → **DBSCAN**
+- Huge, high‑D, unlabeled tabular data → **Isolation Forest**
+- Normal‑only training set + curved boundary → **One‑Class SVM**
+- Compact globular clusters + need for speed/simple explanation → **K‑Means distance**
+
+<br />
+### Timeseries Anomalies Detection
+
+| When OutlierDetectionTS really shines                                                      | Why the function is a particularly good fit                                                                                                                                                                                              | Concrete example                                                                                                                                                                                                                                  |
+|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Pronounced trend + strong seasonality** (daily traffic, weekly sales, power-load curves) | Built-in seasonal decomposition can strip the cyclical component before scoring the residual, preventing every Christmas spike from being flagged.                                                                                       | For retail demand analysis with 7-day cycles, set `detect_seasonality = TRUE` with `default window.size = 1` and the `z1` outlier method for fast processing.                                                                                     |
+| **For Steady Sensors with Occasional Sharp Spikes**                                        | When monitoring sensors with generally smooth readings that experience rare, sudden glitches, a simple median filter with a sliding window effectively isolates one-off spikes while ignoring gradual drift.                             | Temperature monitoring in cold-chain logistics, where a freezer door left open creates a distinctive spike. Use `detect_seasonality = FALSE` with `window.size = 5` and `outlier.method="mad"` for enhanced robustness.                           |
+| **For Non-Seasonal but Variable Trend Data**                                               | When analyzing data without seasonal patterns but with curved trends, manual LOESS or advanced smoothing techniques help identify genuine anomalies by following the natural curve, making true deviations more apparent.                | Cryptocurrency price minute-by-minute analysis, where settings like `auto = FALSE`, `smooth_method="loess"`, `loess_lag = 9`, `current_value_flag = TRUE`, and `outlier.method="iqr"` help distinguish flash-crashes from normal price movements. |
+| **For High-Noise, High-Volume Systems**                                                    | When dealing with high-volume telemetry data where residuals follow non-Gaussian distributions, Isolation-Forest scoring on residuals effectively handles heavy-tailed or multimodal error distributions across millions of data points. | Real-time credit card authorization latency monitoring, where intermittent latency surges may indicate network issues (using `outlier.method="isolationforest"` with tuned `n_estimators` and `contamination` parameters).                        |
+| **For Clustered Anomaly Events**                                                           | DBSCAN applied to residuals can effectively flag unusual clusters or bursts.                                                                                                                                                             | Social media sentiment analysis where coordinated negative campaigns create dense clusters of unusual activity (using `outlier.method="dbscan"` with `eps=0.4` and `minpts=3`).                                                                   |
+| **For Intermittent Demand Patterns**                                                       | When analyzing “lumpy” demand series with many zeros interrupted by bursts of activity, the `detect_intermittent_ts=TRUE` parameter prevents false positives by skipping anomaly detection during zero-value periods.                    | Spare parts inventory management where 90% of days show zero sales but restock orders arrive in clusters. Use `detect_intermittent_ts=TRUE`.                                                                                                      |
+
+**Quick decision checklist**
+
+- **Does the series have a repeating calendar pattern?** → Turn on detect_seasonality (or leave auto=TRUE) and let periodicities be removed before scoring.
+- **Is it smooth except for occasional single‑point jolts?** → Median filter residual (window.size ≥ 3) plus a simple Z‑ or MAD‑score.
+- **Is the trend itself curvy or non‑linear?** → Use LOESS or super‑smoother (auto=FALSE, smooth_method="loess"/"super").
+- **Residuals look heavy‑tailed or you expect very few but extreme anomalies?** → Isolation Forest (outlier.method="isolationforest").
+- **You care about clusters of unusual behaviour (bursts, events)?** → DBSCAN (outlier.method="dbscan").
+- **Data is sparse/intermittent (lots of zeros)?** → Set detect_intermittent_ts=TRUE; consider aggregating first if you still need detection.
+
+<br />
+**Regression Model Outlier Detection**
+
+| When OutlierDetectionRegression really shines                                           | Why the function is a particularly good fit                                                                                                                               | Concrete example                                                                                                                                                                              |
+|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Linear relationships with measurement errors** (quality control, manufacturing specs) | Linear model with deleted studentized residuals effectively identifies points that deviate from expected linear relationships while accounting for leverage and influence | Manufacturing quality control where product dimensions should follow linear specs based on machine settings, use `regression_model="linear"` with `threshold=3.0` to flag defective products  |
+| **Complex non-linear patterns with outliers** (pricing models, risk assessment)         | Tree-based model captures non-linear relationships and uses z-scores of residuals to identify anomalies in complex feature interactions                                   | Real estate pricing where property values depend non-linearly on multiple features, use `regression_model="tree"`, `iter_num=15`, `max_depth=8` to detect mispriced properties or data errors |
+| **High-leverage point detection** (financial modeling, experimental design)             | Deleted studentized residuals in linear model specifically designed to detect influential observations that could skew regression coefficients                            | Investment portfolio analysis where a single large position could distort risk models, use `regression_model="linear"` with `threshold=2.5` for sensitive leverage detection                  |
+
+### Data Preparation and Model Evaluation
+
+The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
+
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+When developing regression models with SAP tools and libraries, the choice of your application's runtime dictates the relevant information. Different approaches can be used to embed the anomaly detection scenario artifacts.
+
+### Programming Model Selection Guidelines
+
+When developing linear regression scenarios with SAP HANA’s Predictive Analysis Library (PAL), consider the following guidelines:
+
+- **Recommended Approach (Data Science Workflows):** Utilize the Python hana-ml library for a streamlined, intuitive experience aligned with standard data science practices, including convenient data manipulation and integration with machine learning workflows. This approach yields best productivity during ML model experimentation until the final model of choice and parameterization has been determined.
+- **Alternative Approaches:**
+  - **SQLScript database procedures and table functions** are the typical **HANA design-time artifacts** for embedding and invoking PAL and APL procedures into BTP CAP or XSA full-stack applications. Artifact generations from the hana-ml machine learning client in Python is supported.
+
+The final choice should align with your team’s expertise and project requirements.
 
 <div className="tabs-with-background">
 <Tabs groupId="language">
+
 <TabItem value="python" label="Python" default>
 
 <TrackableLink
@@ -135,37 +301,483 @@ Don't forget to remove this message.
   <span>Download Source Code</span>
 </TrackableLink>
 
-...
+### Recommended
+
+Use the **hana-ml** library for interacting with SAP HANA PAL and APL algorithms directly from Python.
+
+### SDKs
+
+- [hana-ml](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/latest/en-US/hana_ml.html)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- Recommended
+
+  - [Learning from Labeled Anomalies for Efficient Anomaly Detection using Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/learning-from-labeled-anomalies-for-efficient-anomaly-detection-using/ba-p/13485567): Presents a **supervised** approach to anomaly detection using a **decision tree** classifier. In this tutorial, a dataset with known (labeled) anomalies is analyzed. The decision tree model is trained to distinguish normal vs. anomalous instances.
+  - [Outlier Detection with One-class Classification using Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/outlier-detection-with-one-class-classification-using-python-machine/ba-p/13481696): Covers one-class classification for anomaly detection using the **One-Class SVM** algorithm in SAP HANA’s PAL (accessed via hana-ml).
+
+- Other sources
+  - [Outlier Detection by Clustering using Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/outlier-detection-by-clustering-using-python-machine-learning-client-for/ba-p/13469349): Demonstrates outlier detection via **clustering algorithms**. In this tutorial, the SAP HANA PAL implementation of **DBSCAN** is used (through hana-ml) to group data and identify noise points as anomalies.
+  - [Anomaly Detection in Time-Series using Seasonal Decomposition in Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/anomaly-detection-in-time-series-using-seasonal-decomposition-in-python/ba-p/13474482): Explains how to detect anomalies in **time-series** data using the **seasonal decomposition** algorithm available in SAP HANA PAL (through hana-ml). This guide shows how the time series is decomposed into trend/seasonal components and residuals, then applies outlier detection on the residuals
+  - [Detecting Contextual Anomalies with SAP HANA ML](https://community.sap.com/t5/technology-blogs-by-members/detecting-contextual-anomalies-with-sap-hana-ml/ba-p/13502937): Shows how to detect **contextual anomalies** in time-series data using SAP HANA’s Python ML client
+
+SAP Developer Tutorials:
+
+- [Predictive AI with SAP AI Core (General AI Core usage)](https://developers.sap.com/group.ai-core-get-started-basics.html)
+
+### Reference Code
+
+#### Recommended
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/anomaly-detection/python"
+        target="_blank"
+        trackingFeature="DOWNLOAD_ANOMALY_DETECTION"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+<br />
+#### Relevant Code
+
+[DBSCAN](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.08/en-US/pal/algorithms/hana_ml.algorithms.pal.clustering.DBSCAN.html)
+
+```python
+from hana_ml.algorithms.pal.clustering import DBSCAN
+​
+# --- Training the DBSCAN Model ---
+dbscan = DBSCAN(
+    minpts=None, # Let PAL determine
+    eps=None,    # Let PAL determine
+    thread_ratio=1
+)
+​
+print("\nTraining the DBSCAN model...")
+dbscan.fit(data=hdf_input, key=KEY_COL, features=feature_cols)
+# --- Predicting Anomalies ---
+print("\nPredicting anomalies using the trained DBSCAN model...")
+results_hdf = dbscan.predict(
+  data=hdf_input,
+  key=KEY_COL,
+  features=feature_cols
+)
+print("Prediction completed.")
+```
+
+[Isolation Forest](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.08/en-US/pal/algorithms/hana_ml.algorithms.pal.preprocessing.IsolationForest.html#hana_ml.algorithms.pal.preprocessing.IsolationForest)
+
+```python
+from hana_ml.algorithms.pal.preprocessing import IsolationForest
+​
+# --- Training the Isolation Forest Model ---
+iforest = IsolationForest(
+    n_estimators=None,   # let PAL pick the number of trees
+    max_samples=None,    # let PAL pick samples per tree
+    thread_ratio=1       # let PAL decide on compute threads
+)
+​
+print("\nTraining the Isolation Forest model...")
+iforest.fit(
+    data=hdf_input,
+    key=KEY_COL,
+    features=feature_cols
+)
+​
+# --- Predicting Anomalies ---
+print("\nPredicting anomalies using the trained Isolation Forest model...")
+results_hdf = iforest.predict(
+    data=hdf_input,
+    key=KEY_COL,
+    features=feature_cols
+)
+print("Prediction completed.")
+```
+
+[One Class SVM](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.08/en-US/pal/algorithms/hana_ml.algorithms.pal.svm.OneClassSVM.html#hana_ml.algorithms.pal.svm.OneClassSVM)
+
+```python
+from hana_ml.algorithms.pal.svm import OneClassSVM
+​
+# --- Training the One-Class SVM Model ---
+ocsvm = OneClassSVM(
+    c=None,            # let PAL use its default trade-off
+    nu=None,           # let PAL choose the nu parameter
+    gamma=None,        # let PAL pick the kernel coefficient
+    thread_ratio=1     # single PAL thread group
+)
+​
+print("\nTraining the One-Class SVM model...")
+ocsvm.fit(
+    data=hdf_input,
+    key=KEY_COL,
+    features=feature_cols
+)
+​
+# --- Predicting Anomalies ---
+print("\nPredicting anomalies using the trained One-Class SVM model...")
+results_hdf = ocsvm.predict(
+    data=hdf_input,
+    key=KEY_COL,
+    features=feature_cols
+)
+print("Prediction completed.")
+```
+
+[Outlier Detection KMeans](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.08/en-US/pal/algorithms/hana_ml.algorithms.pal.clustering.outlier_detection_kmeans.html#hana_ml.algorithms.pal.clustering.outlier_detection_kmeans)
+
+```python
+from hana_ml.algorithms.pal.clustering import outlier_detection_kmeans
+​
+# --- Detecting Outliers via K-Means ---
+print("\nDetecting outliers using K-Means clustering...")
+outliers_hdf, stats_hdf, centers_hdf = outlier_detection_kmeans(
+    data=hdf_input,
+    key=KEY_COL,
+    features=feature_cols,
+    n_clusters=None,         # let PAL determine number of clusters
+    distance_level=None,     # let PAL use default distance metric
+    contamination=None,      # let PAL pick the outlier proportion
+    init=None,               # let PAL use its default init method
+    max_iter=None,           # let PAL choose its default iteration cap
+    normalization=None,      # let PAL decide on normalization
+    tol=None,                # let PAL set its convergence threshold
+    distance_threshold=None, # let PAL pick the threshold
+    thread_number=1          # single PAL thread
+)
+print("Outlier detection completed.")
+```
+
+[Temporal Series Outlier Detection](https://help.sap.com/doc/b64d3cac2f0b42be9ca9fc662715f36b/2024_2_QRC/en-US/reference/hanaml.OutlierDetectionTS.html)
+
+```python
+from hana_ml.algorithms.pal.timeseries import outlier_detection_ts
+​
+# --- Detecting Outliers in Time Series Data ---
+print("\nDetecting outliers in time series...")
+results_hdf = outlier_detection_ts(
+    data=hdf_input,
+    key=KEY_COL,
+    ts=TIME_COL,           # your timestamp column
+    freq=None,             # let PAL infer seasonal frequency
+    method=None,           # let PAL pick its outlier‐detection method
+    contamination=None,    # let PAL estimate the proportion of outliers
+    alpha=None,            # let PAL choose its significance level
+    seasonal=None,         # let PAL infer any seasonality parameter
+    thread_number=1        # single PAL thread
+)
+print("Time‐series outlier detection completed.")
+```
 
 </TabItem>
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+<TabItem value="sql" label="SQL">
 
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/anomaly-detection/typescript"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_ANOMALY_DETECTION"
->
-  <span>Download Source Code</span>
-</TrackableLink>
+### Reference Information
 
-...
+SAP HANA's Predictive Analysis Library (PAL) algorithms can be directly invoked through SQLScript. This approach is beneficial for:
 
-</TabItem>
+- **Performance Optimization:** Minimizes data movement by executing directly within the database.
+- **Integration:** Allows embedding ML logic within database procedures, views, or calculation views for seamless integration with existing SAP HANA applications.
+- **Governance:** Provides a standardized approach within existing database governance frameworks.
 
-<TabItem value="cap-app" label="CAP">
+When implementing with SQLScript, you'll typically:
 
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/anomaly-detection/cap"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_ANOMALY_DETECTION"
->
-  <span>Download Source Code</span>
-</TrackableLink>
+- Create parameter tables with algorithm-specific settings.
+- Prepare input data in the required format.
+- Call the PAL procedure.
+- Process the resulting output tables.
 
-...
+### SDKs
+
+- [SAP HANA Predictive Analysis Library (PAL)](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/sap-hana-cloud-sap-hana-database-predictive-analysis-library-pal)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- [SAP HANA PAL Quick Start](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-pal-quick-start/ba-p/13084367)
+- [SAP HANA PAL – K-Means Algorithm or How to do Customer Segmentation for the Telecommunications Industry](https://community.sap.com/t5/technology-blog-posts-by-members/sap-hana-pal-k-means-algorithm-or-how-to-do-customer-segmentation-for-the/ba-p/12976696)
+
+The following links point to the relevant SAP HANA PAL documentation for the SQLScript procedures:
+
+- **DBSCAN:** [PAL DBSCAN](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/dbscan-b2c5511.html)
+- **Isolation Forest:** [PAL Isolation Forest Documentation](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library-pal/isolation-forest-isolation-forest-11345d9) (Covers PAL_ISOLATION_FOREST for training and PAL_ISOLATION_FOREST_PREDICT for prediction)
+- **One-Class SVM:** [PAL SVM Documentation](https://help.sap.com/docs/SAP_HANA_PLATFORM/2cfbc5cf2bc14f028cfbe2a2bba60a50/901a10d65c3d4c0d8f161b9245172576.html) (The PAL_SVM procedure is used with TYPE parameter set to 4 for One-Class SVM)
+- **Outlier Detection KMeans:** [PAL Anomaly Detection Documentation](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/anomaly-detection?locale=en-US&q=Outlier+Detection+Kmeans) (The PAL_ANOMALY_DETECTION procedure uses K-Means internally)
+- **Temporal Series Outlier Detection:** [PAL Outlier Detection Documentation](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library-pal/outlier-detection-outlier-detection-17253b4) (The PAL_OUTLIER_DETECTION_FOR_TIME_SERIES or PAL_MASSIVE_OUTLIER_DETECTION_FOR_TIME_SERIES procedure is used)
+
+### Reference Code
+
+[DBSCAN](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/dbscan-b2c5511.html)
+
+```sql
+
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_DBSCAN_DATA_TBL;
+CREATE COLUMN TABLE PAL_DBSCAN_DATA_TBL (
+    "ID" INTEGER,
+    "V1" DOUBLE,
+    "V2" DOUBLE,
+    "V3" VARCHAR(10)
+);
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(1, 0.10, 0.10, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(2, 0.11, 0.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(3, 0.10, 0.11, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(4, 0.11, 0.11, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(5, 0.12, 0.11, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(6, 0.11, 0.12, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(7, 0.12, 0.12, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(8, 0.12, 0.13, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(9, 0.13, 0.12, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(10, 0.13, 0.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(11, 0.13, 0.14, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(12, 0.14, 0.13, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(13, 10.10, 10.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(14, 10.11, 10.10, 'F');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(15, 10.10, 10.11, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(16, 10.11, 10.11, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(17, 10.11, 10.12, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(18, 10.12, 10.11, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(19, 10.12, 10.12, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(20, 10.12, 10.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(21, 10.13, 10.12, 'F');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(22, 10.13, 10.13, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(23, 10.13, 10.14, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(24, 10.14, 10.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(25, 4.10, 4.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(26, 7.11, 7.10, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(27, -3.10, -3.11, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(28, 16.11, 16.11, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(29, 20.11, 20.12, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(30, 15.12, 15.11, 'A');
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL (
+    "PARAM_NAME" VARCHAR(100),
+    "INT_VALUE" INTEGER,
+    "DOUBLE_VALUE" DOUBLE,
+    "STRIN_VALUE" VARCHAR(100)
+);
+​
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.2, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('AUTO_PARAM', NULL, NULL, 'true');
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_METHOD', 1, NULL, NULL);
+​
+CALL _SYS_AFL.PAL_DBSCAN (PAL_DBSCAN_DATA_TBL, "#PAL_PARAMETER_TBL", ?, ?, ?, ?);
+```
+
+[Isolation Forest](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library-pal/isolation-forest-isolation-forest-11345d9)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_IF_DATA_TBL;
+CREATE COLUMN TABLE PAL_IF_DATA_TBL (
+    "X1" DOUBLE,
+    "X2" DOUBLE
+);
+INSERT INTO PAL_IF_DATA_TBL VALUES (-2, -1);
+INSERT INTO PAL_IF_DATA_TBL VALUES (-1, -1);
+INSERT INTO PAL_IF_DATA_TBL VALUES (-1, -2);
+INSERT INTO PAL_IF_DATA_TBL VALUES (1, 1);
+INSERT INTO PAL_IF_DATA_TBL VALUES (1, 2);
+INSERT INTO PAL_IF_DATA_TBL VALUES (2, 1);
+INSERT INTO PAL_IF_DATA_TBL VALUES (6, 3);
+INSERT INTO PAL_IF_DATA_TBL VALUES (-4, 7);
+​
+DROP TABLE PAL_IF_PARAMETER_TBL;
+CREATE COLUMN TABLE PAL_IF_PARAMETER_TBL (
+        "PARAM_NAME" VARCHAR(256),
+        "INT_VALUE" INTEGER,
+        "DOUBLE_VALUE" DOUBLE,
+        "STRING_VALUE" VARCHAR(100)
+);
+INSERT INTO PAL_IF_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0, NULL);
+INSERT INTO PAL_IF_PARAMETER_TBL VALUES ('SEED', 2, NULL, NULL);
+​
+DROP TABLE PAL_IF_MODEL_TBL;
+CREATE COLUMN TABLE PAL_IF_MODEL_TBL ("TREE_INDEX" INTEGER, "MODEL_CONTENT" NCLOB);
+​
+DO BEGIN
+  lt_data = SELECT * FROM PAL_IF_DATA_TBL;
+  lt_param = SELECT * FROM PAL_IF_PARAMETER_TBL;
+  CALL _SYS_AFL.PAL_ISOLATION_FOREST (:lt_data, :lt_param, lt_model);
+  INSERT INTO PAL_IF_MODEL_TBL SELECT * FROM :lt_model;
+END;
+​
+SELECT * FROM PAL_IF_MODEL_TBL;
+```
+
+[One Class SVM](https://help.sap.com/docs/SAP_HANA_PLATFORM/2cfbc5cf2bc14f028cfbe2a2bba60a50/901a10d65c3d4c0d8f161b9245172576.html)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_SVM_DATA_TBL;
+CREATE COLUMN TABLE PAL_SVM_DATA_TBL (
+    ID INTEGER,
+    ATTRIBUTE1 DOUBLE,
+    ATTRIBUTE2 DOUBLE,
+    ATTRIBUTE3 DOUBLE,
+    ATTRIBUTE4 VARCHAR(50)
+);
+INSERT INTO PAL_SVM_DATA_TBL VALUES(0,1,10,100,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(1,1.1,10.1,100,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(2,1.2,10.2,100,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(3,1.3,10.4,100,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(4,1.2,10.3,100,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(5,4,40,400,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(6,4.1,40.1,400,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(7,4.2,40.2,400,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(8,4.3,40.4,400,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(9,4.2,40.3,400,'AB');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(10,9,90,900,'B');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(11,9.1,90.1,900,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(12,9.2,90.2,900,'B');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(13,9.3,90.4,900,'A');
+INSERT INTO PAL_SVM_DATA_TBL VALUES(14,9.2,90.3,900,'A');
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL (
+    "PARAM_NAME" NVARCHAR(256),
+    "INT_VALUE" INTEGER,
+    "DOUBLE_VALUE" DOUBLE,
+    "STRING_VALUE" NVARCHAR (1000)
+);
+INSERT INTO #PAL_PARAMETER_TBL VALUES('KERNEL_TYPE',2,NULL,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES('TYPE',4,NULL,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES('CATEGORY_WEIGHT',NULL,1,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES('SCALE_INFO',0,NULL,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES('HANDLE_MISSING',0,NULL,NULL);
+--INSERT INTO #PAL_PARAMETER_TBL VALUES('RBF_GAMMA',NULL,0.166667,NULL);
+--INSERT INTO #PAL_PARAMETER_TBL VALUES('NU',NULL,0.5,NULL);
+​
+DROP TABLE PAL_SVM_MODEL_TBL_EX4;
+CREATE COLUMN TABLE PAL_SVM_MODEL_TBL_EX4 (ROW_INDEX INTEGER, MODEL_CONTENT NVARCHAR(5000));
+​
+CALL _SYS_AFL.PAL_SVM (PAL_SVM_DATA_TBL,#PAL_PARAMETER_TBL,PAL_SVM_MODEL_TBL_EX4,?,?) WITH OVERVIEW;
+```
+
+[Outlier Detection KMeans](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/anomaly-detection?locale=en-US&q=Outlier+Detection+Kmeans)
+
+```sql
+SET SCHEMA DM_PAL; DROP TABLE PAL_AD_DATA_TBL;
+CREATE COLUMN TABLE PAL_AD_DATA_TBL( "ID" INTEGER, "V000" DOUBLE, "V001" DOUBLE
+);
+INSERT INTO PAL_AD_DATA_TBL VALUES (0 , 0.5, 0.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (1 , 1.5, 0.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (2 , 1.5, 1.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (3 , 0.5, 1.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (4 , 1.1, 1.2);
+INSERT INTO PAL_AD_DATA_TBL VALUES (5 , 0.5, 15.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (6 , 1.5, 15.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (7 , 1.5, 16.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (8 , 0.5, 16.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (9 , 1.2, 16.1);
+INSERT INTO PAL_AD_DATA_TBL VALUES (10, 15.5, 15.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (11, 16.5, 15.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (12, 16.5, 16.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (13, 15.5, 16.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (14, 15.6, 16.2);
+INSERT INTO PAL_AD_DATA_TBL VALUES (15, 15.5, 0.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (16, 16.5, 0.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (17, 16.5, 1.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (18, 15.5, 1.5);
+INSERT INTO PAL_AD_DATA_TBL VALUES (19, 15.7, 1.6);
+INSERT INTO PAL_AD_DATA_TBL VALUES (20, -1.0, -1.0); DROP TABLE #PAL_CONTROL_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_CONTROL_TBL( "NAME" VARCHAR (100), "INTARGS" INTEGER, "DOUBLEARGS" DOUBLE, "STRINGARGS" VARCHAR(100)
+);
+INSERT INTO #PAL_CONTROL_TBL VALUES ('THREAD_NUMBER',2,null,null);
+INSERT INTO #PAL_CONTROL_TBL VALUES ('GROUP_NUMBER',4,null,null);
+INSERT INTO #PAL_CONTROL_TBL VALUES ('INIT_TYPE',4,null,null);
+INSERT INTO #PAL_CONTROL_TBL VALUES ('DISTANCE_LEVEL',2,null,null);
+INSERT INTO #PAL_CONTROL_TBL VALUES ('MAX_ITERATION',100,null,null); CALL _SYS_AFL.PAL_ANOMALY_DETECTION(PAL_AD_DATA_TBL, #PAL_CONTROL_TBL, ?, ?, ?);
+```
+
+[Temporal Series Outlier Detection](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library-pal/outlier-detection-outlier-detection-17253b4)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_OUTLIER_DATA_TBL;
+CREATE COLUMN TABLE PAL_OUTLIER_DATA_TBL (
+    "ID" INT,
+    "RAWDATA" DOUBLE
+);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (1, 0.917022);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (2, 1.22032449);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (3, 10.50011437);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (4, 0.80233257);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (5, 0.64675589);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (6, 10.59233859);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (7, 0.68626021);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (8, 0.84556073);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (9, 10.89676747);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (10, 5.03881673);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (11, 0.91919451);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (12, 11.1852195);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (13, 0.70445225);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (14, 1.37811744);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (15, 10.52738759);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (16, 1.17046751);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (17, 0.9173048);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (18, 11.05868983);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (19, 0.64038694);
+INSERT INTO PAL_OUTLIER_DATA_TBL VALUES (20, 0.69810149);
+​
+​
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL (
+    "PARAM_NAME" VARCHAR (256),
+    "INT_VALUE" INTEGER,
+    "DOUBLE_VALUE" DOUBLE,
+    "STRING_VALUE" VARCHAR (1000)
+);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('AUTO', 1,NULL,NULL);
+​
+CALL "_SYS_AFL"."PAL_OUTLIER_DETECTION_FOR_TIME_SERIES"(PAL_OUTLIER_DATA_TBL, #PAL_PARAMETER_TBL, ?, ?, ?);
+```
+
+[Outlier Detection for Regression](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/outlier-detection-for-regression?locale=en-US)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE
+    #PAL_PARAMETER_TBL
+    ("PARAM_NAME" VARCHAR(256), "INT_VALUE" INTEGER, "DOUBLE_VALUE" DOUBLE, "STRING_VALUE" VARCHAR(1000));
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO',NULL,0.5,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('REGRESSION_MODEL',0,NULL,NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DEPENDENT_VARIABLE',NULL,NULL,'Y');
+​
+DROP TABLE PAL_DATA_TBL;
+CREATE COLUMN TABLE PAL_DATA_TBL
+    ("ID" INT, "X1" DOUBLE, "X2" DOUBLE, "Y" DOUBLE,
+    "X3" varchar(100));
+INSERT INTO PAL_DATA_TBL VALUES (0, 0.13, 0.33, 0.5, 'A');
+INSERT INTO PAL_DATA_TBL VALUES (1, 0.14, 0.34, 0.15, 'A');
+INSERT INTO PAL_DATA_TBL VALUES (2, 0.15, 0.36, 0.25, 'B');
+INSERT INTO PAL_DATA_TBL VALUES (3, 0.16, 0.35, 0.35, 'B');
+INSERT INTO PAL_DATA_TBL VALUES (4, 0.17, 0.37, 0.45, 'C');
+INSERT INTO PAL_DATA_TBL VALUES (5, 0.18, 0.38, 0.55, 'A');
+INSERT INTO PAL_DATA_TBL VALUES (6, 0.19, 0.39, 0.65, 'C');
+INSERT INTO PAL_DATA_TBL VALUES (7, 0.19, 0.31, 0.75, 'A');
+INSERT INTO PAL_DATA_TBL VALUES (8, 0.11, 0.32, 0.85, 'B');
+INSERT INTO PAL_DATA_TBL VALUES (9, 0.12, 0.33, 1.95, 'A');
+​
+CALL _SYS_AFL.PAL_OUTLIER_DETECTION_FOR_REGRESSION(PAL_DATA_TBL,"#PAL_PARAMETER_TBL", ?, ?, ?);
+```
 
 </TabItem>
 
@@ -178,9 +790,10 @@ Don't forget to remove this message.
 
 ## <span className="post-article-first-title">Related Best Practices</span>
 
-<ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
-</ul>
+    <ul className="button-grid">
+      <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
+      <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression"/>
+    </ul>
 
 </div>
 
@@ -191,19 +804,12 @@ Don't forget to remove this message.
 ## Related AI Capabilities
 
 <h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
+  <Link to={useBaseUrl("/docs/functional-view/decision-support")}>Decision Support</Link>
 </h3>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/decision-support/data-clustering" text="Data Clustering" />
+  <IconLinkButton href="/docs/functional-view/decision-support/anomaly-detection" text="Anomaly Detection" />
 </ul>
 
 </div>
@@ -214,7 +820,7 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={["francisco-robledo", "sergio-pacheco-sanchez", "luis-marques"]} />
 
 </div>
 

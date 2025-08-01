@@ -1,0 +1,219 @@
+---
+title: "Data Preparation and Model Evaluation"
+description: "This page provides a unified set of best practices for data preparation and model evaluation applicable across various machine learning tasks, including regression, classification, time series forecasting, and anomaly detection."
+
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Data Preparation and Model Evaluation</h1>
+</div>
+
+This page provides a unified set of best practices for data preparation and model evaluation applicable across various machine learning tasks, including regression, classification, time series forecasting, and anomaly detection.
+
+## Data Preparation
+
+High-quality data is the foundation of any effective machine learning model. The following steps are crucial for preparing your data for analysis. Leveraging in-database tools like SAP HANA's Predictive Analysis Library (PAL) can significantly improve efficiency by minimizing data movement.
+
+### Data Quality and Cleaning
+
+- **Accuracy and Completeness:** Ensure that your data, especially independent variables, is accurate, complete, and free from errors.
+- **Handling Null Values:** SAP HANA PAL functions may abort in the presence of NULL values. It is essential to have a strategy for handling them. You can replace NULLs with default values using SQL or employ imputation techniques. The [hana_ml.algorithms.pal.preprocessing.Imputer](https://www.google.com/search?q=%5bhttps://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2025_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.preprocessing.Imputer.html%5d%28https://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2025_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.preprocessing.Imputer.html%29) offers various strategies like “mean”, “median”, “most_frequent”, “delete”, and “als”.
+- **Outlier Management:** Outliers can distort analysis and model accuracy. Identify and handle them using techniques like capping, smoothing, or replacing them with interpolated values.
+- **Sufficient Data:** Ensure you have enough data points, considering the number of features and the noise level in your data.
+- **Validation:** Use techniques like cross-validation and residual analysis to validate your imputation strategies and overall data quality.
+
+
+[//]: # (<LoginWall>)
+
+### Feature Engineering and Selection
+
+- **Relevance:** Select independent variables that are logically related to the dependent variable. Domain expertise is invaluable in identifying features that are important from a business or scientific perspective.
+- **Feature Importance Analysis:** Use techniques to identify the most influential predictors. This helps in understanding the data, improving model performance, and avoiding the "curse of dimensionality." Methods include:
+    - Permutation importance
+    - [SHapley Additive exPlanations (SHAP)](https://shap.readthedocs.io/en/latest/) values
+    - Built-in model importance scores
+    - Certain hana-ml methods such as [hana_ml.algorithms.pal.feature_selection.FeatureSelection](https://www.google.com/search?q=%5bhttps://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.06/en-US/pal/algorithms/hana_ml.algorithms.pal.preprocessing.FeatureSelection.html%5d%28https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.06/en-US/pal/algorithms/hana_ml.algorithms.pal.preprocessing.FeatureSelection.html%29) function, which offers methods like “chi-squared”, “information-gain”, “gini-index”, and “fisher-score” or [hana_ml.algorithms.pal.tsa.permutation_importance](https://www.google.com/search?q=%5bhttps://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2024_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.tsa.permutation_importance.permutation_importance.html%23hana_ml.algorithms.pal.tsa.permutation_importance.permutation_importance%5d%28https://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2024_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.tsa.permutation_importance.permutation_importance.html%23hana_ml.algorithms.pal.tsa.permutation_importance.permutation_importance%29) for time series, classification and regression tasks.
+- **Dimensionality Reduction:** For high-dimensional datasets, use techniques like Principal Component Analysis (PCA) to reduce the number of features while retaining essential information. This can reduce noise, speed up training, and improve detection accuracy. [hana_ml.algorithms.pal.decomposition.PCA](https://www.google.com/search?q=%5bhttps://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2024_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.decomposition.PCA.html%23hana_ml.algorithms.pal.decomposition.PCA%5d%28https://help.sap.com/doc/cd94b08fe2e041c2ba778374572ddba9/2024_1_QRC/en-US/pal/algorithms/hana_ml.algorithms.pal.decomposition.PCA.html%23hana_ml.algorithms.pal.decomposition.PCA%29) can be used for this purpose.
+
+### Time Series Specific Preparations
+
+- **Consistent Time Intervals:** Time series models benefit greatly from evenly spaced data points. Check for and correct any missing timestamps or irregular intervals using techniques like interpolation or backfilling.
+- **Resampling:** You may need to resample or aggregate the data depending on the desired forecasting granularity (e.g., daily, weekly).
+- **Stationarity:** Many models (e.g., ARIMA) assume stationarity. Apply transformations like differencing or log transformations if the statistical properties of your series change over time.
+
+## Model Evaluation
+
+Model performance metrics are crucial for quantifying how well a model is performing, comparing different models, and identifying areas for improvement.
+
+### Regression and Time Series Forecasting Evaluation
+
+The following metrics are used to evaluate models that predict a continuous numerical value, such as regression and time series forecasting models.
+
+| **Metric**                                | **Description**                                                                                                                                                              | **Interpretation**                                                                                  |
+|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+| **R-squared (R²)**                        | Also known as the coefficient of determination. It represents the proportion of the variance in the dependent variable that is predictable from the independent variable(s). | Values range from 0 to 1. A higher value indicates that more variability is explained by the model. |
+| **Mean Absolute Error (MAE)**             | The mean of the absolute differences between actual and forecasted values, expressed in the same units as the actual values.                                                 | A lower MAE indicates better model performance. A value of 0 signifies a perfect forecast.          |
+| **Mean Absolute Percentage Error (MAPE)** | The mean of the absolute differences between actual and forecasted values, expressed as a percentage of the actual values.                                                   | The lower the MAPE, the better the model. A value of 0 indicates a perfect model.                   |
+| **Mean Squared Error (MSE)**              | The average of the squared differences between the actual and predicted values.                                                                                              | A lower value indicates a better fit. Penalizes larger errors more heavily than MAE.                |
+| **Root Mean Squared Error (RMSE)**        | The square root of the MSE. It is in the same units as the target variable.                                                                                                  | A lower RMSE indicates the model's predictions are closer to the true values.                       |
+| **Mean Absolute Scaled Error (MASE)**     | *Time Series Specific:* Compares the model's MAE to that of a naive lag-1 model.                                                                                             | A value < 1 indicates the model is better than the naive forecast. The lower the MASE, the better.  |
+
+### Classification Model Evaluation
+
+For classification tasks, especially when dealing with imbalanced classes like in anomaly detection, a confusion matrix and related metrics are essential.
+
+<table style={{ borderCollapse: 'collapse', width: '100%'}}>
+    <thead>
+    <tr style={{ backgroundColor: '#FAFAFA' }}>
+        <th style={{ width: '15%', padding: '8px' }}><strong>Metric</strong></th>
+        <th style={{ width: '30%', padding: '8px' }}><strong>Description</strong></th>
+        <th style={{ width: '30%', padding: '8px' }}><strong>How to Interpret</strong></th>
+        <th style={{ width: '25%', padding: '8px' }}><strong>SAP HANA ML Implementation (hana-ml / PAL)</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td style={{ padding: '8px' }}><strong>Confusion Matrix</strong></td>
+        <td style={{ padding: '8px' }}>
+            A table displaying:<br/>
+            - <strong>True Positives (TP)</strong><br/>
+            - <strong>True Negatives (TN)</strong><br/>
+            - <strong>False Positives (FP)</strong> (Type I error)<br/>
+            - <strong>False Negatives (FN)</strong> (Type II error)
+        </td>
+        <td style={{ padding: '8px' }}>
+            Details correct and incorrect classifications, revealing error types. Minimizing False Negatives is often critical when missing an event (like an anomaly) has a high cost.
+        </td>
+        <td style={{ padding: '8px' }}>
+            <a href="https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.05/en-US/pal/algorithms/hana_ml.algorithms.pal.metrics.confusion_matrix.html">hana_ml.algorithms.pal.metrics.confusion_matrix</a>
+        </td>
+    </tr>
+    <tr>
+        <td style={{ padding: '8px' }}><strong>Precision, Recall, F1-Score</strong></td>
+        <td style={{ padding: '8px' }}>
+            - <strong>Precision</strong>: TP / (TP + FP). Measures the accuracy of positive predictions.<br/>
+            - <strong>Recall</strong>: TP / (TP + FN). Measures how many actual positives were identified.<br/>
+            - <strong>F1-Score</strong>: 2 × (Precision × Recall) / (Precision + Recall). Harmonic mean of Precision and Recall.
+        </td>
+        <td style={{ padding: '8px' }}>
+            High precision minimizes false alarms; high recall minimizes missed positives. The F1-score provides a balance, especially for imbalanced datasets.
+        </td>
+        <td style={{ padding: '8px' }}>
+            Typically derived from the Confusion Matrix.
+        </td>
+    </tr>
+    <tr>
+        <td style={{ padding: '8px' }}><strong>ROC AUC</strong></td>
+        <td style={{ padding: '8px' }}>
+            <strong>Area Under the Receiver Operating Characteristic Curve.</strong><br/>
+            Plots True Positive Rate vs. False Positive Rate.
+        </td>
+        <td style={{ padding: '8px' }}>
+            Measures a model's ability to distinguish between classes across all thresholds. A value of 1 is perfect; 0.5 is random. Can be misleading with highly imbalanced datasets.
+        </td>
+        <td style={{ padding: '8px' }}>
+            <a href="https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.07/en-US/pal/algorithms/hana_ml.algorithms.pal.metrics.auc.html">hana_ml.algorithms.pal.metrics.auc</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+Example: Confusion Matrix
+
+Using SAP HANA's [hana_ml.algorithms.pal.metrics.confusion_matrix](https://www.google.com/search?q=%5bhttps://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.05/en-US/pal/algorithms/hana_ml.algorithms.pal.metrics.confusion_matrix.html%23hana_ml.algorithms.pal.metrics.confusion_matrix%5d%28https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.05/en-US/pal/algorithms/hana_ml.algorithms.pal.metrics.confusion_matrix.html%23hana_ml.algorithms.pal.metrics.confusion_matrix%29), we can compute the matrix and a classification report.
+
+Code:
+
+![Confusion Matrix Example](@site/static/narrow-ai/data-preparation-and-model-evaluation/images/confusion-matrix-code.png)
+
+**Output Tables:** The confusion matrix output (cm) shows counts for each combination of original and predicted labels. The classification report (cr) provides Precision, Recall, and F-measure for each class.
+
+![Confusion Matrix Example](@site/static/narrow-ai/data-preparation-and-model-evaluation/images/output-tables.png)
+
+**Plotted Confusion Matrix:** Visualizing the matrix helps in quickly identifying the model's performance.
+
+![Confusion Matrix Example](@site/static/narrow-ai/data-preparation-and-model-evaluation/images/plotted-confusion-matrix.png)
+
+
+### Evaluation of Unsupervised Anomaly Detection
+
+When ground truth labels are not available, evaluation becomes more qualitative.
+
+| **Method**                      | **Description**                                                                                                                                                                                                                                                                                                                                      | **Implementation Consideration with HANA ML**                                                                        |
+|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
+| **Domain Expert Validation**    | Present high-scoring anomalies to subject matter experts for review.                                                                                                                                                                                                                                                                                 | Retrieve top N anomalies based on scores from PAL algorithms and visualize them for experts.                         |
+| **Score Distribution Analysis** | Analyze the distribution of anomaly scores to identify natural thresholds or clusters of high scores.                                                                                                                                                                                                                                                | Fetch scores and visualize them using histograms or density plots to help set an informed threshold.                 |
+| **Interpretability**            | Understand *why* a point is flagged as an anomaly. Does the reason align with business logic?                                                                                                                                                                                                                                                        | Analyze the feature values of flagged anomalies compared to normal data.                                             |
+| **Internal Cluster Validation** | For clustering-based methods (DBSCAN, K-Means), use indices like the [Silhouette Score](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.07/en-US/pal/algorithms/hana_ml.algorithms.pal.clustering.SlightSilhouette.html#hana_ml.algorithms.pal.clustering.SlightSilhouette) to assess cluster quality. Outliers often have low scores. | PAL clustering algorithms provide cluster assignments. Points with low silhouette scores can be considered outliers. |
+
+### Clustering Performance Indicators
+
+**Slight Silhouette:** Silhouette refers to a method used to validate the cluster of data. The complex of Silhouette is O(N2), where N represents the number of records. When N is very large, the silhouette costs a long time.
+Considering the efficiency, PAL provides a light version of silhouette called slight silhouette, where ‒1 stands for the poor clustering result, and 1 stands for the good result.
+
+### Confidence and Prediction Intervals
+
+For many models, understanding the uncertainty of a prediction is as important as the prediction itself.
+- **Confidence Interval**: Provides a range of values within which the true mean of the estimate is expected to fall, with a certain level of confidence.
+- **Prediction Interval**: Provides a range for a single future observation.
+
+PAL supports [confidence and prediction intervals](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/prediction-intervals-and-confidence-intervals-prediction-intervals-and-confidence-intervals-f157449) for models like **Generalized Linear Models (GLM)**, **Multiple Linear Regression (MLR)**, and **Hybrid Gradient Boosting Trees (HGBT)**, allowing users to assess the uncertainty around their predictions.
+
+<br/>
+
+<div className="section-with-background blue">
+
+    ## <span className="post-article-first-title">Related Best Practices</span>
+
+    <ul className="button-grid">
+        <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting"/>
+        <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection"/>
+        <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Linear Regression"/>
+[//]: # (<IconLinkButton href="/docs/technical-view/narrow-ai/classification" text="Classification"/>)
+    </ul>
+
+</div>
+
+<br/>
+
+<div className="section-with-background purple">
+
+    ## Related AI Capabilities
+
+    <ul className="button-grid">
+        <IconLinkButton href="/docs/functional-view/decision-support/anomaly-detection" text="Anomaly Detection"/>
+        <IconLinkButton href="/docs/functional-view/decision-support/data-clustering" text="Data Clustering"/>
+    </ul>
+
+</div>
+
+<br/>
+
+<div className="section-with-background gradient-violet-blue">
+
+    ## Contributors
+
+    <PageContributors contributorIds={[
+        "francisco-robledo",
+        "sergio-pacheco-sanchez",
+        "luis-marques",
+    ]}/>
+
+</div>
+
+[//]: # (</LoginWall>)

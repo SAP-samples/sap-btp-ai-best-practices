@@ -2,7 +2,6 @@
 title: "Time Series Forecasting"
 description: ""
 hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -23,15 +22,6 @@ import PageContributors from "@site/src/components/PageContributors";
 <div className="hero-header">
   <h1>Time Series Forecasting</h1>
 </div>
-
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
 
 <div className="section-with-background">
   <div className="row">
@@ -55,9 +45,9 @@ Don't forget to remove this message.
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/videos/BTP AI Best Practices -Time-series forecasting (intro)_external.mp4")}>
             <Icon name="video" />
-            <span>Teaser [TODO]</span>
+            <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
@@ -68,9 +58,9 @@ Don't forget to remove this message.
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/pdfs/BTP AI Best Practices - Predictive AI - Time Series Forecasting.pdf")}>
               <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
+              <span>Webinar (PDF Presentation)</span>
             </Link>
           </li>
         </LoginWall>
@@ -94,33 +84,131 @@ Don't forget to remove this message.
 
 ### Description
 
-...
+**Time series forecasting** is the process of analyzing time-ordered data points to predict future values. Time series data is a sequence of observations collected at successive points in time, typically at uniform intervals (e.g., daily stock prices, hourly temperature readings, monthly sales). Each data point is dependent on past values, making the temporal order crucial.
 
 ### Expected Outcome
 
-...
-
-<LoginWall>
+The expected outcome is a model that captures the underlying patterns in historical data (like trends, seasonality, and noise) and uses these patterns to forecast future values.
 
 ### Benefits
 
-...
+- **Improved Decision-Making:** Forecasting future trends enables data-driven decisions in areas like budgeting, staffing, and supply chain management.
+- **Resource Optimization:** Helps allocate resources more efficiently by predicting demand, reducing waste, and avoiding stockouts or overproduction.
+- **Competitive Advantage:** Businesses that anticipate market trends and customer behavior gain a strategic edge over competitors.
 
-### Key Concepts
-
-...
+<LoginWall>
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+### Supported SAP HANA Versions and Editions
+
+SAP HANA ML capabilities, including both PAL and APL, are supported on various SAP HANA versions and editions. Key supported platforms include:
+
+- SAP HANA Platform: Available from [SAP HANA Platform 2.0 SPS 04](https://help.sap.com/doc/9c87e50e69c744f785f41ec5568b47d8/2.0.04/en-US/SAP_HANA_Machine_Learning_Overview_Guide_en.pdf) onwards
+- SAP HANA Cloud: Fully supported and recommended platform due to easier management of components like PAL and APL. More information on [HANA Cloud and Setup process](/docs/technology/sap-hana-cloud#setup).
+  - [Prerequisites](https://support.sap.com/en/alm/sap-cloud-alm/operations/expert-portal/setup-managed-services/setup-hana-cloud.html?anchorId=section_2065216453_c#section_copy_copy):
+    - You need to have access to SAP BTP Cockpit ([Setup Guide](/docs/technology/sap-business-technology-platform#setup-guide)).
+    - Your user in BTP Cockpit needs to be a member with the space role "Space Developer" for the space in which you want to create the SAP HANA Cloud database instance was created
+- **SAP HANA express edition:** Used for development and testing. [Installation instructions for SAP HANA](https://developers.sap.com/group.hxe-install-clients.html) and [Installation instructions for Client API](https://developers.sap.com/tutorials/hxe-ua-install-python-ml-api..html).
+- **SAP Datasphere (formerly Data Warehouse Cloud):** Supports PAL and API functions, provided underlying [SAP HANA Cloud Script Server](https://help.sap.com/docs/SAP_DATASPHERE/9f804b8efa8043539289f42f372c4862/287194276a7d4d778ec98fdde5f61335.html) is enabled for the tenant
+
+Note, PAL and APL are also available from [SAP HANA Platform 2.0 SPS 04](https://help.sap.com/doc/9c87e50e69c744f785f41ec5568b47d8/2.0.04/en-US/SAP_HANA_Machine_Learning_Overview_Guide_en.pdf) as well as SAP HANA express edition
+
+### Required SAP HANA Components
+
+- **SAP HANA Cloud:** PAL and APL are pre-installed within the SAP HANA Cloud environment. During configuration of the database instance, the necessary services need to be enabled and user permissions to be granted
+- **Predictive Analysis Library (PAL):** it provides a wide range of common and specialized native in-database functions for predictive analysis and machine learning in scenarios like classification, regression, time series forecasting, outlier detection, text processing and analysis as well as text embedding
+- **Automated Predictive Library (APL):** it provides native in-database functions for creating predictive models in a simplified manner due to the automation of many of the steps.
+
+### Required User Authorizations and Roles
+
+Executing PAL and APL functions requires specific database privileges. These are granted via predefined roles:
+
+- For [PAL](https://help.sap.com/docs/SAP_PREDICTIVE_ANALYTICS/f2ba2229f63148ef862cf2ef28e981eb/e7930a9c80b7101487253286b0e91070.html?version=2.5.0.0&locale=en-US)
+  From the system connection in the SAP HANA Studio **Navigator** window, choose **Security > Users**.
+  Double-click the `<HANA Online user account>`.
+  On the **SQL Privileges** tab, click the + icon, select **AFL_WRAPPER_GENERATOR(SYSTEM)**, and choose **OK**.
+  Under **Privileges for 'AFL_WRAPPER_GENERATOR(SYSTEM)'**, select **EXECUTE**.
+  On the Granted Roles tab, click the + icon, select **AFL\_\_SYS_AFL_AFLPAL_EXECUTE**, and choose OK.
+
+- For [APL](https://help.sap.com/docs/apl/419fd47c26b345239fdbb5e476a6bc54/654f4d920c5846b6b56903c7b06b0785.html):
+  - SAP HANA Cloud: The database role sap.pa.apl.base.roles::APL_EXECUTE is required. This role grants privileges to execute APL stored procedures, access related schemas, and use the APL cache. It should be granted by a database administrator to the APL user
+  - SAP HANA Platform (On-Premise): Privileges depend on the calling technique:
+    - Direct AFL Call: Requires granting AFL\_\_SYS_AFL_APL_AREA_EXECUTE and AFLPM_CREATOR_ERASER_EXECUTE roles.
+    - Procedure Call (Recommended): Requires granting the activated role sap.pa.apl.base.roles::APL_EXECUTE.
+- **General Privileges:** Beyond specific PAL/APL roles, users will need standard SQL privileges to access the data tables used as input for the algorithms (e.g., SELECT on relevant schemas/tables) and potentially privileges to create temporary tables or views depending on the workflow (e.g., CREATE TEMPORARY TABLE).
+
+### Summary
+
+| Prerequisite Category            | Item                                               | Notes                                                                                          |
+| -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **SAP HANA Cloud Environment**   | SAP HANA Cloud, SAP HANA Cloud trial and free-tier | See trial / free-tier limitations.                                                             |
+| **SAP HANA Cloud Configuration** | Enabled services                                   | Script Server and NLP services                                                                 |
+| **User Authorizations**          | PAL Execution Role Granted                         | User needs `AFL__SYS_AFL_AFLPAL_EXECUTE` (Cloud/On-Prem) role.                                 |
+|                                  | APL Execution Role Granted                         | User needs `sap.pa.apl.base.roles::APL_EXECUTE` (Cloud/On-Prem Procedure) or direct AFL roles. |
+|                                  | Data Access Privileges (SELECT)                    | User needs `SELECT` access on input data tables/views.                                         |
+|                                  | Object Creation Privileges (Optional)              | May need `CREATE TEMPORARY TABLE` etc., depending on workflow.                                 |
+
+### High-level Reference Architecture
+
+![High-level Reference Architecture](@site/static/narrow-ai/regression/images/arch.png)
+
+#### Calling PAL and APL Functions
+
+- PAL functions can be called through the SQL interface or using the Python or R Machine Learning clients (hana-ml).
+- APL functions can be called through the SQL interface or using the Python Machine Learning client (hana-ml).
+- The Natural Language Processing functions for Text Analysis, Named Entity Recognition or Part of Speech tagging can be called via PAL functions. In addition, the Text Embedding function can be called via PAL functions as well as the SQL function [VECTOR_EMBEDDING()](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-vector-engine-guide/creating-text-embeddings-in-sap-hana-cloud).
+- Both PAL and APL functions can be called out of the box in the HANA Cloud Database Core Container, or as part of the HANA Cloud Elastic Compute Nodes.
+- SAP BTP Applications can embed use of PAL or APL functions as part of standard SQLScript design-time artifacts, e.g. multi-target or full-stack CAP applications. Furthermore, usage of PAL and APL functions may also be utilized via applications leveraging Python runtimes and scripts using the Python Machine Learning client (hana-ml)
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+Time series data is distinct from typical machine learning datasets due to its inherent features like time-based sequencing, autocorrelation between observations, and recurring seasonal patterns. These characteristics demand a specialized approach to data preparation to ensure accurate and meaningful analysis.
+
+### Algorithm Selection
+
+SAP HANA Predictive Analytics Library, offers a wide range of time series forecasting algorithms. Choosing the right time series forecasting model in SAP HANA PAL depends on several key factors related to both the characteristics of your data and the business problem you're trying to address. Some of the commonly used algorithms are as follows:
+
+- **Additive Model Time Series Analysis** uses an additive model to forecast time series data. It handles data with strong seasonal effects and is robust to changes in historical trends. Additive model time series analysis – also called Prophet – uses a decomposable time series model with three main components: trend, seasonality, and holidays or events. Prophet offers two ways to model the trend:
+  - A non-linear saturating growth model, which is useful when the data shows a growth that eventually levels off.
+  - A piecewise linear model, which allows the trend to change at specific points, making it flexible for real-world data.
+- **ARIMA (Auto Regressive Integrated Moving Average)** algorithm in SAP HANA PAL is a powerful statistical method used for forecasting univariate time series data. It combines three components: autoregression (AR), which uses the relationship between current and past values; integration (I), which involves differencing the data to make it stationary; and moving average (MA), which models the relationship between a data point and past forecast errors. ARIMA is well-suited for time series with trends but without strong seasonal patterns, and it helps uncover underlying temporal structures to make accurate future predictions. SAP HANA PAL provides efficient, in-database processing of ARIMA, allowing for scalable and fast time series forecasting.
+- **Bayesian Change Point Detection** is a time series analysis technique used to detect points where the statistical properties of the data change, such as shifts in mean or variance. This algorithm applies a Bayesian inference framework to estimate the probability of a change occurring at each time step, making it effective for identifying structural breaks, trends, or anomalies in the data. It is particularly valuable in scenarios like fraud detection, production monitoring, or financial analysis, where early detection of sudden changes is critical.
+- **Auto Exponential Smoothing** automatically calculates optimal parameters for Single, Double, and Triple Exponential Smoothing models. It forecasts based on these parameters by exploring the full parameter space and evaluating quality using MSE or MAPE, comparing historic and forecast values. Parameter optimization uses simulated annealing for global search and Nelder-Mead for local refinement, ensuring efficient results. A train-and-test scheme is applied to validate the model by training on one part of the series and testing on the other, enhancing flexibility and accuracy.
+- **Massive, data-parallel (aka segmented) time series forecasting**
+  - **Independently apply** Predictive Analysis Library (PAL) functions to subsets of data identified by a grouping column
+  - **Single call** invoking massive data-parallel ML processing
+- **AutoML for Time Series:** AutoML frameworks like [SAP HANA Cloud PAL’s AutoML](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/automl-automl) implementation greatly help users in probing multiple algorithms and parameter variations for a given scenario for selecting the best possible algorithm and model. The following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/usecase-examples/sapcommunity-automl-examples/Example%20-%20Using%20PAL%20AutoML%20for%20Time-Series.ipynb) includes an example on how to use AutoML for Time Series. An example using the Massive implementation can be seen in the following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/pal/notebooks/24QRC03_2.22.ipynb).
+
+### Data Preparation and Model Evaluation
+
+The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
+
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation page](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation).
+
+### Leverage In-Database ML functions from SAP HANA whenever possible
+
+Prioritize HANA ML: If your data resides in SAP HANA or SAP Datasphere, using hana-ml is generally the most efficient approach due to minimized data movement and optimized performance.
+
+### Anomaly and Outlier Detection
+
+Identifying anomalies or outliers is a critical aspect of building robust machine learning models. These unusual data points can represent data quality issues, unique real-world events, or errors in data collection that might otherwise skew model training and evaluation.
+
+For a comprehensive guide on the methodologies and best practices for discovering anomalies in your data, please refer to our unified [Anomaly Detection Best Practices](/docs/technical-view/narrow-ai/anomaly-detection) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+When developing regression models with SAP tools and libraries, the choice of your application's runtime dictates the relevant information. Different approaches can be used to embed the time series scenario artifacts.
+
+### Programming Model Selection Guidelines
+
+When developing linear regression scenarios with SAP HANA’s Predictive Analysis Library (PAL), consider the following guidelines:
+
+- **Recommended Approach (Data Science Workflows):** Utilize the Python hana-ml library for a streamlined, intuitive experience aligned with standard data science practices, including convenient data manipulation and integration with machine learning workflows. This approach yields best productivity during ML model experimentation until the final model of choice and parameterization has been determined.
+- **Alternative Approaches:**
+  - **SQLScript database procedures and table functions** are the typical **HANA design-time artifacts** for embedding and invoking PAL and APL procedures into BTP CAP or XSA full-stack applications. Artifact generations from the hana-ml machine learning client in Python is supported.
+
+The final choice should align with your team’s expertise and project requirements.
 
 <div className="tabs-with-background">
 <Tabs groupId="language">
@@ -135,37 +223,619 @@ Don't forget to remove this message.
   <span>Download Source Code</span>
 </TrackableLink>
 
-...
+### Recommendation
+
+Use the hana_ml library for interacting with SAP HANA PAL and APL algorithms directly from Python.
+
+### SDKs
+
+- [hana_ml](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/latest/en-US/hana_ml.html)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- [Identification of Seasonality in Time Series with Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/identification-of-seasonality-in-time-series-with-python-machine-learning/ba-p/13472664)
+- [A Multivariate Time Series Modeling and Forecasting Guide with Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/a-multivariate-time-series-modeling-and-forecasting-guide-with-python/ba-p/13517004)
+- [Anomaly Detection in Time-Series using Seasonal Decomposition in Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/anomaly-detection-in-time-series-using-seasonal-decomposition-in-python/ba-p/13474482)
+
+SAP Developer Tutorials:
+
+- [Predictive AI with SAP AI Core](https://developers.sap.com/group.ai-core-get-started-basics.html) (General AI Core usage)
+
+### Reference Code
+
+#### Recommended
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/time-series-forecasting/python"
+        target="_blank"
+        trackingFeature="DOWNLOAD_TIME_SERIES_FORECASTING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+#### Relevant Code
+
+```python
+ # Create an HANA Dataframe for the actual series
+from hana_ml import dataframe as hd
+conn = hd.ConnectionContext(userkey='MLMDA_KEY')
+series_in = conn.table('<table_name>', schema='<schema_name')
+​
+# Preview Data
+series_in.head(5).collect()
+​
+# Fit & Predict with APL
+from hana_ml.algorithms.apl.time_series import AutoTimeSeries
+apl_model = AutoTimeSeries(time_column_name= '<time_column>', target= '<target_column>', horizon= <forecast_horizon>)
+series_out = apl_model.fit_predict(data = series_in, build_report=True)
+df = series_out.select(series_out.columns[0:5]).collect()
+dict = {'ACTUAL': 'Actual',
+        'PREDICTED_1': 'Forecast',
+        'LOWER_INT_95PCT': 'Lower Limit',
+        'UPPER_INT_95PCT': 'Upper Limit' }
+df.rename(columns=dict, inplace=True)
+df
+​
+# Generate Report
+apl_model.generate_html_report('TimeSeries_Report')
+apl_model.generate_notebook_iframe_report()
+```
 
 </TabItem>
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+<TabItem value="SQL" label="SQL">
 
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/time-series-forecasting/typescript"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_TIME_SERIES_FORECASTING"
->
-  <span>Download Source Code</span>
-</TrackableLink>
+### Recommendation
 
-...
+SAP HANA's Predictive Analysis Library (PAL) algorithms can be directly invoked through SQLScript. This approach is beneficial for:
 
-</TabItem>
+- **Performance Optimization:** Minimizes data movement by executing directly within the database.
+- **Integration:** Allows embedding ML logic within database procedures, views, or calculation views for seamless integration with existing SAP HANA applications.
+- **Governance:** Provides a standardized approach within existing database governance frameworks.
 
-<TabItem value="cap-app" label="CAP">
+When implementing with SQLScript, you'll typically:
 
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/time-series-forecasting/cap"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_TIME_SERIES_FORECASTING"
->
-  <span>Download Source Code</span>
-</TrackableLink>
+1. Create parameter tables with algorithm-specific settings.
+2. Prepare input data in the required format.
+3. Call the PAL procedure.
+4. Process the resulting output tables.
 
-...
+### SDKs
+
+- [SAP HANA Predictive Analysis Library (PAL)](https://help.sap.com/docs/SAP_HANA_PLATFORM/2cfbc5cf2bc14f028cfbe2a2bba60a50/c9eeed704f3f4ec39441434db8a874ad.html?version=2.0.05&locale=en-US&q=PCA)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- [SAP HANA PAL Quick Start](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-pal-quick-start/ba-p/13084367)
+
+The following links point to the relevant SAP HANA PAL documentation for the SQLScript procedures:
+
+- [Time Series Alogirthms in PAL](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/time-series-algorithms-9a04141.html)
+- ARIMA: [PAL ARIMA](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/arima-dbd52a1.html)
+- Additive Model Time Series Analysis: [PAL Additive Model Time Series Analysis Documentation](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/additive-model-time-series-analysis-7e78d06.html)
+- Bayesian Change Point Detection: [PAL BCPD Documentation](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/bayesian-change-point-detection-bd71378.html)
+- Seasonality Test: [PAL Seasonality Test Documentation](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/seasonality-test-d990dc7.html)
+- Stationarity Test: [PAL Stationarity Test](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/stationarity-test-1d85b07.html)
+
+### Reference Code
+
+Additive Model Time Series Analysis
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL;
+CREATE COLUMN TABLE PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL("ts" DATE, "y" double);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-10',9.590761139);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-11',8.519590316);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-12',8.183676583);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-13',8.072467369);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-14',7.893572074);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-15',7.783640596);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-16',8.414052432);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-17',8.829226355);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-18',8.382518288);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-19',8.069655307);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-20',7.879291485);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-21',7.761744985);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-22',7.529406458);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-23',8.38526052);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-24',8.620110725);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-25',7.852439085);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-26',7.853993087);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-27',8.051978079);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-28',7.926602599);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-29',7.838343316);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-30',9.703144581);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2007-12-31',9.385972941);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-01',8.293799609);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-02',8.43468077);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-03',8.262042844);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-04',8.106816039);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-05',7.950149888);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-06',9.509259076);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-07',8.846784667);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-08',8.430545385);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-09',8.248267447);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-10',8.28172399);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-11',8.292798858);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-12',8.199189359);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-13',9.996522419);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-14',10.12707101);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-15',8.933796044);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-16',8.566173814);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-17',8.547722396);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-18',8.399760095);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-19',8.223090551);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-20',8.838986793);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-21',10.89720218);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-22',9.444938073);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-23',8.923324744);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-24',8.543445563);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-25',8.495560891);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-26',8.417372856);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-27',8.572627898);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-28',8.736489351);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-29',8.634086943);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-01-30',8.673512946);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-01',8.824236617);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-02',8.537975731);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-03',9.698061122);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-04',12.09745684);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-05',10.63527836);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-06',9.691716588);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-07',9.315600883);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-08',8.970813341);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-09',8.589141691);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-10',8.617400452);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-11',8.616314282);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-12',8.215547412);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-13',8.064950892);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-14',8.11342664);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-15',7.799343398);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-16',7.62754439);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-17',7.555905094);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-18',7.71154898);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-19',7.788626066);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-20',7.708410667);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-21',7.768533301);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-22',7.695303135);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-23',7.378383713);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-24',7.910590612);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-25',7.626570206);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-26',7.573531263);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-27',7.567862605);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-02-29',7.552237288);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-03-02',7.336936914);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-03-05',8.12474302);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-03-06',7.887584032);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-03-07',7.819636302);
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL VALUES('2008-03-08',7.383989458);
+​
+DROP TABLE PAL_ADDITIVE_MODEL_ANALYSIS_PARAMETER_TBL;
+CREATE COLUMN TABLE PAL_ADDITIVE_MODEL_ANALYSIS_PARAMETER_TBL ("NAME" VARCHAR (50), "INT_VALUE" INTEGER, "DOUBLE_VALUE" DOUBLE, "STRING_VALUE" VARCHAR (100));
+INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_PARAMETER_TBL VALUES ('GROWTH', NULL, NULL, 'linear');
+​
+DROP TABLE PAL_ADDITIVE_MODEL_ANALYSIS_MODEL;
+CREATE COLUMN TABLE PAL_ADDITIVE_MODEL_ANALYSIS_MODEL ("ROW_INDEX" INTEGER, "MODEL_CONTENT" NCLOB);
+​
+DROP TABLE PAL_ADDITIVE_MODEL_ANALYSIS_HOLIDAY;
+CREATE COLUMN TABLE PAL_ADDITIVE_MODEL_ANALYSIS_HOLIDAY ("ts" timestamp, "holiday" NVARCHAR(50));
+​
+DO BEGIN
+  lt_data = SELECT * FROM PAL_ADDITIVE_MODEL_ANALYSIS_DATA_TBL;
+  lt_holiday = SELECT * FROM PAL_ADDITIVE_MODEL_ANALYSIS_HOLIDAY;
+  lt_param = SELECT * FROM PAL_ADDITIVE_MODEL_ANALYSIS_PARAMETER_TBL;
+  CALL _SYS_AFL.PAL_ADDITIVE_MODEL_ANALYSIS (:lt_data, :lt_holiday, :lt_param, lt_model);
+  INSERT INTO PAL_ADDITIVE_MODEL_ANALYSIS_MODEL SELECT * FROM :lt_model;
+END;
+​
+SELECT * FROM PAL_ADDITIVE_MODEL_ANALYSIS_MODEL;
+```
+
+ARIMA
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_ARIMA_DATA_TBL;
+CREATE COLUMN TABLE PAL_ARIMA_DATA_TBL (
+    "TIMESTAMP" INTEGER,
+    "Y" DOUBLE,
+    "X" DOUBLE
+    );
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(1, 1.2, 0.8);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(2, 1.34845613096197, 1.2);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(3, 1.32261090809898, 1.34845613096197);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(4, 1.38095306748554, 1.32261090809898);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(5, 1.54066648969168, 1.38095306748554);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(6, 1.50920806756785, 1.54066648969168);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(7, 1.48461408893443, 1.50920806756785);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(8, 1.43784887380224, 1.48461408893443);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(9, 1.64251548718992, 1.43784887380224);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(10, 1.74292337447476, 1.64251548718992);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(11, 1.91137546943257, 1.74292337447476);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(12, 2.07735796176367, 1.91137546943257);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(13, 2.01741246166924, 2.07735796176367);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(14, 1.87176938196573, 2.01741246166924);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(15, 1.83354723357744, 1.87176938196573);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(16, 1.66104978144571, 1.83354723357744);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(17, 1.65115984070812, 1.66104978144571);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(18, 1.69470966154593, 1.65115984070812);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(19, 1.70459802935728, 1.69470966154593);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(20, 1.61246059980916, 1.70459802935728);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(21, 1.53949706614636, 1.61246059980916);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(22, 1.59231354902055, 1.53949706614636);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(23, 1.81741927705578, 1.59231354902055);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(24, 1.80224252773564, 1.81741927705578);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(25, 1.81881576781466, 1.80224252773564);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(26, 1.78089755157948, 1.81881576781466);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(27, 1.61473635574416, 1.78089755157948);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(28, 1.42002147867225, 1.61473635574416);
+INSERT INTO PAL_ARIMA_DATA_TBL VALUES(29, 1.49971641345022, 1.42002147867225);
+​
+DROP TABLE PAL_PARAMETER_TBL;
+CREATE COLUMN TABLE PAL_PARAMETER_TBL ("NAME" VARCHAR (50),"INT_VALUE" INTEGER,"DOUBLE_VALUE" DOUBLE,"STRING_VALUE" VARCHAR (100));
+INSERT INTO PAL_PARAMETER_TBL VALUES ('P', 1, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('Q', 1, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('D', 0, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('METHOD', 1, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('DEPENDENT_VARIABLE', NULL, NULL, 'Y');
+​
+DROP TABLE PAL_ARIMA_MODEL_TBL;  -- for the forecast followed
+CREATE COLUMN TABLE PAL_ARIMA_MODEL_TBL ("KEY" NVARCHAR(100), "VALUE" NVARCHAR(5000));
+​
+​
+DROP TABLE PAL_ARIMA_MODEL_TBL;  -- for the following forecast
+CREATE COLUMN TABLE PAL_ARIMA_MODEL_TBL ("KEY" NVARCHAR(100), "VALUE" NVARCHAR(5000));
+​
+do begin
+    lt_data = select * from PAL_ARIMA_DATA_TBL;
+    lt_control = select * from PAL_PARAMETER_TBL;
+    _SYS_AFL.PAL_ARIMA(:lt_data, :lt_control, lt_model, lt_fit);
+    INSERT INTO PAL_ARIMA_MODEL_TBL SELECT * FROM :lt_model;
+    SELECT * FROM PAL_ARIMA_MODEL_TBL;
+    SELECT* FROM :lt_fit;
+end;
+```
+
+Bayesian Change Point Detection (BCPD)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_BCPD_DATA_TBL;
+CREATE COLUMN TABLE PAL_BCPD_DATA_TBL (
+    "TIME_STAMP" INTEGER,
+    "SERIES" DOUBLE
+);
+​
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (0, 0.0);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (1, 3.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (2, -5.33);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (3, -1.5);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (4, 2.33);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (5, -6.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (6, -3.0);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (7, 0.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (8, -8.33);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (9, -4.5);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (10, -0.67);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (11, -9.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (12, -6.0);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (13, -2.17);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (14, -11.33);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (15, -7.5);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (16, -3.67);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (17, -12.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (18, -9.0);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (19, -5.17);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (20, -14.33);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (21, -10.5);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (22, -6.67);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (23, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (24, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (25, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (26, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (27, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (28, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (29, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (30, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (31, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (32, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (33, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (34, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (35, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (36, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (37, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (38, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (39, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (40, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (41, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (42, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (43, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (44, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (45, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (46, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (47, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (48, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (49, -15.83);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (50, -11.075);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (51, -12.891);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (52, -18.769);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (53, -20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (54, 20.585);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (55, 24.525);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (56, 25.52);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (57, 22.845);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (58, 18.536);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (59, 15.861);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (60, 16.856);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (61, 20.795);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (62, 24.735);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (63, 25.73);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (64, 23.055);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (65, 18.746);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (66, 16.071);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (67, 17.066);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (68, 21.005);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (69, 24.945);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (70, 25.94);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (71, 23.265);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (72, 18.956);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (73, 16.281);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (74, 17.276);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (75, 21.215);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (76, 25.155);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (77, 26.15);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (78, 23.475);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (79, 19.166);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (80, 16.491);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (81, 17.486);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (82, 21.425);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (83, 25.365);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (84, 26.36);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (85, 23.685);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (86, 19.376);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (87, 16.701);
+INSERT INTO PAL_BCPD_DATA_TBL VALUES (88, 17.696);
+​
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL (
+    "PARAM_NAME" VARCHAR(100),
+    "INT_VALUE" INTEGER,
+    "DOUBLE_VALUE" DOUBLE,
+    "STRING_VALUE" VARCHAR(100)
+);
+​
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('TREND_ORDER', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_TCP_NUM', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_SCP_NUM', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_HARMONIC_ORDER', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MIN_PERIOD', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_PERIOD', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('RANDOM_SEED', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_ITER', 10000, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('INTERVAL_RATIO', NULL, 0.2, NULL);
+​
+DROP TABLE PAL_TCP_TBL;
+DROP TABLE PAL_SCP_TBL;
+DROP TABLE PAL_PERIODLIST_TBL;
+DROP TABLE PAL_DECOMP_TBL;
+​
+CREATE COLUMN TABLE PAL_TCP_TBL (ROW_INDEX INTEGER, TCP INTEGER);
+CREATE COLUMN TABLE PAL_SCP_TBL (ROW_INDEX INTEGER, SCP INTEGER);
+CREATE COLUMN TABLE PAL_PERIODLIST_TBL (ROW_INDEX INTEGER, SCP INTEGER);
+CREATE COLUMN TABLE PAL_DECOMP_TBL (ROW_INDEX INTEGER, SEASON DOUBLE, TREND DOUBLE, RANDOM DOUBLE);
+​
+DO BEGIN
+    lt_data = SELECT * FROM PAL_BCPD_DATA_TBL;
+    lt_param = SELECT * FROM PAL_PARAMETER_TBL;
+    CALL _SYS_AFL.PAL_BCPD (:lt_data, :lt_param, lt_tcp, lt_scp, lt_period, lt_decomp);
+    INSERT INTO PAL_TCP_TBL SELECT * FROM :lt_tcp;
+    INSERT INTO PAL_SCP_TBL SELECT * FROM :lt_scp;
+    INSERT INTO PAL_PERIODLIST_TBL SELECT * FROM :lt_period;
+    INSERT INTO PAL_DECOMP_TBL SELECT * FROM :lt_decomp;
+END;
+​
+SELECT * FROM PAL_TCP_TBL;
+SELECT * FROM PAL_SCP_TBL;
+SELECT * FROM PAL_PERIODLIST_TBL;
+SELECT * FROM PAL_DECOMP_TBL;
+```
+
+Seasonality Test
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_SEASONALITY_DATA_TBL;
+CREATE COLUMN TABLE PAL_SEASONALITY_DATA_TBL (
+    "TIME_STAMP" INTEGER,
+    "SERIES" DOUBLE
+);
+​
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (1, 10);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (2, 7);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (3, 17);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (4, 34);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (5, 9);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (6, 7);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (7, 18);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (8, 40);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (9, 27);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (10, 7);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (11, 27);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (12, 100);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (13, 93);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (14, 29);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (15, 159);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (16, 614);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (17, 548);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (18, 102);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (19, 21);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (20, 238);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (21, 89);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (22, 292);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (23, 446);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (24, 689);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (25, 521);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (26, 155);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (27, 968);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (28, 1456);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (29, 936);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (30, 10);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (31, 83);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (32, 55);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (33, 207);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (34, 25);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (35, 0);
+INSERT INTO PAL_SEASONALITY_DATA_TBL VALUES (36, 0);
+​
+​
+DROP TABLE PAL_PARAMETER_TBL;
+CREATE COLUMN TABLE PAL_PARAMETER_TBL (
+"PARAM_NAME" VARCHAR(100),
+"INT_VALUE" INTEGER,
+"DOUBLE_VALUE" DOUBLE,
+"STRING_VALUE" VARCHAR(100)
+);
+​
+INSERT INTO PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.5, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('ALPHA', NULL, 0.2, NULL);
+​
+​
+do begin
+lt_data = SELECT * FROM PAL_SEASONALITY_DATA_TBL;
+lt_ctrl = SELECT * FROM PAL_PARAMETER_TBL;
+CALL _SYS_AFL.PAL_SEASONALITY_TEST(:lt_data, :lt_ctrl, lt_stat, lt_decomp);
+select * from :lt_stat;
+select * from :lt_decomp;
+end;
+```
+
+Stationarity Test
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_TEST_DATA_TBL;
+CREATE COLUMN TABLE PAL_TEST_DATA_TBL (
+    "TIME_STAMP" INTEGER,
+    "SERIES" DOUBLE
+);
+​
+INSERT INTO PAL_TEST_DATA_TBL VALUES (0, 0.0);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (1, 3.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (2, -5.33);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (3, -1.5);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (4, 2.33);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (5, -6.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (6, -3.0);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (7, 0.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (8, -8.33);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (9, -4.5);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (10, -0.67);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (11, -9.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (12, -6.0);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (13, -2.17);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (14, -11.33);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (15, -7.5);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (16, -3.67);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (17, -12.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (18, -9.0);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (19, -5.17);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (20, -14.33);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (21, -10.5);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (22, -6.67);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (23, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (24, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (25, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (26, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (27, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (28, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (29, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (30, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (31, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (32, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (33, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (34, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (35, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (36, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (37, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (38, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (39, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (40, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (41, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (42, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (43, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (44, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (45, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (46, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (47, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (48, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (49, -15.83);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (50, -11.075);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (51, -12.891);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (52, -18.769);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (53, -20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (54, 20.585);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (55, 24.525);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (56, 25.52);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (57, 22.845);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (58, 18.536);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (59, 15.861);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (60, 16.856);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (61, 20.795);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (62, 24.735);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (63, 25.73);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (64, 23.055);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (65, 18.746);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (66, 16.071);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (67, 17.066);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (68, 21.005);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (69, 24.945);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (70, 25.94);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (71, 23.265);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (72, 18.956);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (73, 16.281);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (74, 17.276);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (75, 21.215);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (76, 25.155);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (77, 26.15);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (78, 23.475);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (79, 19.166);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (80, 16.491);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (81, 17.486);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (82, 21.425);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (83, 25.365);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (84, 26.36);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (85, 23.685);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (86, 19.376);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (87, 16.701);
+INSERT INTO PAL_TEST_DATA_TBL VALUES (88, 17.696);
+​
+​
+DROP TABLE PAL_PARAMETER_TBL;
+CREATE COLUMN TABLE PAL_PARAMETER_TBL ( "NAME" VARCHAR (50),"INT_VALUE" INTEGER,"DOUBLE_VALUE" DOUBLE,"STRING_VALUE" VARCHAR (100));
+INSERT INTO PAL_PARAMETER_TBL VALUES ('METHOD',         0, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('MODE',       1, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('LAG',        5, NULL, NULL);
+INSERT INTO PAL_PARAMETER_TBL VALUES ('PROBABILITY', NULL, 0.95, NULL);
+​
+CALL _SYS_AFL.PAL_STATIONARITY_TEST(PAL_TEST_DATA_TBL, PAL_PARAMETER_TBL, ?);
+```
 
 </TabItem>
 
@@ -179,7 +849,8 @@ Don't forget to remove this message.
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
 </ul>
 
 </div>
@@ -190,20 +861,8 @@ Don't forget to remove this message.
 
 ## Related AI Capabilities
 
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
-
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/decision-support/forecasting-historical-data" text="Forecasting based on Historical Data" />
 </ul>
 
 </div>
@@ -214,7 +873,11 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+    <PageContributors contributorIds={[
+        "rajeshwari-kute",
+        "francisco-robledo",
+        "luis-marques"
+    ]}/>
 
 </div>
 

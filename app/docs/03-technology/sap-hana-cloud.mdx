@@ -125,3 +125,8 @@ SAP HANA Cloud provides several built-in SQL functions for working with REAL_VEC
 - Utility Functions:
   - CARDINALITY(`<vector>`): Returns the dimension (number of elements) of the vector. More information available [here](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/cardinality-function-vector).
   - MEMBER_AT(`<vector>`, `<index>`): Retrieves the element at a specific 1-based index within the vector. More information available [here](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/member-at-function-vector).
+
+## Enable Triple Store Service in SAP HANA Cloud
+To implement this scenario, you need to enable ‘Triple Store’ on the SAP HANA Cloud Central tool during instance provisioning:
+![xample Process Flow for a Vector Engine-powered RAG approach](@site/static/technology/sap-hana-cloud/images/triple-store.png)
+Check [Memory Consumption and Sizing Considerations](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/memory-consumption-and-sizing-considerations?locale=en-US) to learn more about the resource consumption.
