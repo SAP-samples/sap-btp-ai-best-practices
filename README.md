@@ -81,3 +81,7 @@ If you wish to contribute code, offer fixes or improvements, please send a pull 
 ## License
 
 Copyright (c) 2024 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.
+
+## Devtoberfest Scavenger Hunt
+
+Congrats! You have found the location of another clue in the [Devtoberfest](https://community.sap.com/t5/devtoberfest-blog-posts/devtoberfest-2025-welcome/ba-p/14182817) Scavenger Hunt. You will find the instructions of how to derive the 2 hexadecimal digits using the instructions in the [Scavenger Hunt Blog Post](https://community.sap.com/t5/devtoberfest-blog-posts/introducing-the-devtoberfest-scavenger-hunt/ba-p/14183972).
