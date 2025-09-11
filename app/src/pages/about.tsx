@@ -155,7 +155,7 @@ export default function About(): React.ReactNode {
               <h2 className={styles.roadmapHeading}>See What's Next</h2>
               <p className={styles.roadmapDescription}>Curious about upcoming BTP AI Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
               <div className={styles.roadmapButtonWrapper}>
-                <a href="/docs/SAP%20BTP%20AI%20Best%20Practices%20roadmap_20250811.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
+                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20250911.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
                   <Icon name="workflow-tasks" className={styles.roadmapButtonIcon} style={{ marginRight: 8, fontSize: 22 }} />
                   Explore the Roadmap
                 </a>
