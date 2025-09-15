@@ -400,6 +400,10 @@ h2 .step-number {
   background: #f0ecfe;
 }
 
+.section-with-background.green {
+  background: #e6f7e6;
+}
+
 .section-with-background.gradient-violet-blue {
   background: #f0e5ff;
   background: linear-gradient(180deg, #6a50ff 0%, #0057d2 50%);
