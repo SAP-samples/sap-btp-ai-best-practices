@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+httpx
+requests
+python-dotenv
+sap-ai-sdk-gen
+aioboto3
+langchain-google-vertexai
+PyPDF2
+PyMuPDF
+pandas
+openpyxl
+python-multipart
+hdbcli
+sqlalchemy
