@@ -15,29 +15,6 @@ import time
 from io import BytesIO
 
 #############################################################################
-# HARDCODED CREDENTIALS - NO .ENV LOOKUP
-#############################################################################
-
-print("DEBUG: Connecting SAP AI Hub...")
-
-# HARDCODED CREDENTIALS - NO .ENV LOOKUP
-os.environ["AICORE_AUTH_URL"] = (
-    "https://dts-ai-core.authentication.eu10.hana.ondemand.com"
-)
-os.environ["AICORE_CLIENT_ID"] = (
-    "sb-8fad0827-27c5-43b0-a9ab-3a3a4ffb2785!b217189|aicore!b540"
-)
-os.environ["AICORE_CLIENT_SECRET"] = (
-    "07b55bc7-73f4-476a-bf93-52d2d356b731$xoaTUx1rl-yBLUvuwHFPQAlKaYdxmrBHnOko4Ht7jr0="
-)
-os.environ["AICORE_BASE_URL"] = (
-    "https://api.ai.prod.eu-central-1.aws.ml.hana.ondemand.com/v2"
-)
-os.environ["AICORE_RESOURCE_GROUP"] = "default"
-
-print("SAP AI Hub Ok")
-
-#############################################################################
 # UTILITY FUNCTIONS FOR FORMATTING
 #############################################################################
 
@@ -570,7 +547,7 @@ def simulate_pr_creation(
     with st.spinner("Creating purchase request..."):
         time.sleep(1)
 
-    # FIXED: Clear all quotation session states immediately and set PR created flag
+    # FIXED: Set PR created flag and data first
     st.session_state.quotation_pr_created = True
     st.session_state.quotation_pr_data = {
         "pr_number": pr_number,
@@ -580,8 +557,8 @@ def simulate_pr_creation(
         "items_count": len(st.session_state.get("edited_items", [])),
     }
 
-    # Clear the upload state immediately
-    st.session_state.show_quotation_upload = False
+    # FIXED: Keep show_quotation_upload = True so the success message shows
+    # Don't set it to False here - let the success screen handle navigation
 
     # FIXED: Clear all quotation processing states to prevent confusion
     if "quotation_data" in st.session_state:
@@ -622,6 +599,7 @@ def show_pr_creation_success():
             ]
             for key in keys_to_clear:
                 del st.session_state[key]
+            # Keep show_quotation_upload = True to show upload interface
             st.session_state.show_quotation_upload = True
             st.rerun()
 
@@ -959,10 +937,12 @@ def handle_quotation_upload(use_sap_ai_hub: bool = True):
     if "show_quotation_upload" not in st.session_state:
         st.session_state.show_quotation_upload = False
 
-    # Handle different states
+    # Handle different states - FIXED: Check PR creation first
     if st.session_state.get("quotation_pr_created", False):
+        # Show success screen when PR is created
         show_pr_creation_success()
     elif st.session_state.get("quotation_data", None):
+        # Show analysis results when data is available
         try:
             import vendor
 
@@ -972,6 +952,7 @@ def handle_quotation_upload(use_sap_ai_hub: bool = True):
             st.error(f"Error loading vendor data: {e}")
             st.stop()
     else:
+        # Show upload interface when starting fresh
         show_quotation_upload_interface()
 
 
