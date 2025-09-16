@@ -1,0 +1,142 @@
+.pdf-extraction-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header-info {
+  background-color: var(--sapBackgroundColor);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.processing-details {
+  background-color: var(--sapBackgroundColor);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* File uploader styling */
+#pdf-uploader {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+/* Progress indicator styling */
+#progress-indicator {
+  width: 100%;
+}
+
+/* List styling */
+#line-items-list {
+  width: 100%;
+  border: 1px solid var(--sapList_BorderColor);
+  border-radius: 0.5rem;
+}
+
+/* Status message styling */
+#status-message {
+  width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .pdf-extraction-container {
+    padding: 0.5rem;
+  }
+  
+  .header-info > div,
+  .processing-details > div {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  .upload-section {
+    gap: 0.5rem;
+  }
+  
+  .upload-section > div {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+}
+
+/* Animation for cards appearing */
+.card-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading state styling */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Success/Error message styling */
+.success-message {
+  color: var(--sapPositiveColor);
+}
+
+.error-message {
+  color: var(--sapNegativeColor);
+}
+
+/* Table row hover effect */
+ui5-table-row:hover {
+  background-color: var(--sapList_Hover_Background);
+}
+
+/* Export button styling */
+#export-button {
+  margin-left: auto;
+}
+
+/* Model select styling */
+#model-select {
+  flex-shrink: 0;
+}
+
+/* Extract button styling */
+#extract-button {
+  align-self: flex-start;
+}
+
+#extract-button:disabled {
+  opacity: 0.5;
+}
+
+/* Card header icons */
+ui5-card-header ui5-icon {
+  color: var(--sapAccentColor6);
+}
+
+/* Grid layouts for better organization */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
