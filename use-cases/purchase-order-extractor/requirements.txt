@@ -1,0 +1,11 @@
+Flask
+Flask-CORS
+Flask-RESTX
+PyMuPDF
+requests
+python-dotenv
+Werkzeug
+python-docx
+Pillow
+pandas
+sap-ai-sdk-gen[all]
