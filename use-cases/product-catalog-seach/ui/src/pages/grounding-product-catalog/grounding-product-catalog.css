@@ -1,0 +1,363 @@
+/* Grounding Service Interface Styles */
+
+.grounding-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.grounding-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#main-loading:not([active]) {
+  display: none;
+}
+
+#loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.data-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.query-controls {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.submit-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.result-item {
+  margin-bottom: 1.5rem;
+}
+
+.result-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Table Styling */
+ui5-table {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Compact table for pipelines panel */
+.compact-table {
+  margin-top: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Loading Indicator - styles merged above */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .grounding-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+}
+
+/* Button States */
+ui5-button[disabled] {
+  opacity: 0.6;
+}
+
+/* Form Controls */
+ui5-input,
+ui5-textarea,
+ui5-select {
+  width: 100%;
+}
+
+/* Table Empty State */
+.table-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Markdown Content Styling */
+.markdown-content {
+  font-family: var(--sapFontFamily);
+  font-size: var(--sapFontSize);
+  line-height: 1.6;
+  color: var(--sapTextColor);
+  overflow-y: auto;
+  max-height: 400px;
+  min-height: 100px;
+  margin-top: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--sapField_BorderColor);
+  border-radius: 0.5rem;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin: 1.5rem 0 0.5rem 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdown-content h1:first-child,
+.markdown-content h2:first-child,
+.markdown-content h3:first-child,
+.markdown-content h4:first-child,
+.markdown-content h5:first-child,
+.markdown-content h6:first-child {
+  margin-top: 0;
+}
+
+.markdown-content h1 {
+  font-size: 1.5rem;
+}
+.markdown-content h2 {
+  font-size: 1.3rem;
+}
+.markdown-content h3 {
+  font-size: 1.1rem;
+}
+.markdown-content h4 {
+  font-size: 1rem;
+}
+.markdown-content h5 {
+  font-size: 0.9rem;
+}
+.markdown-content h6 {
+  font-size: 0.8rem;
+}
+
+.markdown-content p {
+  margin: 0.5rem 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin: 0.25rem 0;
+}
+
+.markdown-content blockquote {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid var(--sapAccentColor3);
+  background: var(--sapObjectHeader_Background);
+  font-style: italic;
+}
+
+.markdown-content code {
+  background: var(--sapObjectHeader_Background);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  font-size: 0.9em;
+  border: 1px solid var(--sapField_BorderColor);
+}
+
+.markdown-content pre {
+  background: var(--sapObjectHeader_Background);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--sapField_BorderColor);
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid var(--sapField_BorderColor);
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: var(--sapObjectHeader_Background);
+  font-weight: 600;
+}
+
+.markdown-content a {
+  color: var(--sapLinkColor);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content hr {
+  border: none;
+  height: 1px;
+  background: var(--sapField_BorderColor);
+  margin: 1.5rem 0;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+/* Product Catalog Header */
+.project-catalog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.project-count {
+  color: var(--sapContent_LabelColor, #6a6d70);
+  font-size: 0.875rem;
+}
+
+.view-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.view-toggle ui5-label {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+/* Product Cards Styles */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.product-detail {
+  margin-bottom: 1rem;
+}
+
+.product-detail:last-child {
+  margin-bottom: 0;
+}
+
+/* Products Table Styles */
+#products-table-container {
+  margin-top: 1rem;
+}
+
+#products-table {
+  width: 100%;
+}
+
+.table-cell-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.table-cell-primary {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.table-cell-secondary {
+  font-size: 0.75rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.table-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.table-status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.table-status-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.table-link {
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.table-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments for products */
+@media (max-width: 768px) {
+  .project-catalog-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .product-card {
+    margin-bottom: 0.75rem;
+  }
+}

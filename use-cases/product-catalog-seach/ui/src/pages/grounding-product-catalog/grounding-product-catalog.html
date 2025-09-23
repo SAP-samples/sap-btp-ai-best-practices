@@ -1,0 +1,84 @@
+<div class="grounding-container">
+  <!-- Main Content Area -->
+  <div class="grounding-main">
+    <!-- Data Loading Status -->
+    <div id="data-status" class="data-status">
+      <ui5-busy-indicator active id="main-loading" delay="0" text="Loading product catalogs..."></ui5-busy-indicator>
+      <ui5-message-strip id="auth-status" design="Negative" hide-close-button style="display: none"></ui5-message-strip>
+    </div>
+
+    <!-- Product Catalogs -->
+    <div id="files-section" style="display: none">
+      <ui5-panel id="files-panel" header-text="Available Product Catalogs" collapsed accessible-role="Region">
+        <ui5-table id="files-table" growing="true" class="compact-table">
+          <ui5-table-row slot="headerRow">
+            <ui5-table-cell>Catalog Name</ui5-table-cell>
+            <ui5-table-cell>Last Updated</ui5-table-cell>
+            <ui5-table-cell>Catalog ID</ui5-table-cell>
+          </ui5-table-row>
+        </ui5-table>
+      </ui5-panel>
+    </div>
+
+    <!-- Product Search & Execution -->
+    <ui5-card id="query-section" style="display: none">
+      <ui5-card-header slot="header" title-text="Product Catalog Search">
+        <ui5-icon name="product" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <!-- Search Request -->
+        <div class="query-controls">
+          <ui5-label for="grounding-request">Search for Products:</ui5-label>
+          <ui5-input id="grounding-request" placeholder="e.g., office chairs with adjustable height" style="width: 100%; margin-top: 0.5rem"></ui5-input>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-controls">
+          <ui5-button id="submit-btn" design="Emphasized" icon="ai">Find Products</ui5-button>
+
+          <!-- Loading Indicator -->
+          <div id="loading-indicator" style="display: none">
+            <ui5-busy-indicator active delay="0" text="Searching product catalogs (this may take a few minutes)..."></ui5-busy-indicator>
+          </div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <!-- Products Section -->
+    <div id="products-section" style="display: none">
+      <div class="project-catalog-header">
+        <ui5-title level="H2">Product Catalog</ui5-title>
+        <div class="header-controls">
+          <ui5-text class="project-count">Showing <span id="project-count">0</span> products</ui5-text>
+          <div class="view-toggle">
+            <ui5-label for="view-toggle-switch">View:</ui5-label>
+            <ui5-segmented-button id="view-toggle-switch" style="margin-left: 0.5rem">
+              <ui5-segmented-button-item id="cards-view" pressed>Cards</ui5-segmented-button-item>
+              <ui5-segmented-button-item id="table-view">Table</ui5-segmented-button-item>
+            </ui5-segmented-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cards View -->
+      <div id="products-container" class="products-grid">
+        <!-- Product cards will be dynamically inserted here -->
+      </div>
+
+      <!-- Table View -->
+      <div id="products-table-container" style="display: none">
+        <ui5-table id="products-table" growing="true">
+          <ui5-table-header-row slot="headerRow">
+            <ui5-table-header-cell width="2fr"><span>Product</span></ui5-table-header-cell>
+            <ui5-table-header-cell width="1fr">Model</ui5-table-header-cell>
+            <ui5-table-header-cell width="2fr">Dimensions</ui5-table-header-cell>
+            <ui5-table-header-cell width="1fr">Price</ui5-table-header-cell>
+            <ui5-table-header-cell width="2fr">Source</ui5-table-header-cell>
+            <ui5-table-header-cell width="1.5fr">Contract</ui5-table-header-cell>
+            <ui5-table-header-cell width="1.5fr">Status</ui5-table-header-cell>
+          </ui5-table-header-row>
+        </ui5-table>
+      </div>
+    </div>
+  </div>
+</div>
