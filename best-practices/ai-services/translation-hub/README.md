@@ -14,7 +14,11 @@ This repository contains below Python script
    - Ensure Python 3.6 or higher is installed.
    - Install the required dependencies below commands:
    ```bash
-      pip install python-docx python-dotenv requests
+      pip install python-docx python-dotenv requests pypdf
+     ```
+     Or using the `requirements.txt` file
+     ```bash
+     pip install -r requirements.txt
      ```
 
 2. **Environment Variables**:
@@ -30,9 +34,9 @@ Create a `.env` file in the root directory with the following content:
 ```env
 CLIENT_ID=service_key['uaa']['clientid']
 CLIENT_SECRET=service_key['uaa']['clientsecret']
-AUTH_URL=service_key['url']
-DOCTRANS_BASE=service_key['softwaretranslation']['url']
-SOFTWARE_BASE =service_key['documenttranslation']['url']
+AUTH_URL=service_key['uaa']['url']
+DOCTRANS_BASE=service_key['documenttranslation']['url']
+SOFTWARE_BASE =service_key['softwaretranslation']['url']
 ```
 
 > **Note**: Replace the placeholder values with your actual SAP Translation Hub AI service credentials.
@@ -61,7 +65,7 @@ SOFTWARE_BASE =service_key['documenttranslation']['url']
     For Text Translation
     - Directly embed your text to be translated in data 
 
-    ''' python
+    ```python
     body = {
    "sourceLanguage": "de-DE",
    "targetLanguage": "en-US",
@@ -69,7 +73,7 @@ SOFTWARE_BASE =service_key['documenttranslation']['url']
    "model": "llm",
    "data": "Dieser Satz soll übersetzt werden"
     }
-    '''
+    ```
 
 3. **Output**:
 
