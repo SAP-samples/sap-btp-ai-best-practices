@@ -1,0 +1,9 @@
+---
+applications:
+  - name: european-comission-intelligent-procurement-assistant
+    timeout: 180 # in seconds
+    memory: 512M
+    disk_quota: 2GB
+    instances: 2
+    buildpacks:
+      - python_buildpack
