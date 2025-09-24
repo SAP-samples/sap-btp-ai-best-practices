@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
-    title="Product Catalog Seach",
-    description="FastAPI server providing integration endpoints for Product Catalog Seach",
+    title="Product Catalog Search",
+    description="FastAPI server providing integration endpoints for Product Catalog Search",
     version="1.0.0",
 )
 
