@@ -1,0 +1,255 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "sap.btp.ai.log",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.17.3",
+      "toolsId": "c174ab22-f0e9-4e01-8532-507806f6437d"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "service/ReportService/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "log-display": {
+          "semanticObject": "log",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.134.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sap.btp.ai.log.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "MessageTimeAggregatesList",
+          "target": "MessageTimeAggregatesList"
+        },
+        {
+          "pattern": "MessageTimeAggregates({key}):?query:",
+          "name": "MessageTimeAggregatesObjectPage",
+          "target": "MessageTimeAggregatesObjectPage"
+        },
+        {
+          "pattern": "MessageTimeAggregates({key})/messages({key2}):?query:",
+          "name": "MessagesObjectPage",
+          "target": "MessagesObjectPage"
+        },
+        {
+          "name": "MessageTimeAggregates_assessmentObjectPage",
+          "pattern": "MessageTimeAggregates({key})/assessment({assessmentKey}):?query:",
+          "target": "MessageTimeAggregates_assessmentObjectPage"
+        }
+      ],
+      "targets": {
+        "MessageTimeAggregatesList": {
+          "type": "Component",
+          "id": "MessageTimeAggregatesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/MessageTimeAggregates",
+              "variantManagement": "Page",
+              "navigation": {
+                "MessageTimeAggregates": {
+                  "detail": {
+                    "route": "MessageTimeAggregatesObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable",
+                    "selectionMode": "Single"
+                  },
+                  "columns": {
+                    "DataField::situation::MSGNO": {
+                      "width": "10rem"
+                    }
+                  }
+                }
+              },
+              "initialLoad": "Enabled",
+              "views": {
+                "paths": [
+                  {
+                    "primary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#alpChart"
+                      }
+                    ],
+                    "secondary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
+                      }
+                    ],
+                    "defaultPath": "both"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "MessageTimeAggregatesObjectPage": {
+          "type": "Component",
+          "id": "MessageTimeAggregatesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/MessageTimeAggregates",
+              "navigation": {
+                "messages": {
+                  "detail": {
+                    "route": "MessagesObjectPage"
+                  }
+                },
+                "assessment": {
+                  "detail": {
+                    "route": "MessageTimeAggregates_assessmentObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "MessagesObjectPage": {
+          "type": "Component",
+          "id": "MessagesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/MessageTimeAggregates/messages"
+            }
+          }
+        },
+        "MessageTimeAggregates_assessmentObjectPage": {
+          "type": "Component",
+          "id": "MessageTimeAggregates_assessmentObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "navigation": {},
+              "contextPath": "/MessageTimeAggregates/assessment",
+              "content": {
+                "body": {
+                  "sections": {
+                    "PromptText": {
+                      "template": "sap.btp.ai.log.ext.fragment.PromptText",
+                      "title": "Prompt",
+                      "position": {
+                        "placement": "Before"
+                      }
+                    },
+                    "ResponseText": {
+                      "template": "sap.btp.ai.log.ext.fragment.ResponseText",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "PromptText"
+                      },
+                      "title": "Response"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.fe.templates.ListReport.ListReportController": {
+            "controllerName": "sap.btp.ai.log.ext.controller.ChartColoringController"
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "logreport.service"
+  }
+}

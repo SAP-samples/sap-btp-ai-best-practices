@@ -1,0 +1,79 @@
+{
+  "name": "log-report",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@cap-js/hana": "^1",
+    "@sap-cloud-sdk/http-client": "*",
+    "@sap-cloud-sdk/resilience": "*",
+    "@sap/cds": "^8",
+    "@sap/xssec": "^4",
+    "ajv": "^8.17.1",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/cds-typer": ">=0.1",
+    "@cap-js/cds-types": "^0.9.0",
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8",
+    "@types/node": "^22.0.0",
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5",
+    "typescript": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds-tsx w",
+    "before:cds-watch": "cds-typer \"*\"",
+    "watch-log": "cds watch --open log/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-situations": "cds watch --open situations/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy log-report --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "imports": {
+    "#cds-models/*": "./@cds-models/*/index.js"
+  },
+  "cds": {
+    "requires": {
+      "GENERATIVE_AI_HUB": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "GENERATIVE_AI_HUB",
+          "requestTimeout": "300000"
+        },
+        "DEPLOYMENT_ID": "dc29d51f3a94d40a",
+        "RESOURCE_GROUP_ID": "default",
+        "API_VERSION": "2024-12-01-preview"
+      },
+      "destinations": true,
+      "[production]": {
+        "db": "hana"
+      },
+      "[hybrid]": {
+        "db": "hana"
+      },
+      "html5-runtime": true,
+      "workzone": true,
+      "auth": {
+        "[development]": {
+          "kind": "dummy"
+        },
+        "[production]": {
+          "kind": "xsuaa",
+          "restrict_all_services": false
+        }
+      }
+    },
+    "sql": {
+      "native_hana_associations": false
+    }
+  },
+  "sapux": [
+    "app/log",
+    "app/situations"
+  ]
+}

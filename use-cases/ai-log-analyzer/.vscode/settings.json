@@ -1,0 +1,13 @@
+{
+  // uncomment entries once all libraries have been installed via 'npm install'
+  "eslint.validate": [
+    // "cds",
+    // "csn",
+    // "csv",
+    // "csv (semicolon)",
+    // "tab",
+    // "tsv"
+  ],
+  "SAP HANA Database Explorer.Objects Definition For SQL Generation Retention Time": 7,
+  "SAP HANA Database Explorer.Use Objects Definition For SQL Generation": false
+}
