@@ -1,0 +1,4 @@
+name,signal_strength,noise_level,rows,quality_score,rule_wac18_immunoDerm_qty1_%,ah_acc_val,ai_acc_val,xlsx,csv
+baseline,0.6,0.03,1113,100.0,76.2,1.0,0.182,Pharma_poc_benchmark_baseline.xlsx,Pharma_poc_benchmark_baseline.csv
+medium,0.85,0.015,1113,100.0,76.2,1.0,0.182,Pharma_poc_benchmark_medium.xlsx,Pharma_poc_benchmark_medium.csv
+optimized,1.0,0.005,1113,100.0,76.2,1.0,0.169,Pharma_poc_benchmark_optimized.xlsx,Pharma_poc_benchmark_optimized.csv
