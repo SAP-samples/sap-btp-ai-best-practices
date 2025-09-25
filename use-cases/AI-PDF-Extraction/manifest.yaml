@@ -1,5 +1,5 @@
 applications:
-  - name: Sesajal_DataExtraction_api
+  - name: DataExtraction_api
     memory: 512M
     disk_quota: 1G
     path: ./api # Points to API folder
@@ -7,14 +7,14 @@ applications:
       - python_buildpack
     command: python -m api_server
     routes:
-      - route: https://sesajal_data_extraction_api.cfapps.eu10-004.hana.ondemand.com
+      - route: https://data_extraction_api.cfapps.eu10-004.hana.ondemand.com
     env:
       PYTHONPATH: "."
       ALLOWED_ORIGIN: https://data_extraction.cfapps.eu10-004.hana.ondemand.com
       APP_ENV: production
       API_KEY: ((api_key))
       SSL_VERIFY: "false"  # Disable SSL verification for internal CF apps
-  - name: Sesajal_DataExtraction_ui
+  - name: DataExtraction_ui
     memory: 256M
     disk_quota: 1G
     path: ./ui # Points to UI folder
@@ -25,6 +25,6 @@ applications:
       - route: https://data_extraction.cfapps.eu10-004.hana.ondemand.com
     env:
       PYTHONPATH: "."
-      API_BASE_URL: https://sesajal_data_extraction_api.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://data_extraction_api.cfapps.eu10-004.hana.ondemand.com
       API_KEY: ((api_key))
       SSL_VERIFY: "false"  # Disable SSL verification for internal CF apps
