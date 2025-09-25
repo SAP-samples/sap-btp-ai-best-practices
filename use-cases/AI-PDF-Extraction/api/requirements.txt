@@ -1,0 +1,37 @@
+# Genai hub
+sap-ai-sdk-gen
+
+
+# FastAPI and server
+fastapi
+uvicorn
+python-multipart  # For file uploads
+
+# Data validation
+pydantic
+
+# Async support
+aiofiles
+
+# Environment variables
+python-dotenv
+
+# PDF Processing (from data_extraction module)
+langchain
+langchain-openai
+langchain_google_vertexai
+langchain_aws
+aioboto3
+pdfplumber
+pypdfium2
+Pillow
+
+# Utilities
+typing-extensions
+
+# For verification utilities (text normalization)
+unicodedata2; python_version < '3.9'
+
+# For task management (optional, can use Redis in production)
+# redis
+# celery

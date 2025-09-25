@@ -8,3 +8,4 @@ gen/
 dist/
 .cdsrc-private.json
 @cds-models/
+*.pyc
