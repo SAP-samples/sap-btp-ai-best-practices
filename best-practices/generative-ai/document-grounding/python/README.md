@@ -4,9 +4,9 @@ This project demonstrates best practices for using Document Grounding service. I
 
 ```
 ├── python
-│   ├── Document_AI_S3_API.ipynb
-│   ├── Document_AI_S3_SDK.ipynb
-│   ├── Document_AI_Vector_API.ipynb
+│   ├── Document_Grounding_S3_API.ipynb
+│   ├── Document_Grounding_S3_SDK.ipynb
+│   ├── Document_Grounding_Vector_API.ipynb
 │   └── README.md
 ├── sample_files
 │   ├── AI Best Practices.pdf
@@ -19,7 +19,7 @@ This project demonstrates best practices for using Document Grounding service. I
 └── requirements.txt
 ```
 
-The Document Grounding service provides out-of-the-box support for different document respostories. The notebooks demonstrate various methods to use the service with corresponding source data repositories. 
+The Document Grounding service provides out-of-the-box support for different document repositories. The notebooks demonstrate various methods for using the service with corresponding source data repositories. 
 * AWS S3
 * SAP WorkZone
 * SAP Document Management Service
@@ -27,7 +27,7 @@ The Document Grounding service provides out-of-the-box support for different doc
 * SFTP file server
 
 ## Pre-requisites
-Create generic secrets key collection on AI Core using secrets of your source document repository.
+Create a generic secrets key collection on AI Core using the secrets of your source document repository.
 
 ## Clone the repository
 ``` sh
@@ -58,18 +58,18 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-Open the notebook in your browser to explore the steps based on your source repository and prefered implementation approach.
+Open the notebook in your browser to explore the steps based on your source repository and preferred implementation approach.
 
 ## Usage Examples
 * Connect to S3
-    * Document_AI_S3_SDK.ipynb: SAP Cloud AI SDK to implement grounding service
-    * Document_AI_S3_API.ipynb: Data Management APIs to implement grounding service
+    * Document_Grounding_S3_SDK.ipynb: SAP Cloud AI SDK to implement grounding service
+    * Document_Grounding_S3_API.ipynb: Data Management APIs to implement grounding service
 * Connect to SharePoint
 * Connect to SAP WorkZone
 * Connect to SAP Document Management System
-* Connect to SFTP file server
+* Connect to the SFTP file server
 * Direct Vector collection
-    * Document_AI_Vector_API.ipynb: Create chunks and metadata and push them to grounding service using Vector API
+    * Document_Grounding_Vector_API.ipynb: Create chunks and metadata and push them to the grounding service using the Vector API
 
 
 ## Sample data sources:
