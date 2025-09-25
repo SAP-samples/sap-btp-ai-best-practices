@@ -1,0 +1,28 @@
+applications:
+  - name: AI-Capability-Matcher-api
+    memory: 512M
+    disk_quota: 1G
+    path: ./api # Points to API folder
+    buildpacks:
+      - python_buildpack
+    command: python -m app.main
+    routes:
+      - route: capability-matcher-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      ALLOWED_ORIGIN: https://capability-matcher.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: AI-Capability-Matcher-ui
+    memory: 512M
+    disk_quota: 1G
+    path: ./ui # Points to UI folder
+    buildpacks:
+      - python_buildpack
+    command: python streamlit_app.py
+    routes:
+      - route: capability-matcher.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      API_BASE_URL: https://capability-matcher-api.cfapps.eu10-004.hana.ondemand.com
+      API_KEY: ((api_key))
