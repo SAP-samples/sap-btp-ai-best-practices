@@ -39,6 +39,7 @@ The chatbot follows a Retrieval-Augmented Generation (RAG) pattern:
 │   ├── static/                   # Static assets (CSS, JS - Logo removed)
 │   ├── .env                      # Environment variables for LOCAL development (API keys, etc.)
 │   ├── requirements.txt          # Python package dependencies
+│   ├── manifest.yml              # Cloud Foundry deployment manifest
 │   └── DOCUMENTATION.md          # Original documentation file (if exists, can be removed)
 ├── README.md                   # This file (Project Root README)
 └── ... (other project files like .gitignore, docs/)
