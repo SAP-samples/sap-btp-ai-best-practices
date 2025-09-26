@@ -1,0 +1,200 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "sap.btp.ai.situations",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.17.4",
+      "toolsId": "d78fbec0-fa27-49dc-8086-f976a76aecb0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "service/ReportService/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.135.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sap.btp.ai.situations.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "SituationsList",
+          "target": "SituationsList"
+        },
+        {
+          "pattern": "Situations({key}):?query:",
+          "name": "SituationsObjectPage",
+          "target": "SituationsObjectPage"
+        },
+        {
+          "pattern": "Situations({key})/timeAggregates({key2}):?query:",
+          "name": "MessageTimeAggregatesObjectPage",
+          "target": "MessageTimeAggregatesObjectPage"
+        }
+      ],
+      "targets": {
+        "SituationsList": {
+          "type": "Component",
+          "id": "SituationsList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Situations",
+              "variantManagement": "Page",
+              "navigation": {
+                "Situations": {
+                  "detail": {
+                    "route": "SituationsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              },
+              "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table1",
+              "initialLoad": "Enabled"
+            }
+          }
+        },
+        "SituationsObjectPage": {
+          "type": "Component",
+          "id": "SituationsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Situations",
+              "navigation": {
+                "timeAggregates": {
+                  "detail": {
+                    "route": "MessageTimeAggregatesObjectPage"
+                  }
+                }
+              },
+              "content": {
+                "body": {
+                  "sections": {
+                    "SystemPromptSettings": {
+                      "template": "sap.btp.ai.situations.ext.fragment.SystemPromptSettings",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "PromptSettings"
+                      },
+                      "title": "Advanced Prompt Settings"
+                    },
+                    "PriorityDeterminationStrategySelection": {
+                      "template": "sap.btp.ai.situations.ext.fragment.PriorityDeterminationStrategySelection",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "PromptSettings"
+                      },
+                      "title": "Priority Determination Strategy"
+                    },
+                    "ReasoningStepsDisplay": {
+                      "template": "sap.btp.ai.situations.ext.fragment.ReasoningStepsDisplay",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DailyOccurrences"
+                      },
+                      "title": "Reasoning Steps"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "MessageTimeAggregatesObjectPage": {
+          "type": "Component",
+          "id": "MessageTimeAggregatesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Situations/timeAggregates"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "logreport.service"
+  }
+}
