@@ -45,6 +45,7 @@ export const projects = [
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/utilities-tariff-mapping-cockpit",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/utilities-tariff-mapping-cockpit",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
@@ -57,7 +58,12 @@ export const projects = [
     docsPath: "intelligent-procurement-assistant",
     onePagerFile: "images/Slide52.jpg",
     videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_dv205qgu",
-    sampleFiles: [],
+    sampleFiles: [
+      "data/01_Contract_Office_Supplies_Enriched.pdf",
+      "data/02_Contract_Cloud_Security_Enriched.pdf",
+      "data/03_Contract_Catering_Enriched.pdf",
+      "data/04_Contract_Software_Maintenance_Enriched.pdf"
+    ],
     appUrl: "https://intelligent-procurement-assistant.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "2025-08-08",
     relatedBestPractices: [
@@ -74,7 +80,7 @@ export const projects = [
         title: "Vector-based RAG (2/2) Query Pipeline"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/intelligent-procurement-assistant",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/intelligent-procurement-assistant",
     internalSourceCodeUrl2: "https://github.tools.sap/sap-btp-ai-services-coe/nielsen-streamlit",
     isExternal: true
@@ -90,14 +96,14 @@ export const projects = [
     docsPath: "product-catalog-search",
     onePagerFile: "",
     sampleFiles: [],
-    appUrl: "https://product-catalog-seach.cfapps.eu10-004.hana.ondemand.com/grounding-product-catalog",
+    appUrl: "https://product-catalog-seach-public.cfapps.eu10-004.hana.ondemand.com/grounding-product-catalog",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/product-catalog-seach",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/european-commission-product-catalog-seach",
     isExternal: true
   },
@@ -165,7 +171,7 @@ export const projects = [
     ],
     sourceCodeUrl: "",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/procurement_assistant",
-    onePagerFile: "images/Slide14.jpg",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
@@ -186,15 +192,16 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/post-sales-chatbot",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Zapata_Bot",
     onePagerFile: "images/Slide18.jpg",
     isExternal: true
   },
   {
     id: "sap-rfqx-document-analysis-application-v2",
-    title: "SAP RFQx Document Analysis Application v2",
-    description: "Quick analyzer of RFQ documents to extract key relevant data and compare offers side by side, suggest best providers and chat about the documents.",
+    title: "Intelligent Negotiation Assistant in Procurement",
+    description:
+      "An AI-powered solution for comparing RFP/RFQ responses, highlighting key offer details, and providing interactive dashboards with part comparisons, certifications, cost breakdowns, and risk insights—complete with a chatbot to access specific information instantly",
     categories: [],
     industries: [],
     icon: "compare-2",
@@ -218,6 +225,7 @@ export const projects = [
     ],
     sourceCodeUrl: "",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Traton_RFQx",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
@@ -245,7 +253,7 @@ export const projects = [
         title: "Graph-based RAG (2/2) KG Query Pipeline"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/rfqx-doc-analysis-utilities",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/UC_RFQ",
     isExternal: true
   },
@@ -266,8 +274,30 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-pdf-information-extraction",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Sesajal_DataExtraction",
+    onePagerFile: "",
+    isExternal: true
+  },
+  {
+    id: "ai-assisted-customer-credit-check",
+    title: "AI Assisted Customer Credit Check",
+    description: "A document processing and credit evaluation engine with integrated report generation.",
+    categories: [],
+    industries: ["Financial Services"],
+    icon: "money-bills",
+    docsPath: "ai-assisted-customer-credit-check",
+    sampleFiles: ["data/CGV.pdf", "data/Commercial Investigation.pdf", "data/CSF.pdf", "data/KYC.pdf", "data/Legal Investigation.pdf", "data/Vendor Comments.pdf"],
+    appUrl: "https://credit_creation.cfapps.eu10-004.hana.ondemand.com/",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "",
+    internalSourceCodeUrl: "",
     onePagerFile: "images/Slide44.jpg",
     isExternal: true
   },
@@ -292,7 +322,7 @@ export const projects = [
         title: "Vector-based RAG (1/2) Embedding"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/ai-capability-matcher",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/AI-Category-Matcher",
     isExternal: true
   },
@@ -447,7 +477,7 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "",
     videoUrl: "",
-    onePagerFile: "images/Slide50.jpg",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
@@ -481,7 +511,7 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/pm-data-science",
     videoUrl: "",
-    onePagerFile: "images/Slide42.jpg",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
@@ -529,6 +559,12 @@ export const projects = [
     sampleFiles: [],
     appUrl: "",
     completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/adidas-V1",
     videoUrl: "",
@@ -546,6 +582,12 @@ export const projects = [
     sampleFiles: [],
     appUrl: "https://btp-ai-sandbox.launchpad.cfapps.eu10.hana.ondemand.com/27c95a73-2650-41aa-9bf2-0c7d61e48d12.logreportservice.sapbtpailog-0.0.1/index.html",
     completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-log-analyzer",
     videoUrl: "",
@@ -605,6 +647,23 @@ export const projects = [
     isExternal: true
   },
   {
+    id: "sales-order-extractor",
+    title: "Sales Order Extractor",
+    description: "Extract sales order data from PDF/Excel documents using AI and automatically create sales orders in SAP HANA.",
+    categories: [],
+    industries: [],
+    icon: "sales-order",
+    docsPath: "sales-order-extractor",
+    sampleFiles: [],
+    appUrl: "https://sales-order-extractor-ui.cfapps.eu10-004.hana.ondemand.com/pdf-extraction",
+    completionDate: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/sales-order-extractor",
+    originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Organic-Valley_final",
+    videoUrl: "",
+    onePagerFile: "",
+    isExternal: true
+  },
+  {
     id: "partial-payment-investigation",
     title: "Partial Payment Investigation",
     description:
@@ -638,7 +697,7 @@ export const projects = [
     icon: "simulate",
     docsPath: "dynamic-pricing-simulation",
     sampleFiles: [],
-    appUrl: "",
+    appUrl: "https://fgf_margin_prototype.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "",
