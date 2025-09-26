@@ -1,0 +1,11 @@
+{
+  "project_name": "Test",
+  "created_at": "2025-06-20T22:06:46.730261",
+  "last_modified": "2025-06-20T22:06:46.730266",
+  "version": "1.0",
+  "summary": {
+    "num_providers": 3,
+    "has_analysis": true,
+    "has_graph": true
+  }
+}

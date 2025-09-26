@@ -1,0 +1,12 @@
+# .streamlit/config.toml
+[theme]
+base = "light"
+# Main SAP Brand color (Blue/7)
+primaryColor = "#0070F2"
+#  SAP Grey/1
+backgroundColor = "#F5F6F7"
+# SAP Grey/2
+secondaryBackgroundColor = "#EAECEE"
+#  — SAP Grey/10
+textColor = "#1A2733"
+font = "sans serif"
