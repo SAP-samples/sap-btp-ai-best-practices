@@ -1,0 +1,27 @@
+Client Product,Category,Subcategory,Department,Description,Channel,Constraints,Owner,Budget,Region
+Retail Cam Guard,Computer Vision,Object Detection,Security,"Camera analytics to detect shoplifting and safety hazards in aisles.",in-store,Edge hardware only,Loss Prevention,120000,NA
+Mobile Image Tagger,Computer Vision,Image Classification,Digital,"Auto-tagging product photos captured by field reps.",mobile,Battery optimized,Marketing,30000,EU
+Invoice Reader Pro,Document AI,Optical Character Recognition,Finance,"Extract invoice headers, line items, and totals for ERP ingestion.",email,"Must support PDFs and scans",AP Team,60000,NA
+Policy Q&A Assistant,Document AI,Question Answering,HR,"Internal assistant to answer HR policy questions with sources.",web,On-prem option required,HR Ops,40000,APAC
+Customer Care Bot,Conversational AI,Chatbot,Support,"24/7 customer chat for order status, returns, and FAQs.",web + WhatsApp,Multilingual required,Support,80000,NA
+Contact Center Transcriber,Speech,Speech to Text,Support,"Live transcript for call center with speaker attribution.",voice,Real-time and batch,Support,70000,EU
+Marketing Voiceover,Speech,Text to Speech,Marketing,"Generate product demo voiceovers in multiple languages.",web,SSML support needed,Marketing,20000,Global
+Ecom Recommender,Recommendations,Collaborative Filtering,Ecommerce,"Personalized recommendations on PDP and cart pages.",web,Integrate with Magento,Digital,90000,NA
+Demand Planner,Time Series,Forecasting,Supply Chain,"Forecast weekly demand with promo and price effects.",batch,Export to Snowflake,Planning,100000,Global
+IoT Anomaly Watch,Monitoring,Anomaly Detection,Operations,"Detect anomalies in sensor streams from factory lines.",iot,Hybrid cloud,Operations,85000,EU
+Backoffice Automation,Automation,RPA,IT,"Automate invoice entry, HR onboarding, and ticket triage.",desktop,"No code preferred",IT,120000,NA
+Catalog Search Upgrade,Search,Semantic Search,Digital,"Improve search relevance with semantic understanding and synonyms.",web,Relevance tuning UI,Digital,50000,NA
+Sales Content Writer,Generative AI,Text Generation,Sales,"Draft outreach emails and proposals with brand tone.",web,Guardrails for PII,Sales,45000,Global
+Executive Summaries,NLP,Summarization,Operations,"Summarize weekly ops reports into executive briefs.",web,Must cite sources,Operations,25000,EU
+Global Translation,NLP,Translation,Support,"Translate knowledge base and support chats in 15 languages.",web,Glossary management,Support,70000,Global
+Review Insights,NLP,Sentiment Analysis,Product,"Analyze app store reviews for sentiment and key themes.",mobile,Aspect-level needed,Product,30000,NA
+Resume Parser,NLP,Named Entity Recognition,HR,"Extract skills, titles, and companies from resumes with confidence.",web,Data residency EU,Recruiting,60000,EU
+AutoML for KPIs,ML,AutoML (Tabular),Data Science,"Build models for churn, LTV, and conversion with low code.",web,Export feature importance,Analytics,150000,Global
+Fraud Guard,Finance,Fraud Detection,Risk,"Score ecommerce transactions and flag risky behavior in real time.",web,PCI compliant,Risk,200000,NA
+Visual Similarity Search,Computer Vision,Visual Search,Digital,"Allow users to search by image for similar products.",web,Fast latency,Digital,50000,Global
+Store Catchment Maps,Geo,Geospatial Clustering,Real Estate,"Cluster store locations to plan new openings and marketing.",web,Map visualizations,Real Estate,40000,NA
+A/B Testing Suite,Marketing,Experimentation,Marketing,"Design and analyze experiments across web and email channels.",web,Stats engine audit,Marketing,45000,EU
+Topic Discovery,NLP,Topic Modeling,Research,"Identify emergent topics in community forums and tickets.",web,Export topic labels,Research,15000,Global
+Data Quality Hub,Data,Data Quality,IT,"De-duplicate customers and standardize addresses and names.",batch,APIs and UI,Data Platform,80000,NA
+Compliance Redactor,Legal,PII/PHI Redaction,Legal,"Redact sensitive information from contracts and medical forms.",batch,On-prem processing,Legal,110000,EU
+
