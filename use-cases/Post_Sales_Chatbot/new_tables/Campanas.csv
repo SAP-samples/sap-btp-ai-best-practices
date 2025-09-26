@@ -1,0 +1,6 @@
+﻿CodigoCampana,DescripcionCampana,IdOperacion,IdMaterial,FechaInicio,FechaFin,Vin
+CA01,Campaña de cambio de bolsa de Aire,41,2345679,01.01.2025,31.01.2025,2FMPK3K95LBA21592
+CA02,Campaña de nitrogeno en llantas,42,2345680,01.02.2025,28.02.2025,LJXBS5A33PYF23456
+CA03,Campaña Cambio de bateria,51,2345681,01.03.2025,31.03.2025,1FADP3F20DL120088
+CA04,Campaña de valvulas de aire,33,2345682,01.04.2025,30.04.2025,1FMDE5CP5NLA85105
+CA05,Cambio de tapones de llantas ,25,2345683,01.05.2025,31.052025,WF0RS5HP1MTP30730
