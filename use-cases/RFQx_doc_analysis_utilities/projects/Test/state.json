@@ -1,0 +1,1646 @@
+{
+  "project_name": "Test",
+  "last_modified": "2025-06-20T22:06:46.725830",
+  "providers": [
+    {
+      "id": "886e918a-cd52-43d1-8c3e-6496826c6263",
+      "name": "LuminaDrive Solutions",
+      "processed_content": "",
+      "extracted_data": {
+        "project_information": {
+          "project_title": "Advanced Forward Lighting System for Premium Commercial Trucks",
+          "project_description": "LuminaDrive Solutions is soliciting proposals for the design, manufacturing, and long-term supply of a next-generation primary headlight assembly for integration into our OEM partner's 2027 line of premium commercial trucks. The focus is on superior performance, durability, and technological innovation.",
+          "contracting_authority": "LuminaDrive Solutions GmbH",
+          "country_of_contracting_authority": "Germany",
+          "estimated_contract_value": "\u20ac15,000,000 - \u20ac20,000,000 annually",
+          "contract_duration": "5 years, with an option for a 3-year extension.",
+          "location_of_works_services": "Supplier's IATF 16949 certified facility. Delivery to LuminaDrive assembly plant in Leipzig, Germany.",
+          "contact_person_details": "Dr. Klaus Richter, Head of Strategic Sourcing, k.richter@luminadrive.de, +49 711 999 8282"
+        },
+        "key_dates_deadlines": {
+          "rfq_issue_date": "June 20, 2025",
+          "clarification_deadline": "July 1, 2025",
+          "submission_deadline": "July 18, 2025, 17:00 CET",
+          "contract_award_date": "August 15, 2025 (Projected)",
+          "contract_start_date": "September 1, 2025",
+          "contract_completion_date": "Not Found",
+          "rfq_validity_period": "120 days from submission deadline."
+        },
+        "scope_technical_requirements": {
+          "scope_of_work": "The selected vendor will be responsible for the end-to-end production of the headlight assembly, including sourcing of raw materials, manufacturing, assembly, rigorous quality control, and logistics.",
+          "methodology_requirements": "Not Found",
+          "technical_specifications": "Light Source: Matrix LED with adaptive beam shaping; Functionality: High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL Animation; Power Consumption: Max 65W at full operation (24V); Ingress Protection: IP69K (High-pressure washdown resistant); Housing Material: Forged 6061 Aluminum, Graphene-infused heat sink; Lens Material: Automotive-grade Polycarbonate with anti-scratch/anti-UV coating; Operating Voltage: 10V - 30V DC; Connectivity: CAN-FD and LIN bus compatible",
+          "required_outputs_deliverables": "250 prototype units by November 15, 2025. Ramp to 8,000 units/month by March 2026. Monthly quality and production reports.",
+          "equipment_or_materials": "Not Found",
+          "site_access_requirements": "Not Found",
+          "data_management_standards": "Not Found"
+        },
+        "supplier_requirements": {
+          "mandatory_supplier_information": "Not Found",
+          "financial_thresholds": "Not Found",
+          "insurance_requirements": "Minimum \u20ac10M public and product liability insurance.",
+          "health_and_safety_compliance": "Supplier must adhere to all local and national health and safety regulations and provide their safety policy document.",
+          "certifications_and_accreditations": "IATF 16949 certification for the manufacturing facility is mandatory. ISO 14001 for environmental management is highly desirable.",
+          "references_and_experience": "Bidders must provide at least three references from premium automotive OEMs they have supplied within the last 5 years.",
+          "key_personnel_qualifications": "Not Found",
+          "subcontractor_requirements": "Not Found",
+          "equality_diversity_inclusion": "Not Found"
+        },
+        "evaluation_criteria": {
+          "evaluation_methodology": "A points-based system will be used by a cross-functional team from Sourcing, Engineering, and Quality departments.",
+          "technical_criteria": "Technical Compliance & Innovation: 40%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+          "commercial_criteria": "Cost (Unit price, Tooling, Lifecycle Cost): 25%",
+          "scoring_system": "Technical Compliance & Innovation: 40%; Cost (Unit price, Tooling, Lifecycle Cost): 25%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+          "award_decision_basis": "The contract will be awarded to the bidder providing the Most Economically Advantageous Tender (MEAT), considering all evaluation criteria."
+        },
+        "pricing_payment": {
+          "pricing_format": "Provide a detailed cost breakdown including unit price, tiered volume discounts, and all non-recurring engineering (NRE) and tooling fees.",
+          "price_inclusions": "Unit price, tiered volume discounts, non-recurring engineering (NRE) and tooling fees.",
+          "payment_terms": "Net 60 days upon receipt of invoice and successful delivery of goods.",
+          "invoicing_requirements": "Not Found"
+        },
+        "legal_contractual": {
+          "terms_and_conditions": "The contract will be governed by LuminaDrive's standard supplier agreement, which will be provided upon NDA execution.",
+          "acceptance_of_terms": "Not Found",
+          "confidentiality_requirements": "A mutual Non-Disclosure Agreement must be signed prior to the exchange of any technical drawings or specifications.",
+          "intellectual_property_rights": "All IP developed specifically for this project will be the sole property of LuminaDrive Solutions GmbH.",
+          "freedom_of_information": "Not Found",
+          "anti_corruption_and_bribery": "Not Found",
+          "termination_clauses": "Not Found",
+          "dispute_resolution": "Arbitration will take place in Stuttgart, Germany."
+        },
+        "compliance_exclusion_grounds": {
+          "mandatory_exclusion_grounds": "Not Found",
+          "discretionary_exclusion_grounds": "Not Found",
+          "self_declaration_requirements": "Not Found",
+          "evidence_submission_timing": "Not Found"
+        },
+        "sustainability_social_value": {
+          "sustainability_commitments": "Not Found",
+          "social_value_requirements": "Not Found",
+          "modern_slavery_compliance": "Not Found"
+        },
+        "contract_management_reporting": {
+          "contract_management_arrangements": "The supplier will be assigned a dedicated Supplier Quality Engineer (SQE) from LuminaDrive.",
+          "progress_reporting_requirements": "Quarterly Business Reviews (QBRs) are mandatory.",
+          "key_project_milestones": "Prototype Delivery: Nov 15, 2025; Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026; Start of Production (SOP): Mar 1, 2026",
+          "quality_assurance_measures": "Not Found"
+        },
+        "dynamically_fetched_features": {
+          "additional_attributes": "Not Found",
+          "unique_requirements": "Not Found",
+          "special_conditions": "Not Found",
+          "other_relevant_information": "Not Found"
+        },
+        "_metadata": {
+          "source_document": "LuminaDrive Solutions_aggregated_documents",
+          "extraction_model": "gpt-4.1",
+          "source_tokens": 1221,
+          "response_tokens": 488.25,
+          "provider_name": "LuminaDrive Solutions",
+          "total_files": 1,
+          "valid_files": 1,
+          "aggregated_tokens": 1221,
+          "success_rate": 57.14285714285714,
+          "found_fields": 36,
+          "total_fields": 63
+        },
+        "_raw_content": "# RFQ Documents for Provider: LuminaDrive Solutions\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 1,124\n\n## Document 1: LuminaDrive Solutions.pdf\n**Type:** PDF\n**Size:** 67,875 bytes\n\n**Metadata:**\n- pages: 3\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nRequest for Proposal: Advanced Forward Lighting System\nRFP Reference: LDS-2025-HL-77B\nIssuance Date: June 20, 2025\nClosing Date for Submissions: July 18, 2025\nSection 1: Project Information\n\u25cf Project Title: Advanced Forward Lighting System for Premium Commercial Trucks\n\u25cf Project Description: LuminaDrive Solutions is soliciting proposals for the design,\nmanufacturing, and long-term supply of a next-generation primary headlight\nassembly for integration into our OEM partner's 2027 line of premium commercial\ntrucks. The focus is on superior performance, durability, and technological\ninnovation.\n\u25cf Contracting Authority: LuminaDrive Solutions GmbH\n\u25cf Country of Contracting Authority: Germany\n\u25cf Estimated Contract Value: \u20ac15,000,000 - \u20ac20,000,000 annually\n\u25cf Contract Duration: 5 years, with an option for a 3-year extension.\n\u25cf Location of Works/Services: Supplier's IATF 16949 certified facility. Delivery to\nLuminaDrive assembly plant in Leipzig, Germany.\n\u25cf Contact Person Details: Dr. Klaus Richter, Head of Strategic Sourcing,\nk.richter@luminadrive.de, +49 711 999 8282\nSection 2: Key Dates & Deadlines\n\u25cf RFQ Issue Date: June 20, 2025\n\u25cf Clarification Deadline: July 1, 2025\n\u25cf Submission Deadline: July 18, 2025, 17:00 CET\n\u25cf Contract Award Date: August 15, 2025 (Projected)\n\u25cf Contract Start Date: September 1, 2025\n\u25cf RFQ Validity Period: 120 days from submission deadline.\nSection 3: Scope & Technical Requirements\n\u25cf Scope of Work: The selected vendor will be responsible for the end-to-end\nproduction of the headlight assembly, including sourcing of raw materials,\nmanufacturing, assembly, rigorous quality control, and logistics.\n\u25cf Technical Specifications:\n| Parameter | Required Specification |\n| :--- | :--- |\n| Light Source | Matrix LED with adaptive beam shaping |\n| Functionality | High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL\nAnimation |\n| Power Consumption| Max 65W at full operation (24V) |\n\n---\n\n### Page 2\n\n| Ingress Protection | IP69K (High-pressure washdown resistant) |\n| Housing Material | Forged 6061 Aluminum, Graphene-infused heat sink |\n| Lens Material | Automotive-grade Polycarbonate with anti-scratch/anti-UV\ncoating |\n| Operating Voltage | 10V - 30V DC |\n| Connectivity | CAN-FD and LIN bus compatible |\n\u25cf Required Outputs & Deliverables: 250 prototype units by November 15, 2025.\nRamp to 8,000 units/month by March 2026. Monthly quality and production\nreports.\nSection 4: Supplier Requirements\n\u25cf Certifications and Accreditations: IATF 16949 certification for the\nmanufacturing facility is mandatory. ISO 14001 for environmental management is\nhighly desirable.\n\u25cf References and Experience: Bidders must provide at least three references from\npremium automotive OEMs they have supplied within the last 5 years.\n\u25cf Health and Safety Compliance: Supplier must adhere to all local and national\nhealth and safety regulations and provide their safety policy document.\n\u25cf Insurance Requirements: Minimum \u20ac10M public and product liability insurance.\nSection 5: Evaluation Criteria\n\u25cf Evaluation Methodology: A points-based system will be used by a\ncross-functional team from Sourcing, Engineering, and Quality departments.\n\u25cf Scoring System:\n\u25cb Technical Compliance & Innovation: 40%\n\u25cb Cost (Unit price, Tooling, Lifecycle Cost): 25%\n\u25cb Quality Systems & Certifications: 20%\n\u25cb Supply Chain & Scalability: 15%\n\u25cf Award Decision Basis: The contract will be awarded to the bidder providing the\nMost Economically Advantageous Tender (MEAT), considering all evaluation\ncriteria.\nSection 6: Pricing & Payment\n\u25cf Pricing Format: Provide a detailed cost breakdown including unit price, tiered\nvolume discounts, and all non-recurring engineering (NRE) and tooling fees.\n\u25cf Payment Terms: Net 60 days upon receipt of invoice and successful delivery of\ngoods.\nSection 7: Legal & Contractual\n\u25cf Terms and Conditions: The contract will be governed by LuminaDrive's standard\n\n---\n\n### Page 3\n\nsupplier agreement, which will be provided upon NDA execution.\n\u25cf Confidentiality Requirements: A mutual Non-Disclosure Agreement must be\nsigned prior to the exchange of any technical drawings or specifications.\n\u25cf Intellectual Property Rights: All IP developed specifically for this project will be\nthe sole property of LuminaDrive Solutions GmbH.\n\u25cf Dispute Resolution: Arbitration will take place in Stuttgart, Germany.\nSection 8: Contract Management\n\u25cf Contract Management Arrangements: The supplier will be assigned a\ndedicated Supplier Quality Engineer (SQE) from LuminaDrive.\n\u25cf Progress Reporting Requirements: Quarterly Business Reviews (QBRs) are\nmandatory.\n\u25cf Key Project Milestones:\n\u25cb Prototype Delivery: Nov 15, 2025\n\u25cb Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026\n\u25cb Start of Production (SOP): Mar 1, 2026\n\n---\n"
+      },
+      "status": "completed",
+      "error_message": "",
+      "token_count": 1221
+    },
+    {
+      "id": "3231b8e3-8ec4-4c7d-a4d3-c5c07a7bfe28",
+      "name": "NextGen Lighting",
+      "processed_content": "",
+      "extracted_data": {
+        "project_information": {
+          "project_title": "NGL 'Aura' Smart Light Module Production",
+          "project_description": "Production of the 'Aura' module, a fully integrated LED headlight assembly. NextGen Lighting Inc. provides the design and software; the partner will handle hardware manufacturing, including sourcing, manufacturing, testing, and packaging based on provided designs.",
+          "contracting_authority": "NextGen Lighting Inc.",
+          "country_of_contracting_authority": "USA",
+          "estimated_contract_value": "Not Found",
+          "contract_duration": "3-year initial agreement",
+          "location_of_works_services": "Your facility. We're flexible on location, but prefer partners with strong logistics to North America.",
+          "contact_person_details": "Brenda Chen (brenda@nextgenlight.io)"
+        },
+        "key_dates_deadlines": {
+          "rfq_issue_date": "June 22, 2025",
+          "clarification_deadline": "Not Found",
+          "submission_deadline": "July 20, 2025",
+          "contract_award_date": "Not Found",
+          "contract_start_date": "Not Found",
+          "contract_completion_date": "Not Found",
+          "rfq_validity_period": "Not Found"
+        },
+        "scope_technical_requirements": {
+          "scope_of_work": "Responsible for sourcing, manufacturing, testing, and packaging the 'Aura' module based on NextGen Lighting's designs (to be provided under NDA).",
+          "methodology_requirements": "Not Found",
+          "technical_specifications": "Lighting Tech: Projector-based LED system. Key Features: Standard High & Low Beam, Integrated programmable RGB DRL strip, Bluetooth Low Energy (BLE) for app configuration. Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color temp; Under 75W power usage; IP67 rating.",
+          "required_outputs_deliverables": "50 functional units for validation by Q4 2025. Then scale to 5,000 units/month by Q2 2026.",
+          "equipment_or_materials": "Not Found",
+          "site_access_requirements": "Not Found",
+          "data_management_standards": "Not Found"
+        },
+        "supplier_requirements": {
+          "mandatory_supplier_information": "A summary of your company's capabilities.",
+          "financial_thresholds": "Not Found",
+          "insurance_requirements": "Not Found",
+          "health_and_safety_compliance": "Not Found",
+          "certifications_and_accreditations": "Must have a strong quality system (ISO 9001 is a must).",
+          "references_and_experience": "Experience with electronics integration is key.",
+          "key_personnel_qualifications": "Not Found",
+          "subcontractor_requirements": "Not Found",
+          "equality_diversity_inclusion": "Not Found"
+        },
+        "evaluation_criteria": {
+          "evaluation_methodology": "No complex scoring sheet. Partner will be chosen based on alignment with technical needs, cost targets, and company culture.",
+          "technical_criteria": "Alignment with technical needs; experience with electronics integration.",
+          "commercial_criteria": "Alignment with cost targets; rough cost estimate per unit at 5k/month volume.",
+          "scoring_system": "Not Found",
+          "award_decision_basis": "Finding the right fit based on technical needs, cost targets, and company culture."
+        },
+        "pricing_payment": {
+          "pricing_format": "Rough cost estimate per unit at 5k/month volume; estimated cost for tooling and setup.",
+          "price_inclusions": "Not Found",
+          "payment_terms": "Not Found",
+          "invoicing_requirements": "Not Found"
+        },
+        "legal_contractual": {
+          "terms_and_conditions": "Open to signing NextGen Lighting's standard NDA and MSA.",
+          "acceptance_of_terms": "A note that you're open to signing our standard NDA and MSA.",
+          "confidentiality_requirements": "Standard NDA required.",
+          "intellectual_property_rights": "All our IP remains ours, of course.",
+          "freedom_of_information": "Not Found",
+          "anti_corruption_and_bribery": "Not Found",
+          "termination_clauses": "Not Found",
+          "dispute_resolution": "Not Found"
+        },
+        "compliance_exclusion_grounds": {
+          "mandatory_exclusion_grounds": "Not Found",
+          "discretionary_exclusion_grounds": "Not Found",
+          "self_declaration_requirements": "Not Found",
+          "evidence_submission_timing": "Not Found"
+        },
+        "sustainability_social_value": {
+          "sustainability_commitments": "Commit to sustainability goals, like using recyclable packaging and minimizing waste.",
+          "social_value_requirements": "Not Found",
+          "modern_slavery_compliance": "Not Found"
+        },
+        "contract_management_reporting": {
+          "contract_management_arrangements": "Open communication. Expect weekly sync calls and a shared Slack channel.",
+          "progress_reporting_requirements": "Not Found",
+          "key_project_milestones": "50 functional units for validation by Q4 2025; scale to 5,000 units/month by Q2 2026.",
+          "quality_assurance_measures": "Must have a strong quality system (ISO 9001 is a must)."
+        },
+        "dynamically_fetched_features": {
+          "additional_attributes": "Statement on how you would handle the electronics integration (our BLE chip on your board).",
+          "unique_requirements": "Targeting 5-year warranty terms.",
+          "special_conditions": "Long-term partnership, not just a simple contract.",
+          "other_relevant_information": "Instead of a long, formal proposal, just send an email covering the requested points."
+        },
+        "_metadata": {
+          "source_document": "NextGen Lighting_aggregated_documents",
+          "extraction_model": "gpt-4.1",
+          "source_tokens": 758,
+          "response_tokens": 387.75,
+          "provider_name": "NextGen Lighting",
+          "total_files": 1,
+          "valid_files": 1,
+          "aggregated_tokens": 758,
+          "success_rate": 50.79365079365079,
+          "found_fields": 32,
+          "total_fields": 63
+        },
+        "_raw_content": "# RFQ Documents for Provider: NextGen Lighting\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 666\n\n## Document 1: NextGen Lighting.pdf\n**Type:** PDF\n**Size:** 56,102 bytes\n\n**Metadata:**\n- pages: 2\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nPartner Request: The NGL 'Aura' Smart Light Module\nProject Code: AURA-26\nDate: June 22, 2025\nLet's Talk By: July 20, 2025\nWho We Are:\nNextGen Lighting Inc. is a Silicon Valley startup reimagining vehicle lighting. We're looking for\na forward-thinking manufacturing partner to help us scale.\n\u25cf Project Title: NGL 'Aura' Smart Light Module Production\n\u25cf Contracting Authority: NextGen Lighting Inc.\n\u25cf Country: USA\n\u25cf Contact: Brenda Chen (brenda@nextgenlight.io)\n\u25cf Location of Services: Your facility. We're flexible on location, but prefer partners\nwith strong logistics to North America.\nThe Product: What we need built\nWe have the design and the software; we need you to handle the hardware\nmanufacturing. The 'Aura' module is a fully integrated LED headlight assembly.\n\u25cf Scope of Work: You will be responsible for sourcing, manufacturing, testing, and\npackaging the 'Aura' module based on our designs (to be provided under NDA).\n\u25cf Technical Specifications:\n\u25cb Lighting Tech: Projector-based LED system.\n\u25cb Key Features: Standard High & Low Beam, Integrated programmable RGB\nDRL strip, Bluetooth Low Energy (BLE) for app configuration.\n\u25cb Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color\ntemp; Under 75W power usage; IP67 rating.\n\u25cf Required Outputs: 50 functional units for validation by Q4 2025. Then scale to\n5,000 units/month by Q2 2026.\nThe Partnership: How we'll work together\nWe see this as a long-term partnership, not just a simple contract.\n\u25cf Contract Duration: We envision a 3-year initial agreement.\n\u25cf Supplier Requirements:\n\u25cb Must have a strong quality system (ISO 9001 is a must).\n\u25cb Experience with electronics integration is key.\n\u25cb We want partners who will commit to our sustainability goals, like using\nrecyclable packaging and minimizing waste.\n\u25cf Evaluation: We're not using a complex scoring sheet. We'll choose the partner\nwho best aligns with our technical needs, cost targets, and company culture. It's\nabout finding the right fit.\n\n---\n\n### Page 2\n\n\u25cf Contract Management: We believe in open communication. Expect weekly sync\ncalls and a shared Slack channel.\nWhat We Need From You\nInstead of a long, formal proposal, just send us an email covering these points:\n1. A summary of your company's capabilities.\n2. Pricing: A rough cost estimate per unit at a 5k/month volume.\n3. Tooling: Your estimated cost for tooling and setup.\n4. Electronics: A statement on how you would handle the electronics integration\n(our BLE chip on your board).\n5. Legal: Your standard warranty terms (we're targeting 5 years) and a note that\nyou're open to signing our standard NDA and MSA. All our IP remains ours, of\ncourse.\n6. Deadlines: Can you meet our Q4 2025 target for the first 50 units?\n\n---\n"
+      },
+      "status": "completed",
+      "error_message": "",
+      "token_count": 758
+    },
+    {
+      "id": "82c96d2b-da69-4ee1-8a4b-64822b8f6922",
+      "name": "Steadfast Auto Parts",
+      "processed_content": "",
+      "extracted_data": {
+        "project_information": {
+          "project_title": "High-Volume 7-inch Round LED Headlight",
+          "project_description": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions.",
+          "contracting_authority": "Steadfast Auto Parts, Hong Kong Division",
+          "country_of_contracting_authority": "Hong Kong S.A.R.",
+          "estimated_contract_value": "Not Found",
+          "contract_duration": "2 years initial term, with annual renewal based on performance.",
+          "location_of_works_services": "Supplier's facility. Delivery to our warehouse in Kwai Chung, Hong Kong.",
+          "contact_person_details": "David Chen, Sourcing Manager"
+        },
+        "key_dates_deadlines": {
+          "rfq_issue_date": "06/21/2025",
+          "clarification_deadline": "Not Found",
+          "submission_deadline": "July 16, 2025",
+          "contract_award_date": "August 2025",
+          "contract_start_date": "September 2025",
+          "contract_completion_date": "Not Found",
+          "rfq_validity_period": "Not Found"
+        },
+        "scope_technical_requirements": {
+          "scope_of_work": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions.",
+          "methodology_requirements": "Not Found",
+          "technical_specifications": "PART NO: HL-700-STD; TECHNOLOGY: Standard Reflector LED; BEAM: High/Low Beam mandatory; INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option; MAX POWER DRAW: 80W; WATERPROOF RATING: IP67; VOLTAGE: 12V/24V compatible; LENS: Hard-coated Polycarbonate; HOUSING: Die-cast Aluminum. Black powder coat; CERTIFICATION: DOT/SAE compliant.",
+          "required_outputs_deliverables": "Initial order of 1,000 units by Dec 1, 2025. Ramp to 15,000 units/month.",
+          "equipment_or_materials": "Not Found",
+          "site_access_requirements": "Not Found",
+          "data_management_standards": "Not Found"
+        },
+        "supplier_requirements": {
+          "mandatory_supplier_information": "Company registration, bank details, facility address.",
+          "financial_thresholds": "Not Found",
+          "insurance_requirements": "Not Found",
+          "health_and_safety_compliance": "Not Found",
+          "certifications_and_accreditations": "ISO 9001 certification is mandatory. Submit a copy of your certificate.",
+          "references_and_experience": "Must have experience producing automotive lighting at >10,000 units/month. Provide evidence.",
+          "key_personnel_qualifications": "Not Found",
+          "subcontractor_requirements": "Not Found",
+          "equality_diversity_inclusion": "Not Found"
+        },
+        "evaluation_criteria": {
+          "evaluation_methodology": "Evaluation Criteria: 1. Price per unit (70%) 2. Demonstrated Production Capacity (20%) 3. Warranty & Lead Time (10%)",
+          "technical_criteria": "Demonstrated Production Capacity; Warranty & Lead Time",
+          "commercial_criteria": "Price per unit",
+          "scoring_system": "Price per unit (70%), Demonstrated Production Capacity (20%), Warranty & Lead Time (10%)",
+          "award_decision_basis": "The contract will be awarded to the lowest-cost bidder that meets all mandatory technical and quality requirements."
+        },
+        "pricing_payment": {
+          "pricing_format": "Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling fees.",
+          "price_inclusions": "Price must be Delivered Duty Paid (DDP) to our Hong Kong warehouse.",
+          "payment_terms": "50% on PO, 50% Net 30 after delivery.",
+          "invoicing_requirements": "Invoices must reference RFQ ID SAP-HK-25-4501."
+        },
+        "legal_contractual": {
+          "terms_and_conditions": "See attached document SAP_Standard_TCs_2025.pdf. Submission of a quote implies acceptance of these terms.",
+          "acceptance_of_terms": "Submission of a quote implies acceptance of these terms.",
+          "confidentiality_requirements": "Not Found",
+          "intellectual_property_rights": "Not Found",
+          "freedom_of_information": "Not Found",
+          "anti_corruption_and_bribery": "Not Found",
+          "termination_clauses": "Not Found",
+          "dispute_resolution": "Not Found"
+        },
+        "compliance_exclusion_grounds": {
+          "mandatory_exclusion_grounds": "Not Found",
+          "discretionary_exclusion_grounds": "Not Found",
+          "self_declaration_requirements": "Not Found",
+          "evidence_submission_timing": "Not Found"
+        },
+        "sustainability_social_value": {
+          "sustainability_commitments": "Not Found",
+          "social_value_requirements": "Not Found",
+          "modern_slavery_compliance": "Not Found"
+        },
+        "contract_management_reporting": {
+          "contract_management_arrangements": "Not Found",
+          "progress_reporting_requirements": "Weekly production updates via email.",
+          "key_project_milestones": "First article inspection (FAI) approval before first mass production run.",
+          "quality_assurance_measures": "We reserve the right to perform on-site quality audits twice per year."
+        },
+        "dynamically_fetched_features": {
+          "additional_attributes": "Warranty: Minimum 3-Year standard warranty is required.",
+          "unique_requirements": "Quote turn signal version as an option.",
+          "special_conditions": "Not Found",
+          "other_relevant_information": "SUBMIT TO: sourcing.apac@steadfastauto.com"
+        },
+        "_metadata": {
+          "source_document": "Steadfast Auto Parts_aggregated_documents",
+          "extraction_model": "gpt-4.1",
+          "source_tokens": 820,
+          "response_tokens": 366.75,
+          "provider_name": "Steadfast Auto Parts",
+          "total_files": 1,
+          "valid_files": 1,
+          "aggregated_tokens": 820,
+          "success_rate": 53.96825396825397,
+          "found_fields": 34,
+          "total_fields": 63
+        },
+        "_raw_content": "# RFQ Documents for Provider: Steadfast Auto Parts\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 724\n\n## Document 1: Steadfast Auto Parts.pdf\n**Type:** PDF\n**Size:** 57,556 bytes\n\n**Metadata:**\n- pages: 2\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nREQUEST FOR QUOTATION - COMMERCIAL TRUCK HEADLIGHT\nRFQ IDENTIFIER: SAP-HK-25-4501\nPOSTED: 06/21/2025\nRESPONSE DEADLINE: 07/16/2025\nSUBMIT TO: sourcing.apac@steadfastauto.com\nA. Project & Authority\n\u25cf Project Title: High-Volume 7-inch Round LED Headlight\n\u25cf Contracting Authority: Steadfast Auto Parts, Hong Kong Division\n\u25cf Country: Hong Kong S.A.R.\n\u25cf Contact Person: David Chen, Sourcing Manager\n\u25cf Contract Duration: 2 years initial term, with annual renewal based on\nperformance.\n\u25cf Location of Works: Supplier's facility. Delivery to our warehouse in Kwai Chung,\nHong Kong.\nB. Dates\n\u25cf Submission Deadline: July 16, 2025\n\u25cf Contract Award Date: August 2025\n\u25cf Contract Start Date: September 2025\nC. Scope of Work\n\u25cf Work Scope: Supply a standard 7-inch round LED headlight assembly. This is a\nhigh-volume contract for our aftermarket and fleet vehicle divisions.\n\u25cf Technical Specifications:\n\u25cb PART NO: HL-700-STD\n\u25cb TECHNOLOGY: Standard Reflector LED\n\u25cb BEAM: High/Low Beam mandatory.\n\u25cb INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option.\n\u25cb MAX POWER DRAW: 80W\n\u25cb WATERPROOF RATING: IP67\n\u25cb VOLTAGE: 12V/24V compatible.\n\u25cb LENS: Hard-coated Polycarbonate.\n\u25cb HOUSING: Die-cast Aluminum. Black powder coat.\n\u25cb CERTIFICATION: DOT/SAE compliant.\n\u25cf Required Deliverables: Initial order of 1,000 units by Dec 1, 2025. Ramp to\n15,000 units/month.\nD. Supplier & Quality\n\n---\n\n### Page 2\n\n\u25cf Mandatory Info: Company registration, bank details, facility address.\n\u25cf Certifications: ISO 9001 certification is mandatory. Submit a copy of your\ncertificate.\n\u25cf Experience: Must have experience producing automotive lighting at >10,000\nunits/month. Provide evidence.\nE. Evaluation & Award\n\u25cf Evaluation Criteria:\n1. Price per unit (70%)\n2. Demonstrated Production Capacity (20%)\n3. Warranty & Lead Time (10%)\n\u25cf Award Decision: The contract will be awarded to the lowest-cost bidder that\nmeets all mandatory technical and quality requirements.\nF. Pricing & Payment\n\u25cf Pricing Format: Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling\nfees.\n\u25cf Price Inclusions: Price must be Delivered Duty Paid (DDP) to our Hong Kong\nwarehouse.\n\u25cf Payment Terms: 50% on PO, 50% Net 30 after delivery.\n\u25cf Invoicing: Invoices must reference RFQ ID SAP-HK-25-4501.\nG. Legal\n\u25cf Terms and Conditions: See attached document SAP_Standard_TCs_2025.pdf.\nSubmission of a quote implies acceptance of these terms.\n\u25cf Warranty: Minimum 3-Year standard warranty is required.\nH. Contract Management\n\u25cf Reporting: Weekly production updates via email.\n\u25cf Quality Assurance: We reserve the right to perform on-site quality audits twice\nper year.\n\u25cf Milestones: First article inspection (FAI) approval before first mass production\nrun.\n\n---\n"
+      },
+      "status": "completed",
+      "error_message": "",
+      "token_count": 820
+    }
+  ],
+  "num_providers": 3,
+  "custom_features": [],
+  "dynamic_extraction_enabled": true,
+  "feature_activation": {
+    "project_information": {
+      "project_title": true,
+      "project_description": true,
+      "contracting_authority": true,
+      "country_of_contracting_authority": true,
+      "estimated_contract_value": true,
+      "contract_duration": true,
+      "location_of_works_services": true,
+      "contact_person_details": true
+    },
+    "key_dates_deadlines": {
+      "rfq_issue_date": true,
+      "clarification_deadline": true,
+      "submission_deadline": true,
+      "contract_award_date": true,
+      "contract_start_date": true,
+      "contract_completion_date": true,
+      "rfq_validity_period": true
+    },
+    "scope_technical_requirements": {
+      "scope_of_work": true,
+      "methodology_requirements": true,
+      "technical_specifications": true,
+      "required_outputs_deliverables": true,
+      "equipment_or_materials": true,
+      "site_access_requirements": true,
+      "data_management_standards": true
+    },
+    "supplier_requirements": {
+      "mandatory_supplier_information": true,
+      "financial_thresholds": true,
+      "insurance_requirements": true,
+      "health_and_safety_compliance": true,
+      "certifications_and_accreditations": true,
+      "references_and_experience": true,
+      "key_personnel_qualifications": true,
+      "subcontractor_requirements": true,
+      "equality_diversity_inclusion": true
+    },
+    "evaluation_criteria": {
+      "evaluation_methodology": true,
+      "technical_criteria": true,
+      "commercial_criteria": true,
+      "scoring_system": true,
+      "award_decision_basis": true
+    },
+    "pricing_payment": {
+      "pricing_format": true,
+      "price_inclusions": true,
+      "payment_terms": true,
+      "invoicing_requirements": true
+    },
+    "legal_contractual": {
+      "terms_and_conditions": true,
+      "acceptance_of_terms": true,
+      "confidentiality_requirements": true,
+      "intellectual_property_rights": true,
+      "freedom_of_information": true,
+      "anti_corruption_and_bribery": true,
+      "termination_clauses": true,
+      "dispute_resolution": true
+    },
+    "compliance_exclusion_grounds": {
+      "mandatory_exclusion_grounds": true,
+      "discretionary_exclusion_grounds": true,
+      "self_declaration_requirements": true,
+      "evidence_submission_timing": true
+    },
+    "sustainability_social_value": {
+      "sustainability_commitments": true,
+      "social_value_requirements": true,
+      "modern_slavery_compliance": true
+    },
+    "contract_management_reporting": {
+      "contract_management_arrangements": true,
+      "progress_reporting_requirements": true,
+      "key_project_milestones": true,
+      "quality_assurance_measures": true
+    }
+  },
+  "document_features": {
+    "Steadfast Auto Parts": {
+      "project_information": {
+        "project_title": "High-Volume 7-inch Round LED Headlight",
+        "project_description": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions.",
+        "contracting_authority": "Steadfast Auto Parts, Hong Kong Division",
+        "country_of_contracting_authority": "Hong Kong S.A.R.",
+        "estimated_contract_value": "Not Found",
+        "contract_duration": "2 years initial term, with annual renewal based on performance.",
+        "location_of_works_services": "Supplier's facility. Delivery to our warehouse in Kwai Chung, Hong Kong.",
+        "contact_person_details": "David Chen, Sourcing Manager"
+      },
+      "key_dates_deadlines": {
+        "rfq_issue_date": "06/21/2025",
+        "clarification_deadline": "Not Found",
+        "submission_deadline": "July 16, 2025",
+        "contract_award_date": "August 2025",
+        "contract_start_date": "September 2025",
+        "contract_completion_date": "Not Found",
+        "rfq_validity_period": "Not Found"
+      },
+      "scope_technical_requirements": {
+        "scope_of_work": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions.",
+        "methodology_requirements": "Not Found",
+        "technical_specifications": "PART NO: HL-700-STD; TECHNOLOGY: Standard Reflector LED; BEAM: High/Low Beam mandatory; INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option; MAX POWER DRAW: 80W; WATERPROOF RATING: IP67; VOLTAGE: 12V/24V compatible; LENS: Hard-coated Polycarbonate; HOUSING: Die-cast Aluminum. Black powder coat; CERTIFICATION: DOT/SAE compliant.",
+        "required_outputs_deliverables": "Initial order of 1,000 units by Dec 1, 2025. Ramp to 15,000 units/month.",
+        "equipment_or_materials": "Not Found",
+        "site_access_requirements": "Not Found",
+        "data_management_standards": "Not Found"
+      },
+      "supplier_requirements": {
+        "mandatory_supplier_information": "Company registration, bank details, facility address.",
+        "financial_thresholds": "Not Found",
+        "insurance_requirements": "Not Found",
+        "health_and_safety_compliance": "Not Found",
+        "certifications_and_accreditations": "ISO 9001 certification is mandatory. Submit a copy of your certificate.",
+        "references_and_experience": "Must have experience producing automotive lighting at >10,000 units/month. Provide evidence.",
+        "key_personnel_qualifications": "Not Found",
+        "subcontractor_requirements": "Not Found",
+        "equality_diversity_inclusion": "Not Found"
+      },
+      "evaluation_criteria": {
+        "evaluation_methodology": "Evaluation Criteria: 1. Price per unit (70%) 2. Demonstrated Production Capacity (20%) 3. Warranty & Lead Time (10%)",
+        "technical_criteria": "Demonstrated Production Capacity; Warranty & Lead Time",
+        "commercial_criteria": "Price per unit",
+        "scoring_system": "Price per unit (70%), Demonstrated Production Capacity (20%), Warranty & Lead Time (10%)",
+        "award_decision_basis": "The contract will be awarded to the lowest-cost bidder that meets all mandatory technical and quality requirements."
+      },
+      "pricing_payment": {
+        "pricing_format": "Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling fees.",
+        "price_inclusions": "Price must be Delivered Duty Paid (DDP) to our Hong Kong warehouse.",
+        "payment_terms": "50% on PO, 50% Net 30 after delivery.",
+        "invoicing_requirements": "Invoices must reference RFQ ID SAP-HK-25-4501."
+      },
+      "legal_contractual": {
+        "terms_and_conditions": "See attached document SAP_Standard_TCs_2025.pdf. Submission of a quote implies acceptance of these terms.",
+        "acceptance_of_terms": "Submission of a quote implies acceptance of these terms.",
+        "confidentiality_requirements": "Not Found",
+        "intellectual_property_rights": "Not Found",
+        "freedom_of_information": "Not Found",
+        "anti_corruption_and_bribery": "Not Found",
+        "termination_clauses": "Not Found",
+        "dispute_resolution": "Not Found"
+      },
+      "compliance_exclusion_grounds": {
+        "mandatory_exclusion_grounds": "Not Found",
+        "discretionary_exclusion_grounds": "Not Found",
+        "self_declaration_requirements": "Not Found",
+        "evidence_submission_timing": "Not Found"
+      },
+      "sustainability_social_value": {
+        "sustainability_commitments": "Not Found",
+        "social_value_requirements": "Not Found",
+        "modern_slavery_compliance": "Not Found"
+      },
+      "contract_management_reporting": {
+        "contract_management_arrangements": "Not Found",
+        "progress_reporting_requirements": "Weekly production updates via email.",
+        "key_project_milestones": "First article inspection (FAI) approval before first mass production run.",
+        "quality_assurance_measures": "We reserve the right to perform on-site quality audits twice per year."
+      },
+      "dynamically_fetched_features": {
+        "additional_attributes": "Warranty: Minimum 3-Year standard warranty is required.",
+        "unique_requirements": "Quote turn signal version as an option.",
+        "special_conditions": "Not Found",
+        "other_relevant_information": "SUBMIT TO: sourcing.apac@steadfastauto.com"
+      },
+      "_metadata": {
+        "source_document": "Steadfast Auto Parts_aggregated_documents",
+        "extraction_model": "gpt-4.1",
+        "source_tokens": 820,
+        "response_tokens": 366.75,
+        "provider_name": "Steadfast Auto Parts",
+        "total_files": 1,
+        "valid_files": 1,
+        "aggregated_tokens": 820,
+        "success_rate": 53.96825396825397,
+        "found_fields": 34,
+        "total_fields": 63
+      },
+      "_raw_content": "# RFQ Documents for Provider: Steadfast Auto Parts\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 724\n\n## Document 1: Steadfast Auto Parts.pdf\n**Type:** PDF\n**Size:** 57,556 bytes\n\n**Metadata:**\n- pages: 2\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nREQUEST FOR QUOTATION - COMMERCIAL TRUCK HEADLIGHT\nRFQ IDENTIFIER: SAP-HK-25-4501\nPOSTED: 06/21/2025\nRESPONSE DEADLINE: 07/16/2025\nSUBMIT TO: sourcing.apac@steadfastauto.com\nA. Project & Authority\n\u25cf Project Title: High-Volume 7-inch Round LED Headlight\n\u25cf Contracting Authority: Steadfast Auto Parts, Hong Kong Division\n\u25cf Country: Hong Kong S.A.R.\n\u25cf Contact Person: David Chen, Sourcing Manager\n\u25cf Contract Duration: 2 years initial term, with annual renewal based on\nperformance.\n\u25cf Location of Works: Supplier's facility. Delivery to our warehouse in Kwai Chung,\nHong Kong.\nB. Dates\n\u25cf Submission Deadline: July 16, 2025\n\u25cf Contract Award Date: August 2025\n\u25cf Contract Start Date: September 2025\nC. Scope of Work\n\u25cf Work Scope: Supply a standard 7-inch round LED headlight assembly. This is a\nhigh-volume contract for our aftermarket and fleet vehicle divisions.\n\u25cf Technical Specifications:\n\u25cb PART NO: HL-700-STD\n\u25cb TECHNOLOGY: Standard Reflector LED\n\u25cb BEAM: High/Low Beam mandatory.\n\u25cb INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option.\n\u25cb MAX POWER DRAW: 80W\n\u25cb WATERPROOF RATING: IP67\n\u25cb VOLTAGE: 12V/24V compatible.\n\u25cb LENS: Hard-coated Polycarbonate.\n\u25cb HOUSING: Die-cast Aluminum. Black powder coat.\n\u25cb CERTIFICATION: DOT/SAE compliant.\n\u25cf Required Deliverables: Initial order of 1,000 units by Dec 1, 2025. Ramp to\n15,000 units/month.\nD. Supplier & Quality\n\n---\n\n### Page 2\n\n\u25cf Mandatory Info: Company registration, bank details, facility address.\n\u25cf Certifications: ISO 9001 certification is mandatory. Submit a copy of your\ncertificate.\n\u25cf Experience: Must have experience producing automotive lighting at >10,000\nunits/month. Provide evidence.\nE. Evaluation & Award\n\u25cf Evaluation Criteria:\n1. Price per unit (70%)\n2. Demonstrated Production Capacity (20%)\n3. Warranty & Lead Time (10%)\n\u25cf Award Decision: The contract will be awarded to the lowest-cost bidder that\nmeets all mandatory technical and quality requirements.\nF. Pricing & Payment\n\u25cf Pricing Format: Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling\nfees.\n\u25cf Price Inclusions: Price must be Delivered Duty Paid (DDP) to our Hong Kong\nwarehouse.\n\u25cf Payment Terms: 50% on PO, 50% Net 30 after delivery.\n\u25cf Invoicing: Invoices must reference RFQ ID SAP-HK-25-4501.\nG. Legal\n\u25cf Terms and Conditions: See attached document SAP_Standard_TCs_2025.pdf.\nSubmission of a quote implies acceptance of these terms.\n\u25cf Warranty: Minimum 3-Year standard warranty is required.\nH. Contract Management\n\u25cf Reporting: Weekly production updates via email.\n\u25cf Quality Assurance: We reserve the right to perform on-site quality audits twice\nper year.\n\u25cf Milestones: First article inspection (FAI) approval before first mass production\nrun.\n\n---\n"
+    },
+    "LuminaDrive Solutions": {
+      "project_information": {
+        "project_title": "Advanced Forward Lighting System for Premium Commercial Trucks",
+        "project_description": "LuminaDrive Solutions is soliciting proposals for the design, manufacturing, and long-term supply of a next-generation primary headlight assembly for integration into our OEM partner's 2027 line of premium commercial trucks. The focus is on superior performance, durability, and technological innovation.",
+        "contracting_authority": "LuminaDrive Solutions GmbH",
+        "country_of_contracting_authority": "Germany",
+        "estimated_contract_value": "\u20ac15,000,000 - \u20ac20,000,000 annually",
+        "contract_duration": "5 years, with an option for a 3-year extension.",
+        "location_of_works_services": "Supplier's IATF 16949 certified facility. Delivery to LuminaDrive assembly plant in Leipzig, Germany.",
+        "contact_person_details": "Dr. Klaus Richter, Head of Strategic Sourcing, k.richter@luminadrive.de, +49 711 999 8282"
+      },
+      "key_dates_deadlines": {
+        "rfq_issue_date": "June 20, 2025",
+        "clarification_deadline": "July 1, 2025",
+        "submission_deadline": "July 18, 2025, 17:00 CET",
+        "contract_award_date": "August 15, 2025 (Projected)",
+        "contract_start_date": "September 1, 2025",
+        "contract_completion_date": "Not Found",
+        "rfq_validity_period": "120 days from submission deadline."
+      },
+      "scope_technical_requirements": {
+        "scope_of_work": "The selected vendor will be responsible for the end-to-end production of the headlight assembly, including sourcing of raw materials, manufacturing, assembly, rigorous quality control, and logistics.",
+        "methodology_requirements": "Not Found",
+        "technical_specifications": "Light Source: Matrix LED with adaptive beam shaping; Functionality: High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL Animation; Power Consumption: Max 65W at full operation (24V); Ingress Protection: IP69K (High-pressure washdown resistant); Housing Material: Forged 6061 Aluminum, Graphene-infused heat sink; Lens Material: Automotive-grade Polycarbonate with anti-scratch/anti-UV coating; Operating Voltage: 10V - 30V DC; Connectivity: CAN-FD and LIN bus compatible",
+        "required_outputs_deliverables": "250 prototype units by November 15, 2025. Ramp to 8,000 units/month by March 2026. Monthly quality and production reports.",
+        "equipment_or_materials": "Not Found",
+        "site_access_requirements": "Not Found",
+        "data_management_standards": "Not Found"
+      },
+      "supplier_requirements": {
+        "mandatory_supplier_information": "Not Found",
+        "financial_thresholds": "Not Found",
+        "insurance_requirements": "Minimum \u20ac10M public and product liability insurance.",
+        "health_and_safety_compliance": "Supplier must adhere to all local and national health and safety regulations and provide their safety policy document.",
+        "certifications_and_accreditations": "IATF 16949 certification for the manufacturing facility is mandatory. ISO 14001 for environmental management is highly desirable.",
+        "references_and_experience": "Bidders must provide at least three references from premium automotive OEMs they have supplied within the last 5 years.",
+        "key_personnel_qualifications": "Not Found",
+        "subcontractor_requirements": "Not Found",
+        "equality_diversity_inclusion": "Not Found"
+      },
+      "evaluation_criteria": {
+        "evaluation_methodology": "A points-based system will be used by a cross-functional team from Sourcing, Engineering, and Quality departments.",
+        "technical_criteria": "Technical Compliance & Innovation: 40%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+        "commercial_criteria": "Cost (Unit price, Tooling, Lifecycle Cost): 25%",
+        "scoring_system": "Technical Compliance & Innovation: 40%; Cost (Unit price, Tooling, Lifecycle Cost): 25%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+        "award_decision_basis": "The contract will be awarded to the bidder providing the Most Economically Advantageous Tender (MEAT), considering all evaluation criteria."
+      },
+      "pricing_payment": {
+        "pricing_format": "Provide a detailed cost breakdown including unit price, tiered volume discounts, and all non-recurring engineering (NRE) and tooling fees.",
+        "price_inclusions": "Unit price, tiered volume discounts, non-recurring engineering (NRE) and tooling fees.",
+        "payment_terms": "Net 60 days upon receipt of invoice and successful delivery of goods.",
+        "invoicing_requirements": "Not Found"
+      },
+      "legal_contractual": {
+        "terms_and_conditions": "The contract will be governed by LuminaDrive's standard supplier agreement, which will be provided upon NDA execution.",
+        "acceptance_of_terms": "Not Found",
+        "confidentiality_requirements": "A mutual Non-Disclosure Agreement must be signed prior to the exchange of any technical drawings or specifications.",
+        "intellectual_property_rights": "All IP developed specifically for this project will be the sole property of LuminaDrive Solutions GmbH.",
+        "freedom_of_information": "Not Found",
+        "anti_corruption_and_bribery": "Not Found",
+        "termination_clauses": "Not Found",
+        "dispute_resolution": "Arbitration will take place in Stuttgart, Germany."
+      },
+      "compliance_exclusion_grounds": {
+        "mandatory_exclusion_grounds": "Not Found",
+        "discretionary_exclusion_grounds": "Not Found",
+        "self_declaration_requirements": "Not Found",
+        "evidence_submission_timing": "Not Found"
+      },
+      "sustainability_social_value": {
+        "sustainability_commitments": "Not Found",
+        "social_value_requirements": "Not Found",
+        "modern_slavery_compliance": "Not Found"
+      },
+      "contract_management_reporting": {
+        "contract_management_arrangements": "The supplier will be assigned a dedicated Supplier Quality Engineer (SQE) from LuminaDrive.",
+        "progress_reporting_requirements": "Quarterly Business Reviews (QBRs) are mandatory.",
+        "key_project_milestones": "Prototype Delivery: Nov 15, 2025; Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026; Start of Production (SOP): Mar 1, 2026",
+        "quality_assurance_measures": "Not Found"
+      },
+      "dynamically_fetched_features": {
+        "additional_attributes": "Not Found",
+        "unique_requirements": "Not Found",
+        "special_conditions": "Not Found",
+        "other_relevant_information": "Not Found"
+      },
+      "_metadata": {
+        "source_document": "LuminaDrive Solutions_aggregated_documents",
+        "extraction_model": "gpt-4.1",
+        "source_tokens": 1221,
+        "response_tokens": 488.25,
+        "provider_name": "LuminaDrive Solutions",
+        "total_files": 1,
+        "valid_files": 1,
+        "aggregated_tokens": 1221,
+        "success_rate": 57.14285714285714,
+        "found_fields": 36,
+        "total_fields": 63
+      },
+      "_raw_content": "# RFQ Documents for Provider: LuminaDrive Solutions\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 1,124\n\n## Document 1: LuminaDrive Solutions.pdf\n**Type:** PDF\n**Size:** 67,875 bytes\n\n**Metadata:**\n- pages: 3\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nRequest for Proposal: Advanced Forward Lighting System\nRFP Reference: LDS-2025-HL-77B\nIssuance Date: June 20, 2025\nClosing Date for Submissions: July 18, 2025\nSection 1: Project Information\n\u25cf Project Title: Advanced Forward Lighting System for Premium Commercial Trucks\n\u25cf Project Description: LuminaDrive Solutions is soliciting proposals for the design,\nmanufacturing, and long-term supply of a next-generation primary headlight\nassembly for integration into our OEM partner's 2027 line of premium commercial\ntrucks. The focus is on superior performance, durability, and technological\ninnovation.\n\u25cf Contracting Authority: LuminaDrive Solutions GmbH\n\u25cf Country of Contracting Authority: Germany\n\u25cf Estimated Contract Value: \u20ac15,000,000 - \u20ac20,000,000 annually\n\u25cf Contract Duration: 5 years, with an option for a 3-year extension.\n\u25cf Location of Works/Services: Supplier's IATF 16949 certified facility. Delivery to\nLuminaDrive assembly plant in Leipzig, Germany.\n\u25cf Contact Person Details: Dr. Klaus Richter, Head of Strategic Sourcing,\nk.richter@luminadrive.de, +49 711 999 8282\nSection 2: Key Dates & Deadlines\n\u25cf RFQ Issue Date: June 20, 2025\n\u25cf Clarification Deadline: July 1, 2025\n\u25cf Submission Deadline: July 18, 2025, 17:00 CET\n\u25cf Contract Award Date: August 15, 2025 (Projected)\n\u25cf Contract Start Date: September 1, 2025\n\u25cf RFQ Validity Period: 120 days from submission deadline.\nSection 3: Scope & Technical Requirements\n\u25cf Scope of Work: The selected vendor will be responsible for the end-to-end\nproduction of the headlight assembly, including sourcing of raw materials,\nmanufacturing, assembly, rigorous quality control, and logistics.\n\u25cf Technical Specifications:\n| Parameter | Required Specification |\n| :--- | :--- |\n| Light Source | Matrix LED with adaptive beam shaping |\n| Functionality | High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL\nAnimation |\n| Power Consumption| Max 65W at full operation (24V) |\n\n---\n\n### Page 2\n\n| Ingress Protection | IP69K (High-pressure washdown resistant) |\n| Housing Material | Forged 6061 Aluminum, Graphene-infused heat sink |\n| Lens Material | Automotive-grade Polycarbonate with anti-scratch/anti-UV\ncoating |\n| Operating Voltage | 10V - 30V DC |\n| Connectivity | CAN-FD and LIN bus compatible |\n\u25cf Required Outputs & Deliverables: 250 prototype units by November 15, 2025.\nRamp to 8,000 units/month by March 2026. Monthly quality and production\nreports.\nSection 4: Supplier Requirements\n\u25cf Certifications and Accreditations: IATF 16949 certification for the\nmanufacturing facility is mandatory. ISO 14001 for environmental management is\nhighly desirable.\n\u25cf References and Experience: Bidders must provide at least three references from\npremium automotive OEMs they have supplied within the last 5 years.\n\u25cf Health and Safety Compliance: Supplier must adhere to all local and national\nhealth and safety regulations and provide their safety policy document.\n\u25cf Insurance Requirements: Minimum \u20ac10M public and product liability insurance.\nSection 5: Evaluation Criteria\n\u25cf Evaluation Methodology: A points-based system will be used by a\ncross-functional team from Sourcing, Engineering, and Quality departments.\n\u25cf Scoring System:\n\u25cb Technical Compliance & Innovation: 40%\n\u25cb Cost (Unit price, Tooling, Lifecycle Cost): 25%\n\u25cb Quality Systems & Certifications: 20%\n\u25cb Supply Chain & Scalability: 15%\n\u25cf Award Decision Basis: The contract will be awarded to the bidder providing the\nMost Economically Advantageous Tender (MEAT), considering all evaluation\ncriteria.\nSection 6: Pricing & Payment\n\u25cf Pricing Format: Provide a detailed cost breakdown including unit price, tiered\nvolume discounts, and all non-recurring engineering (NRE) and tooling fees.\n\u25cf Payment Terms: Net 60 days upon receipt of invoice and successful delivery of\ngoods.\nSection 7: Legal & Contractual\n\u25cf Terms and Conditions: The contract will be governed by LuminaDrive's standard\n\n---\n\n### Page 3\n\nsupplier agreement, which will be provided upon NDA execution.\n\u25cf Confidentiality Requirements: A mutual Non-Disclosure Agreement must be\nsigned prior to the exchange of any technical drawings or specifications.\n\u25cf Intellectual Property Rights: All IP developed specifically for this project will be\nthe sole property of LuminaDrive Solutions GmbH.\n\u25cf Dispute Resolution: Arbitration will take place in Stuttgart, Germany.\nSection 8: Contract Management\n\u25cf Contract Management Arrangements: The supplier will be assigned a\ndedicated Supplier Quality Engineer (SQE) from LuminaDrive.\n\u25cf Progress Reporting Requirements: Quarterly Business Reviews (QBRs) are\nmandatory.\n\u25cf Key Project Milestones:\n\u25cb Prototype Delivery: Nov 15, 2025\n\u25cb Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026\n\u25cb Start of Production (SOP): Mar 1, 2026\n\n---\n"
+    },
+    "NextGen Lighting": {
+      "project_information": {
+        "project_title": "NGL 'Aura' Smart Light Module Production",
+        "project_description": "Production of the 'Aura' module, a fully integrated LED headlight assembly. NextGen Lighting Inc. provides the design and software; the partner will handle hardware manufacturing, including sourcing, manufacturing, testing, and packaging based on provided designs.",
+        "contracting_authority": "NextGen Lighting Inc.",
+        "country_of_contracting_authority": "USA",
+        "estimated_contract_value": "Not Found",
+        "contract_duration": "3-year initial agreement",
+        "location_of_works_services": "Your facility. We're flexible on location, but prefer partners with strong logistics to North America.",
+        "contact_person_details": "Brenda Chen (brenda@nextgenlight.io)"
+      },
+      "key_dates_deadlines": {
+        "rfq_issue_date": "June 22, 2025",
+        "clarification_deadline": "Not Found",
+        "submission_deadline": "July 20, 2025",
+        "contract_award_date": "Not Found",
+        "contract_start_date": "Not Found",
+        "contract_completion_date": "Not Found",
+        "rfq_validity_period": "Not Found"
+      },
+      "scope_technical_requirements": {
+        "scope_of_work": "Responsible for sourcing, manufacturing, testing, and packaging the 'Aura' module based on NextGen Lighting's designs (to be provided under NDA).",
+        "methodology_requirements": "Not Found",
+        "technical_specifications": "Lighting Tech: Projector-based LED system. Key Features: Standard High & Low Beam, Integrated programmable RGB DRL strip, Bluetooth Low Energy (BLE) for app configuration. Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color temp; Under 75W power usage; IP67 rating.",
+        "required_outputs_deliverables": "50 functional units for validation by Q4 2025. Then scale to 5,000 units/month by Q2 2026.",
+        "equipment_or_materials": "Not Found",
+        "site_access_requirements": "Not Found",
+        "data_management_standards": "Not Found"
+      },
+      "supplier_requirements": {
+        "mandatory_supplier_information": "A summary of your company's capabilities.",
+        "financial_thresholds": "Not Found",
+        "insurance_requirements": "Not Found",
+        "health_and_safety_compliance": "Not Found",
+        "certifications_and_accreditations": "Must have a strong quality system (ISO 9001 is a must).",
+        "references_and_experience": "Experience with electronics integration is key.",
+        "key_personnel_qualifications": "Not Found",
+        "subcontractor_requirements": "Not Found",
+        "equality_diversity_inclusion": "Not Found"
+      },
+      "evaluation_criteria": {
+        "evaluation_methodology": "No complex scoring sheet. Partner will be chosen based on alignment with technical needs, cost targets, and company culture.",
+        "technical_criteria": "Alignment with technical needs; experience with electronics integration.",
+        "commercial_criteria": "Alignment with cost targets; rough cost estimate per unit at 5k/month volume.",
+        "scoring_system": "Not Found",
+        "award_decision_basis": "Finding the right fit based on technical needs, cost targets, and company culture."
+      },
+      "pricing_payment": {
+        "pricing_format": "Rough cost estimate per unit at 5k/month volume; estimated cost for tooling and setup.",
+        "price_inclusions": "Not Found",
+        "payment_terms": "Not Found",
+        "invoicing_requirements": "Not Found"
+      },
+      "legal_contractual": {
+        "terms_and_conditions": "Open to signing NextGen Lighting's standard NDA and MSA.",
+        "acceptance_of_terms": "A note that you're open to signing our standard NDA and MSA.",
+        "confidentiality_requirements": "Standard NDA required.",
+        "intellectual_property_rights": "All our IP remains ours, of course.",
+        "freedom_of_information": "Not Found",
+        "anti_corruption_and_bribery": "Not Found",
+        "termination_clauses": "Not Found",
+        "dispute_resolution": "Not Found"
+      },
+      "compliance_exclusion_grounds": {
+        "mandatory_exclusion_grounds": "Not Found",
+        "discretionary_exclusion_grounds": "Not Found",
+        "self_declaration_requirements": "Not Found",
+        "evidence_submission_timing": "Not Found"
+      },
+      "sustainability_social_value": {
+        "sustainability_commitments": "Commit to sustainability goals, like using recyclable packaging and minimizing waste.",
+        "social_value_requirements": "Not Found",
+        "modern_slavery_compliance": "Not Found"
+      },
+      "contract_management_reporting": {
+        "contract_management_arrangements": "Open communication. Expect weekly sync calls and a shared Slack channel.",
+        "progress_reporting_requirements": "Not Found",
+        "key_project_milestones": "50 functional units for validation by Q4 2025; scale to 5,000 units/month by Q2 2026.",
+        "quality_assurance_measures": "Must have a strong quality system (ISO 9001 is a must)."
+      },
+      "dynamically_fetched_features": {
+        "additional_attributes": "Statement on how you would handle the electronics integration (our BLE chip on your board).",
+        "unique_requirements": "Targeting 5-year warranty terms.",
+        "special_conditions": "Long-term partnership, not just a simple contract.",
+        "other_relevant_information": "Instead of a long, formal proposal, just send an email covering the requested points."
+      },
+      "_metadata": {
+        "source_document": "NextGen Lighting_aggregated_documents",
+        "extraction_model": "gpt-4.1",
+        "source_tokens": 758,
+        "response_tokens": 387.75,
+        "provider_name": "NextGen Lighting",
+        "total_files": 1,
+        "valid_files": 1,
+        "aggregated_tokens": 758,
+        "success_rate": 50.79365079365079,
+        "found_fields": 32,
+        "total_fields": 63
+      },
+      "_raw_content": "# RFQ Documents for Provider: NextGen Lighting\n\n**Document Summary:**\n- Total files processed: 1\n- File types: pdf\n- Combined estimated tokens: 666\n\n## Document 1: NextGen Lighting.pdf\n**Type:** PDF\n**Size:** 56,102 bytes\n\n**Metadata:**\n- pages: 2\n- tables_found: 0\n- extraction_method: pdfplumber\n\n**Content:**\n### Page 1\n\nPartner Request: The NGL 'Aura' Smart Light Module\nProject Code: AURA-26\nDate: June 22, 2025\nLet's Talk By: July 20, 2025\nWho We Are:\nNextGen Lighting Inc. is a Silicon Valley startup reimagining vehicle lighting. We're looking for\na forward-thinking manufacturing partner to help us scale.\n\u25cf Project Title: NGL 'Aura' Smart Light Module Production\n\u25cf Contracting Authority: NextGen Lighting Inc.\n\u25cf Country: USA\n\u25cf Contact: Brenda Chen (brenda@nextgenlight.io)\n\u25cf Location of Services: Your facility. We're flexible on location, but prefer partners\nwith strong logistics to North America.\nThe Product: What we need built\nWe have the design and the software; we need you to handle the hardware\nmanufacturing. The 'Aura' module is a fully integrated LED headlight assembly.\n\u25cf Scope of Work: You will be responsible for sourcing, manufacturing, testing, and\npackaging the 'Aura' module based on our designs (to be provided under NDA).\n\u25cf Technical Specifications:\n\u25cb Lighting Tech: Projector-based LED system.\n\u25cb Key Features: Standard High & Low Beam, Integrated programmable RGB\nDRL strip, Bluetooth Low Energy (BLE) for app configuration.\n\u25cb Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color\ntemp; Under 75W power usage; IP67 rating.\n\u25cf Required Outputs: 50 functional units for validation by Q4 2025. Then scale to\n5,000 units/month by Q2 2026.\nThe Partnership: How we'll work together\nWe see this as a long-term partnership, not just a simple contract.\n\u25cf Contract Duration: We envision a 3-year initial agreement.\n\u25cf Supplier Requirements:\n\u25cb Must have a strong quality system (ISO 9001 is a must).\n\u25cb Experience with electronics integration is key.\n\u25cb We want partners who will commit to our sustainability goals, like using\nrecyclable packaging and minimizing waste.\n\u25cf Evaluation: We're not using a complex scoring sheet. We'll choose the partner\nwho best aligns with our technical needs, cost targets, and company culture. It's\nabout finding the right fit.\n\n---\n\n### Page 2\n\n\u25cf Contract Management: We believe in open communication. Expect weekly sync\ncalls and a shared Slack channel.\nWhat We Need From You\nInstead of a long, formal proposal, just send us an email covering these points:\n1. A summary of your company's capabilities.\n2. Pricing: A rough cost estimate per unit at a 5k/month volume.\n3. Tooling: Your estimated cost for tooling and setup.\n4. Electronics: A statement on how you would handle the electronics integration\n(our BLE chip on your board).\n5. Legal: Your standard warranty terms (we're targeting 5 years) and a note that\nyou're open to signing our standard NDA and MSA. All our IP remains ours, of\ncourse.\n6. Deadlines: Can you meet our Q4 2025 target for the first 50 units?\n\n---\n"
+    }
+  },
+  "comparison_result": {
+    "metadata": {
+      "comparison_date": "2025-06-20T22:06:23.861676",
+      "number_of_providers": 3,
+      "number_of_documents": 3,
+      "comparison_type": "multi_provider",
+      "extraction_model": "gpt-4.1",
+      "provider_1": "LuminaDrive Solutions",
+      "document_1": "LuminaDrive Solutions",
+      "provider_2": "NextGen Lighting",
+      "document_2": "NextGen Lighting",
+      "provider_3": "Steadfast Auto Parts",
+      "document_3": "Steadfast Auto Parts"
+    },
+    "field_by_field_comparison": {
+      "supplier_requirements": {
+        "equality_diversity_inclusion": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "health_and_safety_compliance": {
+          "provider_1": "Supplier must adhere to all local and national health and safety regulations and provide their safety policy document.",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "financial_thresholds": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "insurance_requirements": {
+          "provider_1": "Minimum \u20ac10M public and product liability insurance.",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "references_and_experience": {
+          "provider_1": "Bidders must provide at least three references from premium automotive OEMs they have supplied within the last 5 years.",
+          "provider_2": "Experience with electronics integration is key.",
+          "provider_3": "Must have experience producing automotive lighting at >10,000 units/month. Provide evidence."
+        },
+        "certifications_and_accreditations": {
+          "provider_1": "IATF 16949 certification for the manufacturing facility is mandatory. ISO 14001 for environmental management is highly desirable.",
+          "provider_2": "Must have a strong quality system (ISO 9001 is a must).",
+          "provider_3": "ISO 9001 certification is mandatory. Submit a copy of your certificate."
+        },
+        "key_personnel_qualifications": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "mandatory_supplier_information": {
+          "provider_1": "Not Found",
+          "provider_2": "A summary of your company's capabilities.",
+          "provider_3": "Company registration, bank details, facility address."
+        },
+        "subcontractor_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        }
+      },
+      "scope_technical_requirements": {
+        "required_outputs_deliverables": {
+          "provider_1": "250 prototype units by November 15, 2025. Ramp to 8,000 units/month by March 2026. Monthly quality and production reports.",
+          "provider_2": "50 functional units for validation by Q4 2025. Then scale to 5,000 units/month by Q2 2026.",
+          "provider_3": "Initial order of 1,000 units by Dec 1, 2025. Ramp to 15,000 units/month."
+        },
+        "site_access_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "equipment_or_materials": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "methodology_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "technical_specifications": {
+          "provider_1": "Light Source: Matrix LED with adaptive beam shaping; Functionality: High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL Animation; Power Consumption: Max 65W at full operation (24V); Ingress Protection: IP69K (High-pressure washdown resistant); Housing Material: Forged 6061 Aluminum, Graphene-infused heat sink; Lens Material: Automotive-grade Polycarbonate with anti-scratch/anti-UV coating; Operating Voltage: 10V - 30V DC; Connectivity: CAN-FD and LIN bus compatible",
+          "provider_2": "Lighting Tech: Projector-based LED system. Key Features: Standard High & Low Beam, Integrated programmable RGB DRL strip, Bluetooth Low Energy (BLE) for app configuration. Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color temp; Under 75W power usage; IP67 rating.",
+          "provider_3": "PART NO: HL-700-STD; TECHNOLOGY: Standard Reflector LED; BEAM: High/Low Beam mandatory; INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option; MAX POWER DRAW: 80W; WATERPROOF RATING: IP67; VOLTAGE: 12V/24V compatible; LENS: Hard-coated Polycarbonate; HOUSING: Die-cast Aluminum. Black powder coat; CERTIFICATION: DOT/SAE compliant."
+        },
+        "data_management_standards": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "scope_of_work": {
+          "provider_1": "The selected vendor will be responsible for the end-to-end production of the headlight assembly, including sourcing of raw materials, manufacturing, assembly, rigorous quality control, and logistics.",
+          "provider_2": "Responsible for sourcing, manufacturing, testing, and packaging the 'Aura' module based on NextGen Lighting's designs (to be provided under NDA).",
+          "provider_3": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions."
+        }
+      },
+      "dynamically_fetched_features": {
+        "other_relevant_information": {
+          "provider_1": "Not Found",
+          "provider_2": "Instead of a long, formal proposal, just send an email covering the requested points.",
+          "provider_3": "SUBMIT TO: sourcing.apac@steadfastauto.com"
+        },
+        "additional_attributes": {
+          "provider_1": "Not Found",
+          "provider_2": "Statement on how you would handle the electronics integration (our BLE chip on your board).",
+          "provider_3": "Warranty: Minimum 3-Year standard warranty is required."
+        },
+        "unique_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Targeting 5-year warranty terms.",
+          "provider_3": "Quote turn signal version as an option."
+        },
+        "special_conditions": {
+          "provider_1": "Not Found",
+          "provider_2": "Long-term partnership, not just a simple contract.",
+          "provider_3": "Not Found"
+        }
+      },
+      "evaluation_criteria": {
+        "technical_criteria": {
+          "provider_1": "Technical Compliance & Innovation: 40%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+          "provider_2": "Alignment with technical needs; experience with electronics integration.",
+          "provider_3": "Demonstrated Production Capacity; Warranty & Lead Time"
+        },
+        "scoring_system": {
+          "provider_1": "Technical Compliance & Innovation: 40%; Cost (Unit price, Tooling, Lifecycle Cost): 25%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+          "provider_2": "Not Found",
+          "provider_3": "Price per unit (70%), Demonstrated Production Capacity (20%), Warranty & Lead Time (10%)"
+        },
+        "commercial_criteria": {
+          "provider_1": "Cost (Unit price, Tooling, Lifecycle Cost): 25%",
+          "provider_2": "Alignment with cost targets; rough cost estimate per unit at 5k/month volume.",
+          "provider_3": "Price per unit"
+        },
+        "award_decision_basis": {
+          "provider_1": "The contract will be awarded to the bidder providing the Most Economically Advantageous Tender (MEAT), considering all evaluation criteria.",
+          "provider_2": "Finding the right fit based on technical needs, cost targets, and company culture.",
+          "provider_3": "The contract will be awarded to the lowest-cost bidder that meets all mandatory technical and quality requirements."
+        },
+        "evaluation_methodology": {
+          "provider_1": "A points-based system will be used by a cross-functional team from Sourcing, Engineering, and Quality departments.",
+          "provider_2": "No complex scoring sheet. Partner will be chosen based on alignment with technical needs, cost targets, and company culture.",
+          "provider_3": "Evaluation Criteria: 1. Price per unit (70%) 2. Demonstrated Production Capacity (20%) 3. Warranty & Lead Time (10%)"
+        }
+      },
+      "sustainability_social_value": {
+        "social_value_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "modern_slavery_compliance": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "sustainability_commitments": {
+          "provider_1": "Not Found",
+          "provider_2": "Commit to sustainability goals, like using recyclable packaging and minimizing waste.",
+          "provider_3": "Not Found"
+        }
+      },
+      "key_dates_deadlines": {
+        "rfq_validity_period": {
+          "provider_1": "120 days from submission deadline.",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "contract_completion_date": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "contract_award_date": {
+          "provider_1": "August 15, 2025 (Projected)",
+          "provider_2": "Not Found",
+          "provider_3": "August 2025"
+        },
+        "submission_deadline": {
+          "provider_1": "July 18, 2025, 17:00 CET",
+          "provider_2": "July 20, 2025",
+          "provider_3": "July 16, 2025"
+        },
+        "contract_start_date": {
+          "provider_1": "September 1, 2025",
+          "provider_2": "Not Found",
+          "provider_3": "September 2025"
+        },
+        "clarification_deadline": {
+          "provider_1": "July 1, 2025",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "rfq_issue_date": {
+          "provider_1": "June 20, 2025",
+          "provider_2": "June 22, 2025",
+          "provider_3": "06/21/2025"
+        }
+      },
+      "legal_contractual": {
+        "terms_and_conditions": {
+          "provider_1": "The contract will be governed by LuminaDrive's standard supplier agreement, which will be provided upon NDA execution.",
+          "provider_2": "Open to signing NextGen Lighting's standard NDA and MSA.",
+          "provider_3": "See attached document SAP_Standard_TCs_2025.pdf. Submission of a quote implies acceptance of these terms."
+        },
+        "termination_clauses": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "anti_corruption_and_bribery": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "acceptance_of_terms": {
+          "provider_1": "Not Found",
+          "provider_2": "A note that you're open to signing our standard NDA and MSA.",
+          "provider_3": "Submission of a quote implies acceptance of these terms."
+        },
+        "dispute_resolution": {
+          "provider_1": "Arbitration will take place in Stuttgart, Germany.",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "freedom_of_information": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "intellectual_property_rights": {
+          "provider_1": "All IP developed specifically for this project will be the sole property of LuminaDrive Solutions GmbH.",
+          "provider_2": "All our IP remains ours, of course.",
+          "provider_3": "Not Found"
+        },
+        "confidentiality_requirements": {
+          "provider_1": "A mutual Non-Disclosure Agreement must be signed prior to the exchange of any technical drawings or specifications.",
+          "provider_2": "Standard NDA required.",
+          "provider_3": "Not Found"
+        }
+      },
+      "compliance_exclusion_grounds": {
+        "discretionary_exclusion_grounds": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "self_declaration_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "evidence_submission_timing": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "mandatory_exclusion_grounds": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        }
+      },
+      "contract_management_reporting": {
+        "progress_reporting_requirements": {
+          "provider_1": "Quarterly Business Reviews (QBRs) are mandatory.",
+          "provider_2": "Not Found",
+          "provider_3": "Weekly production updates via email."
+        },
+        "contract_management_arrangements": {
+          "provider_1": "The supplier will be assigned a dedicated Supplier Quality Engineer (SQE) from LuminaDrive.",
+          "provider_2": "Open communication. Expect weekly sync calls and a shared Slack channel.",
+          "provider_3": "Not Found"
+        },
+        "quality_assurance_measures": {
+          "provider_1": "Not Found",
+          "provider_2": "Must have a strong quality system (ISO 9001 is a must).",
+          "provider_3": "We reserve the right to perform on-site quality audits twice per year."
+        },
+        "key_project_milestones": {
+          "provider_1": "Prototype Delivery: Nov 15, 2025; Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026; Start of Production (SOP): Mar 1, 2026",
+          "provider_2": "50 functional units for validation by Q4 2025; scale to 5,000 units/month by Q2 2026.",
+          "provider_3": "First article inspection (FAI) approval before first mass production run."
+        }
+      },
+      "pricing_payment": {
+        "pricing_format": {
+          "provider_1": "Provide a detailed cost breakdown including unit price, tiered volume discounts, and all non-recurring engineering (NRE) and tooling fees.",
+          "provider_2": "Rough cost estimate per unit at 5k/month volume; estimated cost for tooling and setup.",
+          "provider_3": "Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling fees."
+        },
+        "price_inclusions": {
+          "provider_1": "Unit price, tiered volume discounts, non-recurring engineering (NRE) and tooling fees.",
+          "provider_2": "Not Found",
+          "provider_3": "Price must be Delivered Duty Paid (DDP) to our Hong Kong warehouse."
+        },
+        "payment_terms": {
+          "provider_1": "Net 60 days upon receipt of invoice and successful delivery of goods.",
+          "provider_2": "Not Found",
+          "provider_3": "50% on PO, 50% Net 30 after delivery."
+        },
+        "invoicing_requirements": {
+          "provider_1": "Not Found",
+          "provider_2": "Not Found",
+          "provider_3": "Invoices must reference RFQ ID SAP-HK-25-4501."
+        }
+      },
+      "project_information": {
+        "country_of_contracting_authority": {
+          "provider_1": "Germany",
+          "provider_2": "USA",
+          "provider_3": "Hong Kong S.A.R."
+        },
+        "contracting_authority": {
+          "provider_1": "LuminaDrive Solutions GmbH",
+          "provider_2": "NextGen Lighting Inc.",
+          "provider_3": "Steadfast Auto Parts, Hong Kong Division"
+        },
+        "project_description": {
+          "provider_1": "LuminaDrive Solutions is soliciting proposals for the design, manufacturing, and long-term supply of a next-generation primary headlight assembly for integration into our OEM partner's 2027 line of premium commercial trucks. The focus is on superior performance, durability, and technological innovation.",
+          "provider_2": "Production of the 'Aura' module, a fully integrated LED headlight assembly. NextGen Lighting Inc. provides the design and software; the partner will handle hardware manufacturing, including sourcing, manufacturing, testing, and packaging based on provided designs.",
+          "provider_3": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions."
+        },
+        "location_of_works_services": {
+          "provider_1": "Supplier's IATF 16949 certified facility. Delivery to LuminaDrive assembly plant in Leipzig, Germany.",
+          "provider_2": "Your facility. We're flexible on location, but prefer partners with strong logistics to North America.",
+          "provider_3": "Supplier's facility. Delivery to our warehouse in Kwai Chung, Hong Kong."
+        },
+        "estimated_contract_value": {
+          "provider_1": "\u20ac15,000,000 - \u20ac20,000,000 annually",
+          "provider_2": "Not Found",
+          "provider_3": "Not Found"
+        },
+        "contract_duration": {
+          "provider_1": "5 years, with an option for a 3-year extension.",
+          "provider_2": "3-year initial agreement",
+          "provider_3": "2 years initial term, with annual renewal based on performance."
+        },
+        "contact_person_details": {
+          "provider_1": "Dr. Klaus Richter, Head of Strategic Sourcing, k.richter@luminadrive.de, +49 711 999 8282",
+          "provider_2": "Brenda Chen (brenda@nextgenlight.io)",
+          "provider_3": "David Chen, Sourcing Manager"
+        },
+        "project_title": {
+          "provider_1": "Advanced Forward Lighting System for Premium Commercial Trucks",
+          "provider_2": "NGL 'Aura' Smart Light Module Production",
+          "provider_3": "High-Volume 7-inch Round LED Headlight"
+        }
+      }
+    },
+    "summary_statistics": {
+      "total_fields": 63,
+      "number_of_providers": 3,
+      "provider1_completeness_percentage": 57.14285714285714,
+      "doc1_completeness_percentage": 57.14285714285714,
+      "provider2_completeness_percentage": 50.79365079365079,
+      "doc2_completeness_percentage": 50.79365079365079,
+      "provider3_completeness_percentage": 53.96825396825397,
+      "doc3_completeness_percentage": 53.96825396825397,
+      "found_in_all_providers": 21,
+      "found_in_all_documents": 21,
+      "not_found_in_any": 27
+    },
+    "key_differences": [
+      {
+        "field": "supplier_requirements.equality_diversity_inclusion",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "supplier_requirements.health_and_safety_compliance",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Supplier must adhere to all local and national health and safety regulations and provide their safety policy document.",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "supplier_requirements.financial_thresholds",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "supplier_requirements.insurance_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Minimum \u20ac10M public and product liability insurance.",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "supplier_requirements.references_and_experience",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Bidders must provide at least three references from premium automotive OEMs they have supplied within the last 5 years.",
+        "provider_2": "Experience with electronics integration is key.",
+        "provider_3": "Must have experience producing automotive lighting at >10,000 units/month. Provide evidence."
+      },
+      {
+        "field": "supplier_requirements.certifications_and_accreditations",
+        "difference_type": "variation_across_providers",
+        "provider_1": "IATF 16949 certification for the manufacturing facility is mandatory. ISO 14001 for environmental management is highly desirable.",
+        "provider_2": "Must have a strong quality system (ISO 9001 is a must).",
+        "provider_3": "ISO 9001 certification is mandatory. Submit a copy of your certificate."
+      },
+      {
+        "field": "supplier_requirements.key_personnel_qualifications",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "supplier_requirements.mandatory_supplier_information",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "A summary of your company's capabilities.",
+        "provider_3": "Company registration, bank details, facility address."
+      },
+      {
+        "field": "supplier_requirements.subcontractor_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "scope_technical_requirements.required_outputs_deliverables",
+        "difference_type": "variation_across_providers",
+        "provider_1": "250 prototype units by November 15, 2025. Ramp to 8,000 units/month by March 2026. Monthly quality and production reports.",
+        "provider_2": "50 functional units for validation by Q4 2025. Then scale to 5,000 units/month by Q2 2026.",
+        "provider_3": "Initial order of 1,000 units by Dec 1, 2025. Ramp to 15,000 units/month."
+      },
+      {
+        "field": "scope_technical_requirements.site_access_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "scope_technical_requirements.equipment_or_materials",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "scope_technical_requirements.methodology_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "scope_technical_requirements.technical_specifications",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Light Source: Matrix LED with adaptive beam shaping; Functionality: High Beam, Low Beam, Dynamic Turn Signal, Welcome/Exit DRL Animation; Power Consumption: Max 65W at full operation (24V); Ingress Protection: IP69K (High-pressure washdown resistant); Housing Material: Forged 6061 Aluminum, Graphene-infused heat sink; Lens Material: Automotive-grade Polycarbonate with anti-scratch/anti-UV coating; Operating Voltage: 10V - 30V DC; Connectivity: CAN-FD and LIN bus compatible",
+        "provider_2": "Lighting Tech: Projector-based LED system. Key Features: Standard High & Low Beam, Integrated programmable RGB DRL strip, Bluetooth Low Energy (BLE) for app configuration. Performance Targets: ~1700 lm (low), ~2600 lm (high); 5000K-6500K color temp; Under 75W power usage; IP67 rating.",
+        "provider_3": "PART NO: HL-700-STD; TECHNOLOGY: Standard Reflector LED; BEAM: High/Low Beam mandatory; INTEGRATED LIGHTS: DRL required. Quote turn signal version as an option; MAX POWER DRAW: 80W; WATERPROOF RATING: IP67; VOLTAGE: 12V/24V compatible; LENS: Hard-coated Polycarbonate; HOUSING: Die-cast Aluminum. Black powder coat; CERTIFICATION: DOT/SAE compliant."
+      },
+      {
+        "field": "scope_technical_requirements.data_management_standards",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "scope_technical_requirements.scope_of_work",
+        "difference_type": "variation_across_providers",
+        "provider_1": "The selected vendor will be responsible for the end-to-end production of the headlight assembly, including sourcing of raw materials, manufacturing, assembly, rigorous quality control, and logistics.",
+        "provider_2": "Responsible for sourcing, manufacturing, testing, and packaging the 'Aura' module based on NextGen Lighting's designs (to be provided under NDA).",
+        "provider_3": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions."
+      },
+      {
+        "field": "dynamically_fetched_features.other_relevant_information",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Instead of a long, formal proposal, just send an email covering the requested points.",
+        "provider_3": "SUBMIT TO: sourcing.apac@steadfastauto.com"
+      },
+      {
+        "field": "dynamically_fetched_features.additional_attributes",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Statement on how you would handle the electronics integration (our BLE chip on your board).",
+        "provider_3": "Warranty: Minimum 3-Year standard warranty is required."
+      },
+      {
+        "field": "dynamically_fetched_features.unique_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Targeting 5-year warranty terms.",
+        "provider_3": "Quote turn signal version as an option."
+      },
+      {
+        "field": "dynamically_fetched_features.special_conditions",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Long-term partnership, not just a simple contract.",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "evaluation_criteria.technical_criteria",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Technical Compliance & Innovation: 40%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+        "provider_2": "Alignment with technical needs; experience with electronics integration.",
+        "provider_3": "Demonstrated Production Capacity; Warranty & Lead Time"
+      },
+      {
+        "field": "evaluation_criteria.scoring_system",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Technical Compliance & Innovation: 40%; Cost (Unit price, Tooling, Lifecycle Cost): 25%; Quality Systems & Certifications: 20%; Supply Chain & Scalability: 15%",
+        "provider_2": "Not Found",
+        "provider_3": "Price per unit (70%), Demonstrated Production Capacity (20%), Warranty & Lead Time (10%)"
+      },
+      {
+        "field": "evaluation_criteria.commercial_criteria",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Cost (Unit price, Tooling, Lifecycle Cost): 25%",
+        "provider_2": "Alignment with cost targets; rough cost estimate per unit at 5k/month volume.",
+        "provider_3": "Price per unit"
+      },
+      {
+        "field": "evaluation_criteria.award_decision_basis",
+        "difference_type": "variation_across_providers",
+        "provider_1": "The contract will be awarded to the bidder providing the Most Economically Advantageous Tender (MEAT), considering all evaluation criteria.",
+        "provider_2": "Finding the right fit based on technical needs, cost targets, and company culture.",
+        "provider_3": "The contract will be awarded to the lowest-cost bidder that meets all mandatory technical and quality requirements."
+      },
+      {
+        "field": "evaluation_criteria.evaluation_methodology",
+        "difference_type": "variation_across_providers",
+        "provider_1": "A points-based system will be used by a cross-functional team from Sourcing, Engineering, and Quality departments.",
+        "provider_2": "No complex scoring sheet. Partner will be chosen based on alignment with technical needs, cost targets, and company culture.",
+        "provider_3": "Evaluation Criteria: 1. Price per unit (70%) 2. Demonstrated Production Capacity (20%) 3. Warranty & Lead Time (10%)"
+      },
+      {
+        "field": "sustainability_social_value.social_value_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "sustainability_social_value.modern_slavery_compliance",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "sustainability_social_value.sustainability_commitments",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Commit to sustainability goals, like using recyclable packaging and minimizing waste.",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "key_dates_deadlines.rfq_validity_period",
+        "difference_type": "variation_across_providers",
+        "provider_1": "120 days from submission deadline.",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "key_dates_deadlines.contract_completion_date",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "key_dates_deadlines.contract_award_date",
+        "difference_type": "variation_across_providers",
+        "provider_1": "August 15, 2025 (Projected)",
+        "provider_2": "Not Found",
+        "provider_3": "August 2025"
+      },
+      {
+        "field": "key_dates_deadlines.submission_deadline",
+        "difference_type": "variation_across_providers",
+        "provider_1": "July 18, 2025, 17:00 CET",
+        "provider_2": "July 20, 2025",
+        "provider_3": "July 16, 2025"
+      },
+      {
+        "field": "key_dates_deadlines.contract_start_date",
+        "difference_type": "variation_across_providers",
+        "provider_1": "September 1, 2025",
+        "provider_2": "Not Found",
+        "provider_3": "September 2025"
+      },
+      {
+        "field": "key_dates_deadlines.clarification_deadline",
+        "difference_type": "variation_across_providers",
+        "provider_1": "July 1, 2025",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "key_dates_deadlines.rfq_issue_date",
+        "difference_type": "variation_across_providers",
+        "provider_1": "June 20, 2025",
+        "provider_2": "June 22, 2025",
+        "provider_3": "06/21/2025"
+      },
+      {
+        "field": "legal_contractual.terms_and_conditions",
+        "difference_type": "variation_across_providers",
+        "provider_1": "The contract will be governed by LuminaDrive's standard supplier agreement, which will be provided upon NDA execution.",
+        "provider_2": "Open to signing NextGen Lighting's standard NDA and MSA.",
+        "provider_3": "See attached document SAP_Standard_TCs_2025.pdf. Submission of a quote implies acceptance of these terms."
+      },
+      {
+        "field": "legal_contractual.termination_clauses",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "legal_contractual.anti_corruption_and_bribery",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "legal_contractual.acceptance_of_terms",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "A note that you're open to signing our standard NDA and MSA.",
+        "provider_3": "Submission of a quote implies acceptance of these terms."
+      },
+      {
+        "field": "legal_contractual.dispute_resolution",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Arbitration will take place in Stuttgart, Germany.",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "legal_contractual.freedom_of_information",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "legal_contractual.intellectual_property_rights",
+        "difference_type": "variation_across_providers",
+        "provider_1": "All IP developed specifically for this project will be the sole property of LuminaDrive Solutions GmbH.",
+        "provider_2": "All our IP remains ours, of course.",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "legal_contractual.confidentiality_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "A mutual Non-Disclosure Agreement must be signed prior to the exchange of any technical drawings or specifications.",
+        "provider_2": "Standard NDA required.",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "compliance_exclusion_grounds.discretionary_exclusion_grounds",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "compliance_exclusion_grounds.self_declaration_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "compliance_exclusion_grounds.evidence_submission_timing",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "compliance_exclusion_grounds.mandatory_exclusion_grounds",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "contract_management_reporting.progress_reporting_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Quarterly Business Reviews (QBRs) are mandatory.",
+        "provider_2": "Not Found",
+        "provider_3": "Weekly production updates via email."
+      },
+      {
+        "field": "contract_management_reporting.contract_management_arrangements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "The supplier will be assigned a dedicated Supplier Quality Engineer (SQE) from LuminaDrive.",
+        "provider_2": "Open communication. Expect weekly sync calls and a shared Slack channel.",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "contract_management_reporting.quality_assurance_measures",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Must have a strong quality system (ISO 9001 is a must).",
+        "provider_3": "We reserve the right to perform on-site quality audits twice per year."
+      },
+      {
+        "field": "contract_management_reporting.key_project_milestones",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Prototype Delivery: Nov 15, 2025; Production Part Approval Process (PPAP) Level 3 Submission: Jan 30, 2026; Start of Production (SOP): Mar 1, 2026",
+        "provider_2": "50 functional units for validation by Q4 2025; scale to 5,000 units/month by Q2 2026.",
+        "provider_3": "First article inspection (FAI) approval before first mass production run."
+      },
+      {
+        "field": "pricing_payment.pricing_format",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Provide a detailed cost breakdown including unit price, tiered volume discounts, and all non-recurring engineering (NRE) and tooling fees.",
+        "provider_2": "Rough cost estimate per unit at 5k/month volume; estimated cost for tooling and setup.",
+        "provider_3": "Tiered pricing for 10k, 15k, and 20k units/month. Itemize tooling fees."
+      },
+      {
+        "field": "pricing_payment.price_inclusions",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Unit price, tiered volume discounts, non-recurring engineering (NRE) and tooling fees.",
+        "provider_2": "Not Found",
+        "provider_3": "Price must be Delivered Duty Paid (DDP) to our Hong Kong warehouse."
+      },
+      {
+        "field": "pricing_payment.payment_terms",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Net 60 days upon receipt of invoice and successful delivery of goods.",
+        "provider_2": "Not Found",
+        "provider_3": "50% on PO, 50% Net 30 after delivery."
+      },
+      {
+        "field": "pricing_payment.invoicing_requirements",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Not Found",
+        "provider_2": "Not Found",
+        "provider_3": "Invoices must reference RFQ ID SAP-HK-25-4501."
+      },
+      {
+        "field": "project_information.country_of_contracting_authority",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Germany",
+        "provider_2": "USA",
+        "provider_3": "Hong Kong S.A.R."
+      },
+      {
+        "field": "project_information.contracting_authority",
+        "difference_type": "variation_across_providers",
+        "provider_1": "LuminaDrive Solutions GmbH",
+        "provider_2": "NextGen Lighting Inc.",
+        "provider_3": "Steadfast Auto Parts, Hong Kong Division"
+      },
+      {
+        "field": "project_information.project_description",
+        "difference_type": "variation_across_providers",
+        "provider_1": "LuminaDrive Solutions is soliciting proposals for the design, manufacturing, and long-term supply of a next-generation primary headlight assembly for integration into our OEM partner's 2027 line of premium commercial trucks. The focus is on superior performance, durability, and technological innovation.",
+        "provider_2": "Production of the 'Aura' module, a fully integrated LED headlight assembly. NextGen Lighting Inc. provides the design and software; the partner will handle hardware manufacturing, including sourcing, manufacturing, testing, and packaging based on provided designs.",
+        "provider_3": "Supply a standard 7-inch round LED headlight assembly. This is a high-volume contract for our aftermarket and fleet vehicle divisions."
+      },
+      {
+        "field": "project_information.location_of_works_services",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Supplier's IATF 16949 certified facility. Delivery to LuminaDrive assembly plant in Leipzig, Germany.",
+        "provider_2": "Your facility. We're flexible on location, but prefer partners with strong logistics to North America.",
+        "provider_3": "Supplier's facility. Delivery to our warehouse in Kwai Chung, Hong Kong."
+      },
+      {
+        "field": "project_information.estimated_contract_value",
+        "difference_type": "variation_across_providers",
+        "provider_1": "\u20ac15,000,000 - \u20ac20,000,000 annually",
+        "provider_2": "Not Found",
+        "provider_3": "Not Found"
+      },
+      {
+        "field": "project_information.contract_duration",
+        "difference_type": "variation_across_providers",
+        "provider_1": "5 years, with an option for a 3-year extension.",
+        "provider_2": "3-year initial agreement",
+        "provider_3": "2 years initial term, with annual renewal based on performance."
+      },
+      {
+        "field": "project_information.contact_person_details",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Dr. Klaus Richter, Head of Strategic Sourcing, k.richter@luminadrive.de, +49 711 999 8282",
+        "provider_2": "Brenda Chen (brenda@nextgenlight.io)",
+        "provider_3": "David Chen, Sourcing Manager"
+      },
+      {
+        "field": "project_information.project_title",
+        "difference_type": "variation_across_providers",
+        "provider_1": "Advanced Forward Lighting System for Premium Commercial Trucks",
+        "provider_2": "NGL 'Aura' Smart Light Module Production",
+        "provider_3": "High-Volume 7-inch Round LED Headlight"
+      }
+    ]
+  },
+  "analysis_metadata": {
+    "providers_analyzed": [
+      "LuminaDrive Solutions",
+      "NextGen Lighting",
+      "Steadfast Auto Parts"
+    ],
+    "analysis_date": "2025-06-20T22:06:46.724363",
+    "total_providers": 3
+  },
+  "country_risk_data": {
+    "Germany": {
+      "risk_data": {
+        "country": "Germany",
+        "iso3": "DEU",
+        "inform_risk": 2.6,
+        "risk_class": "Low",
+        "rank": 140,
+        "lack_of_reliability": 4.271345029,
+        "hazard_exposure": 2.4,
+        "natural": 4.1,
+        "earthquake": 3.7,
+        "river_flood": 7.8,
+        "tsunami": 0.0,
+        "tropical_cyclone": 0.0,
+        "coastal_flood": 8.0,
+        "drought": 1.3,
+        "epidemic": 2.1,
+        "human": 0.3,
+        "projected_conflict_probability": 0.3,
+        "current_conflict_intensity": 0.2,
+        "vulnerability": 3.9,
+        "socioeconomic_vulnerability": 0.4,
+        "development_deprivation": 0.0,
+        "inequality": 1.4,
+        "economic_dependency": 0.1,
+        "vulnerable_groups": 6.2,
+        "uprooted_people": 8.9,
+        "health_conditions": 0.1,
+        "children_u5": 0.2,
+        "recent_shocks": 0.0,
+        "food_security": 0.4,
+        "other_vulnerable_groups": 0.2,
+        "lack_of_coping_capacity": 1.8,
+        "institutional": 2.9,
+        "drr": 3.1,
+        "governance": 2.6,
+        "infrastructure": 0.6,
+        "communication": 1.5,
+        "physical_infrastructure": 0.0,
+        "access_to_health_care": 0.4
+      },
+      "risk_summary": "**Country:** Germany\n**Risk Class:** Low\n**Overall Risk Score:** 2.6/10\n**Lack of Reliability:** 4.271345029/10\n**Projected Conflict Probability:** 0.3/10\n**Governance:** 2.6/10\n**Infrastructure:** 0.6/10\n**Current Conflict Intensity:** 0.2/10",
+      "detailed_analysis": "## Country Risk Analysis: Germany\n\nThe contracting authority is located in **Germany**, which has an overall risk classification of **Low**\nwith an INFORM risk score of **2.6/10**.\n\n### Key Risk Indicators\n\n**Governance & Institutional Environment:**\n- Governance quality: 2.6/10 (Low Risk)\n- Institutional capacity: 2.9/10 (Low Risk)\n\n**Security & Conflict Environment:**\n- Projected conflict probability: 0.3/10 (Very Low Risk)\n- Current conflict intensity: 0.2/10 (Very Low Risk)\n\n**Infrastructure & Operational Environment:**\n- Infrastructure quality: 0.6/10 (Very Low Risk)\n- Communication infrastructure: 1.5/10 (Very Low Risk)\n\n**Reliability & Economic Factors:**\n- Lack of reliability indicator: 4.271345029/10 (Medium Risk)\n\n### Risk Implications for Contracting\n\u2705 **Low Risk Environment**: This location presents a relatively stable environment for contract execution.",
+      "provider_name": "LuminaDrive Solutions"
+    },
+    "USA": {
+      "risk_data": {
+        "country": "United States of America",
+        "iso3": "USA",
+        "inform_risk": 3.2,
+        "risk_class": "Medium",
+        "rank": 109,
+        "lack_of_reliability": 4.147126437,
+        "hazard_exposure": 5.3,
+        "natural": 7.0,
+        "earthquake": 7.7,
+        "river_flood": 7.5,
+        "tsunami": 7.2,
+        "tropical_cyclone": 7.7,
+        "coastal_flood": 8.4,
+        "drought": 4.2,
+        "epidemic": 4.7,
+        "human": 2.8,
+        "projected_conflict_probability": 1.3,
+        "current_conflict_intensity": 4.1,
+        "vulnerability": 3.3,
+        "socioeconomic_vulnerability": 0.8,
+        "development_deprivation": 0.0,
+        "inequality": 3.3,
+        "economic_dependency": 0.0,
+        "vulnerable_groups": 5.2,
+        "uprooted_people": 7.9,
+        "health_conditions": 0.3,
+        "children_u5": 0.3,
+        "recent_shocks": 0.0,
+        "food_security": 0.0,
+        "other_vulnerable_groups": 0.2,
+        "lack_of_coping_capacity": 1.9,
+        "institutional": 2.8,
+        "drr": 2.5,
+        "governance": 3.1,
+        "infrastructure": 1.0,
+        "communication": 1.6,
+        "physical_infrastructure": 0.9,
+        "access_to_health_care": 0.6
+      },
+      "risk_summary": "**Country:** United States of America\n**Risk Class:** Medium\n**Overall Risk Score:** 3.2/10\n**Lack of Reliability:** 4.147126437/10\n**Projected Conflict Probability:** 1.3/10\n**Governance:** 3.1/10\n**Infrastructure:** 1.0/10\n**Current Conflict Intensity:** 4.1/10",
+      "detailed_analysis": "## Country Risk Analysis: United States of America\n\nThe contracting authority is located in **United States of America**, which has an overall risk classification of **Medium**\nwith an INFORM risk score of **3.2/10**.\n\n### Key Risk Indicators\n\n**Governance & Institutional Environment:**\n- Governance quality: 3.1/10 (Low Risk)\n- Institutional capacity: 2.8/10 (Low Risk)\n\n**Security & Conflict Environment:**\n- Projected conflict probability: 1.3/10 (Very Low Risk)\n- Current conflict intensity: 4.1/10 (Medium Risk)\n\n**Infrastructure & Operational Environment:**\n- Infrastructure quality: 1.0/10 (Very Low Risk)\n- Communication infrastructure: 1.6/10 (Very Low Risk)\n\n**Reliability & Economic Factors:**\n- Lack of reliability indicator: 4.147126437/10 (Medium Risk)\n\n### Risk Implications for Contracting\n\u26a0\ufe0f **Moderate Risk**: Standard risk management practices should be sufficient, with monitoring of key risk indicators.",
+      "provider_name": "NextGen Lighting"
+    }
+  },
+  "uploads_mapping": {
+    "LuminaDrive Solutions": [
+      "LuminaDrive Solutions.pdf"
+    ],
+    "NextGen Lighting": [
+      "NextGen Lighting.pdf"
+    ],
+    "Steadfast Auto Parts": [
+      "Steadfast Auto Parts.pdf"
+    ]
+  },
+  "has_comparison_report": true,
+  "has_graph_image": true
+}
