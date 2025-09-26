@@ -201,7 +201,7 @@ class SimpleImageExtractor:
         max_pages: Optional[int] = None
     ) -> List[str]:
         """
-        Convert PDF pages to images using pypdfium2 (pure-Python wheels).
+        Convert PDF pages to images using pypdfium2 (self-contained wheels).
         
         Args:
             pdf_path: Path to PDF file
@@ -650,4 +650,5 @@ First, use the extracted text content below. If insufficient, corroborate with t
                     shutil.rmtree(temp_dir)
                     logger.debug(f"Cleaned up temp directory: {temp_dir}")
                 except Exception as e:
+
                     logger.warning(f"Failed to clean up temp directory: {e}")
