@@ -12,7 +12,7 @@ from utils import (
 from dotenv import load_dotenv
 
 # Constants
-APP_TITLE = "Update SUMMA Product Catalog"
+APP_TITLE = "Update Product Catalog"
 
 # Page Configuration
 st.set_page_config(
