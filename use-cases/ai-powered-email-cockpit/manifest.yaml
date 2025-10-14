@@ -1,0 +1,25 @@
+---
+applications:
+  - name: ai-powered-email-cockpit-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 256M
+    disk: 2048M
+    routes:
+      - route: ai-powered-email-cockpit-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://ai-powered-email-cockpit.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: ai-powered-email-cockpit-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: ai-powered-email-cockpit.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://ai-powered-email-cockpit-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: ai-powered-email-cockpit.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

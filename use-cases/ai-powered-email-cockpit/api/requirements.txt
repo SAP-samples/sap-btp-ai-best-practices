@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+httpx
+requests
+python-dotenv
+sap-ai-sdk-gen
+aioboto3
+langchain-google-vertexai

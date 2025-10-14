@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+}
+
+/* App layout sizing */
+html,
+body,
+#app,
+ui5-navigation-layout,
+.content {
+  height: 100%;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}
