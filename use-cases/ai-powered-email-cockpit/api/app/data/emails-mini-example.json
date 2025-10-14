@@ -1,0 +1,47 @@
+[
+  {
+    "from": {
+      "name": "Nina Alvarez",
+      "email": "nina.alvarez@example.com"
+    },
+    "subject": "Team Offsite Agenda",
+    "body": {
+      "text": "Hi Marco,\n\nSharing the draft agenda for next week's team offsite. Please review and suggest any changes by tomorrow noon.\n\nThanks,\nNina",
+      "html": "<p>Hi Marco,</p><p>Sharing the draft agenda for next week&#39;s team offsite. Please review and suggest any changes by tomorrow noon.</p><p>Thanks,<br>Nina</p>"
+    },
+    "sentDate": "2025-08-14T08:10:00Z",
+    "messageId": "<msg001@example.com>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Omar Patel",
+      "email": "omar.patel@example.com"
+    },
+    "subject": "Q3 Budget Reforecast Attached",
+    "body": {
+      "text": "Hello Finance Team,\n\nPlease find attached the Q3 budget reforecast. Highlighted variances are on pages 4–6. Let me know if you need a walkthrough.\n\nRegards,\nOmar",
+      "html": "<p>Hello Finance Team,</p><p>Please find attached the Q3 budget reforecast. Highlighted variances are on pages 4–6. Let me know if you need a walkthrough.</p><p>Regards,<br>Omar</p>"
+    },
+    "sentDate": "2025-08-13T16:45:00Z",
+    "messageId": "<msg002@example.com>",
+    "tags": ["Payment Inquiry"],
+    "status": "waiting-for-response"
+  },
+  {
+    "from": {
+      "name": "Sofia Martins",
+      "email": "sofia.martins@example.com"
+    },
+    "subject": "Reminder: Vendor Onboarding Documents",
+    "body": {
+      "text": "Hi Daniel,\n\nJust a reminder to upload the vendor onboarding documents (W-9 and banking form) to the portal by Friday. Reply if you have any issues accessing the link.\n\nBest,\nSofia",
+      "html": "<p>Hi Daniel,</p><p>Just a reminder to upload the vendor onboarding documents (<strong>W-9</strong> and banking form) to the portal by Friday. Reply if you have any issues accessing the link.</p><p>Best,<br>Sofia</p>"
+    },
+    "sentDate": "2025-08-12T11:20:00Z",
+    "messageId": "<msg003@example.com>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "resolved"
+  }
+]

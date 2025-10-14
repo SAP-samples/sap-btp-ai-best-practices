@@ -1,0 +1,25 @@
+{
+  "name": "template-ui5-web-components-fastapi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview --host 0.0.0.0",
+    "create-page": "node scripts/create-page.js"
+  },
+  "dependencies": {
+    "@ui5/webcomponents": "^2.12.0",
+    "@ui5/webcomponents-ai": "^2.12.0",
+    "@ui5/webcomponents-fiori": "^2.12.0",
+    "@ui5/webcomponents-icons": "^2.12.0",
+    "@ui5/webcomponents-icons-business-suite": "^2.12.0",
+    "@ui5/webcomponents-icons-tnt": "^2.12.0",
+    "chart.js": "^4.5.0",
+    "marked": "^12.0.0",
+    "page": "^1.11.6",
+    "vite": "^7.0.4"
+  }
+}

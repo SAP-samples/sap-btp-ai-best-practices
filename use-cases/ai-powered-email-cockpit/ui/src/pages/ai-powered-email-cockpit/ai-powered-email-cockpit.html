@@ -1,0 +1,100 @@
+<div>
+  <ui5-flexible-column-layout id="email-fcl" layout="ThreeColumnsEndExpanded" separators="All">
+    <div slot="startColumn" id="start-col">
+      <ui5-bar design="Subheader" style="height: 48px">
+        <div slot="startContent" style="display: flex; align-items: center; gap: 0.5rem">
+          <ui5-button id="classify-btn" design="Emphasized" icon="activate">Classify Emails</ui5-button>
+          <ui5-button id="reset-btn" design="Default" icon="reset" style="display: none">Reset</ui5-button>
+        </div>
+      </ui5-bar>
+      <ui5-bar design="Header" style="height: 60px">
+        <div slot="startContent" style="display: flex; align-items: center; gap: 0.5rem">
+          <ui5-title level="H5">Folders</ui5-title>
+        </div>
+      </ui5-bar>
+      <ui5-list id="tags-list" selection-mode="Single">
+        <ui5-li data-tag="" icon="inbox" type="Active" selected>Inbox</ui5-li>
+      </ui5-list>
+    </div>
+    <div slot="midColumn" id="mid-col">
+      <ui5-bar design="Header" style="height: 60px">
+        <div slot="startContent" style="display: flex; align-items: center; gap: 0.5rem">
+          <ui5-title level="H5" id="emails-title">Inbox</ui5-title>
+          <ui5-tag id="emails-count" design="Set2" color-scheme="10">0</ui5-tag>
+        </div>
+        <div slot="endContent" style="display: flex; align-items: center; gap: 0.25rem">
+          <ui5-label for="priority-filter">Priority:</ui5-label>
+          <ui5-select id="priority-filter" value="all">
+            <ui5-option value="all">All Priorities</ui5-option>
+            <ui5-option value="critical">Critical</ui5-option>
+            <ui5-option value="high">High</ui5-option>
+            <ui5-option value="medium">Medium</ui5-option>
+            <ui5-option value="low">Low</ui5-option>
+          </ui5-select>
+        </div>
+      </ui5-bar>
+      <ui5-list id="emails-list" selection-mode="Single"></ui5-list>
+    </div>
+    <div slot="endColumn" id="end-col">
+      <div>
+        <ui5-illustrated-message id="preview-empty" name="NoData">
+          <ui5-title slot="title" level="H1">No email selected</ui5-title>
+          <div slot="subtitle">Select an email to preview</div>
+        </ui5-illustrated-message>
+
+        <div id="preview-container" style="display: none">
+          <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; flex-wrap: wrap">
+            <ui5-title level="H4" id="email-subject"></ui5-title>
+            <ui5-tag id="email-status-title" style="display: none"></ui5-tag>
+            <ui5-label id="email-priority-label" style="display: none">Priority:</ui5-label>
+            <ui5-tag id="email-priority-tag" style="display: none"></ui5-tag>
+          </div>
+
+          <ui5-bar id="email-meta-bar" design="Header" style="height: 60px">
+            <div slot="startContent" style="display: flex; align-items: center; gap: 0.5rem">
+              <ui5-avatar id="email-avatar" size="S"></ui5-avatar>
+              <ui5-text id="email-from"></ui5-text>
+            </div>
+            <div slot="endContent" style="display: flex; align-items: center; gap: 0.25rem">
+              <ui5-text id="email-date"></ui5-text>
+            </div>
+          </ui5-bar>
+
+          <div style="padding: 1rem">
+            <div id="email-tags" style="margin-bottom: 0.5rem"></div>
+
+            <!-- AI Summary Section -->
+            <ui5-card id="summary-container" style="margin-bottom: 1.5rem">
+              <ui5-card-header slot="header" title-text="AI Summary"></ui5-card-header>
+              <div style="padding: 1rem">
+                <ui5-busy-indicator id="summary-loading" active style="display: none; margin-bottom: 1rem" text="Generating summary..."></ui5-busy-indicator>
+                <ui5-text id="summary-content" style="display: none"></ui5-text>
+                <ui5-message-strip id="summary-error" design="Negative" style="display: none" hideCloseButton>Failed to generate summary. Please try again.</ui5-message-strip>
+              </div>
+            </ui5-card>
+
+            <!-- AI Response Section -->
+            <ui5-card id="response-container" style="margin-bottom: 1.5rem">
+              <ui5-card-header slot="header" title-text="AI Generated Response"></ui5-card-header>
+              <div style="padding: 1rem">
+                <ui5-busy-indicator id="response-loading" active style="display: none; margin-bottom: 1rem" text="Generating response..."></ui5-busy-indicator>
+                <ui5-text id="response-content" style="display: none"></ui5-text>
+                <ui5-message-strip id="response-error" design="Negative" style="display: none" hideCloseButton>Failed to generate response. Please try again.</ui5-message-strip>
+              </div>
+            </ui5-card>
+
+            <ui5-text id="email-body"></ui5-text>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ui5-flexible-column-layout>
+  <ui5-toast id="action-toast" duration="3000"></ui5-toast>
+  <ui5-busy-indicator
+    id="global-busy"
+    style="position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.6); z-index: 1000"
+    text="Processing..."
+    active
+  >
+  </ui5-busy-indicator>
+</div>
