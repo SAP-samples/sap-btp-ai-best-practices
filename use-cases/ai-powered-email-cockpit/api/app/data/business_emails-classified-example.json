@@ -1,0 +1,887 @@
+[
+  {
+    "from": {
+      "name": "Sarah Martinez",
+      "email": "sarah.martinez@techcorp.com"
+    },
+    "subject": "Invoice #INV-2024-1001 Payment Status - Action Required",
+    "body": {
+      "text": "Hello,\n\nI need to check the status of invoice INV-2024-1001 for $15,500. It was submitted through Ariba on July 15th but hasn't been paid yet. Can someone look this up in the system and provide an update?\n\nThanks,\nSarah Martinez\nAccounts Payable Manager",
+      "html": "<p>Hello,</p><p>I need to check the status of invoice <strong>INV-2024-1001</strong> for $15,500. It was submitted through Ariba on July 15th but hasn't been paid yet. Can someone look this up in the system and provide an update?</p><p>Thanks,<br>Sarah Martinez<br>Accounts Payable Manager</p>"
+    },
+    "sentDate": "2025-08-12T14:30:00Z",
+    "messageId": "<inv001@techcorp.com>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Mike Thompson",
+      "email": "mike.thompson@supplierxyz.com"
+    },
+    "subject": "Updated W9 Form Required - Vendor Information Update",
+    "body": {
+      "text": "Dear Vendor Management Team,\n\nI'm attaching our updated W9 form as our tax identification number has changed. Please update our vendor profile accordingly.\n\nOld TIN: 12-3456789\nNew TIN: 98-7654321\n\nPlease confirm receipt and processing.\n\nBest regards,\nMike Thompson\nFinance Director\nSupplier XYZ Inc.",
+      "html": "<p>Dear Vendor Management Team,</p><p>I'm attaching our updated W9 form as our tax identification number has changed. Please update our vendor profile accordingly.</p><p>Old TIN: 12-3456789<br>New TIN: 98-7654321</p><p>Please confirm receipt and processing.</p><p>Best regards,<br>Mike Thompson<br>Finance Director<br>Supplier XYZ Inc.</p>"
+    },
+    "sentDate": "2025-08-13T10:15:00Z",
+    "messageId": "<w9update002@medical.supplies>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Gregory Adams",
+      "email": "gregory.adams@printing.works"
+    },
+    "subject": "Ariba Invoice Status - Printing Services Q2",
+    "body": {
+      "text": "Hello AP Team,\n\nCould you please look up our Q2 printing services invoice in Ariba?\n\nInvoice: PRINT-2024-Q2-445\nAmount: $12,800\nDate Submitted: June 28, 2025\nServices: Marketing materials, business cards, brochures\nPO Reference: PO-998877\n\nIt's been 47 days since submission. Please advise on payment status.\n\nGregory Adams\nPrinting Works Inc.",
+      "html": "<p>Hello AP Team,</p><p>Could you please look up our Q2 printing services invoice in Ariba?</p><p>Invoice: <strong>PRINT-2024-Q2-445</strong><br>Amount: $12,800<br>Date Submitted: June 28, 2025<br>Services: Marketing materials, business cards, brochures<br>PO Reference: PO-998877</p><p>It's been 47 days since submission. Please advise on payment status.</p><p>Gregory Adams<br>Printing Works Inc.</p>"
+    },
+    "sentDate": "2025-08-14T15:10:00Z",
+    "messageId": "<lookup004@printing.works>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Helen Rodriguez",
+      "email": "helen.rodriguez@finance.internal"
+    },
+    "subject": "Internal Process Question - Need Invoice Approval Workflow SOP",
+    "body": {
+      "text": "Hi Team,\n\nI need documentation on the invoice approval workflow process. We're training new staff and need the current standard operating procedures.\n\nSpecifically need:\n- Approval thresholds by department\n- Required documentation for different invoice types\n- Escalation procedures for disputes\n- Timeline requirements for approvals\n- System access and permissions\n\nWho maintains these SOPs and where are they stored?\n\nHelen Rodriguez\nFinance Operations",
+      "html": "<p>Hi Team,</p><p>I need documentation on the invoice approval workflow process. We're training new staff and need the current standard operating procedures.</p><p>Specifically need:<br>- Approval thresholds by department<br>- Required documentation for different invoice types<br>- Escalation procedures for disputes<br>- Timeline requirements for approvals<br>- System access and permissions</p><p>Who maintains these SOPs and where are they stored?</p><p>Helen Rodriguez<br>Finance Operations</p>"
+    },
+    "sentDate": "2025-08-13T12:20:00Z",
+    "messageId": "<internal004@finance.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Jonathan Lee",
+      "email": "jonathan.lee@security.tech"
+    },
+    "subject": "RESOLVED: Security Services Payment - Thank You",
+    "body": {
+      "text": "Dear Accounts Payable Team,\n\nThank you for processing the payment for our security services invoice SEC-2024-667. The payment of $29,500 was received via ACH transfer yesterday.\n\nWe appreciate your prompt resolution of the payment delay issue. Our accounting team has updated our records accordingly.\n\nThis inquiry is now resolved.\n\nBest regards,\nJonathan Lee\nSecurity Tech Solutions",
+      "html": "<p>Dear Accounts Payable Team,</p><p>Thank you for processing the payment for our security services invoice <strong>SEC-2024-667</strong>. The payment of $29,500 was received via ACH transfer yesterday.</p><p>We appreciate your prompt resolution of the payment delay issue. Our accounting team has updated our records accordingly.</p><p><strong>This inquiry is now resolved.</strong></p><p>Best regards,<br>Jonathan Lee<br>Security Tech Solutions</p>"
+    },
+    "sentDate": "2025-08-14T08:30:00Z",
+    "messageId": "<resolved003@security.tech>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Samantha Green",
+      "email": "samantha.green@cleaning.pro"
+    },
+    "subject": "Payment Status Request - Monthly Cleaning Services",
+    "body": {
+      "text": "Good afternoon,\n\nI'm inquiring about the payment status for our monthly cleaning services invoice:\n\nInvoice: CLEAN-2024-078\nAmount: $6,750\nServices Period: July 2025\nSubmitted via Ariba: July 30, 2025\nPayment Terms: Net 15\n\nThis invoice is now past due. Can you please check the status and provide a payment timeline?\n\nSamantha Green\nCleaning Pro Services",
+      "html": "<p>Good afternoon,</p><p>I'm inquiring about the payment status for our monthly cleaning services invoice:</p><p>Invoice: <strong>CLEAN-2024-078</strong><br>Amount: $6,750<br>Services Period: July 2025<br>Submitted via Ariba: July 30, 2025<br>Payment Terms: Net 15</p><p>This invoice is now past due. Can you please check the status and provide a payment timeline?</p><p>Samantha Green<br>Cleaning Pro Services</p>"
+    },
+    "sentDate": "2025-08-14T14:25:00Z",
+    "messageId": "<payment004@cleaning.pro>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Marcus Johnson",
+      "email": "marcus.johnson@hr.internal"
+    },
+    "subject": "Reroute - Employee Benefits Vendor to HR Benefits Team",
+    "body": {
+      "text": "Hi,\n\nI received a vendor inquiry about employee benefits administration that needs to be routed to our HR Benefits team, not general HR.\n\nThe vendor is asking about:\n- Benefits enrollment processes\n- COBRA administration\n- HSA/FSA management\n- Benefits communication strategies\n\nPlease reroute to: HR Benefits Team (Linda Martinez, Benefits Manager)\n\nMarcus Johnson\nHR Operations",
+      "html": "<p>Hi,</p><p>I received a vendor inquiry about employee benefits administration that needs to be routed to our <strong>HR Benefits team</strong>, not general HR.</p><p>The vendor is asking about:<br>- Benefits enrollment processes<br>- COBRA administration<br>- HSA/FSA management<br>- Benefits communication strategies</p><p><strong>Please reroute to: HR Benefits Team (Linda Martinez, Benefits Manager)</strong></p><p>Marcus Johnson<br>HR Operations</p>"
+    },
+    "sentDate": "2025-08-13T09:15:00Z",
+    "messageId": "<reroute006@hr.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Laura Chen",
+      "email": "laura.chen@equipment.rental"
+    },
+    "subject": "W9 Update IN PROGRESS - Equipment Rental LLC",
+    "body": {
+      "text": "Dear Vendor Management,\n\nI'm following up on our W9 update submitted on August 7th. The update was needed due to a change in our registered business address.\n\nUpdate Details:\n- Old Address: 123 Industrial Blvd, City A\n- New Address: 456 Equipment Way, City B\n- EIN remains the same: 77-5544332\n\nCan you please provide an update on the processing status? We have invoices pending that need the correct address information.\n\nLaura Chen\nEquipment Rental LLC",
+      "html": "<p>Dear Vendor Management,</p><p>I'm following up on our W9 update submitted on August 7th. The update was needed due to a change in our registered business address.</p><p>Update Details:<br>- Old Address: 123 Industrial Blvd, City A<br>- New Address: 456 Equipment Way, City B<br>- EIN remains the same: 77-5544332</p><p>Can you please provide an update on the processing status? We have invoices pending that need the correct address information.</p><p>Laura Chen<br>Equipment Rental LLC</p>"
+    },
+    "sentDate": "2025-08-14T13:15:00Z",
+    "messageId": "<progress003@equipment.rental>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Daniel Park",
+      "email": "daniel.park@software.dev"
+    },
+    "subject": "Ariba System Check - Software Development Invoice",
+    "body": {
+      "text": "Hello Accounts Payable,\n\nI need a status check on our software development invoice in Ariba:\n\nInvoice: DEV-2024-889\nAmount: $52,400\nProject: Mobile App Development Phase 3\nSubmitted: July 8, 2025\nPO Number: PO-776655\nPayment Terms: Net 30\n\nThis is significantly overdue now. Please check Ariba for any issues or holds on this payment.\n\nDaniel Park\nSoftware Dev Solutions",
+      "html": "<p>Hello Accounts Payable,</p><p>I need a status check on our software development invoice in Ariba:</p><p>Invoice: <strong>DEV-2024-889</strong><br>Amount: $52,400<br>Project: Mobile App Development Phase 3<br>Submitted: July 8, 2025<br>PO Number: PO-776655<br>Payment Terms: Net 30</p><p>This is significantly overdue now. Please check Ariba for any issues or holds on this payment.</p><p>Daniel Park<br>Software Dev Solutions</p>"
+    },
+    "sentDate": "2025-08-14T10:20:00Z",
+    "messageId": "<lookup005@software.dev>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Rebecca Taylor",
+      "email": "rebecca.taylor@facilities.internal"
+    },
+    "subject": "Internal SOP Request - Vendor Insurance Requirements Documentation",
+    "body": {
+      "text": "Team,\n\nI need the standard operating procedures for vendor insurance requirements. We're onboarding several new facilities vendors and need to ensure proper coverage.\n\nNeed documentation on:\n- Minimum insurance coverage amounts\n- Required insurance types (General Liability, Workers Comp, etc.)\n- Certificate of insurance requirements\n- Insurance verification processes\n- Renewal tracking procedures\n\nWhere can I find these SOPs or who should I contact?\n\nRebecca Taylor\nFacilities Management",
+      "html": "<p>Team,</p><p>I need the standard operating procedures for vendor insurance requirements. We're onboarding several new facilities vendors and need to ensure proper coverage.</p><p>Need documentation on:<br>- Minimum insurance coverage amounts<br>- Required insurance types (General Liability, Workers Comp, etc.)<br>- Certificate of insurance requirements<br>- Insurance verification processes<br>- Renewal tracking procedures</p><p>Where can I find these SOPs or who should I contact?</p><p>Rebecca Taylor<br>Facilities Management</p>"
+    },
+    "sentDate": "2025-08-13T15:45:00Z",
+    "messageId": "<internal005@facilities.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Christopher Moore",
+      "email": "christopher.moore@office.supplies"
+    },
+    "subject": "Payment Inquiry - Office Supplies Monthly Order",
+    "body": {
+      "text": "Dear AP Team,\n\nI'm following up on payment for our monthly office supplies order:\n\nInvoice: OFF-2024-567\nAmount: $3,280\nOrder Date: July 20, 2025\nDelivery Completed: July 22, 2025\nSubmitted to Ariba: July 23, 2025\n\nPayment terms are Net 20, making this overdue. Can you please check the payment status?\n\nChristopher Moore\nOffice Supplies Direct",
+      "html": "<p>Dear AP Team,</p><p>I'm following up on payment for our monthly office supplies order:</p><p>Invoice: <strong>OFF-2024-567</strong><br>Amount: $3,280<br>Order Date: July 20, 2025<br>Delivery Completed: July 22, 2025<br>Submitted to Ariba: July 23, 2025</p><p>Payment terms are Net 20, making this overdue. Can you please check the payment status?</p><p>Christopher Moore<br>Office Supplies Direct</p>"
+    },
+    "sentDate": "2025-08-13T11:10:00Z",
+    "messageId": "<payment005@office.supplies>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Victoria Adams",
+      "email": "victoria.adams@training.corp"
+    },
+    "subject": "RESOLVED: Training Invoice Payment Received - Thank You",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nI'm writing to confirm that we received payment for invoice TRAIN-2024-334 for $18,900. The payment was processed via check and received yesterday.\n\nThank you for your assistance in resolving the payment timing issue. We appreciate your professionalism and prompt response.\n\nThis matter is now closed.\n\nBest regards,\nVictoria Adams\nTraining Corp Solutions",
+      "html": "<p>Dear Accounts Payable,</p><p>I'm writing to confirm that we received payment for invoice <strong>TRAIN-2024-334</strong> for $18,900. The payment was processed via check and received yesterday.</p><p>Thank you for your assistance in resolving the payment timing issue. We appreciate your professionalism and prompt response.</p><p><strong>This matter is now closed.</strong></p><p>Best regards,<br>Victoria Adams<br>Training Corp Solutions</p>"
+    },
+    "sentDate": "2025-08-14T09:40:00Z",
+    "messageId": "<resolved004@training.corp>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Andrew Wilson",
+      "email": "andrew.wilson@marketing.external"
+    },
+    "subject": "W9 Information Update Required - Marketing Agency",
+    "body": {
+      "text": "Dear Vendor Management Team,\n\nWe need to update our W9 information due to a recent business name change and new tax classification.\n\nChanges:\n- Old Business Name: Wilson Marketing Services\n- New Business Name: Wilson Digital Marketing Agency LLC\n- New Tax Classification: Single-member LLC\n- EIN: 66-4455778 (unchanged)\n\nAttached: Updated W9 form and name change documentation\n\nPlease confirm receipt and processing timeline.\n\nAndrew Wilson\nWilson Digital Marketing Agency LLC",
+      "html": "<p>Dear Vendor Management Team,</p><p>We need to update our W9 information due to a recent business name change and new tax classification.</p><p>Changes:<br>- Old Business Name: Wilson Marketing Services<br>- New Business Name: Wilson Digital Marketing Agency LLC<br>- New Tax Classification: Single-member LLC<br>- EIN: 66-4455778 (unchanged)</p><p>Attached: Updated W9 form and name change documentation</p><p>Please confirm receipt and processing timeline.</p><p>Andrew Wilson<br>Wilson Digital Marketing Agency LLC</p>"
+    },
+    "sentDate": "2025-08-14T11:55:00Z",
+    "messageId": "<w9update003@marketing.external>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Jennifer Park",
+      "email": "jennifer.park@compliance.internal"
+    },
+    "subject": "Reroute to Compliance Team - Regulatory Documentation Request",
+    "body": {
+      "text": "Hi,\n\nI received a vendor inquiry about regulatory compliance documentation that should be handled by our Compliance team, not Procurement.\n\nThe vendor is asking about:\n- SOX compliance requirements\n- Data privacy certifications\n- Industry-specific regulatory requirements\n- Audit documentation standards\n\nPlease reroute to: Compliance Team (Manager: Robert Chen)\n\nJennifer Park\nProcurement Operations",
+      "html": "<p>Hi,</p><p>I received a vendor inquiry about regulatory compliance documentation that should be handled by our <strong>Compliance team</strong>, not Procurement.</p><p>The vendor is asking about:<br>- SOX compliance requirements<br>- Data privacy certifications<br>- Industry-specific regulatory requirements<br>- Audit documentation standards</p><p><strong>Please reroute to: Compliance Team (Manager: Robert Chen)</strong></p><p>Jennifer Park<br>Procurement Operations</p>"
+    },
+    "sentDate": "2025-08-13T14:00:00Z",
+    "messageId": "<reroute007@compliance.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Timothy Brown",
+      "email": "timothy.brown@landscaping.services"
+    },
+    "subject": "Ariba Invoice Lookup - Landscaping Services Summer 2025",
+    "body": {
+      "text": "Good morning,\n\nPlease look up our landscaping services invoice in your Ariba system:\n\nInvoice: LAND-2024-SUM-123\nAmount: $24,650\nService Period: June-July 2025\nSubmitted: August 1, 2025\nServices: Grounds maintenance, irrigation, seasonal plantings\n\nWe haven't received payment yet and our records show it should have been processed by now.\n\nTimothy Brown\nLandscaping Services Plus",
+      "html": "<p>Good morning,</p><p>Please look up our landscaping services invoice in your Ariba system:</p><p>Invoice: <strong>LAND-2024-SUM-123</strong><br>Amount: $24,650<br>Service Period: June-July 2025<br>Submitted: August 1, 2025<br>Services: Grounds maintenance, irrigation, seasonal plantings</p><p>We haven't received payment yet and our records show it should have been processed by now.</p><p>Timothy Brown<br>Landscaping Services Plus</p>"
+    },
+    "sentDate": "2025-08-14T08:50:00Z",
+    "messageId": "<lookup006@landscaping.services>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Sandra Martinez",
+      "email": "sandra.martinez@waste.management"
+    },
+    "subject": "Payment Status Inquiry - Waste Management Services Q2",
+    "body": {
+      "text": "Dear Accounts Payable Team,\n\nI'm inquiring about the payment status for our Q2 waste management services:\n\nInvoice: WASTE-2024-Q2-456\nAmount: $9,850\nService Period: April-June 2025\nSubmitted via Ariba: July 5, 2025\nPayment Terms: Net 30\n\nThis invoice is now 40 days past submission. Please check the payment queue and advise on timeline.\n\nSandra Martinez\nWaste Management Solutions",
+      "html": "<p>Dear Accounts Payable Team,</p><p>I'm inquiring about the payment status for our Q2 waste management services:</p><p>Invoice: <strong>WASTE-2024-Q2-456</strong><br>Amount: $9,850<br>Service Period: April-June 2025<br>Submitted via Ariba: July 5, 2025<br>Payment Terms: Net 30</p><p>This invoice is now 40 days past submission. Please check the payment queue and advise on timeline.</p><p>Sandra Martinez<br>Waste Management Solutions</p>"
+    },
+    "sentDate": "2025-08-13T16:45:00Z",
+    "messageId": "<payment006@waste.management>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Kevin Davis",
+      "email": "kevin.davis@quality.internal"
+    },
+    "subject": "Internal Documentation Request - Quality Assurance Vendor SOPs",
+    "body": {
+      "text": "Hi Team,\n\nI need the standard operating procedures for quality assurance vendor management. We're implementing new QA processes and need current documentation.\n\nSpecific SOPs needed:\n- Vendor quality certification requirements\n- Quality audit procedures\n- Non-conformance reporting processes\n- Corrective action protocols\n- Quality metrics and KPI tracking\n\nWho owns these processes and where are the SOPs maintained?\n\nKevin Davis\nQuality Assurance",
+      "html": "<p>Hi Team,</p><p>I need the standard operating procedures for quality assurance vendor management. We're implementing new QA processes and need current documentation.</p><p>Specific SOPs needed:<br>- Vendor quality certification requirements<br>- Quality audit procedures<br>- Non-conformance reporting processes<br>- Corrective action protocols<br>- Quality metrics and KPI tracking</p><p>Who owns these processes and where are the SOPs maintained?</p><p>Kevin Davis<br>Quality Assurance</p>"
+    },
+    "sentDate": "2025-08-14T07:20:00Z",
+    "messageId": "<internal006@quality.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Linda Thompson",
+      "email": "linda.thompson@telecom.provider"
+    },
+    "subject": "W9 Update Processing Status - Telecom Provider Inc",
+    "body": {
+      "text": "Hello Vendor Management,\n\nI'm checking on the status of our W9 update submitted on August 5th. We updated our business structure and need confirmation that it's been processed.\n\nChanges submitted:\n- Changed from Corporation to LLC\n- Updated tax classification accordingly\n- New responsible party information\n- EIN remains: 88-7766554\n\nIs the update complete? We have monthly service invoices that need accurate tax treatment.\n\nLinda Thompson\nTelecom Provider Inc.",
+      "html": "<p>Hello Vendor Management,</p><p>I'm checking on the status of our W9 update submitted on August 5th. We updated our business structure and need confirmation that it's been processed.</p><p>Changes submitted:<br>- Changed from Corporation to LLC<br>- Updated tax classification accordingly<br>- New responsible party information<br>- EIN remains: 88-7766554</p><p>Is the update complete? We have monthly service invoices that need accurate tax treatment.</p><p>Linda Thompson<br>Telecom Provider Inc.</p>"
+    },
+    "sentDate": "2025-08-14T12:30:00Z",
+    "messageId": "<progress004@telecom.provider>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "waiting-for-response"
+  },
+  {
+    "from": {
+      "name": "Gary Miller",
+      "email": "gary.miller@maintenance.pro"
+    },
+    "subject": "RESOLVED: Maintenance Services Payment Confirmed",
+    "body": {
+      "text": "Dear AP Team,\n\nConfirming receipt of payment for invoice MAINT-2024-556 for $16,400. The wire transfer was received this morning.\n\nThank you for working with us to resolve the processing delay. We understand there were system issues that caused the initial delay.\n\nThis payment inquiry is now resolved.\n\nBest regards,\nGary Miller\nMaintenance Pro Services",
+      "html": "<p>Dear AP Team,</p><p>Confirming receipt of payment for invoice <strong>MAINT-2024-556</strong> for $16,400. The wire transfer was received this morning.</p><p>Thank you for working with us to resolve the processing delay. We understand there were system issues that caused the initial delay.</p><p><strong>This payment inquiry is now resolved.</strong></p><p>Best regards,<br>Gary Miller<br>Maintenance Pro Services</p>"
+    },
+    "sentDate": "2025-08-14T15:30:00Z",
+    "messageId": "<resolved005@maintenance.pro>",
+    "tags": ["Payment Inquiry"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Nancy Evans",
+      "email": "nancy.evans@logistics.internal"
+    },
+    "subject": "Reroute to Supply Chain - Logistics Vendor Management Inquiry",
+    "body": {
+      "text": "Hi,\n\nReceived a vendor inquiry about logistics and supply chain management that belongs with our Supply Chain team, not general operations.\n\nThe vendor is asking about:\n- Transportation management systems\n- Warehousing and distribution\n- Inventory optimization\n- Supply chain visibility tools\n\nPlease reroute to: Supply Chain Team (Director: Michael Chang)\n\nNancy Evans\nOperations",
+      "html": "<p>Hi,</p><p>Received a vendor inquiry about logistics and supply chain management that belongs with our <strong>Supply Chain team</strong>, not general operations.</p><p>The vendor is asking about:<br>- Transportation management systems<br>- Warehousing and distribution<br>- Inventory optimization<br>- Supply chain visibility tools</p><p><strong>Please reroute to: Supply Chain Team (Director: Michael Chang)</strong></p><p>Nancy Evans<br>Operations</p>"
+    },
+    "sentDate": "2025-08-13T13:50:00Z",
+    "messageId": "<reroute008@logistics.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Richard Garcia",
+      "email": "richard.garcia@consulting.plus"
+    },
+    "subject": "Ariba System Status Check - Management Consulting Invoice",
+    "body": {
+      "text": "Hello,\n\nI need a status check on our management consulting invoice in your Ariba system:\n\nInvoice: MGMT-2024-778\nAmount: $75,500\nProject: Organizational Restructuring Consulting\nSubmitted: July 12, 2025\nPO Number: PO-445566\nPayment Terms: Net 45\n\nWhile still within terms, we want to ensure there are no processing issues. Please confirm status.\n\nRichard Garcia\nConsulting Plus LLC",
+      "html": "<p>Hello,</p><p>I need a status check on our management consulting invoice in your Ariba system:</p><p>Invoice: <strong>MGMT-2024-778</strong><br>Amount: $75,500<br>Project: Organizational Restructuring Consulting<br>Submitted: July 12, 2025<br>PO Number: PO-445566<br>Payment Terms: Net 45</p><p>While still within terms, we want to ensure there are no processing issues. Please confirm status.</p><p>Richard Garcia<br>Consulting Plus LLC</p>"
+    },
+    "sentDate": "2025-08-14T14:40:00Z",
+    "messageId": "<lookup007@consulting.plus>",
+    "tags": ["Payment Inquiry"],
+    "status": "waiting-for-response"
+  },
+  {
+    "from": {
+      "name": "Ashley Robinson",
+      "email": "ashley.robinson@events.management"
+    },
+    "subject": "Payment Inquiry - Corporate Event Management Services",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nFollowing up on payment for our corporate event management services:\n\nInvoice: EVENT-2024-445\nAmount: $38,750\nEvent: Annual Company Conference 2025\nEvent Date: July 15-17, 2025\nInvoice Submitted: July 20, 2025\nPayment Terms: Net 25\n\nThis invoice is now past due. Please check payment status and provide timeline.\n\nAshley Robinson\nEvents Management Solutions",
+      "html": "<p>Dear Accounts Payable,</p><p>Following up on payment for our corporate event management services:</p><p>Invoice: <strong>EVENT-2024-445</strong><br>Amount: $38,750<br>Event: Annual Company Conference 2025<br>Event Date: July 15-17, 2025<br>Invoice Submitted: July 20, 2025<br>Payment Terms: Net 25</p><p>This invoice is now past due. Please check payment status and provide timeline.</p><p>Ashley Robinson<br>Events Management Solutions</p>"
+    },
+    "sentDate": "2025-08-13T10:45:00Z",
+    "messageId": "<payment007@events.management>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Paul White",
+      "email": "paul.white@risk.internal"
+    },
+    "subject": "Internal Request - Risk Management Vendor Assessment SOPs",
+    "body": {
+      "text": "Team,\n\nI need the standard operating procedures for vendor risk assessment and management. We're updating our risk framework and need current documentation.\n\nSeeking SOPs for:\n- Vendor risk assessment criteria\n- Due diligence requirements\n- Risk monitoring procedures\n- Business continuity planning\n- Risk mitigation strategies\n- Escalation procedures for high-risk vendors\n\nWhere are these maintained and who is the process owner?\n\nPaul White\nRisk Management",
+      "html": "<p>Team,</p><p>I need the standard operating procedures for vendor risk assessment and management. We're updating our risk framework and need current documentation.</p><p>Seeking SOPs for:<br>- Vendor risk assessment criteria<br>- Due diligence requirements<br>- Risk monitoring procedures<br>- Business continuity planning<br>- Risk mitigation strategies<br>- Escalation procedures for high-risk vendors</p><p>Where are these maintained and who is the process owner?</p><p>Paul White<br>Risk Management</p>"
+    },
+    "sentDate": "2025-08-14T08:05:00Z",
+    "messageId": "<internal007@risk.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Catherine Lewis",
+      "email": "catherine.lewis@design.studio"
+    },
+    "subject": "W9 Update Required - Design Studio Name Change",
+    "body": {
+      "text": "Dear Vendor Management Team,\n\nWe need to update our W9 form due to a business name change effective August 1, 2025.\n\nUpdate Details:\n- Old Name: Lewis Creative Design\n- New Name: Catherine Lewis Design Studio LLC\n- Business structure changed to LLC\n- New EIN: 55-9988776\n- Old EIN: 44-8877665\n\nAttached: New W9 form, name change documentation, new EIN letter\n\nPlease confirm receipt and processing timeline.\n\nCatherine Lewis\nCatherine Lewis Design Studio LLC",
+      "html": "<p>Dear Vendor Management Team,</p><p>We need to update our W9 form due to a business name change effective August 1, 2025.</p><p>Update Details:<br>- Old Name: Lewis Creative Design<br>- New Name: Catherine Lewis Design Studio LLC<br>- Business structure changed to LLC<br>- New EIN: 55-9988776<br>- Old EIN: 44-8877665</p><p>Attached: New W9 form, name change documentation, new EIN letter</p><p>Please confirm receipt and processing timeline.</p><p>Catherine Lewis<br>Catherine Lewis Design Studio LLC</p>"
+    },
+    "sentDate": "2025-08-13T09:30:00Z",
+    "messageId": "<w9update004@design.studio>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Stephen King",
+      "email": "stephen.king@shipping.express"
+    },
+    "subject": "Ariba Invoice Lookup - Express Shipping Services July",
+    "body": {
+      "text": "Good afternoon,\n\nPlease look up our July shipping services invoice in Ariba:\n\nInvoice: SHIP-2024-JUL-889\nAmount: $13,450\nServices: Express shipping and logistics\nSubmitted: July 28, 2025\nPO Reference: PO-332211\nPayment Terms: Net 20\n\nThis is now overdue. Please check system status and advise.\n\nStephen King\nShipping Express Solutions",
+      "html": "<p>Good afternoon,</p><p>Please look up our July shipping services invoice in Ariba:</p><p>Invoice: <strong>SHIP-2024-JUL-889</strong><br>Amount: $13,450<br>Services: Express shipping and logistics<br>Submitted: July 28, 2025<br>PO Reference: PO-332211<br>Payment Terms: Net 20</p><p>This is now overdue. Please check system status and advise.</p><p>Stephen King<br>Shipping Express Solutions</p>"
+    },
+    "sentDate": "2025-08-14T13:25:00Z",
+    "messageId": "<lookup008@shipping.express>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Maria Gonzalez",
+      "email": "maria.gonzalez@translation.services"
+    },
+    "subject": "RESOLVED: Translation Services Payment Received",
+    "body": {
+      "text": "Dear Accounts Payable Team,\n\nI'm confirming receipt of payment for invoice TRANS-2024-667 for $7,250. The payment was processed via direct deposit yesterday.\n\nThank you for your assistance with this matter. The payment delay was understood given the holiday processing schedule.\n\nThis inquiry is now resolved.\n\nBest regards,\nMaria Gonzalez\nTranslation Services International",
+      "html": "<p>Dear Accounts Payable Team,</p><p>I'm confirming receipt of payment for invoice <strong>TRANS-2024-667</strong> for $7,250. The payment was processed via direct deposit yesterday.</p><p>Thank you for your assistance with this matter. The payment delay was understood given the holiday processing schedule.</p><p><strong>This inquiry is now resolved.</strong></p><p>Best regards,<br>Maria Gonzalez<br>Translation Services International</p>"
+    },
+    "sentDate": "2025-08-14T11:20:00Z",
+    "messageId": "<resolved006@translation.services>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "David Chen",
+      "email": "david.chen@analytics.internal"
+    },
+    "subject": "Reroute to Data Analytics Team - Business Intelligence Vendor",
+    "body": {
+      "text": "Hi,\n\nReceived a vendor inquiry about business intelligence and data analytics tools that should be handled by our Data Analytics team.\n\nThe vendor is asking about:\n- Data warehouse solutions\n- Business intelligence platforms\n- Advanced analytics capabilities\n- Data visualization tools\n- Reporting and dashboard requirements\n\nPlease reroute to: Data Analytics Team (Lead: Jennifer Wu)\n\nDavid Chen\nIT Operations",
+      "html": "<p>Hi,</p><p>Received a vendor inquiry about business intelligence and data analytics tools that should be handled by our <strong>Data Analytics team</strong>.</p><p>The vendor is asking about:<br>- Data warehouse solutions<br>- Business intelligence platforms<br>- Advanced analytics capabilities<br>- Data visualization tools<br>- Reporting and dashboard requirements</p><p><strong>Please reroute to: Data Analytics Team (Lead: Jennifer Wu)</strong></p><p>David Chen<br>IT Operations</p>"
+    },
+    "sentDate": "2025-08-13T14:30:00Z",
+    "messageId": "<reroute009@analytics.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Jessica Taylor",
+      "email": "jessica.taylor@healthcare.provider"
+    },
+    "subject": "Payment Status Inquiry - Healthcare Services Contract",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nI'm inquiring about payment for our healthcare services contract:\n\nInvoice: HEALTH-2024-334\nAmount: $42,800\nServices: Employee health screening and wellness programs\nContract Period: Q2 2025\nSubmitted via Ariba: July 15, 2025\nPayment Terms: Net 30\n\nThis is now approaching the payment deadline. Please confirm processing status.\n\nJessica Taylor\nHealthcare Provider Network",
+      "html": "<p>Dear Accounts Payable,</p><p>I'm inquiring about payment for our healthcare services contract:</p><p>Invoice: <strong>HEALTH-2024-334</strong><br>Amount: $42,800<br>Services: Employee health screening and wellness programs<br>Contract Period: Q2 2025<br>Submitted via Ariba: July 15, 2025<br>Payment Terms: Net 30</p><p>This is now approaching the payment deadline. Please confirm processing status.</p><p>Jessica Taylor<br>Healthcare Provider Network</p>"
+    },
+    "sentDate": "2025-08-14T10:10:00Z",
+    "messageId": "<payment008@healthcare.provider>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Robert Johnson",
+      "email": "robert.johnson@audit.internal"
+    },
+    "subject": "Internal SOP Request - Vendor Audit and Compliance Procedures",
+    "body": {
+      "text": "Team,\n\nI need the standard operating procedures for vendor auditing and compliance monitoring. We're preparing for the annual compliance review.\n\nRequired SOPs:\n- Vendor audit scheduling and procedures\n- Compliance monitoring frameworks\n- Documentation requirements for audits\n- Non-compliance remediation processes\n- Audit reporting and follow-up procedures\n- Regulatory compliance tracking\n\nWho maintains these procedures and where can I access them?\n\nRobert Johnson\nInternal Audit",
+      "html": "<p>Team,</p><p>I need the standard operating procedures for vendor auditing and compliance monitoring. We're preparing for the annual compliance review.</p><p>Required SOPs:<br>- Vendor audit scheduling and procedures<br>- Compliance monitoring frameworks<br>- Documentation requirements for audits<br>- Non-compliance remediation processes<br>- Audit reporting and follow-up procedures<br>- Regulatory compliance tracking</p><p>Who maintains these procedures and where can I access them?</p><p>Robert Johnson<br>Internal Audit</p>"
+    },
+    "sentDate": "2025-08-13T12:45:00Z",
+    "messageId": "<internal008@audit.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Karen Williams",
+      "email": "karen.williams@food.services"
+    },
+    "subject": "W9 Update IN PROGRESS - Food Services Corp Address Change",
+    "body": {
+      "text": "Dear Vendor Management,\n\nFollowing up on our W9 update submitted August 8th for a business address change. We relocated our headquarters and need this updated for tax reporting.\n\nAddress Change:\n- Old: 789 Restaurant Row, Food City\n- New: 456 Culinary Center, Dining District\n- EIN unchanged: 33-2211445\n- Tax classification unchanged: Corporation\n\nCan you provide an update on processing status? We have catering invoices pending.\n\nKaren Williams\nFood Services Corp",
+      "html": "<p>Dear Vendor Management,</p><p>Following up on our W9 update submitted August 8th for a business address change. We relocated our headquarters and need this updated for tax reporting.</p><p>Address Change:<br>- Old: 789 Restaurant Row, Food City<br>- New: 456 Culinary Center, Dining District<br>- EIN unchanged: 33-2211445<br>- Tax classification unchanged: Corporation</p><p>Can you provide an update on processing status? We have catering invoices pending.</p><p>Karen Williams<br>Food Services Corp</p>"
+    },
+    "sentDate": "2025-08-14T15:05:00Z",
+    "messageId": "<progress005@food.services>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "waiting-for-response"
+  },
+  {
+    "from": {
+      "name": "Mark Anderson",
+      "email": "mark.anderson@automotive.parts"
+    },
+    "subject": "Ariba System Check - Automotive Parts Supply Invoice",
+    "body": {
+      "text": "Hello AP Team,\n\nI need a status check on our automotive parts supply invoice in Ariba:\n\nInvoice: AUTO-2024-556\nAmount: $89,750\nParts Delivered: July 10-15, 2025\nInvoice Submitted: July 18, 2025\nPO Number: PO-998877\nPayment Terms: Net 35\n\nWe're within payment terms but want to ensure no processing issues.\n\nMark Anderson\nAutomotive Parts Supply Co.",
+      "html": "<p>Hello AP Team,</p><p>I need a status check on our automotive parts supply invoice in Ariba:</p><p>Invoice: <strong>AUTO-2024-556</strong><br>Amount: $89,750<br>Parts Delivered: July 10-15, 2025<br>Invoice Submitted: July 18, 2025<br>PO Number: PO-998877<br>Payment Terms: Net 35</p><p>We're within payment terms but want to ensure no processing issues.</p><p>Mark Anderson<br>Automotive Parts Supply Co.</p>"
+    },
+    "sentDate": "2025-08-13T16:15:00Z",
+    "messageId": "<lookup009@automotive.parts>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Lisa Rodriguez",
+      "email": "lisa.rodriguez@environmental.internal"
+    },
+    "subject": "Reroute to Environmental Team - Sustainability Vendor Inquiry",
+    "body": {
+      "text": "Hi,\n\nReceived a vendor inquiry about environmental sustainability services that belongs with our Environmental team, not general operations.\n\nThe vendor offers:\n- Carbon footprint assessment\n- Sustainability reporting\n- Waste reduction programs\n- Green certification consulting\n- Environmental compliance monitoring\n\nPlease reroute to: Environmental Sustainability Team (Manager: Tom Green)\n\nLisa Rodriguez\nOperations",
+      "html": "<p>Hi,</p><p>Received a vendor inquiry about environmental sustainability services that belongs with our <strong>Environmental team</strong>, not general operations.</p><p>The vendor offers:<br>- Carbon footprint assessment<br>- Sustainability reporting<br>- Waste reduction programs<br>- Green certification consulting<br>- Environmental compliance monitoring</p><p><strong>Please reroute to: Environmental Sustainability Team (Manager: Tom Green)</strong></p><p>Lisa Rodriguez<br>Operations</p>"
+    },
+    "sentDate": "2025-08-14T09:25:00Z",
+    "messageId": "<reroute010@environmental.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Anthony Clark",
+      "email": "anthony.clark@insurance.broker"
+    },
+    "subject": "Payment Inquiry - Insurance Premium Invoice",
+    "body": {
+      "text": "Dear Accounts Payable Team,\n\nI'm following up on payment for our quarterly insurance premium invoice:\n\nInvoice: INS-2024-Q2-789\nAmount: $125,400\nCoverage Period: July-September 2025\nPolicy Types: General Liability, Professional Liability, Cyber Insurance\nSubmitted: July 1, 2025\nPayment Terms: Net 30\n\nThis is now overdue. Please check payment status urgently.\n\nAnthony Clark\nInsurance Broker Services",
+      "html": "<p>Dear Accounts Payable Team,</p><p>I'm following up on payment for our quarterly insurance premium invoice:</p><p>Invoice: <strong>INS-2024-Q2-789</strong><br>Amount: $125,400<br>Coverage Period: July-September 2025<br>Policy Types: General Liability, Professional Liability, Cyber Insurance<br>Submitted: July 1, 2025<br>Payment Terms: Net 30</p><p><strong>This is now overdue. Please check payment status urgently.</strong></p><p>Anthony Clark<br>Insurance Broker Services</p>"
+    },
+    "sentDate": "2025-08-14T14:15:00Z",
+    "messageId": "<payment009@insurance.broker>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Susan Miller",
+      "email": "susan.miller@training.internal"
+    },
+    "subject": "Internal Request - Employee Training Vendor Management SOPs",
+    "body": {
+      "text": "Hi Team,\n\nI need the standard operating procedures for managing employee training vendors. We're standardizing our training procurement process.\n\nSeeking documentation on:\n- Training vendor qualification criteria\n- Course approval workflows\n- Training effectiveness measurement\n- Vendor performance evaluation\n- Budget allocation and tracking\n- Compliance training requirements\n\nWhere are these SOPs maintained and who owns this process?\n\nSusan Miller\nEmployee Training & Development",
+      "html": "<p>Hi Team,</p><p>I need the standard operating procedures for managing employee training vendors. We're standardizing our training procurement process.</p><p>Seeking documentation on:<br>- Training vendor qualification criteria<br>- Course approval workflows<br>- Training effectiveness measurement<br>- Vendor performance evaluation<br>- Budget allocation and tracking<br>- Compliance training requirements</p><p>Where are these SOPs maintained and who owns this process?</p><p>Susan Miller<br>Employee Training & Development</p>"
+    },
+    "sentDate": "2025-08-13T11:30:00Z",
+    "messageId": "<internal009@training.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "William Garcia",
+      "email": "william.garcia@legal.services"
+    },
+    "subject": "RESOLVED: Legal Services Invoice Payment Confirmed",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nConfirming receipt of payment for our legal services invoice LEG-2024-445 for $95,600. The payment was received via wire transfer this morning.\n\nThank you for your prompt processing once the approval workflow was completed. We appreciate your professionalism throughout the process.\n\nThis matter is now resolved.\n\nBest regards,\nWilliam Garcia\nLegal Services Associates",
+      "html": "<p>Dear Accounts Payable,</p><p>Confirming receipt of payment for our legal services invoice <strong>LEG-2024-445</strong> for $95,600. The payment was received via wire transfer this morning.</p><p>Thank you for your prompt processing once the approval workflow was completed. We appreciate your professionalism throughout the process.</p><p><strong>This matter is now resolved.</strong></p><p>Best regards,<br>William Garcia<br>Legal Services Associates</p>"
+    },
+    "sentDate": "2025-08-14T12:45:00Z",
+    "messageId": "<resolved007@legal.services>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Elizabeth Davis",
+      "email": "elizabeth.davis@research.lab"
+    },
+    "subject": "W9 Update Required - Research Lab Partnership Dissolution",
+    "body": {
+      "text": "Dear Vendor Management Team,\n\nWe need to update our W9 information due to partnership dissolution and restructuring as a single-member LLC.\n\nChanges Required:\n- Old Structure: Partnership\n- New Structure: Single-member LLC\n- Name Change: Davis Research Partners to Davis Research Lab LLC\n- New EIN: 22-1133889\n- Old EIN: 11-2233445\n\nAttached: Updated W9, dissolution documents, new EIN confirmation\n\nPlease confirm receipt and expected processing time.\n\nElizabeth Davis\nDavis Research Lab LLC",
+      "html": "<p>Dear Vendor Management Team,</p><p>We need to update our W9 information due to partnership dissolution and restructuring as a single-member LLC.</p><p>Changes Required:<br>- Old Structure: Partnership<br>- New Structure: Single-member LLC<br>- Name Change: Davis Research Partners to Davis Research Lab LLC<br>- New EIN: 22-1133889<br>- Old EIN: 11-2233445</p><p>Attached: Updated W9, dissolution documents, new EIN confirmation</p><p>Please confirm receipt and expected processing time.</p><p>Elizabeth Davis<br>Davis Research Lab LLC</p>"
+    },
+    "sentDate": "2025-08-13T15:20:00Z",
+    "messageId": "<w9update005@research.lab>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Charles Wilson",
+      "email": "charles.wilson@real.estate"
+    },
+    "subject": "Ariba Invoice Lookup - Property Management Services",
+    "body": {
+      "text": "Good morning,\n\nPlease look up our property management services invoice in your Ariba system:\n\nInvoice: PROP-2024-667\nAmount: $34,250\nServices: Property management, maintenance coordination\nProperty: Corporate Headquarters Building\nSubmitted: July 22, 2025\nPayment Terms: Net 30\n\nThis is now overdue. Please check for any system holds or processing issues.\n\nCharles Wilson\nReal Estate Management Solutions",
+      "html": "<p>Good morning,</p><p>Please look up our property management services invoice in your Ariba system:</p><p>Invoice: <strong>PROP-2024-667</strong><br>Amount: $34,250<br>Services: Property management, maintenance coordination<br>Property: Corporate Headquarters Building<br>Submitted: July 22, 2025<br>Payment Terms: Net 30</p><p>This is now overdue. Please check for any system holds or processing issues.</p><p>Charles Wilson<br>Real Estate Management Solutions</p>"
+    },
+    "sentDate": "2025-08-14T08:40:00Z",
+    "messageId": "<lookup010@real.estate>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Patricia Anderson",
+      "email": "patricia.anderson@communications.internal"
+    },
+    "subject": "Reroute to Communications Team - PR and Marketing Vendor",
+    "body": {
+      "text": "Hi,\n\nReceived a vendor inquiry about public relations and communications services that should go to our Communications team, not general procurement.\n\nThe vendor specializes in:\n- Public relations and media outreach\n- Crisis communications\n- Internal communications\n- Brand management\n- Social media management\n\nPlease reroute to: Communications Team (Director: Mark Thompson)\n\nPatricia Anderson\nProcurement",
+      "html": "<p>Hi,</p><p>Received a vendor inquiry about public relations and communications services that should go to our <strong>Communications team</strong>, not general procurement.</p><p>The vendor specializes in:<br>- Public relations and media outreach<br>- Crisis communications<br>- Internal communications<br>- Brand management<br>- Social media management</p><p><strong>Please reroute to: Communications Team (Director: Mark Thompson)</strong></p><p>Patricia Anderson<br>Procurement</p>"
+    },
+    "sentDate": "2025-08-13T10:15:00Z",
+    "messageId": "<reroute011@communications.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Joseph Martinez",
+      "email": "joseph.martinez@energy.solutions"
+    },
+    "subject": "Payment Status Inquiry - Energy Management Services",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nI'm inquiring about payment status for our energy management services invoice:\n\nInvoice: ENERGY-2024-445\nAmount: $56,700\nServices: Energy audit, efficiency consulting, utility management\nProject Period: June 2025\nSubmitted via Ariba: July 8, 2025\nPayment Terms: Net 40\n\nWe're approaching the payment deadline and want to confirm processing status.\n\nJoseph Martinez\nEnergy Solutions Inc.",
+      "html": "<p>Dear Accounts Payable,</p><p>I'm inquiring about payment status for our energy management services invoice:</p><p>Invoice: <strong>ENERGY-2024-445</strong><br>Amount: $56,700<br>Services: Energy audit, efficiency consulting, utility management<br>Project Period: June 2025<br>Submitted via Ariba: July 8, 2025<br>Payment Terms: Net 40</p><p>We're approaching the payment deadline and want to confirm processing status.</p><p>Joseph Martinez<br>Energy Solutions Inc.</p>"
+    },
+    "sentDate": "2025-08-14T11:05:00Z",
+    "messageId": "<payment010@energy.solutions>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Lisa Chen",
+      "email": "lisa.chen@procurement.company.com"
+    },
+    "subject": "Reroute to John Davis - Complex Contract Inquiry",
+    "body": {
+      "text": "Hi Team,\n\nI received an inquiry about the multi-year service contract with Global Services Ltd. This involves legal review and contract amendments that are outside my scope. Please reroute this to John Davis in Legal Contracts.\n\nThe vendor is asking about payment terms modification and penalty clauses.\n\nThanks,\nLisa Chen",
+      "html": "<p>Hi Team,</p><p>I received an inquiry about the multi-year service contract with Global Services Ltd. This involves legal review and contract amendments that are outside my scope. Please reroute this to <strong>John Davis in Legal Contracts</strong>.</p><p>The vendor is asking about payment terms modification and penalty clauses.</p><p>Thanks,<br>Lisa Chen</p>"
+    },
+    "sentDate": "2025-08-14T08:45:00Z",
+    "messageId": "<reroute001@procurement.company.com>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "David Kumar",
+      "email": "david.kumar@globalvendor.net"
+    },
+    "subject": "Payment Delay Inquiry - Invoice #GV-2024-0892",
+    "body": {
+      "text": "Good morning,\n\nWe submitted invoice GV-2024-0892 for $28,750 through your Ariba portal 45 days ago. Our payment terms are Net 30, so this is now 15 days overdue. Can you please investigate and provide a payment timeline?\n\nInvoice details:\n- Amount: $28,750\n- PO Number: PO-789456\n- Submitted: June 30, 2025\n- Services: IT Consulting Q2 2025\n\nUrgent response needed.\n\nDavid Kumar\nGlobal Vendor Inc.",
+      "html": "<p>Good morning,</p><p>We submitted invoice <strong>GV-2024-0892</strong> for $28,750 through your Ariba portal 45 days ago. Our payment terms are Net 30, so this is now 15 days overdue. Can you please investigate and provide a payment timeline?</p><p>Invoice details:<br>- Amount: $28,750<br>- PO Number: PO-789456<br>- Submitted: June 30, 2025<br>- Services: IT Consulting Q2 2025</p><p><strong>Urgent response needed.</strong></p><p>David Kumar<br>Global Vendor Inc.</p>"
+    },
+    "sentDate": "2025-08-14T09:20:00Z",
+    "messageId": "<payment001@globalvendor.net>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Jennifer Walsh",
+      "email": "jennifer.walsh@internalteam.com"
+    },
+    "subject": "Internal Query - Need SOP Documentation for Vendor Onboarding",
+    "body": {
+      "text": "Hi Team,\n\nI'm working with a new vendor and need the standard operating procedures for vendor onboarding. Specifically looking for:\n\n1. W9 collection process\n2. Ariba portal setup steps\n3. Payment terms negotiation guidelines\n4. Required insurance documentation\n\nCan someone point me to the right documentation or process owner?\n\nThanks,\nJennifer Walsh\nProcurement Specialist",
+      "html": "<p>Hi Team,</p><p>I'm working with a new vendor and need the standard operating procedures for vendor onboarding. Specifically looking for:</p><ol><li>W9 collection process</li><li>Ariba portal setup steps</li><li>Payment terms negotiation guidelines</li><li>Required insurance documentation</li></ol><p>Can someone point me to the right documentation or process owner?</p><p>Thanks,<br>Jennifer Walsh<br>Procurement Specialist</p>"
+    },
+    "sentDate": "2025-08-13T16:30:00Z",
+    "messageId": "<internal001@internalteam.com>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Robert Kim",
+      "email": "robert.kim@fastpay.solutions"
+    },
+    "subject": "RESOLVED: Invoice Payment Confirmation - INV-FP-2024-156",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nThank you for resolving the payment issue with invoice INV-FP-2024-156. We received the payment of $12,300 yesterday. The issue was resolved quickly and professionally.\n\nThis matter is now closed on our end.\n\nBest regards,\nRobert Kim\nFastPay Solutions",
+      "html": "<p>Dear Accounts Payable,</p><p>Thank you for resolving the payment issue with invoice <strong>INV-FP-2024-156</strong>. We received the payment of $12,300 yesterday. The issue was resolved quickly and professionally.</p><p>This matter is now closed on our end.</p><p>Best regards,<br>Robert Kim<br>FastPay Solutions</p>"
+    },
+    "sentDate": "2025-08-14T11:15:00Z",
+    "messageId": "<resolved001@fastpay.solutions>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Amanda Foster",
+      "email": "amanda.foster@supplychainco.com"
+    },
+    "subject": "Ariba Lookup Required - Multiple Invoice Status Check",
+    "body": {
+      "text": "Hello AP Team,\n\nI need status updates on the following invoices submitted through Ariba:\n\n1. INV-SC-2024-301 - $8,950 (submitted 7/20/25)\n2. INV-SC-2024-302 - $15,200 (submitted 7/22/25)\n3. INV-SC-2024-303 - $22,100 (submitted 7/25/25)\n\nAll are past due based on our Net 30 terms. Please check Ariba system and advise status.\n\nAmanda Foster\nSupply Chain Co.",
+      "html": "<p>Hello AP Team,</p><p>I need status updates on the following invoices submitted through Ariba:</p><ol><li>INV-SC-2024-301 - $8,950 (submitted 7/20/25)</li><li>INV-SC-2024-302 - $15,200 (submitted 7/22/25)</li><li>INV-SC-2024-303 - $22,100 (submitted 7/25/25)</li></ol><p>All are past due based on our Net 30 terms. Please check Ariba system and advise status.</p><p>Amanda Foster<br>Supply Chain Co.</p>"
+    },
+    "sentDate": "2025-08-14T13:45:00Z",
+    "messageId": "<lookup001@supplychainco.com>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Thomas Anderson",
+      "email": "thomas.anderson@marketing.internal"
+    },
+    "subject": "Please Reroute - Marketing Budget Inquiry to Finance Team",
+    "body": {
+      "text": "Hi,\n\nI got copied on an email about marketing spend analysis and budget reconciliation. This should go to Maria Rodriguez in the Finance team as she handles all marketing budget inquiries.\n\nThe vendor is asking about Q3 advertising spend tracking and needs budget approval workflows.\n\nPlease reroute accordingly.\n\nTom Anderson\nMarketing Operations",
+      "html": "<p>Hi,</p><p>I got copied on an email about marketing spend analysis and budget reconciliation. This should go to <strong>Maria Rodriguez in the Finance team</strong> as she handles all marketing budget inquiries.</p><p>The vendor is asking about Q3 advertising spend tracking and needs budget approval workflows.</p><p>Please reroute accordingly.</p><p>Tom Anderson<br>Marketing Operations</p>"
+    },
+    "sentDate": "2025-08-14T10:30:00Z",
+    "messageId": "<reroute002@marketing.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Patricia Wong",
+      "email": "patricia.wong@techservices.biz"
+    },
+    "subject": "IN PROGRESS: W9 Update Processing - TechServices Biz",
+    "body": {
+      "text": "Dear Vendor Management,\n\nFollowing up on our W9 update submitted last week. I understand it's being processed but wanted to confirm the timeline. We changed our business structure from LLC to Corporation and need the tax classification updated.\n\nAttached documents:\n- Updated W9 form\n- Certificate of Incorporation\n- EIN confirmation letter\n\nPlease advise expected completion date.\n\nPatricia Wong\nTechServices Biz",
+      "html": "<p>Dear Vendor Management,</p><p>Following up on our W9 update submitted last week. I understand it's being processed but wanted to confirm the timeline. We changed our business structure from LLC to Corporation and need the tax classification updated.</p><p>Attached documents:<br>- Updated W9 form<br>- Certificate of Incorporation<br>- EIN confirmation letter</p><p>Please advise expected completion date.</p><p>Patricia Wong<br>TechServices Biz</p>"
+    },
+    "sentDate": "2025-08-14T12:00:00Z",
+    "messageId": "<progress001@techservices.biz>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Kevin Martinez",
+      "email": "kevin.martinez@logistics.pro"
+    },
+    "subject": "Payment Status Inquiry - Monthly Service Invoice",
+    "body": {
+      "text": "Good afternoon,\n\nI'm inquiring about the payment status for our monthly logistics services invoice LOG-2024-078 for $35,600. It was processed through Ariba on July 28th with Net 15 payment terms.\n\nCan you please check the payment queue and let me know when we can expect payment?\n\nKevin Martinez\nLogistics Pro Solutions",
+      "html": "<p>Good afternoon,</p><p>I'm inquiring about the payment status for our monthly logistics services invoice <strong>LOG-2024-078</strong> for $35,600. It was processed through Ariba on July 28th with Net 15 payment terms.</p><p>Can you please check the payment queue and let me know when we can expect payment?</p><p>Kevin Martinez<br>Logistics Pro Solutions</p>"
+    },
+    "sentDate": "2025-08-13T15:20:00Z",
+    "messageId": "<payment002@logistics.pro>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Rachel Green",
+      "email": "rachel.green@hr.internal"
+    },
+    "subject": "Internal Reroute Request - Employee Expense Reimbursement Process",
+    "body": {
+      "text": "Team,\n\nI received a vendor inquiry about employee expense reimbursement processes, but this falls under Finance operations, not HR. Please reroute this to the Finance team.\n\nThe vendor provides expense management software and wants to understand our current reimbursement workflows.\n\nReroute to: Finance Operations Team\n\nThanks,\nRachel Green\nHR Operations",
+      "html": "<p>Team,</p><p>I received a vendor inquiry about employee expense reimbursement processes, but this falls under Finance operations, not HR. Please reroute this to the <strong>Finance team</strong>.</p><p>The vendor provides expense management software and wants to understand our current reimbursement workflows.</p><p><strong>Reroute to: Finance Operations Team</strong></p><p>Thanks,<br>Rachel Green<br>HR Operations</p>"
+    },
+    "sentDate": "2025-08-14T14:10:00Z",
+    "messageId": "<reroute003@hr.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Steven Clark",
+      "email": "steven.clark@consulting.firm"
+    },
+    "subject": "Ariba Invoice Lookup - Consulting Services Q2 2025",
+    "body": {
+      "text": "Hello,\n\nCould you please look up the status of our Q2 consulting invoice in Ariba? Here are the details:\n\nInvoice: CONS-2024-Q2-789\nAmount: $48,500\nSubmission Date: July 1, 2025\nPO Reference: PO-654321\nProject: Digital Transformation Initiative\n\nWe haven't received payment yet and need to update our cash flow projections.\n\nSteven Clark\nConsulting Firm LLC",
+      "html": "<p>Hello,</p><p>Could you please look up the status of our Q2 consulting invoice in Ariba? Here are the details:</p><p>Invoice: <strong>CONS-2024-Q2-789</strong><br>Amount: $48,500<br>Submission Date: July 1, 2025<br>PO Reference: PO-654321<br>Project: Digital Transformation Initiative</p><p>We haven't received payment yet and need to update our cash flow projections.</p><p>Steven Clark<br>Consulting Firm LLC</p>"
+    },
+    "sentDate": "2025-08-14T09:50:00Z",
+    "messageId": "<lookup002@consulting.firm>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Maria Rodriguez",
+      "email": "maria.rodriguez@fabrication.works"
+    },
+    "subject": "URGENT: W9 Form Update - Tax ID Change Required",
+    "body": {
+      "text": "URGENT - Vendor Update Required\n\nDear Vendor Management Team,\n\nWe need to update our W9 information immediately due to a recent business acquisition. Our federal tax ID has changed and we need this updated before our next invoice payment.\n\nOld EIN: 45-1234567\nNew EIN: 87-9876543\nEffective Date: August 1, 2025\n\nAttached: New W9 form, merger documentation\n\nPlease prioritize this update.\n\nMaria Rodriguez\nFabrication Works Inc.",
+      "html": "<p><strong>URGENT - Vendor Update Required</strong></p><p>Dear Vendor Management Team,</p><p>We need to update our W9 information immediately due to a recent business acquisition. Our federal tax ID has changed and we need this updated before our next invoice payment.</p><p>Old EIN: 45-1234567<br>New EIN: 87-9876543<br>Effective Date: August 1, 2025</p><p>Attached: New W9 form, merger documentation</p><p><strong>Please prioritize this update.</strong></p><p>Maria Rodriguez<br>Fabrication Works Inc.</p>"
+    },
+    "sentDate": "2025-08-14T07:30:00Z",
+    "messageId": "<urgent001@fabrication.works>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "James Wilson",
+      "email": "james.wilson@security.internal"
+    },
+    "subject": "Internal Inquiry - Vendor Security Clearance Process Documentation",
+    "body": {
+      "text": "Hi Team,\n\nI need the standard operating procedures for vendor security clearance and background check processes. We're onboarding a new IT security vendor and need to ensure compliance with our security protocols.\n\nSpecific documentation needed:\n- Security clearance levels and requirements\n- Background check procedures\n- Data access authorization workflows\n- Incident response protocols for vendors\n\nWho owns this process and where can I find the documentation?\n\nJames Wilson\nSecurity Operations",
+      "html": "<p>Hi Team,</p><p>I need the standard operating procedures for vendor security clearance and background check processes. We're onboarding a new IT security vendor and need to ensure compliance with our security protocols.</p><p>Specific documentation needed:<br>- Security clearance levels and requirements<br>- Background check procedures<br>- Data access authorization workflows<br>- Incident response protocols for vendors</p><p>Who owns this process and where can I find the documentation?</p><p>James Wilson<br>Security Operations</p>"
+    },
+    "sentDate": "2025-08-13T11:45:00Z",
+    "messageId": "<internal002@security.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Nicole Brown",
+      "email": "nicole.brown@manufacturing.plus"
+    },
+    "subject": "Payment Processing Delay - Need Ariba System Check",
+    "body": {
+      "text": "Dear Accounts Payable Team,\n\nWe're experiencing unusual delays with our recent invoices. Could you please check the Ariba system for any holds or issues with our account?\n\nPending invoices:\n- MFG-2024-445: $19,800\n- MFG-2024-446: $31,200\n- MFG-2024-447: $14,600\n\nAll were submitted over 30 days ago with Net 30 terms. Please investigate and provide status update.\n\nNicole Brown\nManufacturing Plus Ltd.",
+      "html": "<p>Dear Accounts Payable Team,</p><p>We're experiencing unusual delays with our recent invoices. Could you please check the Ariba system for any holds or issues with our account?</p><p>Pending invoices:<br>- MFG-2024-445: $19,800<br>- MFG-2024-446: $31,200<br>- MFG-2024-447: $14,600</p><p>All were submitted over 30 days ago with Net 30 terms. Please investigate and provide status update.</p><p>Nicole Brown<br>Manufacturing Plus Ltd.</p>"
+    },
+    "sentDate": "2025-08-14T08:15:00Z",
+    "messageId": "<delay001@manufacturing.plus>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Carlos Mendoza",
+      "email": "carlos.mendoza@facilities.internal"
+    },
+    "subject": "Reroute to Facilities Management - Office Space Inquiry",
+    "body": {
+      "text": "Hi,\n\nI received a vendor inquiry about office space planning and furniture procurement, but this should be handled by our Facilities Management team, not general procurement.\n\nThe vendor specializes in ergonomic office furniture and space optimization. Please reroute this inquiry to the Facilities Management team.\n\nContact: Sarah Johnson, Facilities Manager\n\nCarlos Mendoza\nProcurement",
+      "html": "<p>Hi,</p><p>I received a vendor inquiry about office space planning and furniture procurement, but this should be handled by our <strong>Facilities Management team</strong>, not general procurement.</p><p>The vendor specializes in ergonomic office furniture and space optimization. Please reroute this inquiry to the Facilities Management team.</p><p><strong>Contact: Sarah Johnson, Facilities Manager</strong></p><p>Carlos Mendoza<br>Procurement</p>"
+    },
+    "sentDate": "2025-08-13T13:30:00Z",
+    "messageId": "<reroute004@facilities.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Diana Lee",
+      "email": "diana.lee@digitalagency.net"
+    },
+    "subject": "RESOLVED: Thank you - Invoice Payment Received",
+    "body": {
+      "text": "Dear AP Team,\n\nThank you for resolving the payment issue with invoice DIG-2024-892. We received the wire transfer for $42,750 this morning.\n\nThe delay was understood given the system upgrade last month. We appreciate your prompt attention to resolving this matter.\n\nCase closed on our end.\n\nBest regards,\nDiana Lee\nDigital Agency Network",
+      "html": "<p>Dear AP Team,</p><p>Thank you for resolving the payment issue with invoice <strong>DIG-2024-892</strong>. We received the wire transfer for $42,750 this morning.</p><p>The delay was understood given the system upgrade last month. We appreciate your prompt attention to resolving this matter.</p><p><strong>Case closed on our end.</strong></p><p>Best regards,<br>Diana Lee<br>Digital Agency Network</p>"
+    },
+    "sentDate": "2025-08-14T10:45:00Z",
+    "messageId": "<resolved002@digitalagency.net>",
+    "tags": ["Other/Unclear"],
+    "status": "resolved"
+  },
+  {
+    "from": {
+      "name": "Peter Thompson",
+      "email": "peter.thompson@transport.solutions"
+    },
+    "subject": "W9 Update IN PROGRESS - Transportation Solutions Inc",
+    "body": {
+      "text": "Hello Vendor Management,\n\nFollowing up on our W9 update submission from last week. I was told it's in progress but wanted to confirm the timeline as we have upcoming invoices that need accurate tax reporting.\n\nChanges made:\n- Updated business address\n- New backup withholding exemption\n- Corrected entity classification\n\nExpected completion date?\n\nPeter Thompson\nTransport Solutions Inc.",
+      "html": "<p>Hello Vendor Management,</p><p>Following up on our W9 update submission from last week. I was told it's in progress but wanted to confirm the timeline as we have upcoming invoices that need accurate tax reporting.</p><p>Changes made:<br>- Updated business address<br>- New backup withholding exemption<br>- Corrected entity classification</p><p><strong>Expected completion date?</strong></p><p>Peter Thompson<br>Transport Solutions Inc.</p>"
+    },
+    "sentDate": "2025-08-13T16:20:00Z",
+    "messageId": "<progress002@transport.solutions>",
+    "tags": ["Vendor Update – W-9/Tax"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Angela Davis",
+      "email": "angela.davis@legal.internal"
+    },
+    "subject": "Internal Request - Need Vendor Contract SOP Documentation",
+    "body": {
+      "text": "Team,\n\nI need the standard operating procedures for vendor contract review and approval processes. We're implementing new compliance requirements and need to document current workflows.\n\nLooking for:\n- Contract approval authority matrix\n- Legal review requirements by contract value\n- Insurance and liability requirements\n- Termination clause standards\n- Amendment approval processes\n\nWhere can I find these SOPs or who should I contact?\n\nAngela Davis\nLegal Department",
+      "html": "<p>Team,</p><p>I need the standard operating procedures for vendor contract review and approval processes. We're implementing new compliance requirements and need to document current workflows.</p><p>Looking for:<br>- Contract approval authority matrix<br>- Legal review requirements by contract value<br>- Insurance and liability requirements<br>- Termination clause standards<br>- Amendment approval processes</p><p>Where can I find these SOPs or who should I contact?</p><p>Angela Davis<br>Legal Department</p>"
+    },
+    "sentDate": "2025-08-14T09:00:00Z",
+    "messageId": "<internal003@legal.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Ryan O'Connor",
+      "email": "ryan.oconnor@construction.pro"
+    },
+    "subject": "Invoice Status Check Required - Ariba System Lookup",
+    "body": {
+      "text": "Good morning,\n\nI need a status check on our construction services invoice in your Ariba system:\n\nInvoice Number: CONST-2024-156\nAmount: $67,300\nSubmitted: July 18, 2025\nProject: Office Renovation Phase 2\nPO Number: PO-887766\n\nPayment terms are Net 25, so this is now overdue. Please check system status and advise.\n\nRyan O'Connor\nConstruction Pro LLC",
+      "html": "<p>Good morning,</p><p>I need a status check on our construction services invoice in your Ariba system:</p><p>Invoice Number: <strong>CONST-2024-156</strong><br>Amount: $67,300<br>Submitted: July 18, 2025<br>Project: Office Renovation Phase 2<br>PO Number: PO-887766</p><p>Payment terms are Net 25, so this is now overdue. Please check system status and advise.</p><p>Ryan O'Connor<br>Construction Pro LLC</p>"
+    },
+    "sentDate": "2025-08-14T11:30:00Z",
+    "messageId": "<lookup003@construction.pro>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Michelle Torres",
+      "email": "michelle.torres@catering.services"
+    },
+    "subject": "Payment Inquiry - Monthly Catering Services Invoice",
+    "body": {
+      "text": "Dear Accounts Payable,\n\nI'm following up on payment for our monthly catering services invoice CAT-2024-078 for $8,450. It was submitted through Ariba on July 25th.\n\nThis covers:\n- Executive lunch meetings (July)\n- Board meeting catering\n- Employee events catering\n\nCan you please check payment status and provide an update?\n\nMichelle Torres\nCatering Services Plus",
+      "html": "<p>Dear Accounts Payable,</p><p>I'm following up on payment for our monthly catering services invoice <strong>CAT-2024-078</strong> for $8,450. It was submitted through Ariba on July 25th.</p><p>This covers:<br>- Executive lunch meetings (July)<br>- Board meeting catering<br>- Employee events catering</p><p>Can you please check payment status and provide an update?</p><p>Michelle Torres<br>Catering Services Plus</p>"
+    },
+    "sentDate": "2025-08-13T14:45:00Z",
+    "messageId": "<payment003@catering.services>",
+    "tags": ["Payment Inquiry"],
+    "status": "action-needed"
+  },
+  {
+    "from": {
+      "name": "Brian Kim",
+      "email": "brian.kim@it.internal"
+    },
+    "subject": "Reroute Request - Software Licensing to IT Procurement",
+    "body": {
+      "text": "Hi,\n\nI received a vendor inquiry about enterprise software licensing that should be handled by IT Procurement, not general procurement.\n\nThe vendor is asking about:\n- Volume licensing agreements\n- Software asset management\n- License compliance auditing\n- Renewal processes\n\nPlease reroute to: IT Procurement Team (Contact: Alex Rodriguez)\n\nBrian Kim\nGeneral Procurement",
+      "html": "<p>Hi,</p><p>I received a vendor inquiry about enterprise software licensing that should be handled by <strong>IT Procurement</strong>, not general procurement.</p><p>The vendor is asking about:<br>- Volume licensing agreements<br>- Software asset management<br>- License compliance auditing<br>- Renewal processes</p><p><strong>Please reroute to: IT Procurement Team (Contact: Alex Rodriguez)</strong></p><p>Brian Kim<br>General Procurement</p>"
+    },
+    "sentDate": "2025-08-14T12:15:00Z",
+    "messageId": "<reroute005@it.internal>",
+    "tags": ["Other/Unclear"],
+    "status": "action-needed"
+  }
+]

@@ -1,0 +1,17 @@
+/* Home page specific styles */
+.home-container {
+  padding: 1rem;
+}
+
+/* Side-by-side feature cards */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .feature-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
