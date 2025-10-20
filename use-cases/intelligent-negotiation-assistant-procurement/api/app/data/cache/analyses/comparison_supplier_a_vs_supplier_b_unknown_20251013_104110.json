@@ -1,0 +1,722 @@
+{
+  "strengths_weaknesses": {
+    "supplier1": {
+      "name": "Supplier A",
+      "strengths": [
+        {
+          "title": "Zero Upfront Tooling Investment",
+          "description": "Supplier A's proposal includes 0 USD participation for tooling costs, eliminating a significant upfront capital expenditure of what would typically be hundreds of thousands of dollars for PurchasingOrganization.",
+          "impact": "This significantly lowers the initial project investment, improves the business case, and accelerates the return on investment. It frees up capital for other strategic initiatives.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "cost.key_findings"
+            }
+          ]
+        },
+        {
+          "title": "Superior Technology and R&D Scale",
+          "description": "Positioned as a market and technology leader with a large R&D team (18,500 employees), a portfolio of patents, and active development of next-generation technologies like 'F850X' friction material to meet future Tier 5 standards.",
+          "impact": "Provides access to cutting-edge technology, ensuring the product remains competitive throughout its lifecycle and is adaptable to future regulatory changes. This fosters a strong long-term innovation partnership.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "technology.strengths"
+            }
+          ]
+        },
+        {
+          "title": "Robust and Certified Quality Systems",
+          "description": "Holds key automotive certifications (IATF 16949, ISO 9001) valid until 2028 and has passed a VDA 6.3 audit by a major OEM with a high score (≥ 85%). The supplier agrees to standard process capability targets (Cpk ≥ 1.33).",
+          "impact": "Indicates a mature, reliable, and externally validated quality management system, reducing the risk of process-related defects and ensuring consistent product quality.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "quality.strengths"
+            }
+          ]
+        }
+      ],
+      "weaknesses": [
+        {
+          "title": "High Exposure to Long-Term Cost Volatility",
+          "description": "The commercial agreement transfers significant financial risk to PurchasingOrganization, who must bear 80% of raw material price increases and is also exposed to energy price fluctuations based on 2018 indices.",
+          "risk": "This creates substantial uncertainty in the Total Cost of Ownership (TCO) and makes long-term budgeting unpredictable. Uncapped exposure could erode or eliminate projected cost savings.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "cost.weaknesses"
+            }
+          ]
+        },
+        {
+          "title": "Critical Performance Non-Compliance",
+          "description": "A high-severity risk was identified where the clutch disc's burst speed is 6150 RPM, failing to meet the critical safety requirement of 6200 RPM. This is one of 34 identified technical non-compliances.",
+          "risk": "Failure to meet a critical safety specification could lead to catastrophic field failures, vehicle recalls, significant warranty costs, and severe damage to brand reputation.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "quality.key_findings"
+            }
+          ]
+        },
+        {
+          "title": "Contractual Supply Chain Instability",
+          "description": "The quotation includes a clause allowing the supplier to unilaterally relocate production from the USA based on future cost developments.",
+          "risk": "This introduces major long-term supply chain uncertainty, with potential for increased logistics costs, extended lead times, and disruption to production for all PurchasingOrganization subsidiaries.",
+          "sources": [
+            {
+              "filename": "Supplier A Analysis Summary",
+              "chunk_id": "delivery.weaknesses"
+            }
+          ]
+        }
+      ]
+    },
+    "supplier2": {
+      "name": "Supplier B",
+      "strengths": [
+        {
+          "title": "Favorable Commercial Terms and Unit Price",
+          "description": "Offers highly favorable payment terms of Net 75 days, improving working capital. The baseline unit price of 272.50 EUR is competitive and includes a conditional annual price reduction of -1.25% from 2030.",
+          "impact": "Reduces financial pressure on PurchasingOrganization through improved cash flow and provides a pathway for year-over-year cost savings, contributing to a lower total cost of ownership.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "cost.strengths"
+            }
+          ]
+        },
+        {
+          "title": "Extensive In-House Testing and Validation",
+          "description": "Possesses a comprehensive array of in-house test rigs for functional, endurance, NVH, thermal stress, and fatigue testing of all major clutch components.",
+          "impact": "Enables thorough product validation and rapid root cause analysis of any quality issues, potentially reducing development time and ensuring product robustness before launch.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "technology.strengths"
+            }
+          ]
+        },
+        {
+          "title": "Certified Environmental Management System",
+          "description": "The production site holds a valid ISO 14001:2015 certification for its Environmental Management System, demonstrating compliance with international environmental standards.",
+          "impact": "Aligns with PurchasingOrganization's sustainability goals, reduces compliance risk, and provides a foundation for partnership on environmental initiatives.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "sustainability.key_findings"
+            }
+          ]
+        }
+      ],
+      "weaknesses": [
+        {
+          "title": "Critical Production Capacity Shortfall",
+          "description": "The supplier's stated nominal annual capacity of 130,000 units is significantly lower than PurchasingOrganization's peak forecast demand of 152,500 units. This capacity is also shared with other OEMs.",
+          "risk": "There is a high probability that the supplier will be unable to meet peak volume requirements, leading to production line stoppages, lost sales, and inability to supply key subsidiaries like SubsidiaryC.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "delivery.weaknesses"
+            }
+          ]
+        },
+        {
+          "title": "Rejection of Safety-Critical Classification",
+          "description": "The supplier unilaterally declares the drivetrain component as 'not safety-critical' to justify non-compliance with PurchasingOrganization's product liability requirements and functional safety standards (ISO 26262).",
+          "risk": "This represents a fundamental disagreement on quality and safety principles, exposing PurchasingOrganization to unacceptable levels of product liability, safety, and reputational risk.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "quality.weaknesses"
+            }
+          ]
+        },
+        {
+          "title": "Extreme Raw Material Lead Time",
+          "description": "The supplier reports a raw material procurement lead time of 95 working days, identified as a primary bottleneck in their supply chain.",
+          "risk": "This creates extreme vulnerability to any upstream disruptions (e.g., material shortages, logistics delays), making it very difficult to react to demand changes and increasing the risk of production stoppages.",
+          "sources": [
+            {
+              "filename": "Supplier B Analysis Summary",
+              "chunk_id": "delivery.key_findings"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "recommendation": {
+    "preferred_supplier": "Supplier A",
+    "confidence_level": "Medium",
+    "key_reasons": [
+      "Supplier A has sufficient production capacity to meet the total group peak forecast demand, unlike Supplier B, which has a critical capacity shortfall.",
+      "Supplier A demonstrates a commitment to standard automotive safety and quality principles (e.g., IATF 16949), whereas Supplier B attempts to circumvent critical safety and liability requirements.",
+      "Supplier A offers a significant financial advantage with zero upfront tooling investment for PurchasingOrganization.",
+      "Supplier A's superior R&D scale and forward-looking technology development make them a more strategic long-term partner for innovation."
+    ],
+    "conditions": [
+      "Negotiate a cap or a more balanced risk-sharing model (e.g., 50/50) for the raw material and energy price adjustment clauses to mitigate long-term cost volatility.",
+      "Obtain a binding commitment and a technical resolution plan, with validation data, to correct the clutch disc burst speed non-compliance before nomination.",
+      "The contractual clause allowing unilateral production relocation from the USA must be removed or revised to require mutual agreement, ensuring supply chain stability."
+    ],
+    "risk_considerations": [
+      "The primary risk with awarding to Supplier A is the potential for significant long-term cost increases due to the uncapped raw material and energy price escalation clauses.",
+      "There is a technical risk that the burst speed non-compliance cannot be resolved effectively, which would require re-evaluation.",
+      "If Supplier B is not awarded a portion of the business, PurchasingOrganization loses a source of competitive tension and a backup supplier."
+    ]
+  },
+  "optimal_split": {
+    "supplier1_name": "Supplier A",
+    "supplier2_name": "Supplier B",
+    "supplier1_percentage": 80,
+    "supplier2_percentage": 20,
+    "rationale": "An 80/20 split designates Supplier A as the primary strategic partner, mitigating the critical risks associated with Supplier B. This allocation leverages Supplier A's sufficient capacity, superior technology, and alignment on quality principles for the majority of the volume across all PurchasingOrganization subsidiaries. The 20% allocation to Supplier B serves as a crucial risk mitigation tactic, establishing a qualified second source to prevent single-source dependency. It also maintains competitive tension on price and allows PurchasingOrganization to benefit from Supplier B's favorable payment terms and lower unit price on a manageable volume that is less likely to exceed their constrained capacity.",
+    "key_factors": [
+      "Capacity vs. Demand: Allocating 80% to Supplier A ensures peak demand can be met, while 20% for Supplier B is a volume they are more likely to handle.",
+      "Risk Containment: Limiting Supplier B's allocation to 20% contains the impact of their critical weaknesses in capacity and their approach to safety.",
+      "Competitive Tension: A dual-source award prevents supplier complacency and provides leverage for future negotiations on cost and performance.",
+      "Supply Chain Security: Establishes a 'warm' backup supplier, significantly reducing the impact of a potential disruption from the primary source.",
+      "Cost Optimization: Creates a blended piece price that benefits from Supplier B's lower cost, while securing the main volume with the technologically superior supplier."
+    ],
+    "implementation_phases": [
+      {
+        "phase": "Phase 1: Negotiation & Contract Finalization",
+        "description": "Finalize contracts with both suppliers. For Supplier A, focus on renegotiating cost volatility clauses and getting a binding solution for the burst speed issue. For Supplier B, secure firm capacity commitment for the 20% volume and formalize quality/safety expectations.",
+        "timeline": "6 Months"
+      },
+      {
+        "phase": "Phase 2: Joint Development and Validation",
+        "description": "Both suppliers proceed with development, PPAP, and validation activities. Closely monitor Supplier A's technical fixes and Supplier B's process stability and delivery planning for their allocated volume.",
+        "timeline": "Months 7-24"
+      },
+      {
+        "phase": "Phase 3: Phased Ramp-Up and Serial Production",
+        "description": "Initiate serial production with the 80/20 split. Implement rigorous performance monitoring for both suppliers, with a focus on Supplier B's delivery and quality adherence.",
+        "timeline": "From Month 25"
+      }
+    ],
+    "risk_mitigation": "The dual-source strategy is the core risk mitigation. It protects against a catastrophic failure from either supplier. Specifically, it caps the risk from Supplier B's capacity and quality issues to 20% of the business and protects against potential disruptions (e.g., relocation) from Supplier A by having a qualified alternative.",
+    "cost_benefits": "This split secures the significant benefit of Supplier A's $0 tooling cost for the entire project. It creates a favorable blended unit cost by incorporating 20% of volume from the lower-priced Supplier B. It also leverages Supplier B's Net 75 payment terms for a portion of the spend, improving overall working capital for PurchasingOrganization.",
+    "flexibility_considerations": "The 80/20 split offers future flexibility. If Supplier B demonstrates improvement and resolves its capacity and quality concerns, its allocation can be increased. Conversely, if Supplier A's cost volatility proves unmanageable or they fail to perform, volume can be shifted to Supplier B, providing leverage and an alternative supply path for all subsidiaries."
+  },
+  "comparison_metrics": [
+    {
+      "metric": "Strategic Sustainability Commitment & Carbon Neutrality Goal",
+      "category": "Sustainability",
+      "supplier1_value": "Demonstrates a proactive, strategic commitment with a public target for carbon neutrality by 2045 and long-term participation in the Global Sustainability Pact (since 2013).",
+      "supplier2_value": "Approach is reactive and compliance-focused. Decarbonization solutions are mentioned but not integrated or costed into the proposal, indicating a lack of a concrete strategy.",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier A's clear, long-term carbon neutrality goal aligns better with PurchasingOrganization's strategic sustainability objectives. Supplier B's approach is less mature and lacks a concrete, costed plan, posing a risk of future misalignment.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Environmental Management System Certification (ISO 14001)",
+      "category": "Sustainability",
+      "supplier1_value": "No specific details or evidence of environmental management certifications like ISO 14001 were provided. This is a noted data gap and weakness.",
+      "supplier2_value": "Holds a valid ISO 14001:2015 certification for its production site, valid until April 2026, demonstrating a certified environmental management system.",
+      "winner": "Supplier B",
+      "importance": "High",
+      "comparison_notes": "Supplier B provides verifiable proof of a foundational environmental management system (ISO 14001), which is a standard requirement for ensuring operational compliance. Supplier A's lack of this certification is a significant weakness and risk.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Circular Economy Approach",
+      "category": "Sustainability",
+      "supplier1_value": "Suggests a move towards more durable products through the use of Extended-Life Lubricant (ELL), reducing maintenance needs.",
+      "supplier2_value": "Explicitly supports circular economy principles through stated remanufacturing capabilities and the use of non-hazardous materials.",
+      "winner": "Supplier B",
+      "importance": "Medium",
+      "comparison_notes": "Supplier B's stated remanufacturing capability is a more direct and impactful circular economy strategy than Supplier A's component-level durability improvement. This offers greater potential for waste reduction and lifecycle value for PurchasingOrganization.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Supply Chain & Social Responsibility Risk",
+      "category": "Sustainability",
+      "supplier1_value": "A production relocation clause introduces a significant risk to supply chain sustainability and social responsibility, creating uncertainty.",
+      "supplier2_value": "Lacks any documented information on social responsibility or ethical programs, representing a significant information gap.",
+      "winner": "Tie",
+      "importance": "Medium",
+      "comparison_notes": "Both suppliers present weaknesses. Supplier A introduces an active risk with its relocation clause, which could disrupt the supply chain and have negative social impacts. Supplier B's complete lack of information on social programs is also a red flag, indicating a potential lack of focus in this area.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Sustainability"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Production Capacity vs. Peak Demand",
+      "category": "Delivery",
+      "supplier1_value": "Capacity has not been confirmed against the peak forecast demand of 76,910 units, representing an unquantified risk.",
+      "supplier2_value": "A critical and confirmed capacity shortfall of 22,500 units exists. Stated annual capacity is 130,000 units, while peak forecast demand is 152,500 units.",
+      "winner": "Supplier A",
+      "importance": "Critical",
+      "comparison_notes": "Supplier B has a confirmed inability to meet PurchasingOrganization's peak volume demand, which is a fundamental failure risk. While Supplier A's capacity is unconfirmed, the absence of a confirmed shortfall makes it the less risky option in this specific regard.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Primary Supply Chain Risk",
+      "category": "Delivery",
+      "supplier1_value": "High-severity contractual risk allowing unilateral production relocation from the USA, creating long-term supply chain instability.",
+      "supplier2_value": "High-severity operational risk due to an extremely long raw material procurement lead time of 95 working days, creating a major bottleneck.",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier B's 95-day raw material lead time presents an immediate and ongoing vulnerability to any upstream disruption. Supplier A's risk is contractual and strategic; while significant, it is a future possibility that may be negotiable, whereas Supplier B's is an existing, structural weakness in their supply chain.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Logistics Integration & Flexibility",
+      "category": "Delivery",
+      "supplier1_value": "Excellent capabilities, supporting both Just-in-Time (JIT) and Just-in-Sequence (JIS) delivery, with robust contingency plans (24-hour escalation).",
+      "supplier2_value": "Supports JIT but is unable to provide JIS delivery. Contingency measures are weak, with internal backup systems only 'partly' available.",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier A's support for JIS offers greater integration with PurchasingOrganization's advanced manufacturing processes. Furthermore, their superior contingency planning provides better assurance of supply continuity compared to Supplier B's weak backup systems.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Delivery Performance (OTIF & Lead Time)",
+      "category": "Delivery",
+      "supplier1_value": "Excellent but irrelevant KPIs: 96.3% OTIF and 7.5-day lead time are for German operations, not the quoted USA plant. Performance for this RFQ is unknown.",
+      "supplier2_value": "Adequate but inconsistent performance: 94% OTIF with high variability (3.0 pp) and a 9.0-day average lead time.",
+      "winner": "Tie",
+      "importance": "Medium",
+      "comparison_notes": "A winner cannot be determined. Supplier A's provided data is strong but irrelevant to the USA delivery point, creating high uncertainty. Supplier B's data is relevant but demonstrates weaker and more inconsistent performance. Neither option presents a reliable, high-performing profile for this RFQ.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Delivery_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Upfront Customer Investment (One-Time Costs)",
+      "category": "Cost",
+      "supplier1_value": "€210,000 for development, with €0 participation for tooling.",
+      "supplier2_value": "€273,000 customer contribution (57%) towards a total project cost of €478,000. This is split between Global Motors Consortium (€203k) and Norse Trucks (€70k).",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier A offers a significantly lower initial cash outlay for PurchasingOrganization by fully absorbing the tooling costs, which is a major financial advantage at the project's start.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Long-Term Cost Volatility & Risk",
+      "category": "Cost",
+      "supplier1_value": "Very High Risk: Customer bears 80% of raw material cost volatility from a dated 2018 baseline and is also exposed to energy price fluctuations.",
+      "supplier2_value": "High Risk: Price is tied to Q4 2024 raw material indices, and all future decarbonization costs are explicitly excluded from the quote.",
+      "winner": "Supplier B",
+      "importance": "Critical",
+      "comparison_notes": "While both suppliers expose PurchasingOrganization to cost volatility, Supplier A's terms are significantly riskier. The 80% customer liability combined with a dated 2018 index creates extreme uncertainty and likely cost increases. Supplier B's risk, while high, is based on a recent baseline, making it more predictable, though the unquantified decarbonization costs pose a major future financial risk.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Baseline Unit Price & Productivity",
+      "category": "Cost",
+      "supplier1_value": "€277.95 per unit, with annual productivity discounts offered ranging from 0% to -2.5%.",
+      "supplier2_value": "€272.50 per unit, with a conditional annual price reduction (LTA) of -1.25% offered from 2030.",
+      "winner": "Supplier B",
+      "importance": "High",
+      "comparison_notes": "Supplier B has a more competitive starting unit price, which forms the basis for the total product cost. Although its LTA is conditional and starts later, the lower initial price provides a more immediate and certain cost advantage over the project's lifetime.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Payment Terms (Working Capital Impact)",
+      "category": "Cost",
+      "supplier1_value": "Net 45 days for serial production. Development costs are 100% due upfront.",
+      "supplier2_value": "Net 75 days for serial production.",
+      "winner": "Supplier B",
+      "importance": "Medium",
+      "comparison_notes": "Supplier B's Net 75 terms are significantly more favorable for PurchasingOrganization's working capital management, allowing the company to hold cash for an additional 30 days compared to Supplier A.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Cost_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Adherence to Core Customer Quality Standards",
+      "category": "Quality",
+      "supplier1_value": "Accepts the overall quality framework but has specific technical non-compliances (e.g., 34 items for Model 700-S).",
+      "supplier2_value": "Formally declares general non-compliance ('N') with PurchasingOrganization's core quality requirements document (GMC-SQM-015).",
+      "winner": "Supplier A",
+      "importance": "Critical",
+      "comparison_notes": "Supplier B's outright rejection of PurchasingOrganization's core quality standard is a fundamental partnership and risk management failure. Supplier A's issues are product-specific and can potentially be resolved within an accepted framework.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Approach to Functional Safety & Criticality",
+      "category": "Quality",
+      "supplier1_value": "Has a high-severity risk on a critical performance specification (clutch burst speed) which is acknowledged as a gap to be resolved.",
+      "supplier2_value": "Unilaterally declares a drivetrain component 'not safety-critical' to bypass product liability and functional safety (ISO 26262) requirements.",
+      "winner": "Supplier A",
+      "importance": "Critical",
+      "comparison_notes": "Supplier A identifies a safety-related performance risk to be managed, which is a standard process. Supplier B's dismissal of safety standards demonstrates a high-risk quality culture and poses a significant liability threat to PurchasingOrganization.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Quality System & Certification Status",
+      "category": "Quality",
+      "supplier1_value": "Holds IATF 16949 valid until Feb 2028 and has a positive VDA 6.3 audit result (≥ 85%) from a major automotive group.",
+      "supplier2_value": "Holds IATF 16949 valid until Nov 2025. No external audit results are provided in the analysis.",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier A demonstrates a more robust and future-proof quality system, evidenced by longer certification validity and strong positive validation from a third-party automotive audit, which Supplier B lacks.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Product-Specific Technical Compliance",
+      "category": "Quality",
+      "supplier1_value": "34 non-compliant items for Clutch System Model 700-S, including a critical failure on burst speed (6150 vs 6200 RPM).",
+      "supplier2_value": "Non-compliant on key requirements for Clutch System DCS2-X, including operational life, durability, and safety factor, proposing their own standards instead.",
+      "winner": "Tie",
+      "importance": "High",
+      "comparison_notes": "Both suppliers have significant technical non-compliances on their proposed products. Supplier A has a high number of deviations including a critical one, while Supplier B deviates on fundamental performance parameters by proposing their own standards. Both represent a high risk for product launch.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Quality_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Critical Technical Non-Compliance",
+      "category": "Technology",
+      "supplier1_value": "34 of 95 requirements are non-compliant, including a critical failure on clutch disc burst speed (6150 RPM vs 6200 RPM requirement) and a blocking installation space conflict for the 14L engine.",
+      "supplier2_value": "24 of 82 requirements are non-compliant, including deviations on safety factors and conditional guarantees on operational life.",
+      "winner": "Supplier B",
+      "importance": "Critical",
+      "comparison_notes": "Supplier A has a hard failure on a critical safety specification (burst speed) and a physical integration issue that blocks a new program. While Supplier B also has significant non-compliances, they are described as 'deviations', which may be more negotiable than Supplier A's definitive performance failure.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "R&D Scale and Forward-Looking Innovation",
+      "category": "Technology",
+      "supplier1_value": "Claims market leadership with a large R&D team (18,500 employees), public patents, and is actively developing new materials (F850X) and lubricants (ELL) for future Tier 5 standards.",
+      "supplier2_value": "Possesses strong R&D capabilities with local patents and simulation tools (FEA, NVH), but no specific forward-looking innovations for upcoming standards are mentioned.",
+      "winner": "Supplier A",
+      "importance": "High",
+      "comparison_notes": "Supplier A demonstrates significantly greater scale and proactive investment in future technologies (Tier 5). This indicates a stronger long-term technology partner, capable of supporting future vehicle programs across PurchasingOrganization's subsidiaries.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "System Integration & Multi-Brand Compatibility",
+      "category": "Technology",
+      "supplier1_value": "A critical installation space conflict exists for the 14L H-Duty clutch, making feasibility conditional and requiring a design change to fit the specified crankshaft drilling pattern.",
+      "supplier2_value": "Fails to meet marking specifications for the American Hauler Inc. brand, indicating a gap in meeting all brand-specific requirements across the PurchasingOrganization portfolio.",
+      "winner": "Supplier B",
+      "importance": "High",
+      "comparison_notes": "Supplier A's issue is a hard physical integration failure that jeopardizes a new engine program for a key subsidiary. Supplier B's issue is a brand-specific administrative/specification gap, which is likely less complex and costly to resolve than a physical redesign.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    },
+    {
+      "metric": "Performance Claim Validation",
+      "category": "Technology",
+      "supplier1_value": "Operational lifetime claim of 5.5 million actuations is based on internal data and requires external field validation.",
+      "supplier2_value": "Possesses extensive in-house testing and validation capabilities with numerous dedicated test rigs, though operational life guarantees are 'conditional'.",
+      "winner": "Supplier B",
+      "importance": "Medium",
+      "comparison_notes": "Supplier B's extensive in-house testing infrastructure provides a more robust basis for its performance claims, even if guarantees are conditional. Supplier A's reliance on unvalidated internal data presents a higher risk that claimed performance will not be met in the field.",
+      "sources": {
+        "supplier1": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ],
+        "supplier2": [
+          {
+            "filename": "analysis",
+            "chunk_id": "Technology_context"
+          }
+        ]
+      },
+      "supplier1_name": "Supplier A",
+      "supplier2_name": "Supplier B"
+    }
+  ],
+  "supplier1_name": "Supplier A",
+  "supplier2_name": "Supplier B",
+  "tqdcs_weights": {
+    "technology": 20.0,
+    "quality": 20.0,
+    "delivery": 20.0,
+    "cost": 20.0,
+    "sustainability": 20.0
+  },
+  "comparison_summary": {
+    "total_metrics": 20,
+    "Supplier A_advantages": 9,
+    "Supplier B_advantages": 8,
+    "tied_metrics": 3,
+    "clear_winner": "Supplier A"
+  }
+}

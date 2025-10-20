@@ -1,0 +1,1356 @@
+{
+  "parts": [
+    {
+      "part_number": "4501-118",
+      "alternative_numbers": [
+        "AX-56655",
+        "440 HDX Tier 5",
+        "440DTX-32500"
+      ],
+      "part_name": "Clutch cover",
+      "category": "Clutch Component",
+      "description": "Clutch cover assembly for the D-Series Powertrain Upgrade Project. Part of the Heavy-Duty Clutch Kit.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": [
+          "Packaging: 15 pcs per pallet (Returnable packaging)"
+        ]
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "127,500 units/year",
+            "price_per_unit": 95.2,
+            "discount_percentage": null
+          },
+          {
+            "volume": "152,500 units/year",
+            "price_per_unit": 95.2,
+            "discount_percentage": null
+          },
+          {
+            "volume": "138,000 units/year",
+            "price_per_unit": 94.02,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "125,500 units/year",
+            "price_per_unit": 92.86,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "100,500 units/year",
+            "price_per_unit": 91.71,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "84,000 units/year",
+            "price_per_unit": 91.71,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": [
+          {
+            "component": "Initial Price (Part 2855886)",
+            "amount": 91.5,
+            "percentage": null
+          },
+          {
+            "component": "Margin Balancing",
+            "amount": 2.0,
+            "percentage": null
+          },
+          {
+            "component": "Final Price",
+            "amount": 95.2,
+            "percentage": null
+          }
+        ]
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_8"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_16"
+        }
+      ]
+    },
+    {
+      "part_number": "4501-119",
+      "alternative_numbers": [
+        "AX-56621",
+        "440 HD disc assy Tier 5",
+        "440HD-3500"
+      ],
+      "part_name": "Clutch disc",
+      "category": "Clutch Component",
+      "description": "Clutch disc assembly for the D-Series Powertrain Upgrade Project. Part of the Heavy-Duty Clutch Kit.",
+      "technical_specifications": {
+        "dimensions": "Damper Size: 290 mm",
+        "weight": "",
+        "material": "Facing: G910",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": [
+          "Stiffness: 210 Nm/°±10%",
+          "Hysteresis: 110 to 340 Nm",
+          "Packaging: 30 pcs per pallet"
+        ]
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "127,500 units/year",
+            "price_per_unit": 143.1,
+            "discount_percentage": null
+          },
+          {
+            "volume": "152,500 units/year",
+            "price_per_unit": 143.1,
+            "discount_percentage": null
+          },
+          {
+            "volume": "138,000 units/year",
+            "price_per_unit": 141.31,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "125,500 units/year",
+            "price_per_unit": 139.54,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "100,500 units/year",
+            "price_per_unit": 137.79,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "84,000 units/year",
+            "price_per_unit": 137.79,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": [
+          {
+            "component": "Initial Price (Part 3201552)",
+            "amount": 148.5,
+            "percentage": null
+          },
+          {
+            "component": "Margin Balancing",
+            "amount": -5.5,
+            "percentage": null
+          },
+          {
+            "component": "Final Price",
+            "amount": 143.1,
+            "percentage": null
+          }
+        ]
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_8"
+        }
+      ]
+    },
+    {
+      "part_number": "4602-571",
+      "alternative_numbers": [
+        "AX-56673",
+        "R-130HDB"
+      ],
+      "part_name": "Release bearing",
+      "category": "Bearing",
+      "description": "Release bearing for the D-Series Powertrain Upgrade Project. Part of the Heavy-Duty Clutch Kit. Contains ball bearing from sub-supplier Precision Bearings Co.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": [
+          "Packaging: 80 pcs per pallet"
+        ]
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "127,500 units/year",
+            "price_per_unit": 34.2,
+            "discount_percentage": null
+          },
+          {
+            "volume": "152,500 units/year",
+            "price_per_unit": 34.2,
+            "discount_percentage": null
+          },
+          {
+            "volume": "138,000 units/year",
+            "price_per_unit": 33.77,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "125,500 units/year",
+            "price_per_unit": 33.35,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "100,500 units/year",
+            "price_per_unit": 32.93,
+            "discount_percentage": 1.25
+          },
+          {
+            "volume": "84,000 units/year",
+            "price_per_unit": 32.93,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": [
+          {
+            "component": "Initial Price (Part 2855886)",
+            "amount": 31.8,
+            "percentage": null
+          },
+          {
+            "component": "Margin Balancing",
+            "amount": 3.5,
+            "percentage": null
+          },
+          {
+            "component": "Final Price",
+            "amount": 34.2,
+            "percentage": null
+          }
+        ]
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_8"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_17"
+        }
+      ]
+    },
+    {
+      "part_number": "DCS2-X",
+      "alternative_numbers": [],
+      "part_name": "Clutch System DCS2-X",
+      "category": "Clutch System",
+      "description": "Clutch system with several non-compliant requirements. Non-compliance includes bottoming torque (supplier proposes safety factor 1.30), operational life length (guaranteed for European long-haul profiles only), marking specifications (awaiting specs for American Hauler Inc.), and noise emissions (vehicle-level requirement).",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "3000 Nm",
+        "operating_temperature": "",
+        "other_specs": [
+          "Durability Target: 2.5 million km (under standard European long-haul mission profiles)",
+          "Burst Speed: 5500 rpm",
+          "Minimum Wear Capacity: 4.0 mm",
+          "Max inertia: 0.190 kgm^2",
+          "Release force: 12 kN"
+        ]
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "TS-2245",
+          "description": "Durability Test Standard",
+          "validity": ""
+        },
+        {
+          "standard": "TS-5802",
+          "description": "Torque transfer requirement standard.",
+          "validity": ""
+        }
+      ],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Compliance_Matrix_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Compliance Matrix: Clutch System DCS2-X",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4303-439",
+      "alternative_numbers": [],
+      "part_name": "Clutch housing",
+      "category": "Clutch Component",
+      "description": "Clutch housing with capacity shared between Germanic Auto, Norse Trucks, and American Hauler on a shared assembly line.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "125000 units",
+            "price_per_unit": null,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "130000 units/year (Nominal)",
+        "current_utilization": "72% (Overall Equipment Efficiency)",
+        "lead_time": "Raw material procurement lead time",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4303-440",
+      "alternative_numbers": [],
+      "part_name": "Clutch plate",
+      "category": "Clutch Component",
+      "description": "Clutch plate with capacity shared between Norse Trucks, American Hauler, and another OEM on a shared assembly line.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "125500 units",
+            "price_per_unit": null,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "130000 units/year (Nominal)",
+        "current_utilization": "73% (Overall Equipment Efficiency)",
+        "lead_time": "Raw material procurement lead time",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4288-792",
+      "alternative_numbers": [],
+      "part_name": "Actuator bearing",
+      "category": "Bearing",
+      "description": "Actuator bearing with capacity shared between Germanic Auto, Norse Trucks, and American Hauler. Bottleneck is CNC Machining.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [
+          {
+            "volume": "126000 units",
+            "price_per_unit": null,
+            "discount_percentage": null
+          }
+        ],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "130000 units/year (Nominal)",
+        "current_utilization": "75% (Overall Equipment Efficiency)",
+        "lead_time": "Raw material procurement lead time",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "",
+      "alternative_numbers": [],
+      "part_name": "Control Box",
+      "category": "Control Unit",
+      "description": "Control Box requiring service and maintenance. Spare part availability is guaranteed for EOP + 15 years. Special tools are required for service.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "GA 451-7",
+          "description": "Standard for technical documentation and spare part availability",
+          "validity": ""
+        },
+        {
+          "standard": "GA 5780",
+          "description": "Company standard for packaging and delivery",
+          "validity": ""
+        },
+        {
+          "standard": "GA 523-2",
+          "description": "Standard for marking of country of origin",
+          "validity": ""
+        },
+        {
+          "standard": "S4483",
+          "description": "GA standard for in-service diagnosis",
+          "validity": ""
+        },
+        {
+          "standard": "G5000",
+          "description": "GA standard for Branding and Labeling",
+          "validity": ""
+        }
+      ],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Konsolidierte_Checkliste-aftersales_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-quality_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "CBE-2",
+      "alternative_numbers": [],
+      "part_name": "CBE-2 UPGRADE EURO8 CLUTCH SYSTEM",
+      "category": "Clutch System",
+      "description": "Upgrade for Euro8 Clutch System. The product concept is already validated and in mass production. Development is fully handled by Axion Automotive.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": [
+          "NVH will be validated on the vehicle."
+        ]
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "IATF 16949",
+          "description": "",
+          "validity": ""
+        },
+        {
+          "standard": "ISO 14001",
+          "description": "",
+          "validity": ""
+        }
+      ],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "DTC-2",
+      "alternative_numbers": [
+        "DTC-2 UPGRADE EMISSIONS-X DRIVETRAIN"
+      ],
+      "part_name": "DTC-2 UPGRADE EMISSIONS-STD CLUTCH ASSEMBLY",
+      "category": "Ecu Module",
+      "description": "ECU Module for clutch assembly. Functional safety assessments (ISO 26262, SPICE, CMMI) are marked as 'Not relevant' for this component.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Konsolidierte_Checkliste-functional_safety_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-mechatronics_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "GFS-NT-P-24-208",
+      "alternative_numbers": [],
+      "part_name": "Gen-2 Upgrade Tier-5 Clutch Assembly",
+      "category": "Clutch System",
+      "description": "Clutch assembly which does not contain software. Comprised of Cover Assy (4101-558) and Disc Assy (4101-559).",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Supplier Self-Assessment (SSA)",
+          "chunk_id": "table_1"
+        }
+      ]
+    },
+    {
+      "part_number": "4101-558",
+      "alternative_numbers": [],
+      "part_name": "Cover Assy",
+      "category": "Clutch Component",
+      "description": "Cover assembly, a component of the Gen-2 Upgrade Tier-5 Clutch Assembly.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4101-559",
+      "alternative_numbers": [],
+      "part_name": "Disc Assy",
+      "category": "Clutch Component",
+      "description": "Disc assembly, a component of the Gen-2 Upgrade Tier-5 Clutch Assembly.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [],
+      "capacity": {
+        "production_capacity": "",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4831190",
+      "alternative_numbers": [],
+      "part_name": "HDC-450",
+      "category": "Clutch Component",
+      "description": "Supplied to all Norse Trucks plants for Veh Trucks 6 Cyl since 2023.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "PPAP",
+          "description": "Production Part Approval Process",
+          "validity": "Validated"
+        }
+      ],
+      "capacity": {
+        "production_capacity": "28000 units/year",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4831191",
+      "alternative_numbers": [],
+      "part_name": "HDT-450",
+      "category": "Clutch Component",
+      "description": "Supplied to all Norse Trucks plants for Veh Trucks 6 Cyl since 2023.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "PPAP",
+          "description": "Production Part Approval Process",
+          "validity": "Validated"
+        }
+      ],
+      "capacity": {
+        "production_capacity": "28000 units/year",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "part_number": "4831192",
+      "alternative_numbers": [],
+      "part_name": "DM-130",
+      "category": "Clutch Component",
+      "description": "Supplied to all Norse Trucks plants for Veh Trucks 5-6 Cyl since 2023.",
+      "technical_specifications": {
+        "dimensions": "",
+        "weight": "",
+        "material": "",
+        "torque_capacity": "",
+        "operating_temperature": "",
+        "other_specs": []
+      },
+      "pricing": {
+        "unit_price": null,
+        "currency": "EUR",
+        "volume_pricing": [],
+        "cost_breakdown": []
+      },
+      "certifications": [
+        {
+          "standard": "PPAP",
+          "description": "Production Part Approval Process",
+          "validity": "Validated"
+        }
+      ],
+      "capacity": {
+        "production_capacity": "27000 units/year",
+        "current_utilization": "",
+        "lead_time": "",
+        "min_order_quantity": ""
+      },
+      "sources": [
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    }
+  ],
+  "overall_product_system": {
+    "title": "D-Series Powertrain Upgrade Project - Heavy-Duty Clutch Kit",
+    "description": "Heavy-Duty Clutch Kit (HDX + HD + R-130) for 14L Combustion Engine (6-Cylinder) with T-Box G30 and T-Box G40 transmissions. Project for Global Motors Consortium brands (Norse Trucks, Germanic Automotive, American Hauler Inc.) with a contract period from 2028 to end 2033. SOP is 2028-11-01.",
+    "components": [
+      "Clutch cover (4501-118)",
+      "Clutch disc (4501-119)",
+      "Release bearing (4602-571)"
+    ],
+    "technical_specifications": {
+      "torque_capacity": "",
+      "weight": "",
+      "dimensions": "",
+      "other_specs": [
+        "Warranty: 36 months",
+        "Delivery Terms: FCA Stuttgart",
+        "Payment Terms: Net 75 days",
+        "Raw Material Basis: Q4 2024 (Market Index / Cast Iron / Base Metals)"
+      ]
+    },
+    "pricing_summary": {
+      "unit_price": 272.5,
+      "currency": "EUR",
+      "volume_pricing": [
+        {
+          "volume": "100% RFQ Volume",
+          "price_per_unit": 272.5,
+          "discount_percentage": null
+        },
+        {
+          "volume": "75% Europe Volume",
+          "price_per_unit": 274.0,
+          "discount_percentage": null
+        },
+        {
+          "volume": "50% Europe Volume",
+          "price_per_unit": 275.5,
+          "discount_percentage": null
+        }
+      ],
+      "notes": "Total project R&D and tooling cost is 405,000 EUR. A Long Term Agreement (LTA) discount of -1.25% is applied annually from 2030 if prior year's volume targets are met (-10% tolerance). Pricing incorporates volumes for American Hauler Inc. and the South American Division."
+    },
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_3"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_8"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_9"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_10"
+      }
+    ]
+  },
+  "overall_clutch_system": {
+    "title": "D-Series Powertrain Upgrade Project - Heavy-Duty Clutch Kit",
+    "description": "Heavy-Duty Clutch Kit (HDX + HD + R-130) for 14L Combustion Engine (6-Cylinder) with T-Box G30 and T-Box G40 transmissions. Project for Global Motors Consortium brands (Norse Trucks, Germanic Automotive, American Hauler Inc.) with a contract period from 2028 to end 2033. SOP is 2028-11-01.",
+    "components": [
+      "Clutch cover (4501-118)",
+      "Clutch disc (4501-119)",
+      "Release bearing (4602-571)"
+    ],
+    "technical_specifications": {
+      "torque_capacity": "",
+      "weight": "",
+      "dimensions": "",
+      "other_specs": [
+        "Warranty: 36 months",
+        "Delivery Terms: FCA Stuttgart",
+        "Payment Terms: Net 75 days",
+        "Raw Material Basis: Q4 2024 (Market Index / Cast Iron / Base Metals)"
+      ]
+    },
+    "pricing_summary": {
+      "unit_price": 272.5,
+      "currency": "EUR",
+      "volume_pricing": [
+        {
+          "volume": "100% RFQ Volume",
+          "price_per_unit": 272.5,
+          "discount_percentage": null
+        },
+        {
+          "volume": "75% Europe Volume",
+          "price_per_unit": 274.0,
+          "discount_percentage": null
+        },
+        {
+          "volume": "50% Europe Volume",
+          "price_per_unit": 275.5,
+          "discount_percentage": null
+        }
+      ],
+      "notes": "Total project R&D and tooling cost is 405,000 EUR. A Long Term Agreement (LTA) discount of -1.25% is applied annually from 2030 if prior year's volume targets are met (-10% tolerance). Pricing incorporates volumes for American Hauler Inc. and the South American Division."
+    },
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_3"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_8"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_9"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_10"
+      }
+    ]
+  },
+  "parts_summary": {
+    "total_parts_count": 16,
+    "categories": [
+      "Bearing",
+      "Clutch Component",
+      "Clutch System",
+      "Control Unit",
+      "Ecu Module"
+    ]
+  },
+  "concentrated_parts": {
+    "categories": [
+      {
+        "category": "Bearing",
+        "key": "bearing",
+        "items": [
+          {
+            "canonical_part_id": "canon:bd070890a774",
+            "primary_part_number": "4602-571",
+            "part_name": "Release bearing",
+            "synonyms": [
+              "AX-56673",
+              "R-130HDB",
+              "Release bearing"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "cost_walk_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+                "chunk_id": "page_8"
+              },
+              {
+                "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+                "chunk_id": "page_17"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:2872791ad5bb",
+            "primary_part_number": "4288-792",
+            "part_name": "Actuator bearing",
+            "synonyms": [
+              "Actuator bearing"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          }
+        ],
+        "summary": {
+          "count": 2
+        }
+      },
+      {
+        "category": "Clutch Component",
+        "key": "clutch_component",
+        "items": [
+          {
+            "canonical_part_id": "canon:fde69c146aa2",
+            "primary_part_number": "4501-118",
+            "part_name": "Clutch cover",
+            "synonyms": [
+              "AX-56655",
+              "440 HDX Tier 5",
+              "440DTX-32500",
+              "Clutch cover"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "cost_walk_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+                "chunk_id": "page_8"
+              },
+              {
+                "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+                "chunk_id": "page_16"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:573b09cf9d67",
+            "primary_part_number": "4501-119",
+            "part_name": "Clutch disc",
+            "synonyms": [
+              "AX-56621",
+              "440 HD disc assy Tier 5",
+              "440HD-3500",
+              "Clutch disc"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "cost_walk_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+                "chunk_id": "page_8"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:eb2d397cc86b",
+            "primary_part_number": "4303-439",
+            "part_name": "Clutch housing",
+            "synonyms": [
+              "Clutch housing"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:fd503f47eb94",
+            "primary_part_number": "4303-440",
+            "part_name": "Clutch plate",
+            "synonyms": [
+              "Clutch plate"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:aa0b270d0760",
+            "primary_part_number": "4101-558",
+            "part_name": "Cover Assy",
+            "synonyms": [
+              "Cover Assy"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:9a7ba0839f14",
+            "primary_part_number": "4101-559",
+            "part_name": "Disc Assy",
+            "synonyms": [
+              "Disc Assy"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:21832541bf2c",
+            "primary_part_number": "4831190",
+            "part_name": "HDC-450",
+            "synonyms": [
+              "HDC-450"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:b506a3622810",
+            "primary_part_number": "4831191",
+            "part_name": "HDT-450",
+            "synonyms": [
+              "HDT-450"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:2fb532dbd7b4",
+            "primary_part_number": "4831192",
+            "part_name": "DM-130",
+            "synonyms": [
+              "DM-130"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          }
+        ],
+        "summary": {
+          "count": 9
+        }
+      },
+      {
+        "category": "Clutch System",
+        "key": "clutch_system",
+        "items": [
+          {
+            "canonical_part_id": "canon:b510fef60a23",
+            "primary_part_number": "DCS2-X",
+            "part_name": "Clutch System DCS2-X",
+            "synonyms": [
+              "Clutch System DCS2-X"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Compliance_Matrix_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "Compliance Matrix: Clutch System DCS2-X",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:d63d3ad857f0",
+            "primary_part_number": "CBE-2",
+            "part_name": "CBE-2 UPGRADE EURO8 CLUTCH SYSTEM",
+            "synonyms": [
+              "CBE-2 UPGRADE EURO8 CLUTCH SYSTEM"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          },
+          {
+            "canonical_part_id": "canon:d93ef0741399",
+            "primary_part_number": "GFS-NT-P-24-208",
+            "part_name": "Gen-2 Upgrade Tier-5 Clutch Assembly",
+            "synonyms": [
+              "Gen-2 Upgrade Tier-5 Clutch Assembly"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Supplier_Self_Assessment_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "Supplier Self-Assessment (SSA)",
+                "chunk_id": "table_1"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          }
+        ],
+        "summary": {
+          "count": 3
+        }
+      },
+      {
+        "category": "Control Unit",
+        "key": "control_unit",
+        "items": [
+          {
+            "canonical_part_id": "canon:744f31a8389e",
+            "primary_part_number": "Control Box",
+            "part_name": "Control Box",
+            "synonyms": [
+              "Control Box"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Konsolidierte_Checkliste-aftersales_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "Konsolidierte_Checkliste-quality_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          }
+        ],
+        "summary": {
+          "count": 1
+        }
+      },
+      {
+        "category": "Ecu Module",
+        "key": "ecu_module",
+        "items": [
+          {
+            "canonical_part_id": "canon:227de12129ad",
+            "primary_part_number": "DTC-2",
+            "part_name": "DTC-2 UPGRADE EMISSIONS-STD CLUTCH ASSEMBLY",
+            "synonyms": [
+              "DTC-2 UPGRADE EMISSIONS-X DRIVETRAIN",
+              "DTC-2 UPGRADE EMISSIONS-STD CLUTCH ASSEMBLY"
+            ],
+            "source_parts": [],
+            "sources": [
+              {
+                "filename": "Konsolidierte_Checkliste-functional_safety_anonymized.md",
+                "chunk_id": "full_document"
+              },
+              {
+                "filename": "Konsolidierte_Checkliste-mechatronics_anonymized.md",
+                "chunk_id": "full_document"
+              }
+            ],
+            "confidence": 0.8,
+            "rationale": "LLM-consolidated"
+          }
+        ],
+        "summary": {
+          "count": 1
+        }
+      }
+    ],
+    "other": {
+      "category": "Other",
+      "key": "other",
+      "items": [],
+      "summary": {
+        "count": 0
+      }
+    },
+    "meta": {
+      "supplier_name": "Supplier B",
+      "provided_categories": []
+    },
+    "version": 1
+  },
+  "supplier_name": "Supplier B"
+}
