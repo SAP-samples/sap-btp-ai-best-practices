@@ -116,7 +116,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/narrow-ai/time-series-forecasting": "area-chart",
   "/docs/technical-view/narrow-ai/classification": "tag",
   "/docs/technical-view/narrow-ai/recommendation": "lateness",
-  "/docs/technical-view/narrow-ai/clustering": "lateness",
+  "/docs/technical-view/narrow-ai/clustering": "heatmap-chart",
   "/docs/technical-view/narrow-ai/anomaly-detection": "quality-issue",
   "/docs/technical-view/narrow-ai/predictive-ai-bdc-btp": "lateness",
   "/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation": "timesheet",
