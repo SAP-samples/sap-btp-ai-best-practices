@@ -124,7 +124,8 @@ const capabilityIcons: Record<string, string> = {
 
   // AI Services
   "/docs/technical-view/ai-services/document-information-extraction": "ppt-attachment",
-  "/docs/technical-view/ai-services/sap-document-ai": "attachment-video"
+  "/docs/technical-view/ai-services/sap-document-ai": "attachment-video",
+  "/docs/technical-view/ai-services/custom-joule-skills": "da"
 };
 
 /**

@@ -1,8 +1,7 @@
 ---
 title: "Custom Joule Skills"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
+hide_title: false
 ---
 
 import TabItem from "@theme/TabItem";
@@ -24,15 +23,6 @@ import PageContributors from "@site/src/components/PageContributors";
   <h1>Custom Joule Skills</h1>
 </div>
 
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
-
 <div className="section-with-background">
   <div className="row">
     <div className="col col--8">
@@ -42,7 +32,7 @@ Don't forget to remove this message.
           <Link to="#1-overview">Overview</Link>
         </li>
         <li>
-          <Link to="#2-pre-requisites">Pre-requisites</Link>
+          <Link to="#2-btp-pre-requisites">BTP Pre-requisites</Link>
         </li>
         <li>
           <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
@@ -79,78 +69,430 @@ Don't forget to remove this message.
   </div>
 </div>
 
-<LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
-    <span>Download Source Code</span>
-  </TrackableLink>
-</LoginWall>
-
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
 
-...
+Joule Skills is the approach to tailor Joule's unique capabilities to every specific business need. 
+
+The supported way to extend Joule’s built-in capabilities is via Joule Studio (in SAP Build). It lets you define, build, deploy, monitor and improve your own specific workflows for Joule to follow. It also enables seamless and easy integration with APIs, both SAP and external, using the destinations in your BTP Subaccount and Build environment.
+
+Joule Skills are a vital tool to improving and finetuning Joule to accelerate your business and solve problems with no-code, easy to deploy solution.
 
 ### Expected Outcome
 
-...
+When using Joule Studio to develop custom skills you can expect:
+
+- Easy integration with SAP Systems and third-party APIs to extend base functionality
+- Traceable version changes and transparency in deployment
+- Workflow-level execution transparency
+- Easy deployment
+- Integration with SAP Build
 
 <LoginWall>
 
 ### Benefits
 
-...
+- **No-code extension of functionality** - Joule Studio does not require any code to create a skill and give Joule more actions to perform
+- **Integrated in SAP Build** - works in a familiar environment and allows for extension with RPA automations and workflows
+- **Secure and compliant** - Joule runs within SAP Build/BTP environments, but skills may call external APIs via BTP Destinations; data flow should follow enterprise security and governance policies.
+- **Integration made simple** - Joule Skills provides easy integration with SAP and third party APIs
 
 ### Key Concepts
 
-...
+Some key concepts are part of Build Process Automation and can be found ([here](https://help.sap.com/docs/build-process-automation/sap-build-process-automation-dev/using-sap-build-process-automation?state=DRAFT&version=Dev&locale=en-US)).
 
-## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+Here are the Joule Studio specific concepts:
+- **Joule Skill** - a predefined workflow that gets executed by Joule based on the description given to it.
+- **Joule Skill Project** - project type that can contain multiple individual skills
+- **Input Parameters** - required parameters for the defined skill in order to execute properly
+- **Output Parameters** - parameters that can be passed to another part of a workflow as a result after the skill is complete
 
-...
+## <span className="step-number">2</span> <span className="step-title">BTP Pre-requisites</span>
+
+### Commercial
+- Joule Subscription
+- SAP Build with build-default service plan
+- License for an active developer user in SAP Build
+- BTP Subaccount with active subscriptions to SAP Build Process Automation and SAP Cloud Identity Services
+
+### Technical
+1. Set up a SAP Business Technology Platform (SAP BTP) subaccount ([(Setup Guide)](/docs/technology/sap-business-technology-platform#setup-guide))
+2. Set up SAP Build ([(Setup Guide)](https://help.sap.com/docs/build-service/build-service-guide/initial-setup-of-sap-build?version=Cloud&locale=en-US))
+3. Set up subscription to Cloud Identity Services ([(Setup Guide)](https://help.sap.com/docs/cloud-identity-services/cloud-identity-services/initial-setup?locale=en-US&version=Cloud&q=Initial))
+4. Set up Joule Studio ([(Setup Guide)](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/04b323352fa645238211ce017f634d34.html?locale=en-US#set-up-joule-studio-using-the-booster))
+
+### High-level reference architecture
+
+![High-level reference architecture for Custom Joule Skills](@site/static/ai-services/custom-joule-skills/images/arch.png)
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+### Joule Skills Development 
+
+- Be very clear and descriptive when writing the Joule Skill Description as it is used to determine if this skill is needed for the task at hand.
+- Each skill should be a self-contained function that fulfils one specific task in order to minimize confusion, improve performance and supportability.
+- It is not advisable to give Skills the ability to delete or modify critical data without consulting a human first.
+- When creating multiple skills in a project, make sure to follow consistency in naming and ensure they do not overlap in function and description. Also bundle them based on common or complimentary functionality
+- The deployment of Joule skills project should be done in the custom environment that can be shared with authorized users or user groups.
+- When the 'Allow Joule to generate a response' option is disabled, ensure that a suitable custom message (via Send Message) is configured for every possible output of the action component
+- Carefully designate mandatory input and output fields in the Joule skill based on the use case. Joule will not execute the action component until all required fields are captured from the user's prompt. If only some mandatory fields are provided, Joule will continue prompting the user to supply the remaining ones before proceeding
+- Apply conditions to action outputs such as verifying that a list contains at least one object before triggering downstream steps. This helps ensure logical flow and prevents unnecessary errors
+- For actions using the 'GET' method in Joule skills, it's recommended to apply precise filters to narrow the search scope and avoid API timeout issues
+- Joule skill inputs are always treated as text (string data type). To ensure compatibility with downstream action components, convert these inputs to the appropriate data types using functions like StringToNumber(skill-input).
+- Use meaningful parameter descriptions instead of abbreviated or encoded labels. This helps Joule better interpret the context during skill execution. For example, use ‘location’ instead of ‘loc’.
+- If Joule fails to respond after a prompt, use the debug mode in Joule Studio to test skill interactions. Additionally, check the ‘Request Logs’ view to confirm whether the correct skill was triggered.
+
+### Joule Skills Interactions
+
+Provide clear, specific, and actionable prompts when interacting with Joule. The more precise your input, the better Joule can interpret and execute the intended skill. Here are a few illustrative examples:
+
+<div align="center">
+---
+
+*Update the tax code in all the line items of the purchase order ‘123456’ with ‘I1’. Please confirm the update is successful after you complete the task.*
+
+---
+
+---
+
+*Create a sales order using customer PO ‘123456’ for ‘Material1’ with a quantity of 10 PCs.*
+
+---
+</div>
+
+**You may also take an approach with multi-line prompts as:**
+
+<div align="center">
+---
+
+*Identify purchase order ‘123456’.*  
+*Update the tax code to I1 on all purchase order line items.*  
+*Generate a summary confirming the update and state any issues encountered.*
+
+---
+
+---
+
+*The sales order should reference the customer's purchase order number 123456.*  
+*Include ‘Material1’ in the sales order line item with a quantity of 10 PCs.*
+
+---
+</div>
+
+### Joule Skills Limitations
+
+- The deployment of Joule skills to an environment in the build tenant may require up to 5 minutes to 30 minutes to complete.
+- The Field Map function cannot directly map a list of objects (output from an action component) to downstream build components like RPA automation artifacts. As a workaround, you can pass the entire list as a generic object (data type ‘Any’). While this won't trigger errors during project save or release, deployment of the Joule skill may result in errors.
+- Joule skills can invoke published automations and processes from SAP Build Process Automation. However, the reverse i.e. calling Joule skills from SAP Build Process Automation is not supported.
+- Automations and processes triggered from SAP Build Process Automation within Joule skills are asynchronous. Therefore, their outputs cannot be used as part of the ongoing user conversation in Joule.
+- If permissions are modified in a shared environment, any deployed projects must be redeployed for the changes to take effect.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+### Useful example scenarios
 
-<div className="tabs-with-background">
-<Tabs groupId="language">
-<TabItem value="python" label="Python" default>
+<details>
+  <summary>**Read Sales Order Details**</summary>
+### Description
+Create a Joule skill that reads sales order details based on given sales order number and displays details. 
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+This example demonstrates how Joule can perform read operations from APIs.
+  
+### Tutorial Steps
+1. Appropriate description and ‘Allow Joule to generate a response’ activated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/1.png)
+2. Joule input parameter/s and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/2.png)
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/3.png)
+3. 
+Create a destination variable as type ‘destination’ as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/4.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/5.png)
+5. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/6.png)
+6. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+7. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
 
-...
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/read-sales-order-details/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
 
-</TabItem>
+</details>
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+<details>
+  <summary>**List Sales Order Items**</summary>
+### Description
+Create a Joule skill that lists sales order items based on given sales order number and displaying in a list. 
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+This example demonstrates how Joule can perform read operations from APIs and display multiple values.
+  
+### Tutorial Steps
+1. Add appropriate description and ‘Allow Joule to generate a response’ activated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/1.png)
+2. Create Joule input parameter/s and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/2.png)
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/3.png)
+3. Create a destination variable as type ‘destination’ as shown below. A destination variable is required to connect the action to a configured system. The destination configuration can be done after the skill is deployed.
+![Step 3](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/4.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/5.png)
+5. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/6.png)
+6. Release and deploy to the shared environment to test the Joule skill.  
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+7. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
 
-...
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/list-sales-order-items/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
 
-</TabItem>
+<details>
+  <summary>**Create Sales Order**</summary>
+### Description
+Create a Joule Skill that creates a sales order based on given header data: Sold to, Salse Order Type, Sales Organization, Distribution Channel, Organizations Division and Purchase Order By Customer.
 
-<TabItem value="cap-app" label="CAP">
+This example demonstrates how Joule can create records in backend systems using APIs.
+  
+### Tutorial Steps
+1. Add appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/create-sales-order/1.png)
+2. Create Joule input parameter/s and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/create-sales-order/2.png)
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/create-sales-order/3.png)
+3. Create a destination variable as type ‘destination’ as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/create-sales-order/4.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/create-sales-order/5.png)
+5. Add ‘Send Message’ step to Joule skill flow and bind the action parameters at the ‘Text’ and ‘Title’ parameters, specify the system name and system URL in the ‘Action Buttons’ section as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/create-sales-order/6.png)
+6. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 6](@site/static/ai-services/custom-joule-skills/images/create-sales-order/7.png)
+7. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+8. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/create-sales-order/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
 
-...
+<details>
+  <summary>**Update Sales Order**</summary>
+### Description
+Create a Joule Skill that creates a sales order item and updates a given sales order by number.
 
-</TabItem>
+This example demonstrates how Joule can modify records in backend systems using APIs.
 
-</Tabs>
-</div>
+### Tutorial Steps
+1. Add appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/update-sales-order/1.png)
+2. Define Joule input parameter/s and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/update-sales-order/2.png)
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/update-sales-order/3.png)
+3. Create a destination variable as type ‘destination’ as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/update-sales-order/4.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/update-sales-order/5.png)
+5. Add ‘Send Message’ step to Joule skill flow and bind the action parameters at the ‘Text’ and ‘Title’ parameters, specify the system name and system URL in the ‘Action Buttons’ section as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/update-sales-order/6.png)
+6. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 6](@site/static/ai-services/custom-joule-skills/images/update-sales-order/7.png)
+7. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+8. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
+
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/update-sales-order/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
+
+<details>
+  <summary>**Invoke an approval workflow from SAP BPA**</summary>
+### Description
+Create a Joule skill that invokes an approval workflow from SAP Build Process Automation.
+
+This example demonstrates how Joule can call existing Build Process Automation components.
+
+### Tutorial Steps
+1. Appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/1.png)
+2. Joule input parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/2.png)
+3. Add the published BPA project of ‘sales order approval’ as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/3.png)
+4. Bind the input parameters of the BPA project ‘sales order approval’ as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/4.png)
+*Please Note: For the workflow item approval, you may assign a user (holding the process participant role), or the user group defined at the BTP subaccount level. In this example, initiator and approver has been setup as a same person and hence ‘Email’ from the Joule skill context has been used.*
+5. Add ‘Send Message’ step to Joule skill flow and enter the message at the ‘Text’ and ‘Title’ parameters, specify the system name and system URL in the ‘Action Buttons’ section as shown below:
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/5.png)
+6. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+7. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
+
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/invoke-an-approval-workflow-from-sap-bpa/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
+
+<details>
+  <summary>**Download Sales Order Details using RPA Process**</summary>
+### Description
+Create a Joule skill that invokes an RPA from SAP Build Process Automation to download top sales order details.
+
+This example demonstrates how Joule can call existing SAP Build Process Automation components.
+
+### Tutorial Steps
+1. Appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/1.png)
+2. Joule input and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/2.png)
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/3.png)
+3. Create a destination variable as type ‘destination’ as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/4.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/5.png)
+5. Use the type conversion method to convert the string to numeric as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/6.png)
+6. Add a condition step to verify the results should contain at least one item as shown below:
+![Step 6-1](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/7.png)
+![Step 6-2](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/8.png)
+7. Add the published ‘Download suppliers in a spreadsheet’ automation and bind its input parameters as shown below:
+![Step 7](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/9.png)
+8. Add ‘Send Message’ step to Joule skill flow in the ‘if item found’ branch and specify the message for automation trigger as shown below:
+![Step 8](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/10.png)
+9. Add ‘Send Message’ step to Joule skill flow in the ‘no item found’ branch and specify the message as shown below:
+![Step 9](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/11.png)
+10. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 10](@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/12.png)
+11. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/download-sales-order-details-using-rpa-process/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
+
+<details>
+  <summary>**Translate text through Joule using SAP Translation Hub**</summary>
+### Description
+Create a Joule skill that uses the SAP Translation Hub API to translate text inro another language .
+
+This example demonstrates how Joule can call existing SAP AI Services.
+
+### Tutorial Steps
+1. Appropriate description and ‘Allow Joule to generate a response’ activated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/1.png)
+
+2. Joule input and output parameters are configured as per below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+3. Create a destination variable as type ‘destination’ as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+4. Bind the input parameters of the action component as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+5. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+6. Create another Joule skill. Give an appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+7. Joule input and output parameters are configured as per below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+8. Add the first Joule skill to get the BCP language code of the target language as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+9. Bind the input parameters of the action component as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+10. Create a destination variable as type ‘destination’ as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+11. Bind the input parameters of the action component as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+12. A dd ‘Send Message’ step to Joule skill flow branch and specify the message for automation trigger as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+13. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+
+14. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+15. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
+
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/1.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
+
+<details>
+  <summary>**Summarise text through Joule using SAP AI Core**</summary>
+### Description
+This example demonstrates how a Joule skill can call existing SAP AI Core APIs. This Joule skill utilizes an LLM model deployed in SAP AI Core to generate a summary of the provided text based on the specified word limit.
+
+### Tutorial Steps
+1. Appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
+![Step 1](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/1.png)
+2. Joule input and output parameters are configured as per below:
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/2.png)
+*Please Note – We are keeping the word length as optional here as ‘30’ word limit has been maintained as default value in the action definition.*
+3. Create a destination variable as type ‘destination’ as shown below:
+![Step 2-2](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/3.png)
+4. Bind the input parameters of the action component as shown below:
+![Step 3](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/4.png)
+5. Add ‘Send Message’ step to Joule skill flow in the ‘no item found’ branch and specify the message as shown below:
+![Step 4](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/5.png)
+6. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
+![Step 5](@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/6.png)
+7. Release and deploy to the shared environment to test the Joule skill.
+*Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
+8. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
+
+### Demo
+<video width="auto" controls>
+  <source src="@site/static/ai-services/custom-joule-skills/images/summarise-text-through-joule-using-sap-ai-core/6.png" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+</details>
+
+### Learn more
+
+We recommend this tutorial: [Build Your First Joule Skill in Joule Studio | SAP Tutorials](https://developers-qa-blue.wcms-nonprod.c.eu-de-2.cloud.sap/group.joule-studio-first-skill.html)
 
 <br />
 
@@ -159,7 +501,7 @@ Don't forget to remove this message.
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+  <IconLinkButton href="/docs/technical-view/generative-ai/plain/access-to-generative-ai-models" text="Access to Generative AI Models" />
 </ul>
 
 </div>
@@ -171,19 +513,11 @@ Don't forget to remove this message.
 ## Related AI Capabilities
 
 <h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
+  <Link to={useBaseUrl("/docs/functional-view/conversational-interaction")}>Conversational Interaction</Link>
 </h3>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/conversational-interaction/conversational-interaction-with-applications" text="Conversational Interaction with Applications" />
 </ul>
 
 </div>
@@ -194,7 +528,10 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={[
+  "velizar-stoyanov",
+  "prasun-das"
+]} />
 
 </div>
 
