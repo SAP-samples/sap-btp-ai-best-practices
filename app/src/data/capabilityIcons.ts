@@ -121,6 +121,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/narrow-ai/predictive-ai-bdc-btp": "lateness",
   "/docs/technical-view/narrow-ai/deployment-custom-predictive-models": "puzzle",
   "/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation": "timesheet",
+  "/docs/technical-view/narrow-ai/training-deployment-custom-ai-models": "e-learning",
 
   // AI Services
   "/docs/technical-view/ai-services/document-information-extraction": "ppt-attachment",
