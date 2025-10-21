@@ -1,0 +1,412 @@
+{
+  "total_cost": {
+    "amount": 478000,
+    "currency": "EUR",
+    "description": "Total one-time project and tooling costs for the D-Series Powertrain Upgrade Project. This includes 405,000 EUR for project services (R&D) and 73,000 EUR for tooling. The customer group contributes a total of 273,000 EUR (Global Motors Consortium: 203,000 EUR lump-sum; Norse Trucks: 70,000 EUR investment), covering approximately 57% of the total one-time costs. The remaining 205,000 EUR is borne by Axion Automotive.",
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_9"
+      }
+    ]
+  },
+  "cost_breakdown": [
+    {
+      "category": "Design",
+      "amount": 155000,
+      "currency": "EUR",
+      "description": "R&D cost for project design services, covering 1150 hours.",
+      "percentage_of_total": 32.43,
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "category": "Testing",
+      "amount": 85000,
+      "currency": "EUR",
+      "description": "R&D cost for project testing services.",
+      "percentage_of_total": 17.78,
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    },
+    {
+      "category": "Project Management",
+      "amount": 75000,
+      "currency": "EUR",
+      "description": "R&D cost for project management services, covering 520 hours.",
+      "percentage_of_total": 15.69,
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    },
+    {
+      "category": "Tooling (Foundry)",
+      "amount": 45000,
+      "currency": "EUR",
+      "description": "Tooling cost for the foundry process related to the casting pressure plate.",
+      "percentage_of_total": 9.41,
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "category": "Purchasing",
+      "amount": 35000,
+      "currency": "EUR",
+      "description": "R&D cost for purchasing services, covering 330 hours.",
+      "percentage_of_total": 7.32,
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    },
+    {
+      "category": "Quality",
+      "amount": 30000,
+      "currency": "EUR",
+      "description": "R&D cost for quality services, covering 350 hours.",
+      "percentage_of_total": 6.28,
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    },
+    {
+      "category": "Tooling (Plastic Injection)",
+      "amount": 28000,
+      "currency": "EUR",
+      "description": "Tooling cost for the plastic injection process related to the spacer washer.",
+      "percentage_of_total": 5.86,
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "category": "Process",
+      "amount": 25000,
+      "currency": "EUR",
+      "description": "R&D cost for process services, covering 300 hours.",
+      "percentage_of_total": 5.23,
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    }
+  ],
+  "unit_costs": {
+    "price_per_unit": 272.5,
+    "currency": "EUR",
+    "volume_assumptions": "Price for the Heavy-Duty Clutch Kit (HDX + HD + R-130) is based on 100% of the RFQ volume for the contract period starting 2028. This price incorporates volumes for the European Union, South America, and American Hauler Inc.",
+    "price_variations": [
+      {
+        "condition": "at 100% RFQ volume (Year 2028-2029)",
+        "price": 272.5,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      },
+      {
+        "condition": "at 75% Europe Volume (with 100% for other regions)",
+        "price": 274,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      },
+      {
+        "condition": "at 50% Europe Volume (with 100% for other regions)",
+        "price": 275.5,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      },
+      {
+        "condition": "Year 2030 (with LTA -1.25%)",
+        "price": 269.1,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      },
+      {
+        "condition": "Year 2031 (with LTA -1.25%)",
+        "price": 265.75,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      },
+      {
+        "condition": "Year 2032-2033 (with LTA -1.25%)",
+        "price": 262.43,
+        "sources": [
+          {
+            "filename": "cost_walk_anonymized.md",
+            "chunk_id": "full_document"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      }
+    ]
+  },
+  "volume_forecast": [
+    {
+      "timeframe": "2028",
+      "quantity": 127500,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "timeframe": "2029",
+      "quantity": 152500,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "timeframe": "2030",
+      "quantity": 138000,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_3"
+        }
+      ]
+    },
+    {
+      "timeframe": "2031",
+      "quantity": 125500,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_3"
+        }
+      ]
+    },
+    {
+      "timeframe": "2032",
+      "quantity": 100500,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_3"
+        }
+      ]
+    },
+    {
+      "timeframe": "2033",
+      "quantity": 84000,
+      "unit": "units",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_3"
+        }
+      ]
+    }
+  ],
+  "estimated_total_product_cost": {
+    "amount": 195205760,
+    "currency": "EUR",
+    "methodology": "Calculated by summing the product of the annual forecasted quantity and the corresponding unit price for each year from 2028 to 2033. Total forecasted volume is 728,000 units. (2028: 127.5k * 272.50) + (2029: 152.5k * 272.50) + (2030: 138k * 269.10) + (2031: 125.5k * 265.75) + (2032: 100.5k * 262.43) + (2033: 84k * 262.43).",
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_3"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_8"
+      }
+    ]
+  },
+  "cost_dependencies": [
+    {
+      "description": "The annual -1.25% Long Term Agreement (LTA) price reduction is conditional.",
+      "impact": "The reduction is only applied if the sales volumes of the previous year (N-1) reached the forecast, with a -10% tolerance. Failure to meet volume targets will result in higher unit prices than projected.",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        }
+      ]
+    },
+    {
+      "description": "Unit pricing is dependent on volume commitments across the customer group's brands.",
+      "impact": "A reduction in Europe's volume from 100% to 75% increases the kit price from 272.50 EUR to 274.00 EUR. A reduction to 50% increases it to 275.50 EUR. This highlights sensitivity to volume changes in specific regions.",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "description": "Pricing is based on raw material market indices from Q4 2024.",
+      "impact": "The price is tied to market indices for cast iron and base metals. Future volatility in these commodity markets could lead to price adjustments, introducing cost uncertainty.",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        }
+      ]
+    },
+    {
+      "description": "Potential costs for decarbonization solutions are not included in the current price proposal.",
+      "impact": "Future sustainability requirements or regulations may necessitate product or process changes, leading to additional, currently unquantified costs.",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    }
+  ],
+  "payment_terms": {
+    "description": "Standard payment terms are Net 75 days. A significant portion of the one-time costs is covered by customer investment.",
+    "key_points": [
+      "Standard payment term for parts is Net 75 days.",
+      "Global Motors Consortium provides a 203,000 EUR (50% of R&D) contribution as a lump-sum payment.",
+      "Norse Trucks provides an additional 70,000 EUR investment."
+    ],
+    "sources": [
+      {
+        "filename": "cost_walk_anonymized.md",
+        "chunk_id": "full_document"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_9"
+      },
+      {
+        "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+        "chunk_id": "page_10"
+      }
+    ]
+  },
+  "cost_risks": [
+    {
+      "risk": "Failure to meet annual volume forecasts.",
+      "impact": "If the customer group's volume falls more than 10% below the forecast for a given year, the -1.25% LTA price reduction for the following year will not be applied, increasing the total lifetime cost of the project.",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        }
+      ]
+    },
+    {
+      "risk": "Raw material price volatility.",
+      "impact": "As pricing is tied to Q4 2024 market indices, significant increases in the cost of cast iron or base metals could trigger price escalations, impacting budget stability.",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        }
+      ]
+    },
+    {
+      "risk": "Uncosted sustainability requirements.",
+      "impact": "The proposal explicitly excludes costs for decarbonization solutions. Future mandates could require significant investment not accounted for in this quotation, leading to unforeseen expenses.",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    }
+  ],
+  "opportunities": [
+    {
+      "opportunity": "Negotiate component-level pricing.",
+      "potential_savings": "Not specified, but flexibility exists.",
+      "approach": "The cost walk-down reveals that Axion Automotive performed 'margin balancing,' decreasing the price of the disc assembly by 5.5 EUR while increasing others. This indicates a willingness to adjust prices at the component level, which could be leveraged in negotiations to optimize the overall kit price.",
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    {
+      "opportunity": "Leverage significant customer investment for better terms.",
+      "potential_savings": "Could be negotiated as a steeper LTA or other favorable commercial terms.",
+      "approach": "The customer group is funding 57% (273,000 EUR) of the total one-time costs. This substantial co-investment reduces the supplier's risk and could be used as leverage to negotiate a more aggressive LTA reduction (e.g., > 1.25%) or other concessions.",
+      "sources": [
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_project_cost": 478000,
+    "cost_competitiveness": "The offer from Axion Automotive appears competitive, featuring volume-based price tiers and an annual LTA reduction. The total one-time cost of 478,000 EUR is significantly offset by a 273,000 EUR customer contribution. However, competitiveness is subject to risks from raw material volatility and uncosted future sustainability requirements.",
+    "key_insights": [
+      "Total one-time cost is 478,000 EUR, with the customer group funding 57% (273,000 EUR).",
+      "The baseline clutch kit price is 272.50 EUR, with a conditional -1.25% annual LTA reduction, leading to a total estimated product spend of ~195.2M EUR over the contract life.",
+      "Key cost risks include the dependency of LTA savings on meeting volume targets and potential price increases due to raw material market fluctuations and future decarbonization mandates."
+    ]
+  }
+}

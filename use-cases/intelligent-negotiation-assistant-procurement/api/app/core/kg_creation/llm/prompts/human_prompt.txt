@@ -1,0 +1,13 @@
+Extract a knowledge graph from this document text:
+
+Chunk ID: {chunk_id}
+Filename: {filename}
+
+Document structure analysis:
+{doc_structure}
+
+--- TEXT ---
+{chunk_text}
+--- END TEXT ---
+
+Create nodes and relationships following the TQDCS framework. Ensure proper classification.
