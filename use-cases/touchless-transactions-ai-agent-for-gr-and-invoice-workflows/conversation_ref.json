@@ -1,0 +1,22 @@
+{
+  "a:1hwzsDSFzQe2LiM9C7N4aARv9p8uctf3cRFMPFgKQHSqtpdgao0VjAJrc-LzNAfcmSeU5IujfuYoSByoF_1b18QKpU-d2XsQBmxOGOhdioY5b3aJcXr5frA0Xz68skeSX": {
+    "activityId": "1757085274303",
+    "user": {
+      "id": "29:1q12Z1iZGxKSYXnLm5URQCuRbtUHc3Nf-6_gaDkQnBtonUDZnyVAI2vpp-ZuJOX-h1mAxg_en0x2pKn-V5zJ8nA",
+      "name": "Andrii Rzhaksynskyi",
+      "aadObjectId": "199d401b-66f7-4826-b0c8-5025503d90f5"
+    },
+    "bot": {
+      "id": "28:dea18835-dfb4-4df3-b697-e2c609df781e",
+      "name": "AI4U_bot"
+    },
+    "conversation": {
+      "conversationType": "personal",
+      "id": "a:1hwzsDSFzQe2LiM9C7N4aARv9p8uctf3cRFMPFgKQHSqtpdgao0VjAJrc-LzNAfcmSeU5IujfuYoSByoF_1b18QKpU-d2XsQBmxOGOhdioY5b3aJcXr5frA0Xz68skeSX",
+      "tenantID": "1942fa46-acd8-4686-8544-a4d7a3197046"
+    },
+    "channelId": "msteams",
+    "locale": "en-US",
+    "serviceUrl": "https://smba.trafficmanager.net/uk/1942fa46-acd8-4686-8544-a4d7a3197046/"
+  }
+}
