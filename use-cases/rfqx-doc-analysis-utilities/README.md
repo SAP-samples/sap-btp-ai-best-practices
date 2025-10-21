@@ -1,21 +1,20 @@
 # SAP RFQx Document Analysis System
 
-A comprehensive enterprise-grade system for analyzing and comparing Quotation documents from a given RFQ using advanced AI processing with direct document-to-LLM integration. Features multi-format document support, knowledge graph visualization, project management, and country risk analysis capabilities.
+A comprehensive system for analyzing and comparing RFQ (Request for Quotation) documents using simplified RAG (Retrieval-Augmented Generation) with direct PDF-to-LLM processing. Available as both a Python API and a Streamlit web application.
 
-This enhanced implementation combines simplified RAG processing with advanced analytics, project management, and interactive visualization tools, providing a complete solution for RFQ document analysis and comparison.
+This enhanced implementation combines the successful simplified RAG approach with advanced markdown report generation capabilities, eliminating chunking-related information loss while maintaining the original agentic_rfq_comparator's clean formatting.
 
 ## Features
 
 ### Core Processing Capabilities
-- **Multi-Format Document Support**: Processes PDFs, Excel files, and CSV documents
-- **Direct Document-to-LLM Processing**: Uses GPT-4.1's large context window to process entire documents without chunking
+- **Direct PDF-to-LLM Processing**: Uses GPT-4.1's large context window to process entire PDFs without chunking
 - **No Information Loss**: Eliminates chunking-related information loss by processing complete documents
 - **Structure-Aware Processing**: Maintains document structure integrity during extraction
   - Uses PyMuPDF for enhanced text formatting with style preservation
   - Leverages pdfplumber for table detection and extraction
   - Converts tables to structured text format with pipe separators
-  - Preserves lists and formatting through direct document text extraction
-- **Advanced Report Generation**: Clean comparison reports with detailed analysis and insights
+  - Preserves lists and formatting through direct PDF text extraction
+- **Original-Style Markdown Reports**: Clean comparison reports with exact formatting from the original agentic_rfq_comparator
 
 ### API Features
 - **Multiple Document Comparison**: Compare any number of RFQ documents simultaneously
@@ -24,15 +23,11 @@ This enhanced implementation combines simplified RAG processing with advanced an
 - **Command Line Interface**: Full CLI support with flexible argument parsing for batch processing
 
 ### Web Application Features
-- **Interactive Document Upload**: Upload multiple document formats (PDF, Excel, CSV) through web interface
+- **Interactive Document Upload**: Upload multiple PDF files through web interface
 - **Real-time Processing**: Live progress tracking and feature extraction statistics
 - **Side-by-side Comparison**: Categorized comparison tables with summary statistics
 - **Document Chat**: Natural language Q&A interface for document content
 - **Chat History**: Track conversation history with processed documents
-- **Project Management**: Save and load project states with document references and analysis results
-- **Knowledge Graph Visualization**: Interactive graph exploration of document relationships
-- **Country Risk Analysis**: Enhanced analysis with country-specific risk insights
-- **Advanced Analytics**: Multi-provider comparison with filtering and search capabilities
 
 ## Installation
 
@@ -92,8 +87,14 @@ python main.py query document.pdf "What is the estimated contract value?"
 
 #### Starting the Application
 
+**Option 1: Using the Run Script**
 ```bash
-streamlit run RFQx.py
+python run_app.py
+```
+
+**Option 2: Direct Streamlit Command**
+```bash
+streamlit run app.py
 ```
 
 The application will open in your default web browser at `http://localhost:8501`
@@ -117,33 +118,18 @@ The application will open in your default web browser at `http://localhost:8501`
 3. Click "Ask Question" to get responses from all processed documents
 4. Review answers and chat history
 
-**Step 4: Advanced Graph Analysis (Optional)**
-1. Go to the "Advanced Graph" tab (requires processed documents)
-2. Explore interactive knowledge graph visualization
-3. Use filtering and search capabilities to analyze relationships
-4. Export graph data for further analysis
-
-**Step 5: Project Management**
-1. Save your current analysis session using the project management features
-2. Load previously saved projects to continue analysis
-3. Export analysis results and reports
-
 ## Technical Details
 
 ### Architecture
-- **Frontend**: Streamlit web interface with multi-page navigation and interactive components
-- **Backend**: Modular architecture with specialized processors and managers
+- **Frontend**: Streamlit web interface with interactive document processing
+- **Backend**: SimplifiedRFQComparator class with direct PDF-to-LLM processing
 - **AI Model**: GPT-4.1 through SAP GenAI Hub SDK
-- **Document Processing**: Multi-format support with PyMuPDF, pdfplumber, and Excel/CSV processors
-- **Knowledge Graph**: NetworkX-based graph processing with interactive visualization
-- **Project Management**: JSON-based project state persistence with security validation
-- **Risk Analysis**: Country-specific risk data integration for enhanced insights
+- **Document Processing**: PyMuPDF and pdfplumber for PDF text extraction
 
 ### Supported Document Types
 - RFQ (Request for Quotation) documents
-- PDF format with multi-page support
-- Excel files (.xlsx, .xls) with structured data
-- CSV files with tabular data
+- PDF format only
+- Multi-page documents supported
 - Complex structured documents with tables and sections
 
 ### Extraction Schema
@@ -161,91 +147,24 @@ The system extracts information across 10 major categories:
 
 ## File Structure
 
-### Core Application Files
-- `RFQx.py`: Main Streamlit web application with multi-page interface
-- `main.py`: Core SimplifiedRFQComparator class with enhanced processing capabilities
-- `llm_client.py`: GPT-4.1 client interface with country risk integration
-- `document_processor.py`: Enhanced multi-format document processing
-- `file_processor.py`: Unified file handling for PDF, Excel, and CSV documents
+- `main.py`: Core SimplifiedRFQComparator class with original-style report generation
+- `app.py`: Main Streamlit web application interface
+- `run_app.py`: Launch script for the web application
+- `llm_client.py`: GPT-4.1 client interface for direct PDF processing
+- `pdf_processor.py`: Enhanced PDF content extraction utilities
 - `rfq_schema.py`: Comprehensive RFQ extraction schema definitions
-
-### Advanced Features
-- `graph_processor.py`: Knowledge graph creation and visualization using NetworkX
-- `project_manager.py`: Project state management with save/load functionality
-- `country_risk_manager.py`: Country risk data integration and analysis
-- `ui_components.py`: Reusable Streamlit UI components
-- `pdf_generator.py`: Advanced PDF report generation capabilities
-
-### Application Pages
-- `pages/3_Advanced_Graph.py`: Interactive knowledge graph explorer with st-link-analysis
-
-### Configuration and Dependencies
-- `requirements.txt`: Python dependencies including advanced visualization libraries
+- `test_simplified.py`: Test script for validation
+- `demo.py`: Demonstration script
+- `requirements.txt`: Python dependencies
 - `uploads/`: Directory for uploaded files (created automatically)
-- `projects/`: Directory for saved project states
-- `extra_docs/`: Additional documentation and data files
-- `.streamlit/`: Streamlit configuration directory
 
-## Key Benefits
+## Benefits Over Chunked Approach
 
-### Processing Advantages
 1. **No Information Loss**: Processes complete documents without chunking
 2. **Context Preservation**: Maintains full document context for better extraction
-3. **Structure Integrity**: Preserves table and list structures across multiple formats
+3. **Structure Integrity**: Preserves table and list structures
 4. **Enhanced Reports**: Detailed markdown reports with difference analysis
-5. **Multi-Format Support**: Unified processing for PDF, Excel, and CSV documents
-
-### Advanced Features
-6. **Knowledge Graph Visualization**: Interactive exploration of document relationships
-7. **Project Management**: Save and restore analysis sessions with full state persistence
-8. **Country Risk Analysis**: Enhanced insights with country-specific risk data
-9. **Real-time Collaboration**: Multi-user support with session management
-10. **Extensible Architecture**: Modular design for easy feature additions
-
-## Advanced Features
-
-### Knowledge Graph Processing
-- **Interactive Visualization**: NetworkX-based graph creation with Plotly integration
-- **Relationship Analysis**: Automatic detection of document relationships and patterns
-- **Advanced Filtering**: Search and filter capabilities for large document sets
-- **Export Capabilities**: Export graph data in multiple formats
-
-### Project Management
-- **State Persistence**: Save complete analysis sessions with all document references
-- **Security Validation**: Secure project loading with path validation
-- **Version Control**: Track project changes and maintain history
-- **Collaborative Features**: Multi-user session management
-
-### Country Risk Analysis
-- **Risk Data Integration**: Country-specific risk assessment capabilities
-- **Enhanced Insights**: Risk-aware document analysis and comparison
-- **Data Management**: CSV-based risk data with automatic updates
-- **Visualization**: Risk metrics integration in reports and graphs
-
-### Multi-Format Processing
-- **Unified Interface**: Single API for PDF, Excel, and CSV processing
-- **Format Detection**: Automatic document type recognition
-- **Structure Preservation**: Maintains formatting across different document types
-- **Batch Processing**: Efficient processing of multiple document formats
-
-## Dependencies
-
-### Core Dependencies
-- `streamlit`: Web application framework
-- `pandas`: Data manipulation and analysis
-- `generative-ai-hub-sdk`: SAP GenAI Hub integration
-- `PyMuPDF`: PDF text extraction
-- `pdfplumber`: Advanced PDF processing
-- `tiktoken`: Token counting for context management
-
-### Advanced Dependencies
-- `networkx`: Knowledge graph processing
-- `plotly`: Interactive visualizations
-- `st-link-analysis`: Advanced graph visualization
-- `openpyxl`: Excel file processing
-- `xlrd`: Legacy Excel support
-- `reportlab`: PDF generation
-- `matplotlib`: Static graph generation
+5. **Proven Success**: Addresses the "Not Found" issues from the original implementation
 
 ## Troubleshooting
 
@@ -266,17 +185,6 @@ The system extracts information across 10 major categories:
 4. **Performance Issues**
    - Large PDF files may take longer to process
    - GPT-4.1 API calls can be rate-limited
-   - Knowledge graph processing may be memory-intensive for large document sets
-
-5. **Graph Visualization Issues**
-   - Ensure `st-link-analysis` is installed: `pip install st-link-analysis`
-   - Large graphs may require filtering for better performance
-   - Browser compatibility issues with complex visualizations
-
-6. **Project Management Issues**
-   - Ensure write permissions in the projects directory
-   - Check file paths for security violations
-   - Verify project JSON structure for corrupted files
 
 ### Getting Help
 

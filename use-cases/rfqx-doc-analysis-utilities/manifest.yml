@@ -1,5 +1,5 @@
 applications:
-- name: RFQx_utilities
+- name: uc-rfq-pdf_4
   memory: 1G
   disk_quota: 2G
   path: .
@@ -17,4 +17,4 @@ applications:
     --theme.font "sans serif"
   default-route: true
   routes:
-  - route: RFQx_utilities.cfapps.eu10-004.hana.ondemand.com
+  - route: uc-rfq-pdf_4.cfapps.eu10-004.hana.ondemand.com
