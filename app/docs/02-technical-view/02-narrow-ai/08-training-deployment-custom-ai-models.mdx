@@ -1,8 +1,8 @@
 ---
 title: "Training and Deployment of Custom AI Models"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
+hide_title: false
+sidebar_class_name: shown
 ---
 
 import TabItem from "@theme/TabItem";
@@ -23,15 +23,6 @@ import PageContributors from "@site/src/components/PageContributors";
 <div className="hero-header">
   <h1>Training and Deployment of Custom AI Models</h1>
 </div>
-
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
 
 <div className="section-with-background">
   <div className="row">
@@ -79,7 +70,7 @@ Don't forget to remove this message.
   </div>
 </div>
 
-<LoginWall renderOnlyWhenLoggedIn={true}>
+{/* <LoginWall renderOnlyWhenLoggedIn={true}> */}
   <TrackableLink
     href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/deployment-custom-predictive-models"
     className="button button--primary button--lg download-source-btn"
@@ -88,122 +79,155 @@ Don't forget to remove this message.
   >
     <span>Download Source Code</span>
   </TrackableLink>
-</LoginWall>
+{/* </LoginWall> */}
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
 
-...
+The training and deployment of custom AI models within SAP BTP is designed to augment the company's existing capabilities by introducing **tailored AI solutions**. This section explores best practices for training and deploying custom models, focusing on integrating them seamlessly into existing business processes.
+
+Building custom AI models involves an initial assessment of existing solutions in the company’s SAP Business AI portfolio. This initial step ensures that the deployment leverages and complements the current technology landscape, rather than duplicating capabilities or functions. 
+
+It is recommended that you go through [SAP Business AI](https://dam.sap.com/mac/download/ap/ghJGAiZ.htm?rc=10) to understand the strategy and AI offerings to support your business scenario. Before you go for a custom predictive model development, it is recommended to review the [available solutions](https://discovery-center.cloud.sap/index.html#/servicessearch/AI?regions=all&category=all) in the [SAP Business AI portfolio](https://discovery-center.cloud.sap/ai-catalog/) to find out-of-the-box offerings that suit your business needs. If you haven't found a suitable solution, then it's time to consider building a custom AI model on the [SAP BTP platform](/docs/technology/sap-business-technology-platform).
 
 ### Expected Outcome
 
-...
+The primary goal of this practice is to effectively integrate custom AI models (**tailored AI solutions**) into an existing business structure, thereby maximizing the utility and impact of AI technologies. It aims to optimize operations, improve decision-making, and deliver scalable, [sustainable AI](https://www.sap.com/india/assetdetail/2025/02/688181fe-f37e-0010-bca6-c68f7e60039b.html) improvements that align well with business goals.
 
-<LoginWall>
+{/* <LoginWall> */}
 
 ### Benefits
 
-...
+- **Improved Operational Efficiency**: Custom AI models, in particular predictive models, help automate routine decision-making processes, reduce manual effort, and enable real-time insights. This is beneficial across different business domains, including logistics, procurement, finance, etc.
+
+- **Data-Driven Decision Making**: Using AI models, you can uncover hidden patterns in historical data and empower business users to make informed decisions, improving accuracy and reducing risks in business processes.
+
+- **Seamless Integration**: SAP BTP facilitates the integration of AI models with both SAP and non-SAP applications, Data from [SAP HANA](https://www.sap.com/products/data-cloud/hana.html), CDS views, [SAP DataSphere](https://www.sap.com/products/data-cloud/datasphere.html), and OData services, ensuring consistent and actionable insights directly within business workflows.
+
+- **Scalability and Reusability**: Custom AI models developed on SAP BTP can be scaled easily and can be used across multiple processes and business units, which further enhances return on investment.
+
+- **Personalization at Scale**: Using AI models, you can enable hyper-personalized experiences in sales, marketing, and customer service by anticipating customer needs and preferences.
+
 
 ### Key Concepts
 
-...
+- **Model Lifecycle Management**: It involves stages like data acquisition, preprocessing, feature engineering, model training, validation, deployment, and monitoring, which can be easily orchestrated using [SAP AI Core](/docs/technology/sap-ai-core) and [AI Launchpad](/docs/technology/sap-ai-launchpad).
+
+- **Explainability and Trust**: Explainability is an important aspect in building trust in AI capabilities. Responsible model development should offer interpretable insights (via SHAP, LIME, etc.) to ensure business stakeholders can trust the predictions. 
+
+- **Real-Time and Batch Inference**: Real-time inference refers to immediate prediction based on the input, while Batch inference takes a batch of input and performs the inference together. [SAP BTP](https://www.sap.com/india/products/technology-platform.html) supports both inference patterns- real-time predictions via APIs or batch scoring using pipelines integrated into business processes.
+
+### Use cases of Custom AI Models
+
+Custom AI models help organizations forecast future outcomes based on historical data - turning transactional records into actionable foresight. Within SAP environments, custom AI models are used to improve planning, reduce risk, personalize interactions, and automate decisions across multiple lines of business.
+
+Here are a few examples of use cases for predictive modeling:
+
+- **Payment Default Prediction**: Build a model to identify customers or invoices at risk of late payment, helping finance teams to avoid delayed payments. e.g., a custom model on [SAP AI Core](/docs/technology/sap-ai-core) predicts payment delays using open item data from S/4HANA Finance, customer risk profiles, and past payment history.
+
+- **Sales Forecasting and Deal Conversion**: Use historical opportunity data to predict which deals are likely to close and when, improving sales planning accuracy. e.g., a model trained in [SAP HANA PAL](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/sap-hana-predictive-analysis-library-pal-c9eeed7.html?locale=en-US) forecasts conversion probabilities using opportunity status, engagement metrics, and salesperson history from SAP Sales Cloud.
+
+- **Custom Demand Forecasting by Region or Channel**: Create granular demand forecasts tailored by product, location, or channel, e.g., a Python-based model on [BTP AI Core](/docs/technology/sap-ai-core) integrates POS data, SAP orders, and external weather trends to forecast demand for retail products by city.
+
+- **Supplier Lead Time Risk Prediction**: Predict which POs may face delays based on historical delivery patterns, supplier behavior, and external signals, e.g., a [HANA PAL](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/sap-hana-predictive-analysis-library-pal-c9eeed7.html?locale=en-US) model analyzes PO data from Ariba and delivery KPIs to flag at-risk suppliers before issuing orders.
+
+- **Predictive Maintenance for Custom Assets**: Train a model using IoT data to predict failures of industry-specific or non-standard machines. e.g., a predictive maintenance model deployed via [AI Core](/docs/technology/sap-ai-core) uses telemetry from manufacturing equipment to anticipate failures, integrated with SAP EAM.
+
+- **Employee Exit Risk Modeling (Custom Factors)**: Build a model tailored to your workforce dynamics to detect attrition risks based on internal metrics, not just generic benchmarks. e.g., a custom [HANA PAL logistic regression model](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/logistic-regression-with-elastic-net-regularization-46effe5.html?locale=en-US) uses leave patterns, performance reviews, and engagement survey scores from SuccessFactors.
+
+- **Custom Product Return Prediction**: Develop product-specific models to predict return likelihood based on order combinations, customer type, and past behavior. e.g., a model on [BTP AI Core](/docs/technology/sap-ai-core) predicts return rates using sales orders, complaints, and material master data from S/4HANA.
+
+- **Churn Risk for Subscription-Based Services**: Forecast customer churn using usage data, ticket volume, and satisfaction scores. e.g. a custom classification model deployed on [AI Core](/docs/technology/sap-ai-core) uses support ticket logs, CSAT scores, and subscription usage data from SAP CRM or CX Suite.
+
+- **Warehouse Inventory Risk Modeling**: Identify items likely to become out of stock using historical movement data, product lifecycle, and seasonal trends. e.g., A [decision tree model](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/decision-trees-c8ab80c.html?locale=en-US) flags slow-moving items and suggests liquidation or markdown actions, integrated with SAP EWM.
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+### Commercial
+
+- [SAP AI Core](/docs/technology/sap-ai-core)
+- [SAP AI Launchpad](/docs/technology/sap-ai-launchpad)
+- [SAP HANA Cloud](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud?region=all&tab=service_plan) on SAP BTP (Optional)
+
+You can find pricing details for the above services in the [SAP Discovery Center](https://discovery-center.cloud.sap/serviceCatalog?commercialModel=btpea&regions=all).
+
+### Technical
+
+1. Setup SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/docs/technology/sap-business-technology-platform))
+2. Create an instance of SAP AI Core ([Setup Guide](/docs/technology/sap-ai-core#setup))
+3. Subscribe to SAP AI Launchpad ([Setup Guide](/docs/technology/sap-ai-launchpad#setup))
+4. Create an instance of SAP HANA Cloud ([Setup Guide](/docs/technology/sap-hana-cloud#setup))
+
+### High-level Reference Architecture
+
+![High-level Reference Architecture](@site/static/narrow-ai/training-deployment-custom-ai-models/images/arch.png)
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+Custom model development and operationalizing is a multi-step process. These key implementation choices and guidelines at each step will help you achieve the best outcome for your custom AI scenario. 
+
+- **Problem Definition & Business Alignment**  
+Clearly define the ML problem and ensure it aligns with business goals to drive measurable value. Engage stakeholders early for domain-specific insights and success criteria.
+
+- **Data Strategy**  
+Collect high-quality, representative data while ensuring ethical sourcing and regulatory compliance. Preprocess and engineer features to maximize model effectiveness and fairness. AI/ML use cases require a lot of data, thus, processing of data and pushing the Custom AI model development close to the data source helps to reduce data movement and latency. It is recommended to consider HANA-based [data pre-processing](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/preprocessing-algorithms-d521673.html?locale=en-US) and [ML algorithms](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/pal-procedures-f652a81.html?locale=en-US) if your data is already in [SAP HANA](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud?region=all&tab=).
+
+- **Model Development**  
+Select appropriate algorithms based on problem complexity, interpretability, and available data. You can start with simpler algorithms or smaller models and then increase the complexity as needed, supporting your business case. If you are using deep learning for your use case, consider pretrained models for faster development cycles.
+
+- **Model Evaluation & Validation**  
+Validate models using robust metrics, cross-validation, and edge-case testing. These evaluations and validations will help you build robust and reliable models.
+
+- **Choosing the right resource plan**  
+Training and deploying a custom model would require compute resources, and SAP BTP provides a variety of [resource plan](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/choose-resource-plan-train) that caters to a variety of model development/deployment. Choosing the right resource plan helps to speed up your training cycle, reduce latency on inference, and be cost-effective. You may use the guidelines below to choose the best resource plan for your use case.  
+  - Small training resource plans that are suitable to train your classic regressors, trees, XGB, and simple neural nets.  
+  - Small inference resource plans to serve your classic regressors, trees, XGB, and simple neural nets.  
+  - Larger inference resource plans to serve LLMs, vision models, and deeper/larger neural nets.  
+
+  Note: [Large training resource plans](https://me.sap.com/notes/3485650) allow for distributed training/fine-tuning of larger models like LLMs, vision models, and deeper/larger neural nets, but they may be available only for SAP internal purposes.
+
+- **Deployment & MLOps**  
+Use MLOps tools for reproducible deployment, scalability, and automated monitoring. Ensure [MLOps pipeline](https://help.sap.com/docs/ai-launchpad/sap-ai-launchpad/ml-operations?locale=en-US) or [CI/CD](https://discovery-center.cloud.sap/serviceCatalog/continuous-integration--delivery?region=all) pipelines are in place for efficient and secure model releases. You can also consider containerized (Docker-based) deployments to scale your AI applications.
+- **Monitoring & Retraining**  
+Continuously [monitor model performance](https://help.sap.com/docs/ai-launchpad/sap-ai-launchpad/producer-view-metrics-for-model?locale=en-US), data drift, and user feedback. Set up retraining [workflows](https://help.sap.com/docs/ai-launchpad/sap-ai-launchpad/workflow-executables?locale=en-US) to maintain accuracy and relevance over time.
+- **Security & Privacy**  
+Safeguard data and models through encryption, access control, and protection against adversarial attacks. Ensure privacy using anonymization, federated learning, or confidential computing where applicable.
+- **AI Ethics & Responsible AI**  
+Embed fairness, transparency, and accountability throughout the model lifecycle. It is advised to use explainability tools and documentation (like model cards) to support ethical governance. See [Responsible AI](https://www.sap.com/india/products/artificial-intelligence/ai-ethics.html).
+
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+Based on the machine learning problem you are addressing, you can experiment with several models on the dataset that you are working with. Once the model is built and you are happy with the performance of that model, you can choose any of the following ways to deploy your custom model to support your business applications.
 
-<div className="tabs-with-background">
-<Tabs groupId="language">
-<TabItem value="python" label="Python" default>
+AI Core supports container-based deployment. In order to deploy your model, you can perform the following steps:
 
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/deployment-custom-predictive-models/python"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_DEPLOYMENT_CUSTOM_PREDICTIVE_MODELS"
->
-  <span>Download Source Code</span>
-</TrackableLink>
+1. [Landscape Setup (setting up AI Core /AI Launchpad)](https://developers.sap.com/tutorials/ai-core-setup.html): This is a one-time activity. You will be able to reuse the same setup for further deployments.  
+2. [Setup for Git Repositories](https://developers.sap.com/tutorials/ai-core-helloworld.html): This sets up your git repositories to have easier development management as well as pipeline management for model deployment in AI Core.  
+3. [Set up your environment for container-ready development](https://developers.sap.com/tutorials/ai-core-code.html): SAP AI Core allows Docker/container-based deployment. Before you deploy your model, you need to create a Docker/container for the same.  
+4. Build your custom AI model in a container-ready environment: You can build your custom AI model as per your requirement using classical machine learning models, neural networks, or lightweight LLMs as well. Below are some of the references for your model development.  
+   a. [Build a House Price Predictor Model](https://sap.sharepoint.com/sites/210313/SitePages/Technical%20-%20Narrow%20AI.aspx): Based on your use case, you can leverage [best practice content](https://github.com/amanichopra/sap-aicore-train/tree/main) to build your Custom AI models.  
+   b. Yoga Pose Image Classification: Use [training](https://github.com/amanichopra/model-serving-aicore) and [inference](https://developers.sap.com/tutorials/ai-core-tensorflow-byod.html) pipeline to create a classifier for yoga pose images.  
+   c. [Utilizing GPUs in SAP AI Core](https://developers.sap.com/tutorials/ai-core-data.html): If your business application requires image processing, audio/video processing, or large computation, GPU provide a significant boost in processing time (both training and inference). You can leverage AI core instances with GPU support to leverage the same.  
+   d. [Ingest data into your AI model with SAP AI Core](https://developers.sap.com/tutorials/ai-core-data.html)  
+5. [Generate Metrics and Compare Models in SAP AI Core](https://developers.sap.com/tutorials/ai-core-metrics.html): You can run all your experiments in an AI Core container and generate several metrics to compare the models to find the best fit for your business problem.  
+6. [Make Predictions for your AI model with SAP AI Core](https://developers.sap.com/tutorials/ai-core-deploy.html): Once you have finalized your model, you can create an inference pipeline to make it available for integration with your business applications.  
 
-...
+The above steps help you build and deploy your AI model on the AI core. AI Launchpad provides you a unified access to AI Core and helps you manage your configuration, deployments end-to-end.
 
-</TabItem>
-
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
-
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/deployment-custom-predictive-models/typescript"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_DEPLOYMENT_CUSTOM_PREDICTIVE_MODELS"
->
-  <span>Download Source Code</span>
-</TrackableLink>
-
-...
-
-</TabItem>
-
-<TabItem value="cap-app" label="CAP">
-
-<TrackableLink
-  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/deployment-custom-predictive-models/cap"
-  className="button button--primary button--lg download-source-btn--tab"
-  target="_blank"
-  trackingFeature="DOWNLOAD_DEPLOYMENT_CUSTOM_PREDICTIVE_MODELS"
->
-  <span>Download Source Code</span>
-</TrackableLink>
-
-...
-
-</TabItem>
-
-</Tabs>
-</div>
-
-<br />
-
-<div className="section-with-background blue">
-
-## <span className="post-article-first-title">Related Best Practices</span>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
-</ul>
-
-</div>
-
-<br />
+If you wish to perform the same activities using the command line in VS Code, you can leverage the [SAP AI Core Toolkit for VS Code](https://help.sap.com/docs/sap-ai-core/sap-ai-core-toolkit/sap-ai-core-toolkit?locale=en-US) and perform the same steps. [SAP AI Core using VS Code Toolkit](https://developers.sap.com/tutorials/ai-core-vs-code-toolkit.html) explains the step-by-step process to achieve the same.
 
 <div className="section-with-background purple">
 
-## Related AI Capabilities
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
+## Related Best Practices
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/classification" text="Classification" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/clustering" text="Clustering" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
 </ul>
 
 </div>
@@ -214,8 +238,11 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={[
+  "chirag-gupta", 
+  "bhagabat-prasad-behera"
+  ]} />
 
 </div>
 
-</LoginWall>
+{/* </LoginWall> */}
