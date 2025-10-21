@@ -46,20 +46,20 @@ import PageContributors from "@site/src/components/PageContributors";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/deployment-custom-predictive-models/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/#TODO")}>
             <Icon name="video" />
             <span>Teaser [TODO]</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/deployment-custom-predictive-models/videos/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/#TODO")}>
               <Icon name="video" />
               <span>Webinar [TODO]</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/deployment-custom-predictive-models/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/pdfs/#TODO")}>
               <Icon name="pdf-attachment" />
               <span>Webinar (PDF Presentation) [TODO]</span>
             </Link>
@@ -89,22 +89,15 @@ The primary goal of this practice is to effectively integrate custom AI models (
 ### Benefits
 
 - **Improved Operational Efficiency**: Custom AI models, in particular predictive models, help automate routine decision-making processes, reduce manual effort, and enable real-time insights. This is beneficial across different business domains, including logistics, procurement, finance, etc.
-
 - **Data-Driven Decision Making**: Using AI models, you can uncover hidden patterns in historical data and empower business users to make informed decisions, improving accuracy and reducing risks in business processes.
-
 - **Seamless Integration**: SAP BTP facilitates the integration of AI models with both SAP and non-SAP applications, Data from [SAP HANA](https://www.sap.com/products/data-cloud/hana.html), CDS views, [SAP DataSphere](https://www.sap.com/products/data-cloud/datasphere.html), and OData services, ensuring consistent and actionable insights directly within business workflows.
-
 - **Scalability and Reusability**: Custom AI models developed on SAP BTP can be scaled easily and can be used across multiple processes and business units, which further enhances return on investment.
-
 - **Personalization at Scale**: Using AI models, you can enable hyper-personalized experiences in sales, marketing, and customer service by anticipating customer needs and preferences.
-
 
 ### Key Concepts
 
 - **Model Lifecycle Management**: It involves stages like data acquisition, preprocessing, feature engineering, model training, validation, deployment, and monitoring, which can be easily orchestrated using [SAP AI Core](/docs/technology/sap-ai-core) and [AI Launchpad](/docs/technology/sap-ai-launchpad).
-
 - **Explainability and Trust**: Explainability is an important aspect in building trust in AI capabilities. Responsible model development should offer interpretable insights (via SHAP, LIME, etc.) to ensure business stakeholders can trust the predictions. 
-
 - **Real-Time and Batch Inference**: Real-time inference refers to immediate prediction based on the input, while Batch inference takes a batch of input and performs the inference together. [SAP BTP](https://www.sap.com/india/products/technology-platform.html) supports both inference patterns- real-time predictions via APIs or batch scoring using pipelines integrated into business processes.
 
 ### Use cases of Custom AI Models
@@ -112,23 +105,14 @@ The primary goal of this practice is to effectively integrate custom AI models (
 Custom AI models help organizations forecast future outcomes based on historical data - turning transactional records into actionable foresight. Within SAP environments, custom AI models are used to improve planning, reduce risk, personalize interactions, and automate decisions across multiple lines of business.
 
 Here are a few examples of use cases for predictive modeling:
-
 - **Payment Default Prediction**: Build a model to identify customers or invoices at risk of late payment, helping finance teams to avoid delayed payments. e.g., a custom model on [SAP AI Core](/docs/technology/sap-ai-core) predicts payment delays using open item data from S/4HANA Finance, customer risk profiles, and past payment history.
-
 - **Sales Forecasting and Deal Conversion**: Use historical opportunity data to predict which deals are likely to close and when, improving sales planning accuracy. e.g., a model trained in [SAP HANA PAL](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/sap-hana-predictive-analysis-library-pal-c9eeed7.html?locale=en-US) forecasts conversion probabilities using opportunity status, engagement metrics, and salesperson history from SAP Sales Cloud.
-
 - **Custom Demand Forecasting by Region or Channel**: Create granular demand forecasts tailored by product, location, or channel, e.g., a Python-based model on [BTP AI Core](/docs/technology/sap-ai-core) integrates POS data, SAP orders, and external weather trends to forecast demand for retail products by city.
-
 - **Supplier Lead Time Risk Prediction**: Predict which POs may face delays based on historical delivery patterns, supplier behavior, and external signals, e.g., a [HANA PAL](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/sap-hana-predictive-analysis-library-pal-c9eeed7.html?locale=en-US) model analyzes PO data from Ariba and delivery KPIs to flag at-risk suppliers before issuing orders.
-
 - **Predictive Maintenance for Custom Assets**: Train a model using IoT data to predict failures of industry-specific or non-standard machines. e.g., a predictive maintenance model deployed via [AI Core](/docs/technology/sap-ai-core) uses telemetry from manufacturing equipment to anticipate failures, integrated with SAP EAM.
-
 - **Employee Exit Risk Modeling (Custom Factors)**: Build a model tailored to your workforce dynamics to detect attrition risks based on internal metrics, not just generic benchmarks. e.g., a custom [HANA PAL logistic regression model](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/logistic-regression-with-elastic-net-regularization-46effe5.html?locale=en-US) uses leave patterns, performance reviews, and engagement survey scores from SuccessFactors.
-
 - **Custom Product Return Prediction**: Develop product-specific models to predict return likelihood based on order combinations, customer type, and past behavior. e.g., a model on [BTP AI Core](/docs/technology/sap-ai-core) predicts return rates using sales orders, complaints, and material master data from S/4HANA.
-
 - **Churn Risk for Subscription-Based Services**: Forecast customer churn using usage data, ticket volume, and satisfaction scores. e.g. a custom classification model deployed on [AI Core](/docs/technology/sap-ai-core) uses support ticket logs, CSAT scores, and subscription usage data from SAP CRM or CX Suite.
-
 - **Warehouse Inventory Risk Modeling**: Identify items likely to become out of stock using historical movement data, product lifecycle, and seasonal trends. e.g., A [decision tree model](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/decision-trees-c8ab80c.html?locale=en-US) flags slow-moving items and suggests liquidation or markdown actions, integrated with SAP EWM.
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
@@ -155,27 +139,20 @@ You can find pricing details for the above services in the [SAP Discovery Center
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
 Custom model development and operationalizing is a multi-step process. These key implementation choices and guidelines at each step will help you achieve the best outcome for your custom AI scenario. 
-
 - **Problem Definition & Business Alignment**  
 Clearly define the ML problem and ensure it aligns with business goals to drive measurable value. Engage stakeholders early for domain-specific insights and success criteria.
-
 - **Data Strategy**  
 Collect high-quality, representative data while ensuring ethical sourcing and regulatory compliance. Preprocess and engineer features to maximize model effectiveness and fairness. AI/ML use cases require a lot of data, thus, processing of data and pushing the Custom AI model development close to the data source helps to reduce data movement and latency. It is recommended to consider HANA-based [data pre-processing](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/preprocessing-algorithms-d521673.html?locale=en-US) and [ML algorithms](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/pal-procedures-f652a81.html?locale=en-US) if your data is already in [SAP HANA](https://discovery-center.cloud.sap/serviceCatalog/sap-hana-cloud?region=all&tab=).
-
 - **Model Development**  
 Select appropriate algorithms based on problem complexity, interpretability, and available data. You can start with simpler algorithms or smaller models and then increase the complexity as needed, supporting your business case. If you are using deep learning for your use case, consider pretrained models for faster development cycles.
-
 - **Model Evaluation & Validation**  
 Validate models using robust metrics, cross-validation, and edge-case testing. These evaluations and validations will help you build robust and reliable models.
-
 - **Choosing the right resource plan**  
 Training and deploying a custom model would require compute resources, and SAP BTP provides a variety of [resource plan](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/choose-resource-plan-train) that caters to a variety of model development/deployment. Choosing the right resource plan helps to speed up your training cycle, reduce latency on inference, and be cost-effective. You may use the guidelines below to choose the best resource plan for your use case.  
   - Small training resource plans that are suitable to train your classic regressors, trees, XGB, and simple neural nets.  
   - Small inference resource plans to serve your classic regressors, trees, XGB, and simple neural nets.  
   - Larger inference resource plans to serve LLMs, vision models, and deeper/larger neural nets.  
-
   Note: [Large training resource plans](https://me.sap.com/notes/3485650) allow for distributed training/fine-tuning of larger models like LLMs, vision models, and deeper/larger neural nets, but they may be available only for SAP internal purposes.
-
 - **Deployment & MLOps**  
 Use MLOps tools for reproducible deployment, scalability, and automated monitoring. Ensure [MLOps pipeline](https://help.sap.com/docs/ai-launchpad/sap-ai-launchpad/ml-operations?locale=en-US) or [CI/CD](https://discovery-center.cloud.sap/serviceCatalog/continuous-integration--delivery?region=all) pipelines are in place for efficient and secure model releases. You can also consider containerized (Docker-based) deployments to scale your AI applications.
 - **Monitoring & Retraining**  

@@ -1,8 +1,6 @@
 ---
 title: "Classification"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -23,15 +21,6 @@ import PageContributors from "@site/src/components/PageContributors";
 <div className="hero-header">
   <h1>Classification</h1>
 </div>
-
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
 
 <div className="section-with-background">
   <div className="row">
@@ -79,73 +68,299 @@ Don't forget to remove this message.
   </div>
 </div>
 
-<LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
-    <span>Download Source Code</span>
-  </TrackableLink>
-</LoginWall>
-
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
 
-...
+Classification is a fundamental machine learning technique aimed at organizing input data into distinct classes. During the classification process, the model undergoes training using the 'train subset' function, followed by evaluation using the 'test subset' function. A notable distinction between classification and regression tasks lies in their output variables. While classification deals with discrete target variables, regression tasks involve continuous output variables.
 
 ### Expected Outcome
 
-...
+Essentially, the expected outcome is to recognize patterns in the training data, and use these patterns to classify new data into one of the pre-defined classes. 
+
+#### Scenarios
+
+Classification can be utilized in various scenarios, such as spam detection, image recognition, fraud detection, medical diagnosis, among others. For example, the figure below illustrates how a classification model determines whether an incoming message falls under the category of SPAM or Inbox (non-SPAM).
+
+![](@site/static/narrow-ai/classification/images/classification-model.png)
+
+The core principles of classification involve supervised learning, where models are trained using labeled data to recognize patterns and make predictions on new, unseen data.
 
 <LoginWall>
 
 ### Benefits
 
-...
-
-### Key Concepts
-
-...
+- **Automated and Accurate Predictions**: allows for the automation of tasks that would otherwise require manual analysis.  
+- **Improved Decision-Making**: by understanding the patterns and relationships within data, classification models can help businesses, and organizations make better decisions. For example, in marketing, classification can help identify customer segments, personalize marketing campaigns, and improve customer experience.  
+- **Enhanced Efficiency and Productivity**: can streamline processes and reduce the need for manual intervention, saving time and resources; the increased efficiency can translate into higher productivity and cost savings. For instance, in healthcare, classification models can help diagnose diseases faster and more accurately, leading to improved patient outcomes.  
+- **Improved Customer Experience**: classification can help businesses personalize interactions with customers by understanding their preferences and needs; this can lead to increased customer satisfaction and loyalty.  
+- **Scalability and Efficiency**: many classification algorithms can handle large datasets efficiently, making them suitable for applications involving large datasets; they can also be implemented in real-time for applications where speed is critical.  
+- **Enhanced Security**: can identify unusual patterns or anomalies that may indicate potential threats, such as fraud or cyberattacks; this allows for proactive security measures and reduced risk.  
+- **Learning Relationships**: it allows for learning relationships between input features and predefined classes.  
+  For example, a model might learn that the presence of certain visual features, e.g., given color or shape, is strongly correlated with the class label ‘whale’ in an image classification task.  
+- **Provides Prediction Intervals**: it can generate prediction intervals to provide a range of possible outcomes with a certain level of confidence.  
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+### Supported SAP HANA versions and editions
+SAP HANA’s Machine Learning capabilities, includes both the Predictive Analysis Library (PAL) and the Automated Predictive Library (APL), are supported on various SAP HANA versions and editions. Key supported platforms include: 
+ 
+- **SAP HANA Cloud**: Fully supported and recommended platform due to easier management of components like PAL and APL. More information on [HANA Cloud and Setup process](/docs/technology/sap-hana-cloud#setup).
+  - [**Prerequisites:**](https://support.sap.com/en/alm/sap-cloud-alm/operations/expert-portal/setup-managed-services/setup-hana-cloud.html?anchorId=section_2065216453_c#section_copy_copy)
+    - You need to have access to SAP BTP Cockpit ([Setup Guide](/docs/technology/sap-business-technology-platform#setup-guide)).
+    - Your user in BTP Cockpit needs to be a member with the space role "Space Developer" for the space in which you want to create the SAP HANA Cloud database instance was created
+- **SAP HANA express edition**: Used for development and testing. [Installation instructions for SAP HANA](https://developers.sap.com/group.hxe-install-clients.html) and [Installation instructions for Client API](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.06/en-US/Installation.html).
+- **SAP Datasphere (formerly Data Warehouse Cloud)**: Supports PAL and API functions, provided underlying [SAP HANA Cloud Script Server](https://help.sap.com/docs/SAP_DATASPHERE/9f804b8efa8043539289f42f372c4862/287194276a7d4d778ec98fdde5f61335.html) is enabled for the tenant
+
+Note, PAL and APL are also available from ([SAP HANA Platform 2.0 SPS 04](https://help.sap.com/doc/9c87e50e69c744f785f41ec5568b47d8/2.0.04/en-US/SAP_HANA_Machine_Learning_Overview_Guide_en.pdf)) as well as SAP HANA express edition
+
+### Required SAP HANA Components
+**SAP HANA Cloud**: PAL and APL are pre-installed within the SAP HANA Cloud environment. During configuration of the database instance, the necessary services need to be enabled and user permissions to be granted
+
+**Predictive Analysis Library (PAL)**: it provides a wide range of common and specialized native in-database functions for predictive analysis and machine learning in scenarios like classification, regression, time series forecasting, outlier detection, text processing and analysis as well as text embedding
+
+**Automated Predictive Library (APL)**: it provides native in-database functions for creating predictive models in a simplified manner due to the automation of many of the steps. 
+
+### Required User Authorizations and Roles
+Executing PAL and APL functions requires specific database privileges. These are granted via predefined roles:
+
+- For [PAL](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/security-security-253f2b5?locale=en-US): You must be assigned one of the following roles to execute PAL procedures. The roles for the PAL library are automatically created when the Application Function Library (AFL) is enabled. The role names are:
+  - AFL__SYS_AFL_AFLPAL_EXECUTE
+  - AFL__SYS_AFL_AFLPAL_EXECUTE_WITH_GRANT_OPTION
+- For [APL](https://help.sap.com/docs/apl/419fd47c26b345239fdbb5e476a6bc54/654f4d920c5846b6b56903c7b06b0785.html):
+  - *SAP HANA Cloud*: The database role sap.pa.apl.base.roles::APL_EXECUTE is required. This role grants privileges to execute APL stored procedures, access related schemas, and use the APL cache. It should be granted by a database administrator to the APL user.
+- **General Privileges**: Beyond specific PAL/APL roles, users will need standard SQL privileges to access the data tables used as input for the algorithms (e.g., SELECT on relevant schemas/tables) and potentially privileges to create temporary tables or views depending on the workflow (e.g., CREATE TEMPORARY TABLE).
+
+### Summary
+
+| Prerequisite Category          | Item                                                        | Notes                                                                                              |
+|--------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| **SAP HANA Cloud Environment** | SAP HANA Cloud, SAP HANA Cloud trial and free-tier          | See trial / free-tier limitations.                                                                 |
+| **SAP HANA Cloud Configuration** | Enabled services                                            | Script Server and NLP services                                                                     |
+| **User Authorizations**        | PAL Execution Role Granted                                  | User needs AFL__SYS_AFL_AFLPAL_EXECUTE (Cloud/On-Prem) role.                                       |
+|                                | APL Execution Role Granted                                  | User needs sap.pa.apl.base.roles::APL_EXECUTE (Cloud/On-Prem Procedure) or direct AFL roles (On-Prem Direct). |
+|                                | Data Access Privileges (SELECT)                             | User needs SELECT access on input data tables/views.                                               |
+|                                | Object Creation Privileges (Optional)                       | May need CREATE TEMPORARY TABLE etc., depending on workflow.                                       |
+
+### High-Level Architecture
+
+![](@site/static/narrow-ai/classification/images/arch.png)
+
+#### Calling PAL and APL Functions
+- PAL functions can be called through the SQL interface or using the Python or R Machine Learning clients (hana-ml).  
+- APL functions can be called through the SQL interface or using the Python Machine Learning client (hana-ml).  
+- The Natural Language Processing functions for Text Analysis, Named Entity Recognition or Part of Speech tagging can be called via PAL functions. In addition, the Text Embedding function can be called via PAL functions as well as the SQL function [VECTOR_EMBEDDING()](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-vector-engine-guide/creating-text-embeddings-in-sap-hana-cloud).  
+- Both PAL and APL functions can be called out of the box in the HANA Cloud Database Core Container, or as part of the HANA Cloud Elastic Compute Nodes.  
+- SAP BTP Applications can embed use of PAL or APL functions as part of standard SQLScript design-time artifacts, e.g. multi-target or full-stack CAP applications. Furthermore, usage of PAL and APL functions may also be utilized via applications leveraging Python runtimes and scripts using the Python Machine Learning client (hana-ml).
+
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+Classification is a fundamental technique in machine learning used to categorize data points into predefined labels based on their features. It plays a crucial role in various real-world applications, such as predicting whether an employee will churn or remain in a company. The core principles of classification involve supervised learning, where models are trained using labeled data to recognize patterns and make predictions on new, unseen data.
+
+There are different approaches to classification, each employing distinct methodologies. Some of the most commonly used algorithms include decision trees, gradient boosting, and neural networks, each suited to different types of data and classification challenges. Classification itself can be categorized into three main types. 
+
+- **Binary** classification involves distinguishing between two possible outcomes, such as "yes" or "no" and "spam" or "not spam."  
+- **Multi-class** classification extends binary classification by categorizing data into multiple distinct groups, such as classifying different product categories.  
+- **Multi-label** classification allows a single data point to belong to multiple categories, such as tagging a document with multiple relevant topics. Or multi-target classification, where a single model shall be used to predict multiple target labels using a single model.
+
+Handling of text data and moreover text embeddings as features has emerged as crucial capability for many classification scenarios, as only by the use of text embedding models the semantic understanding of input text could be captured by classification algorithms. The following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/pal/notebooks/24QRC04_2.23-unlocking_text_data.ipynb) shows an example.
+
+### Algorithm Selection  
+With the great variety of algorithms, the classification scenario type as well as data patterns like number of rows (observations), number of features / type of features and cardinality of features influence the selection of classification models and their use cases.
+
+| Dataset Size | Algorithm | Description |
+|---------------|------------|--------------|
+| **Small to Medium size data sets** | Logistic Regression | Used in simple binary classification problems, such as predicting "yes" or "no" labels. |
+|  | k – Nearest Neighbors (k – NN) |  |
+|  | Decision Trees | Used in cases for easy model interpretability and model explainability. |
+
+| Dataset Size | Algorithm | Description |
+|---------------|------------|--------------|
+| **Medium to Large data sets** | Random Forest | Used for complex classification problems where accuracy is highly relevant. |
+|  | Support Vector Machines (SVM) | Used for classification scenarios with clear margin of separation, e.g., image classification. |
+|  | XGBoost | Used in high performance classification problems, e.g., fraud detection. |
+|  | Neural Networks | Also known as Deep Learning, it is used for complex and high dimensional data scenarios, e.g., speech recognition. |
+|  | LightGBM | Used for large scale and high performance applications, e.g., web search ranking. |
+|  | Multinomial Naive Bayes | Used for discrete data, specially for text classification tasks where word counts are used as features for sentiment analysis. |
+
+
+| Dataset Size | Algorithm | Description |
+|---------------|------------|--------------|
+| **Very Large data sets** | Deep Learning, i.e., Convolutional Neural Networks (CNN) architecture for images, Recurrent Neural Networks (RNN) for sequence data. | Used for very large and complex datasets, e.g., natural language processing. |
+|  | Distributed Machine Learning Frameworks such as Spark MLLib, TensorFlow. | Used for scalable machine learning scenarios across distributed computing environments, e.g., large scale recommendation systems. |
+
+### Algorithm experimentation and selection
+AutoML frameworks like [SAP HANA Cloud PAL’s AutoML](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/automl-automl) implementation greatly help users in probing multiple algorithms and parameter variations for a given scenario for selecting the best possible algorithm and model. In the following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/usecase-examples/sapcommunity-automl-examples/Example%20-%20Using%20PAL%20AutoML%20for%20Classification.ipynb) you can view an example on how to apply it.
+
+### Data Preparation and Model Evaluation
+The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.  
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [ML Data Preparation and Model Evaluation Best Practices](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
+
+### Leverage In-Database ML functions from SAP HANA whenever possible
+- **Prioritize HANA ML:** If your data resides in SAP HANA (Cloud/on-premise) or SAP Datasphere, using hana-ml is generally the most efficient approach due to minimized data movement and optimized performance.
+
+### Anomaly and Outlier Detection
+Identifying anomalies or outliers is a critical aspect of building robust machine learning models. These unusual data points can represent data quality issues, unique real-world events, or errors in data collection that might otherwise skew model training and evaluation.  
+For a comprehensive guide on the methodologies and best practices for discovering anomalies in your data, please refer to our unified [Anomaly Detection Best Practices](/docs/technical-view/narrow-ai/anomaly-detection) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+When developing regression models with SAP tools and libraries, the choice of your application's runtime dictates the relevant information. Different approaches can be used to embed the classification scenario artifacts.
+
+### Programming Model Selection Guidelines
+When developing linear regression scenarios with SAP HANA’s Predictive Analysis Library (PAL), consider the following guidelines:
+
+- **Recommended Approach (Data Science Workflows):** Utilize the Python hana-ml library for a streamlined, intuitive experience aligned with standard data science practices, including convenient data manipulation and integration with machine learning workflows. This approach yields best productivity during ML model experimentation until the final model of choice and parameterization has been determined.
+- **Alternative Approaches:**
+  - SQLScript database procedures and table functions are the typical HANA design-time artifacts for embedding and invoking PAL and APL procedures into BTP CAP or XSA full-stack applications. Artifact generations from the hana-ml machine learning client in Python is supported.
+
+The final choice should align with your team’s expertise and project requirements.
+
 
 <div className="tabs-with-background">
 <Tabs groupId="language">
 <TabItem value="python" label="Python" default>
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+### Recommendation
+Use the **hana-ml** library for interacting with SAP HANA PAL and APL algorithms via the Python runtime environment.
 
-...
+### SDKs
+- [**hana-ml**](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/latest/en-US/hana_ml.html) (Recommended for SAP HANA ML interaction)
 
+### Tutorials and Learning Journeys
+- **SAP Community Blogs:**
+  - [Build your Machine Learning Scenario for your SAP HANA Cloud application from Python](https://www.youtube.com/watch?v=CX38-95uBtc)
+  - [Exploring ML Explainability in SAP HANA PAL – Classification and Regression](https://community.sap.com/t5/technology-blogs-by-sap/exploring-ml-explainability-in-sap-hana-pal-classification-and-regression/ba-p/13681514)
+- **SAP Developer Tutorials:**
+  - [Predictive AI with SAP AI Core](https://developers.sap.com/tutorial-navigator.html?search=classification) (General AI Core usage)
+- **SAP Education:**
+  - [Developing AI Models with the Python Machine Learning Client for SAP HANA](https://learning.sap.com/learning-journeys/developing-ai-models-with-the-python-machine-learning-clients-for-sap-hana)
+  - [Developing Classification Models with the Python Machine Learning Client for SAP HANA](https://learning.sap.com/learning-journeys/developing-classification-models-with-the-python-machine-learning-client-for-sap-hana)
+
+### Reference Code
+**Recommended**
+- [SAP BTP AI Best Practices - Sample Code](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/classification)
+
+**Relevant Code**  
+*HybridGradientBoostingTree (HGBT)*
+
+```python
+from hana_ml.algorithms.pal.unified_classification import UnifiedClassification
+​
+# --- Training the HybridGradientBoostingTree (HGBT) Model ---
+hgbc = UnifiedClassification(func='HybridGradientBoostingTree',
+                            n_estimators = 101, split_threshold=0.1,
+                            learning_rate=0.1, max_depth=6,
+                            split_method='histogram', max_bin_num=256, feature_grouping=True,
+                            tolerant_iter_num=5,
+                            resampling_method='cv', fold_num=5, ref_metric=['auc'],
+                            evaluation_metric = 'error_rate')
+​
+print("\nTraining the HGBT model...")
+hgbc.fit(data=df_train.drop('EMPLOYEE_ID'), 
+         label='FLIGHT_RISK', 
+         partition_method='stratified', stratified_column='FLIGHT_RISK', training_percent=0.8,
+         ntiles=20,  
+         build_report=True)
+​
+​
+# --- Model Evaluation ---
+print("\nComputing the AUC-ROC (Area under the ROC curve) for the trained HGBT model...")
+hgbc.get_performance_metrics()['AUC']
+print("Model Evaluation completed.")
+```
 </TabItem>
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+<TabItem value="sql" label="SQL">
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+SAP HANA's Predictive Analysis Library (PAL) algorithms can be directly invoked through SQLScript. This approach is beneficial for:
 
-...
+- **Performance Optimization:** Minimizes data movement by executing directly within the database.
+- **Integration:** Allows embedding ML logic within database procedures, views, or calculation views for seamless integration with existing SAP HANA applications.
+- **Governance:** Provides a standardized approach within existing database governance frameworks.
 
-</TabItem>
+When implementing with SQLScript, you'll typically:
+1. Create parameter tables with algorithm-specific settings.  
+2. Prepare input data in the required format.  
+3. Call the PAL procedure.  
+4. Process the resulting output tables.
 
-<TabItem value="cap-app" label="CAP">
+### SDKs
+- [SAP HANA Predictive Analysis Library (PAL)](https://help.sap.com/docs/SAP_HANA_PLATFORM/2cfbc5cf2bc14f028cfbe2a2bba60a50/c9eeed704f3f4ec39441434db8a874ad.html?version=2.0.05&locale=en-US&q=PCA)
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+### Tutorials and Learning Journeys
+- The following links point to the relevant SAP HANA PAL documentation for the SQLScript procedures:  
+- **Hybrid Gradient Boosting Tree Classifier:** [Hybrid Gradient Boosting Tree](https://help.sap.com/docs/SAP_HANA_PLATFORM/319d36de4fd64ac3afbf91b1fb3ce8de/hybrid-gradient-boosting-tree-ca5106c.html)
 
-...
+### Reference Code
+*Hybrid Gradient Boosting Tree*
+
+```sql
+set schema DM_PAL;
+​
+drop table PAL_HGBT_DATA_TAB;
+create column table PAL_HGBT_DATA_TAB (
+    "ATT1" double,
+    "ATT2" double,
+    "ATT3" double,
+    "ATT4" double,
+    "LABEL" nvarchar(50)
+);
+insert into PAL_HGBT_DATA_TAB values (1.0, 10.0, 100, 1.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (1.1, 10.1, 100, 1.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (1.2, 10.2, 100, 1.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (1.3, 10.4, 100, 1.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (1.2, 10.3, 100, 1.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (4.0, 40.0, 400, 4.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (4.1, 40.1, 400, 4.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (4.2, 40.2, 400, 4.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (4.3, 40.4, 400, 4.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (4.2, 40.3, 400, 4.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (9.0, 90.0, 900, 2.0, 'A');
+insert into PAL_HGBT_DATA_TAB values (9.1, 90.1, 900, 1.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (9.2, 90.2, 900, 2.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (9.3, 90.4, 900, 1.0, 'B');
+insert into PAL_HGBT_DATA_TAB values (9.2, 90.3, 900, 1.0, 'B');
+​
+drop table PAL_PARAMETER_TAB;
+create column table PAL_PARAMETER_TAB (
+    "PARAM_NAME" nvarchar(100),
+    "INT_VALUE" integer,
+    "DOUBLE_VALUE" double,
+    "STRING_VALUE" nvarchar(100)
+);
+insert into PAL_PARAMETER_TAB values ('RESAMPLING_METHOD', null, null, 'cv');
+insert into PAL_PARAMETER_TAB values ('FOLD_NUM', 5, null, null);
+insert into PAL_PARAMETER_TAB values ('PARAM_SEARCH_STRATEGY', null, null, 'grid');
+insert into PAL_PARAMETER_TAB values ('EVALUATION_METRIC', null, null, 'ERROR_RATE');
+insert into PAL_PARAMETER_TAB values ('REF_METRIC', null, null, 'AUC');
+insert into PAL_PARAMETER_TAB values ('SEED', 1, null, null);
+​
+insert into PAL_PARAMETER_TAB values ('MAX_DEPTH_VALUES', null, null, '{3, 5, 6}');
+insert into PAL_PARAMETER_TAB values ('ITER_NUM_RANGE', null, null, '[4, 2, 10]');
+insert into PAL_PARAMETER_TAB values ('ETA_RANGE', null, null, '[0.1, 0.2, 1.0]');
+insert into PAL_PARAMETER_TAB values ('GAMMA_RANGE', null, null, '[0.1, 0.2, 1.0]');
+​
+drop table PAL_HGBT_MODEL_TAB; -- for predict followed
+create column table PAL_HGBT_MODEL_TAB (
+    "ROW_INDEX" integer,
+    "TREE_INDEX" integer,
+    "MODEL_CONTENT" nclob
+);
+​
+do begin
+    LT_DATA_TAB = select * from PAL_HGBT_DATA_TAB;
+    LT_PARAM_TAB = select * from PAL_PARAMETER_TAB;
+    call _SYS_AFL.PAL_HGBT(:LT_DATA_TAB, :LT_PARAM_TAB, LT_MODEL_TAB, LT_IMP_TAB, LT_CONFUSE_TAB, LT_STAT_TAB, LT_CV_TAB);
+    select * from :LT_MODEL_TAB;
+    select * from :LT_IMP_TAB;
+    select * from :LT_CONFUSE_TAB;
+    select * from :LT_STAT_TAB;
+    select * from :LT_CV_TAB;
+    insert into PAL_HGBT_MODEL_TAB select * from :LT_MODEL_TAB;
+end;
+```
 
 </TabItem>
 
@@ -159,7 +374,8 @@ Don't forget to remove this message.
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
 </ul>
 
 </div>
@@ -170,20 +386,10 @@ Don't forget to remove this message.
 
 ## Related AI Capabilities
 
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
-
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/decision-support/data-clustering" text="Data Clustering" />
+  <IconLinkButton href="/docs/functional-view/decision-support/anomaly-detection" text="Anomaly Detection" />
+  <IconLinkButton href="/docs/functional-view/decision-support/forecasting-historical-data" text="Forecasting based on Historical Data" />
 </ul>
 
 </div>
@@ -194,7 +400,11 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={[
+  "sergio-pacheco-sanchez", 
+  "francisco-robledo", 
+  "andrii-rzhaksynskyi"
+]} />
 
 </div>
 
