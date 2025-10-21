@@ -1,33 +1,28 @@
 # SAP RFQx Document Analysis System
 
-A comprehensive system for analyzing and comparing RFQ (Request for Quotation) documents using simplified RAG (Retrieval-Augmented Generation) with direct PDF-to-LLM processing. Available as both a Python API and a Streamlit web application.
+A comprehensive multi-page Streamlit application for analyzing and comparing Quotation documents using AI-powered processing. The application provides a complete workflow from project setup to supplier comparison and document chat capabilities.
 
-This enhanced implementation combines the successful simplified RAG approach with advanced markdown report generation capabilities, eliminating chunking-related information loss while maintaining the original agentic_rfq_comparator's clean formatting.
+## Current Application Features
 
-## Features
+### Multi-Page Interface
+- **Project Setup & Management**: Create and manage RFQ analysis projects
+- **Process Supplier Documents**: Upload and process supplier RFQ documents with AI extraction
+- **Compare Suppliers**: Generate side-by-side comparisons of processed suppliers
+- **RFQ Insights & Recommendations**: AI-generated knowledge graphs and narrative reports
+- **Supplier Document Chat**: Interactive Q&A with processed documents
 
 ### Core Processing Capabilities
-- **Direct PDF-to-LLM Processing**: Uses GPT-4.1's large context window to process entire PDFs without chunking
-- **No Information Loss**: Eliminates chunking-related information loss by processing complete documents
+- **Multi-Format Support**: Process PDF, Excel, and CSV documents
+- **AI-Powered Extraction**: Uses GPT-4.1 for intelligent document analysis
 - **Structure-Aware Processing**: Maintains document structure integrity during extraction
-  - Uses PyMuPDF for enhanced text formatting with style preservation
-  - Leverages pdfplumber for table detection and extraction
-  - Converts tables to structured text format with pipe separators
-  - Preserves lists and formatting through direct PDF text extraction
-- **Original-Style Markdown Reports**: Clean comparison reports with exact formatting from the original agentic_rfq_comparator
+- **Project Management**: Save and load analysis projects with session persistence
+- **Real-time Processing**: Live progress tracking and extraction statistics
 
-### API Features
-- **Multiple Document Comparison**: Compare any number of RFQ documents simultaneously
-- **Single Document Extraction**: Extract structured information from individual documents
-- **Query Interface**: Answer specific questions about document contents
-- **Command Line Interface**: Full CLI support with flexible argument parsing for batch processing
-
-### Web Application Features
-- **Interactive Document Upload**: Upload multiple PDF files through web interface
-- **Real-time Processing**: Live progress tracking and feature extraction statistics
-- **Side-by-side Comparison**: Categorized comparison tables with summary statistics
-- **Document Chat**: Natural language Q&A interface for document content
-- **Chat History**: Track conversation history with processed documents
+### Advanced Features
+- **Knowledge Graph Visualization**: Interactive network graphs showing supplier relationships
+- **Country Risk Analysis**: Integrated risk assessment for supplier locations
+- **Document Chat**: Natural language Q&A interface with streaming responses
+- **Comparative Analysis**: Side-by-side supplier comparison with detailed metrics
 
 ## Installation
 
@@ -41,155 +36,158 @@ This enhanced implementation combines the successful simplified RAG approach wit
 
 ## Usage
 
-### API Usage
+### Starting the Application
 
-#### Compare Multiple RFQ Documents
-```python
-from main import SimplifiedRFQComparator
-
-comparator = SimplifiedRFQComparator()
-# Compare two documents
-result = comparator.compare_documents(["doc1.pdf", "doc2.pdf"], "comparison_report.md")
-
-# Compare multiple documents
-result = comparator.compare_documents(["doc1.pdf", "doc2.pdf", "doc3.pdf"], "comparison_report.md")
-```
-
-#### Extract Information from Single Document
-```python
-extracted_data = comparator.process_single_document("rfq_document.pdf")
-```
-
-#### Answer Specific Queries
-```python
-answer = comparator.answer_query("rfq_document.pdf", "What is the submission deadline?")
-```
-
-#### Command Line Interface
+**Using the Streamlit Launcher**
 ```bash
-# Compare two documents with output file
-python main.py compare doc1.pdf doc2.pdf -o report.md
-
-# Compare multiple documents with output file
-python main.py compare doc1.pdf doc2.pdf doc3.pdf doc4.pdf -o report.md
-
-# Compare documents without output file (prints to console)
-python main.py compare doc1.pdf doc2.pdf
-
-# Extract from single document
-python main.py extract document.pdf
-
-# Answer specific query
-python main.py query document.pdf "What is the estimated contract value?"
+python streamlit_app.py
 ```
 
-### Web Application Usage
-
-#### Starting the Application
-
-**Option 1: Using the Run Script**
+**Alternative: Direct Streamlit Command**
 ```bash
-python run_app.py
-```
-
-**Option 2: Direct Streamlit Command**
-```bash
-streamlit run app.py
+streamlit run RFQx.py
 ```
 
 The application will open in your default web browser at `http://localhost:8501`
 
-#### Using the Web Interface
+### Application Workflow
 
-**Step 1: Process Documents**
-1. Go to the "Process Documents" tab
-2. Upload one or more PDF files containing RFQ documents
-3. Click "Process Documents" to extract features
-4. Monitor the progress and extraction statistics
+#### Step 1: Project Setup & Management
+1. Navigate to the "Project Setup & Management" page
+2. Create a new project or load an existing one
+3. Configure project settings and metadata
+4. Save your project for future sessions
 
-**Step 2: Compare Documents (Optional)**
-1. Go to the "Compare Documents" tab (requires at least 2 processed documents)
-2. Click "Compare Documents" to see side-by-side comparison
-3. Review the categorized comparison tables and summary statistics
+#### Step 2: Process Supplier Documents
+1. Go to the "Process Supplier Documents" page
+2. Upload supplier RFQ documents (PDF, Excel, CSV supported)
+3. Configure extraction attributes and processing options
+4. Launch processing jobs and monitor progress
+5. Review extracted features and processing statistics
 
-**Step 3: Chat with Documents (Optional)**
-1. Go to the "Document Chat" tab (requires at least 1 processed document)
-2. Enter your question in the text input
-3. Click "Ask Question" to get responses from all processed documents
-4. Review answers and chat history
+#### Step 3: Compare Suppliers
+1. Navigate to the "Compare Suppliers" page
+2. Select processed suppliers for comparison
+3. Generate side-by-side comparison reports
+4. Review categorized comparison tables and metrics
+
+#### Step 4: RFQ Insights & Recommendations
+1. Go to the "RFQ Insights & Recommendations" page
+2. Generate knowledge graph visualizations
+3. Create AI-powered narrative reports
+4. Analyze supplier relationships and recommendations
+
+#### Step 5: Supplier Document Chat
+1. Visit the "Supplier Document Chat" page
+2. Ask questions about processed documents
+3. Get comparative responses across suppliers
+4. Review chat history and insights
 
 ## Technical Details
 
 ### Architecture
-- **Frontend**: Streamlit web interface with interactive document processing
-- **Backend**: SimplifiedRFQComparator class with direct PDF-to-LLM processing
+- **Frontend**: Multi-page Streamlit application with SAP template styling
+- **Backend**: Modular architecture with specialized processors
 - **AI Model**: GPT-4.1 through SAP GenAI Hub SDK
-- **Document Processing**: PyMuPDF and pdfplumber for PDF text extraction
+- **Document Processing**: Multi-format support (PDF, Excel, CSV)
+- **Project Management**: Persistent session state and project storage
 
 ### Supported Document Types
 - RFQ (Request for Quotation) documents
-- PDF format only
+- PDF, Excel, and CSV formats
 - Multi-page documents supported
 - Complex structured documents with tables and sections
 
-### Extraction Schema
-The system extracts information across 10 major categories:
-- Project Information
-- Key Dates & Deadlines
-- Scope & Technical Requirements
-- Supplier Requirements
-- Evaluation Criteria
-- Pricing & Payment
-- Legal & Contractual
-- Compliance & Exclusion Grounds
-- Sustainability & Social Value
-- Contract Management & Reporting
+### Application Structure
+- **Multi-Page Layout**: Dedicated pages for each major functionality
+- **Session Management**: Persistent state across page navigation
+- **Project Persistence**: Save and load analysis projects
+- **Real-time Processing**: Live progress tracking and status updates
 
 ## File Structure
 
-- `main.py`: Core SimplifiedRFQComparator class with original-style report generation
-- `app.py`: Main Streamlit web application interface
-- `run_app.py`: Launch script for the web application
-- `llm_client.py`: GPT-4.1 client interface for direct PDF processing
-- `pdf_processor.py`: Enhanced PDF content extraction utilities
-- `rfq_schema.py`: Comprehensive RFQ extraction schema definitions
-- `test_simplified.py`: Test script for validation
-- `demo.py`: Demonstration script
+### Core Application Files
+- `streamlit_app.py`: Main application launcher
+- `RFQx.py`: Home page and navigation hub
+- `app_context.py`: Shared application context and utilities
+
+### Page Components
+- `pages/1_Project_Setup.py`: Project management interface
+- `pages/2_Process_Documents.py`: Document processing interface
+- `pages/3_Compare_Providers.py`: Supplier comparison interface
+- `pages/4_Rfq_Recommender.py`: Insights and recommendations
+- `pages/5_Supplier_Chat.py`: Document chat interface
+
+### Backend Components
+- `main.py`: Core SimplifiedRFQComparator class
+- `llm_client.py`: GPT-4.1 client interface
+- `document_processor.py`: Document processing utilities
+- `file_processor.py`: Multi-format file handling
+- `rfq_schema.py`: RFQ extraction schema definitions
+- `project_manager.py`: Project persistence management
+- `graph_processor.py`: Knowledge graph processing
+- `country_risk_manager.py`: Risk assessment utilities
+- `ui_components.py`: Reusable UI components
+
+### Configuration
 - `requirements.txt`: Python dependencies
+- `manifest.yml`: Application deployment configuration
 - `uploads/`: Directory for uploaded files (created automatically)
+- `projects/`: Directory for saved projects (created automatically)
 
-## Benefits Over Chunked Approach
+## Key Features
 
-1. **No Information Loss**: Processes complete documents without chunking
-2. **Context Preservation**: Maintains full document context for better extraction
-3. **Structure Integrity**: Preserves table and list structures
-4. **Enhanced Reports**: Detailed markdown reports with difference analysis
-5. **Proven Success**: Addresses the "Not Found" issues from the original implementation
+### Project Management
+- Create and manage multiple RFQ analysis projects
+- Save and load project sessions with full state persistence
+- Track project metadata and supplier information
+
+### Document Processing
+- Multi-format document support (PDF, Excel, CSV)
+- AI-powered feature extraction using GPT-4.1
+- Real-time processing progress tracking
+- Structure-aware text extraction with table preservation
+
+### Supplier Analysis
+- Side-by-side supplier comparison with detailed metrics
+- Knowledge graph visualization of supplier relationships
+- Country risk assessment integration
+- AI-generated insights and recommendations
+
+### Interactive Chat
+- Natural language Q&A with processed documents
+- Comparative responses across multiple suppliers
+- Chat history tracking and session management
+- Streaming response support for real-time interaction
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Import Errors**
+1. **Application Startup**
    - Ensure all dependencies are installed: `pip install -r requirements.txt`
-   - Make sure you're running from the correct directory
+   - Check that you're running from the correct directory
+   - Verify SAP GenAI Hub SDK credentials are configured
 
-2. **API Errors**
-   - Verify your SAP GenAI Hub SDK credentials are configured
-   - Check internet connectivity for API access
-
-3. **Processing Errors**
-   - Ensure PDF files are not corrupted or password-protected
+2. **Document Processing**
+   - Ensure uploaded files are not corrupted or password-protected
    - Check that files contain extractable text (not just images)
+   - Verify file formats are supported (PDF, Excel, CSV)
 
-4. **Performance Issues**
-   - Large PDF files may take longer to process
+3. **Session Management**
+   - Clear browser cache if experiencing session issues
+   - Check that projects directory is writable
+   - Restart application if session state becomes corrupted
+
+4. **Performance**
+   - Large documents may take longer to process
    - GPT-4.1 API calls can be rate-limited
+   - Consider processing documents in smaller batches
 
 ### Getting Help
 
 If you encounter issues:
 1. Check the console output for error messages
-2. Verify all requirements are installed
-3. Ensure PDF files are valid and contain text content
-4. Check API credentials and connectivity
+2. Verify all requirements are installed correctly
+3. Ensure API credentials are properly configured
+4. Check that uploaded files are valid and contain extractable content
