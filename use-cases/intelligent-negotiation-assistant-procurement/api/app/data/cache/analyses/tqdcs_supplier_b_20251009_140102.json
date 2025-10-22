@@ -1,0 +1,441 @@
+{
+  "tqdcs_scores": {
+    "sustainability": {
+      "score": 3,
+      "reasoning": "Supplier B (Axion Automotive) demonstrates a solid baseline for sustainability by holding a current ISO 14001:2015 certification for environmental management and complying with multiple material regulations like REACh and RoHS. They also show an understanding of circular economy principles by highlighting remanufacturing capabilities and the use of non-hazardous materials. However, the supplier's approach appears more reactive and compliance-focused rather than proactive and strategic. The most significant weakness is that decarbonization solutions are mentioned as a possibility but are not integrated or costed into the current proposal, suggesting this is not a core part of their strategy. Furthermore, compliance on specific substance restrictions is still pending, and there is no information on energy efficiency or social responsibility programs. The score of 3 reflects a supplier that meets essential environmental standards but does not yet demonstrate leadership or a comprehensive, forward-looking sustainability commitment aligned with group-wide goals.",
+      "strengths": [
+        "Holds a valid ISO 14001:2015 certification for Environmental Management Systems.",
+        "Strong compliance with material regulations (REACh, RoHS, GADSL) and maintains an internal Banned, Restricted, and Declarable Substances (BRDS) list.",
+        "Supports circular economy principles through stated remanufacturing capabilities and use of non-hazardous materials.",
+        "Confirms provision of material data through the Global Materials Database (GMDS) and International Material Data System (IMDS)."
+      ],
+      "weaknesses": [
+        "Decarbonization solutions are not integrated into the price proposal, indicating a lack of a concrete, costed strategy.",
+        "Compliance with 'Substance prohibitions and restrictions' is listed as 'Pending', creating a minor risk.",
+        "Lack of documented information on specific energy efficiency initiatives or social responsibility/ethical programs."
+      ],
+      "key_findings": [
+        "Supplier B's Bordeaux site is certified according to ISO 14001:2015, with the certificate valid until April 14, 2026.",
+        "The supplier explicitly confirms compliance with customer requirements for sustainability and environmental certifications.",
+        "A commitment to remanufacturing and the use of non-hazardous materials is noted in the after-sales checklist.",
+        "The supplier adheres to a comprehensive list of material compliance standards, including GADSL, REACh, Biocide, and RoHS.",
+        "While aware of decarbonization, the supplier has not integrated related costs or a concrete plan into the current project proposal.",
+        "Compliance with specific substance prohibitions and restrictions is an open point to be finalized during the project's development phase.",
+        "The supplier's products, such as the 'CBE-2 UPGRADE EURO8 CLUTCH SYSTEM', are designed to meet new emissions standards."
+      ],
+      "sources": [
+        {
+          "filename": "CERTIFICATION_ISO_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Compliance_Statement_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-aftersales_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-quality_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    "quality": {
+      "score": 2,
+      "reasoning": "The supplier, Axion Automotive, demonstrates a solid foundation in quality management, evidenced by valid IATF 16949 and ISO 9001 certifications, extensive in-house testing capabilities, and the use of standard automotive quality methods like FMEA and PPAP. However, the score is significantly downgraded due to critical quality risks and non-compliances. A high-severity risk is identified where the supplier unilaterally declares a drivetrain component as 'not safety-critical' to bypass product liability and functional safety (ISO 26262) requirements. Furthermore, they have formally declared non-compliance ('N') with the customer's general quality standard (GMC-SQM-015) and are non-compliant with several specific technical requirements, including operational durability and safety factors. These deviations from customer requirements represent a major quality and risk management gap.",
+      "strengths": [
+        "Holds valid, key automotive quality certifications, including IATF 16949:2016 (valid until Nov 2025) and ISO 9001.",
+        "Possesses comprehensive in-house quality and validation capabilities, including various functional and endurance test rigs (e.g., NVH, dynamic characteristic, thermal stress, fatigue testing).",
+        "Utilizes established quality management processes such as FMEA, Design Verification Plan & Report (DVP&R), PPAP, and traceability systems (AutoQMS 2020).",
+        "Confirms compliance with numerous customer standards, including Quality Framework Alpha, GMC CVS15, and branding/labeling requirements."
+      ],
+      "weaknesses": [
+        "A high-severity quality risk exists due to the supplier's declaration that the drivetrain component is not safety-critical, which they use to justify non-compliance with product liability and safety requirements.",
+        "The supplier has stated general non-compliance ('N') with the customer's core quality requirements document, GMC-SQM-015.",
+        "Multiple non-compliances with specific technical requirements for the Clutch System DCS2-X are noted, including operational life length (Req 2.8.1), bottoming torque safety factor (Req 2.2.1), and durability testing (Req 2.13.7).",
+        "The supplier dismisses the relevance of functional safety processes (ISO 26262), responding 'Not relevant' or 'No' to numerous checklist items concerning safety concepts, hazard analysis, and verification."
+      ],
+      "key_findings": [
+        "Axion Automotive holds IATF 16949:2016 certification, valid until November 20, 2025, and ISO 9001 certification, indicating a certified Quality Management System is in place.",
+        "A critical quality risk is the supplier's assertion that the drivetrain component is 'not classified as a safety-critical item,' leading them to claim non-applicability of product safety and liability requirements (GMC-SQM-015, Sec 4.2).",
+        "The supplier has formally declared general non-compliance ('N') with the customer's quality standard GMC-SQM-015.",
+        "For the Clutch System DCS2-X, the supplier is non-compliant with the operational life requirement, only committing to a 2.5 million km durability target under specific European long-haul profiles (Req 2.8.1).",
+        "The supplier deviates from the required bottoming torque safety factor, proposing their own standard of 1.30 based on experience with a previous model (Req 2.2.1).",
+        "Axion Automotive has extensive in-house testing capabilities, including FMEA, D-FMEA, and a Design Verification Plan & Report (DVP&R) process to manage quality and risk.",
+        "The supplier has repeatedly stated that functional safety standards like ISO 26262 are 'Not relevant' for the offered product, indicating a lack of process for developing safety-related components."
+      ],
+      "sources": [
+        {
+          "filename": "2024_10_17_Annex_A-Compliance_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "CERTI_F_Certificat__anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Compliance_Matrix_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-functional_safety_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-quality_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    },
+    "technology": {
+      "score": 3,
+      "reasoning": "Supplier B (Axion Automotive) exhibits strong technological foundations with comprehensive in-house manufacturing processes (machining, thermal treatment, assembly), extensive R&D capabilities (FEA, NVH modeling), and impressive testing and validation infrastructure, including numerous dedicated test rigs. They also hold patents for key clutch technologies. However, these strengths are offset by a significant number of technical non-compliances (24 out of 82 requirements) for the DCS2-X clutch system. These include critical deviations on safety factors, conditional guarantees on operational life, and an inability to meet marking specifications for all customer brands (e.g., American Hauler Inc.). While their digital capabilities (CAD, EDI) are modern, the compliance gaps present a manageable but notable risk, indicating a potential mismatch between their standard offerings and the customer group's specific, multi-platform requirements.",
+      "strengths": [
+        "Extensive in-house testing and validation capabilities, with a wide range of functional and endurance test rigs for all major clutch components.",
+        "Broad manufacturing technology portfolio including press-forming, precision machining, thermal treatment, and automated assembly.",
+        "Strong R&D and design capabilities utilizing FEA and NVH simulation, supported by a structured V-process and PLM system.",
+        "Holds local patents for clutch disc technologies, including advanced spring seat architecture and anti-burst safety features."
+      ],
+      "weaknesses": [
+        "High number of technical non-compliances (24 of 82) for the Clutch System DCS2-X, including deviations on safety factor and operational life guarantees.",
+        "Failure to meet technical requirements for all customer brands, specifically the pending marking specifications for American Hauler Inc.",
+        "Identified production bottlenecks in 'Assembly Process' and 'CNC Machining' for key components."
+      ],
+      "key_findings": [
+        "Axion Automotive possesses extensive in-house manufacturing, R&D, and testing capabilities, including a wide range of test rigs and simulation tools (FEA, NVH).",
+        "The supplier holds local patents for clutch disc technologies related to safety and performance.",
+        "A significant number of technical requirements (24 out of 82) for the Clutch System DCS2-X are listed as non-compliant, including deviations on bottoming torque safety factor and operational life guarantees.",
+        "The supplier uses industry-standard CAD systems (CATIA V5, Siemens NX) and has established EDI and OFTP2 data exchange capabilities.",
+        "While compliant with requirements for Norse Trucks & Germanic Automotive, the supplier is awaiting marking specifications for American Hauler Inc., indicating a potential gap in meeting all regional/brand-specific requirements simultaneously.",
+        "The supplier has identified 'Assembly Process' and 'CNC Machining' as production bottlenecks for certain parts.",
+        "The supplier states that functional safety (ISO 26262) and cybersecurity requirements are 'Not relevant' or 'Not applicable' for the quoted mechanical components."
+      ],
+      "sources": [
+        {
+          "filename": "Compliance_Matrix_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "CERTI_F_Certificat__anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-logistics_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-functional_safety_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Compliance_Statement_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "CERTIFICATION_ISO_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Supplier Self-Assessment (SSA)",
+          "chunk_id": "section_2.6"
+        }
+      ]
+    },
+    "delivery": {
+      "score": 2,
+      "reasoning": "The score of 2 is primarily driven by a critical mismatch between the customer group's peak forecast demand and the supplier's stated production capacity. The peak forecast volume for 2029 is 152,500 units, which significantly exceeds the supplier's documented nominal annual capacity of 130,000 units for key components. This risk is amplified because the capacity is shared with other customers, including 'American Hauler' and 'Other OEM', further constraining availability. A second high-severity risk is the exceptionally long raw material procurement lead time of 95 working days, which creates significant vulnerability to upstream supply chain disruptions. While the supplier demonstrates strengths in final-stage logistics, such as a short 9-day average lead time to the customer plant, JIT and EDI capabilities, and operates in a low-risk country (France, score 1.8), these are insufficient to overcome the fundamental capacity and raw material sourcing risks. The supplier's OTIF performance of 94% is only adequate, and its 3.0 percentage point variability indicates inconsistency. Contingency planning is also a concern, with internal backup systems only being 'partly' available. Although a capacity expansion is mentioned, the lack of concrete details makes this a major unmitigated risk.",
+      "strengths": [
+        "Strong logistics capabilities, including confirmed Just-in-Time (JIT) and EDI integration with their ERP system.",
+        "Excellent final-leg delivery performance with an average lead time of 9.0 days and low variability of 2.0 days.",
+        "Located in a low-risk country (France, risk score 1.8), providing a stable operational environment.",
+        "Has a defined escalation capability to supply a daily production batch within 48 hours.",
+        "States flexibility to handle volume increases of +15% within a 6-week timeframe, though this is subject to confirmation and constrained by overall capacity."
+      ],
+      "weaknesses": [
+        "Critical capacity shortfall: Stated nominal annual capacity of 130,000 units is insufficient to meet the peak forecast demand of 152,500 units in 2029.",
+        "Extremely long raw material procurement lead time of 95 working days, identified as a primary bottleneck and a high-severity risk.",
+        "Production capacity is shared with other customers, including other OEMs, which reduces guaranteed availability for the customer group.",
+        "Inability to provide Just-in-Sequence (JIS) delivery, which may limit integration with advanced manufacturing processes.",
+        "Contingency measures are weak, with internal backup systems for machines and tools only being 'partly' available.",
+        "On-Time-In-Full (OTIF) performance is inconsistent, with a variability of 3.0 percentage points around a 94% average."
+      ],
+      "key_findings": [
+        "A critical capacity shortfall of 22,500 units exists between the supplier's stated nominal annual capacity (130,000 units) and the customer's peak forecast demand (152,500 units in 2029).",
+        "The supplier's capacity is shared among multiple customers (Germanic Auto, Norse Trucks, American Hauler, and 'Other OEM'), further constraining availability and introducing risk.",
+        "A high-severity delivery risk is the 95-working-day lead time for raw material procurement, making the supply chain vulnerable to upstream disruptions.",
+        "While final delivery lead time is short (9.0 days avg), On-Time-In-Full (OTIF) performance is only adequate at 94% with a notable variability of 3.0 percentage points.",
+        "The supplier has confirmed JIT and EDI capabilities but cannot support Just-in-Sequence (JIS) delivery.",
+        "Contingency planning is mixed; an escalation supply plan exists, but internal backup systems for production are only partially available.",
+        "The supplier references a planned capacity expansion, but no details are provided, leaving the significant capacity shortfall as a major unmitigated risk."
+      ],
+      "sources": [
+        {
+          "filename": "Capacity_Information_Sheet_-_capacity_information_sheet_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-logistics_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Consolidated_Checklist_Rev_1.3.pdf",
+          "chunk_id": "Peak_Demands_and_Lead_Times"
+        },
+        {
+          "filename": "Consolidated_Checklist_Rev_1.3.pdf",
+          "chunk_id": "Restrictions"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-r_d_mandatory_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        }
+      ]
+    },
+    "cost": {
+      "score": 4,
+      "reasoning": "The supplier offers a competitive baseline price and highly favorable payment terms (Net 75 days). There is excellent cost transparency, with detailed breakdowns for one-time costs and piece prices. A significant portion (57%) of the initial project cost is covered by the customer group, reducing the supplier's upfront financial burden. The offer includes an annual price reduction (LTA). The score is not a 5 due to several notable risks: the LTA is conditional on meeting volume targets, the price is exposed to raw material market volatility, and significant future costs for decarbonization are explicitly excluded, posing a long-term financial risk to the customer group.",
+      "strengths": [
+        "Competitive baseline price of 272.50 EUR for the full RFQ volume, with a clear tiered structure for lower volumes.",
+        "Favorable payment terms of Net 75 days.",
+        "High degree of cost transparency, including detailed project cost breakdowns, tooling costs, and component-level price walk-downs.",
+        "Significant customer contribution of 273,000 EUR (57%) towards the 478,000 EUR total one-time project cost, shared between the central group and a subsidiary (Norse Trucks).",
+        "An annual -1.25% Long Term Agreement (LTA) price reduction is offered from 2030 onwards."
+      ],
+      "weaknesses": [
+        "The annual LTA price reduction is conditional on achieving the previous year's volume forecast (with a -10% tolerance), which poses a risk to achieving projected savings.",
+        "The price is based on Q4 2024 raw material indices, exposing the customer to potential price increases due to market volatility.",
+        "Potential costs for future decarbonization requirements are explicitly not included in the proposal, representing a significant unquantified financial risk.",
+        "The supplier plans to compete in the Independent Aftermarket (IAM), which could erode the customer group's service and spare parts revenue.",
+        "The quotation includes a non-compliant ink-marking process, which could lead to additional costs if the required laser marking is enforced."
+      ],
+      "key_findings": [
+        "The total one-time project cost is 478,000 EUR, with the customer group contributing 273,000 EUR (57%) through Global Motors Consortium (203,000 EUR) and Norse Trucks (70,000 EUR).",
+        "The baseline price per clutch kit is 272.50 EUR, which is valid for the 100% RFQ volume scenario.",
+        "The price is volume-dependent, increasing to 274.00 EUR at 75% of Europe's volume and 275.50 EUR at 50% of Europe's volume.",
+        "The total estimated product cost over the contract life (2028-2033) is approximately 195.2 million EUR, based on a total forecast volume of 728,000 units.",
+        "An annual price reduction (LTA) of -1.25% is offered from 2030, but it is conditional on meeting the previous year's volume targets.",
+        "Payment terms are Net 75 days, and the supplier has expressed interest in a Supply Chain Finance program.",
+        "The price proposal explicitly excludes costs for future decarbonization solutions, which must be considered a future financial risk.",
+        "The pricing is tied to Q4 2024 raw material market indices for cast iron and base metals, creating exposure to price volatility."
+      ],
+      "sources": [
+        {
+          "filename": "cost_walk_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_3"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_8"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_9"
+        },
+        {
+          "filename": "AXION AUTOMOTIVE CONFIDENTIAL",
+          "chunk_id": "page_10"
+        },
+        {
+          "filename": "Supplier_Self_Assessment_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-aftersales_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Konsolidierte_Checkliste-general_data_anonymized.md",
+          "chunk_id": "full_document"
+        },
+        {
+          "filename": "Compliance_Matrix_anonymized.md",
+          "chunk_id": "full_document"
+        }
+      ]
+    }
+  },
+  "overall_assessment": {
+    "average_score": 2.8,
+    "weighted_average": false,
+    "strongest_area": "cost",
+    "weakest_area": "delivery",
+    "summary": "Below-average supplier with significant gaps in multiple areas",
+    "recommendation": "Not recommended without major improvements",
+    "score_distribution": {
+      "excellent": 0,
+      "good": 1,
+      "adequate": 2,
+      "poor": 2
+    }
+  },
+  "detailed_findings": {
+    "compliance_status": {
+      "technical_compliances": [],
+      "non_compliances": [],
+      "pending_items": [],
+      "sources": []
+    },
+    "certifications": {
+      "current": [
+        "Statement of Compliance for Customer Requirements GMC-SQM-015",
+        "Certification:GMC-SQM-015-General-Compliance",
+        "Certification:GMC-SQM-015-0-1",
+        "Certification:GMC-SQM-015-1-1",
+        "Certification:GMC-SQM-015-1-1-1",
+        "Certification:GMC-SQM-015-1-1-2",
+        "Certification:GMC-SQM-015-1-1-3",
+        "Certification:GMC-SQM-015-1-1-4",
+        "Certification:GMC-SQM-015-1-1-5",
+        "Certification:GMC-SQM-015-1-1-6",
+        "Certification:GMC-SQM-015-1-1-7",
+        "Certification:GMC-SQM-015-1-2",
+        "Certification:GMC-SQM-015-1-2-1",
+        "Certification:GMC-SQM-015-1-2-2",
+        "Certification:GMC-SQM-015-1-3",
+        "Certification:GMC-SQM-015-1-3-1",
+        "Certification:GMC-SQM-015-1-3-2",
+        "Certification:GMC-SQM-015-1-4",
+        "Certification:GMC-SQM-015-1-4-1",
+        "Certification:GMC-SQM-015-1-4-2",
+        "Certification:GMC-SQM-015-1-4-3",
+        "Certification:GMC-SQM-015-1-4-4",
+        "Certification:GMC-SQM-015-1-5",
+        "Certification:GMC-SQM-015-2",
+        "Quality Standard QS-7",
+        "Certification:GMC-SQM-015-2-1",
+        "Certification:GMC-SQM-015-2-2",
+        "Certification:GMC-SQM-015-2-3",
+        "Certification:GMC-SQM-015-3-1",
+        "Certification:GMC-SQM-015-3-2",
+        "Certification:GMC-SQM-015-3-3",
+        "Certification:GMC-SQM-015-3-3-1",
+        "Certification:GMC-SQM-015-3-3-2",
+        "Certification:GMC-SQM-015-3-3-3",
+        "Certification:GMC-SQM-015-3-3-4",
+        "Certification:GMC-SQM-015-3-3-5",
+        "Certification:GMC-SQM-015-3-4",
+        "Certification:GMC-SQM-015-4-1",
+        "Certification:GMC-SQM-015-4-1-1",
+        "Certification:GMC-SQM-015-4-2",
+        "Certification:GMC-SQM-015-4-3",
+        "Certification:GMC-SQM-015-4-3-1",
+        "Certification:GMC-SQM-015-4-3-2",
+        "Certification:GMC-SQM-015-4-4",
+        "Certification:GMC-SQM-015-4-4-1",
+        "Certification:GMC-SQM-015-4-4-2",
+        "Certification:GMC-SQM-015-4-4-3",
+        "Certification:GMC-SQM-015-4-5",
+        "Certification:GMC-SQM-015-4-6",
+        "Certification:GMC-SQM-015-4-7",
+        "Certification:GMC-SQM-015-4-8",
+        "Certification:GMC-SQM-015-4-9",
+        "Certification:GMC-SQM-015-4-9-1",
+        "Certification:GMC-SQM-015-4-9-2",
+        "Certification:GMC-SQM-015-4-9-3",
+        "Certification:GMC-SQM-015-4-9-4",
+        "Certification:GMC-SQM-015-4-9-5",
+        "Certification:GMC-SQM-015-4-9-6",
+        "Certification:GMC-SQM-015-4-9-7",
+        "Certification:GMC-SQM-015-4-10",
+        "Certification:GMC-SQM-015-4-11",
+        "Certification:2021-88243-1",
+        "Certification:29854",
+        "IATF 16949:2016",
+        "SPEC-25",
+        "TS-2245",
+        "International Regulation No. 51.04",
+        "TS-5802",
+        "Norse Trucks Standard NT-4500",
+        "GA 451-7",
+        "GA 5780",
+        "GA 523-2",
+        "S4483",
+        "SPEC980002",
+        "G5000",
+        "GA 523 (Parts 1 & 2)",
+        "GA 528",
+        "S4490",
+        "Module 2",
+        "SPICE",
+        "CMMI",
+        "ISO 26262",
+        "Standard GATB-4979",
+        "AutoQMS 2020",
+        "ISO 9001",
+        "AutoSpec 17001",
+        "Certification:IATF-16949",
+        "Certification:ISO-14001",
+        "Material Compliance Standards",
+        "Certification:GAA-Standard-M3600-A-H",
+        "Certification:IATF-16949:Axion-Clutches-Hamburg",
+        "Certification:ISO-9001:Axion-Clutches-Hamburg",
+        "Certification:PPAP:4831194",
+        "Certification:PPAP:4831193",
+        "Certification:PPAP:4831192",
+        "Certification:PPAP:4831190",
+        "Certification:PPAP:4831191",
+        "Certification:PPAP:4831200",
+        "Certification:PPAP:4831199",
+        "Certification:PPAP:4831198",
+        "Global Motors Consortium specification GMS-4519980 rev 1"
+      ],
+      "expired_or_expiring": [],
+      "missing_required": [],
+      "sources": []
+    },
+    "capabilities": {
+      "production": [],
+      "testing": [],
+      "innovation": [],
+      "logistics": [],
+      "sources": []
+    }
+  },
+  "scoring_rationale": {
+    "methodology": "Parallel category-specific analysis with prior context integration",
+    "key_factors": [
+      "Technology analysis included 410 nodes",
+      "Quality analysis included 378 nodes",
+      "Integrated results from parts, cost, and risk analyses where relevant"
+    ],
+    "data_quality": "Good - comprehensive KG with TQDCS categorization"
+  }
+}

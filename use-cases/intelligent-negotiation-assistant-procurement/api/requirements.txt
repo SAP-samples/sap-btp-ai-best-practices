@@ -1,0 +1,21 @@
+fastapi
+uvicorn[standard]
+httpx
+requests
+python-dotenv
+sap-ai-sdk-gen
+aioboto3
+
+# Core KG/analyzers runtime deps
+langchain
+langchain-google-vertexai
+pydantic>=2.0
+pandas
+openpyxl
+markitdown
+networkx
+pdfplumber
+PyMuPDF
+tiktoken
+aiofiles
+python-multipart

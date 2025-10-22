@@ -1,0 +1,45 @@
+applications:
+  - name: RFQx_analysis-api
+    memory: 512M
+    disk_quota: 2G
+    path: ./api # Points to API folder
+    buildpacks:
+      - python_buildpack
+    command: python -m app.main
+    routes:
+      - route: rfqx_analysis_api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      ALLOWED_ORIGIN: https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      SUPPLIER_KG_DIR: app/data/kg/suppliers
+      SUPPLIER1_ID: supplier1
+      SUPPLIER2_ID: supplier2
+      SUPPLIER1_FILE: supplier1.json
+      SUPPLIER2_FILE: supplier2.json
+      SUPPLIER1_NAME: "Supplier1"
+      SUPPLIER2_NAME: "Supplier2"
+      CACHE_DIR: app/data/cache/analyses
+      LLM_MODEL: gemini-2.5-pro
+  - name: rfqx_analysis_ui
+    memory: 512M
+    disk_quota: 1G
+    path: ./ui # Points to UI folder
+    buildpacks:
+      - python_buildpack
+    command: python streamlit_app.py
+    routes:
+      - route: rfqx_analysis.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      # API_BASE_URL: http://rfqx-analysis-api.apps.internal
+      API_BASE_URL: https://rfqx_analysis_api.cfapps.eu10-004.hana.ondemand.com
+      API_KEY: ((api_key))
+      SSL_VERIFY: "false"
+      CHAT_MODEL: gemini-2.5-flash
+      LLM_MODEL: gemini-2.5-pro
+      COMPARATOR_MODEL: gemini-2.5-pro
+      CORE_PART_CATEGORIES: "Clutch Disk,Clutch Cover,Releaser"
+      SUPPLIER1_ID: supplier1
+      SUPPLIER2_ID: supplier2

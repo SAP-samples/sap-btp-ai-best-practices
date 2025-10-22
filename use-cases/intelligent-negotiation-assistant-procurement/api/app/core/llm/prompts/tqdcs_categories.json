@@ -1,0 +1,58 @@
+{
+    "Technology": {
+        "name": "Technology",
+        "code": "T",
+        "description": "Technical specifications, capabilities, features, innovation",
+        "keywords": [
+            "technical", "specification", "capability", "feature", "technology",
+            "innovation", "R&D", "design", "engineering", "performance"
+        ],
+        "value_patterns": ["power", "speed", "capacity", "efficiency", "dimensions"],
+        "common_attributes": ["specifications", "features", "capabilities", "performance_metrics"]
+    },
+    "Quality": {
+        "name": "Quality",
+        "code": "Q",
+        "description": "Quality standards, certifications, ratings, compliance",
+        "keywords": [
+            "quality", "certification", "ISO", "standard", "compliance",
+            "warranty", "reliability", "defect", "audit", "inspection"
+        ],
+        "value_patterns": ["ISO-\\d+", "rating", "grade", "compliance", "warranty period"],
+        "common_attributes": ["certifications", "standards", "ratings", "warranty_terms"]
+    },
+    "Delivery": {
+        "name": "Delivery",
+        "code": "D",
+        "description": "Delivery capabilities, lead times, logistics, capacity",
+        "keywords": [
+            "delivery", "lead time", "capacity", "volume", "logistics",
+            "shipment", "production", "availability", "schedule", "location"
+        ],
+        "value_patterns": ["days", "weeks", "units", "quantity", "location"],
+        "common_attributes": ["lead_time", "capacity", "location", "availability"]
+    },
+    "Cost": {
+        "name": "Cost",
+        "code": "C",
+        "description": "Pricing, costs, payment terms, financial aspects",
+        "keywords": [
+            "price", "cost", "EUR", "USD", "payment", "discount",
+            "fee", "charge", "rate", "budget", "quotation"
+        ],
+        "value_patterns": ["€", "$", "EUR", "USD", "price", "cost", "\\d+\\.\\d+"],
+        "common_attributes": ["unit_price", "total_cost", "currency", "payment_terms"]
+    },
+    "Sustainability": {
+        "name": "Sustainability",
+        "code": "S",
+        "description": "Environmental impact, sustainability measures, green initiatives",
+        "keywords": [
+            "sustainability", "environmental", "carbon", "emission", "green",
+            "renewable", "recycling", "eco", "footprint", "sustainable",
+            "climate", "neutral", "sdg", "global compact", "climate neutral"
+        ],
+        "value_patterns": ["CO2", "carbon", "emission", "renewable", "%"],
+        "common_attributes": ["carbon_footprint", "certifications", "renewable_percentage"]
+    }
+}
