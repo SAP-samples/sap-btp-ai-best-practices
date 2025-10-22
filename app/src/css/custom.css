@@ -45,6 +45,8 @@
 
   /* Table of contents */
   --ifm-toc-border-color: var(--sap-horizon-neutral-5);
+
+  --ifm-alert-border-color: var(--sap-horizon-neutral-5);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -1142,4 +1144,19 @@ html button#truste-consent-required:hover {
     width: 100px;
     height: 100px;
   }
+}
+
+/* Details */
+
+details.alert {
+  border: 1px solid var(--sap-horizon-neutral-5);
+  background-color: var(--sap-horizon-neutral-2) !important;
+  color: var(--ifm-heading-color);
+  --docusaurus-details-decoration-color: var(--ifm-color-primary);
+  --ifm-alert-border-color: var(--ifm-color-primary);
+}
+
+[data-theme="dark"] details.alert {
+  border-color: var(--sap-horizon-neutral-10);
+  background-color: var(--sap-horizon-neutral-11) !important;
 }
