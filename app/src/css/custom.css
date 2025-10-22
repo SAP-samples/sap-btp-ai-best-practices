@@ -1160,3 +1160,18 @@ details.alert {
   border-color: var(--sap-horizon-neutral-10);
   background-color: var(--sap-horizon-neutral-11) !important;
 }
+
+details.alert summary > * {
+  margin: 0;
+  font-size: 1rem;
+  display: inline-block;
+}
+
+details.alert summary a {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+details.alert summary a:hover {
+  text-decoration: underline;
+}
