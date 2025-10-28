@@ -114,17 +114,18 @@ const capabilityIcons: Record<string, string> = {
   // Narrow AI
   "/docs/technical-view/narrow-ai/regression": "scatter-chart",
   "/docs/technical-view/narrow-ai/time-series-forecasting": "area-chart",
-  "/docs/technical-view/narrow-ai/classification": "lateness",
+  "/docs/technical-view/narrow-ai/classification": "tag",
   "/docs/technical-view/narrow-ai/recommendation": "lateness",
-  "/docs/technical-view/narrow-ai/clustering": "lateness",
+  "/docs/technical-view/narrow-ai/clustering": "heatmap-chart",
   "/docs/technical-view/narrow-ai/anomaly-detection": "quality-issue",
   "/docs/technical-view/narrow-ai/predictive-ai-bdc-btp": "lateness",
-  "/docs/technical-view/narrow-ai/deployment-custom-predictive-models": "puzzle",
   "/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation": "timesheet",
+  "/docs/technical-view/narrow-ai/training-deployment-custom-ai-models": "puzzle",
 
   // AI Services
   "/docs/technical-view/ai-services/document-information-extraction": "ppt-attachment",
-  "/docs/technical-view/ai-services/sap-document-ai": "attachment-video"
+  "/docs/technical-view/ai-services/sap-document-ai": "attachment-video",
+  "/docs/technical-view/ai-services/custom-joule-skills": "da"
 };
 
 /**
