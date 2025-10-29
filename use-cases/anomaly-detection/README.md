@@ -52,20 +52,76 @@ Interactive Dashboard (__main__.py)
 
 The `data_preprocessing.py` module transforms raw sales order data into anomaly detection-ready features.
 
+### Input Data Requirements
+
+**Input Format:**
+- CSV files (`.csv` extension)
+- Multiple CSV files can be placed in the data directory; they will be merged chronologically
+- Dates should be in `MM/DD/YY` format (e.g., `01/15/24`)
+- Entry time should be in `HH:MM:SS AM/PM` format (e.g., `09:30:45 AM`)
+- Numeric columns may include thousands separators (commas); these are automatically removed
+
+**Minimum Required Columns (10 columns):**
+For basic anomaly detection functionality, the following columns are required:
+1. `Sales Document Number` - Order identifier
+2. `Sales Document Item` - Line item number
+3. `Sold To number` - Customer ID
+4. `Material Number` - Product ID
+5. `Ship-To Party` - Delivery destination
+6. `Sales Document Created Date` - Order creation date
+7. `Sales Order item qty` - Ordered quantity
+8. `Unit Price` - Price per unit
+9. `Order item value` - Total line item value
+10. `Sales unit` - Unit of measure
+
+**Note:** If columns are missing, the preprocessing script will gracefully handle their absence, but certain features will be disabled. For example, without `Actual GI Date`, fulfillment time anomaly detection will be skipped.
+
+**Example Input Data Shape:**
+```
+Sales Document Number | Sales Document Item | Sold To number | Material Number | Ship-To Party | Sales Document Created Date | Sales Order item qty | Unit Price | Order item value | Sales unit
+--------------------|---------------------|----------------|-----------------|--------------|---------------------------|---------------------|------------|------------------|------------
+123456              | 10                  | CUST001        | MAT001          | SHIP001      | 01/15/24                  | 100                 | 25.50      | 2550.00          | EA
+123456              | 20                  | CUST001        | MAT002          | SHIP001      | 01/15/24                  | 50                  | 12.75      | 637.50           | CS
+...
+```
+
 ### Expected Input Columns
 
-#### Identifiers
-- `Sales Document Number` - Unique order identifier
-- `Sales Document Item` - Line item number
-- `Customer PO number` - Customer's purchase order
-- `Sold To number` - Customer ID
-- `Ship-To Party` - Delivery destination
+The preprocessing script handles missing columns gracefully. Columns are categorized as **Required** (core functionality) or **Optional** (enhanced features):
 
-#### Dates & Times
-- `Sales Document Created Date` - Order creation timestamp
-- `Entry time` - Order entry time
+#### Required Columns (Core Functionality)
+
+These columns are essential for the anomaly detection pipeline to function:
+
+**Identifiers:**
+- `Sales Document Number` - **Required** - Unique order identifier (used for grouping and deduplication)
+- `Sales Document Item` - **Required** - Line item number within the order
+- `Sold To number` - **Required** - Customer ID (used for customer-level anomaly detection)
+- `Material Number` - **Required** - Product ID (used for material-level features)
+- `Ship-To Party` - **Required** - Delivery destination (used for destination anomaly detection)
+
+**Dates & Times:**
+- `Sales Document Created Date` - **Required** - Order creation timestamp (format: `MM/DD/YY`). Used for temporal features, duplicate detection, and monthly volume analysis
+
+**Quantity & Pricing:**
+- `Sales Order item qty` - **Required** - Ordered quantity (used for quantity deviation features)
+- `Unit Price` - **Required** - Price per unit (used for pricing anomaly detection)
+- `Order item value` - **Required** - Total line item value (used for value validation and filtering)
+
+**Material & Unit:**
+- `Sales unit` - **Required** - Unit of measure (EA, CS, BOX, etc.) - Used for UoM anomaly detection
+
+#### Optional Columns (Enhanced Features)
+
+These columns enable additional anomaly detection features but are not strictly required:
+
+**Identifiers:**
+- `Customer PO number` - Customer's purchase order number (for reference)
+
+**Dates & Times:**
+- `Entry time` - Order entry time (format: `HH:MM:SS AM/PM`) - Used for temporal analysis
 - `Requested delivery date` - Customer-requested delivery date
-- `Actual GI Date` - Goods issue (shipment) date
+- `Actual GI Date` - **Recommended** - Goods issue (shipment) date (enables fulfillment time anomaly detection)
 - `Invoice Creation Date` - Invoice date
 - `Shelf Life Expiration Date` - Product expiration date
 - `Original Requested Delivery Date` - Original delivery request
@@ -73,26 +129,36 @@ The `data_preprocessing.py` module transforms raw sales order data into anomaly 
 - `Item Pricing Date` - Item pricing date
 - `Batch Manufacture Date` - Manufacturing date
 
-#### Quantity & Fulfillment
-- `Sales Order item qty` - Ordered quantity
+**Quantity & Fulfillment:**
 - `Actual quantity delivered` - Delivered quantity
 - `Actual quantity delivered (ELC only)` - Delivered (emergency fulfillment only)
 - `Quantity invoiced` - Invoiced quantity
 - `Confirmed Quantity` - Confirmed quantity
 - `Quanty open to ship (ELC)` - Outstanding quantity
 
-#### Pricing & Value
-- `Unit Price` - Price per unit
-- `Order item value` - Total line item value
+**Pricing & Value:**
 - `Invoiced value` - Value invoiced
 - `Value Open` - Outstanding value
-- `Subtotal 1-6` - Pricing subtotals
+- `Subtotal 1`, `Subtotal 2`, `Subtotal 3`, `Subtotal 4`, `Subtotal 5`, `Subtotal 6` - Pricing subtotals
 
-#### Material & Status
-- `Material Number` - Product ID
-- `Material Description` - Product description
-- `Sales unit` - Unit of measure (EA, CS, BOX, etc.)
-- `BillingStatus Desc` - Order status (Cancelled, Normal, etc.)
+**Material & Status:**
+- `Material Description` - **Recommended** - Product description (used in rare material detection explanations)
+- `BillingStatus Desc` - Order status (e.g., "Cancelled", "Normal"). If present, cancelled orders are automatically filtered out
+
+### Column Usage Matrix
+
+| Feature | Required Columns | Optional Columns Used |
+|---------|-----------------|----------------------|
+| First-time order detection | `Sold To number`, `Material Number`, `Sales Document Created Date` | - |
+| Rare material detection | `Material Number` | `Material Description` (for explanations) |
+| Quantity deviation | `Sold To number`, `Material Number`, `Sales Order item qty` | - |
+| Unusual UoM | `Sold To number`, `Material Number`, `Sales unit` | - |
+| Duplicate detection | `Sold To number`, `Material Number`, `Sales Order item qty`, `Sales Document Created Date` | - |
+| Monthly volume | `Sold To number`, `Material Number`, `Sales Order item qty`, `Sales Document Created Date` | - |
+| Delivery destination | `Sold To number`, `Ship-To Party` | - |
+| Pricing anomalies | `Material Number`, `Sales unit`, `Unit Price`, `Sold To number` | - |
+| Value mismatch | `Unit Price`, `Sales Order item qty`, `Order item value` | - |
+| Fulfillment time | `Material Number`, `Ship-To Party`, `Sales Document Created Date` | `Actual GI Date` |
 
 ### Processing Steps
 
@@ -196,13 +262,37 @@ COMPARISON_EPS = 1e-6            # Floating-point tolerance
 
 ### Example Usage
 
+**Basic preprocessing:**
 ```bash
 python data_preprocessing.py
 ```
 
-Outputs:
-- `data/merged_with_features.csv` - Full feature set with all columns
-- `merged_with_features_selected_ordered.csv` - Selected columns for ML modeling
+**Custom data directory:**
+Modify the `data_directory` parameter in `main()` function (default: `'data'`):
+```python
+df = load_and_preprocess_data('/path/to/your/csv/files')
+```
+
+**Note:** The `main()` function currently hardcodes a data path. To use a custom directory, either:
+1. Modify the `data_directory` parameter in `main()` function, or
+2. Call `load_and_preprocess_data()` directly with your path:
+```python
+from data_preprocessing import load_and_preprocess_data
+df = load_and_preprocess_data('/path/to/your/csv/files')
+# Then proceed with feature engineering steps...
+```
+
+**Outputs:**
+- `data/merged_with_features.csv` - Full feature set with all original columns plus 40+ derived features
+- `merged_with_features_selected_ordered.csv` - Selected columns for ML modeling (ordered as expected by training pipeline)
+
+**Processing Summary:**
+- Merges all CSV files in the specified directory
+- Filters out cancelled orders (if `BillingStatus Desc` column exists)
+- Removes rows with negative `Order item value`
+- Consolidates duplicate material lines within the same order/ship-to/UoM combination
+- Generates 12 types of anomaly signals (40+ features)
+- Produces human-readable anomaly explanations
 
 ---
 
