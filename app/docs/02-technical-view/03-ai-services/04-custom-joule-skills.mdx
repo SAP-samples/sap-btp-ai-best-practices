@@ -401,54 +401,52 @@ This example demonstrates how Joule can call existing SAP Build Process Automati
 </video>
 </details>
 
-{/* <details>
-  <summary>
-  ### Translate text through Joule using SAP Translation Hub
-  </summary>
-<h4>Description</h4>
-Create a Joule skill that uses the SAP Translation Hub API to translate text into another language .
+<details>
+  <summary>**Translate text through Joule using SAP Translation Hub**</summary>
+### Description
+Create a Joule skill that uses the SAP Translation Hub API to translate text inro another language .
 
 This example demonstrates how Joule can call existing SAP AI Services.
 
-<h4>Tutorial Steps</h4>
+### Tutorial Steps
 1. Appropriate description and ‘Allow Joule to generate a response’ activated in the Joule trigger as shown below:
 ![Step 1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/1.png)
 2. Joule input and output parameters are configured as per below:
-![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
-![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/2.png)
+![Step 2-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/3.png)
 3. Create a destination variable as type ‘destination’ as shown below:
-![Step 3](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 3](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/4.png)
 4. Bind the input parameters of the action component as shown below:
-![Step 4](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 4](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/5.png)
 5. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
-![Step 5](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 5](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/6.png)
 6. Create another Joule skill. Give an appropriate description and ‘Allow Joule to generate a response’ deactivated in the Joule trigger as shown below:
-![Step 6](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 6](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/7.png)
 7. Joule input and output parameters are configured as per below:
-![Step 7-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
-![Step 7-2](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 7-1](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/8.png)
+![Step 7-2](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/9.png)
 8. Add the first Joule skill to get the BCP language code of the target language as shown below:
-![Step 8](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 8](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/10.png)
 9. Bind the input parameters of the action component as shown below:
-![Step 9](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 9](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/11.png)
 10. Create a destination variable as type ‘destination’ as shown below:
-![Step 10](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 10](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/12.png)
 11. Bind the input parameters of the action component as shown below:
-![Step 11](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 11](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/13.png)
 12. A dd ‘Send Message’ step to Joule skill flow branch and specify the message for automation trigger as shown below:
-![Step 12](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 12](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/14.png)
 13. Bind the Joule skill outputs (‘End’ step) to the action component output as shown below:
-![Step 13](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/placeholder.png)
+![Step 13](@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/15.png)
 14. Release and deploy to the shared environment to test the Joule skill.
 *Please note: Choose the appropriate BTP destination while deploying the Joule Studio project.*
 15. Launch the Joule Testing of the Joule interface from Control Tower->Environment->Joule tab->Launch
 
-<h4>Demo</h4>
+### Demo
 <video width="auto" controls>
   <source src="@site/static/ai-services/custom-joule-skills/images/translate-text-through-joule-using-sap-translation-hub/1.png" type="video/mp4" />
   Your browser does not support the video tag.
 </video>
-</details> */}
+</details>
 
 <details>
   <summary>
