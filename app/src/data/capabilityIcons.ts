@@ -106,6 +106,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline": "pipeline-analysis",
   "/docs/technical-view/generative-ai/rag/kg-rag-creation": "education",
   "/docs/technical-view/generative-ai/rag/kg-rag-query-pipeline": "pipeline-analysis",
+  "/docs/technical-view/generative-ai/rag/document-grounding": "doc-attachment",
 
   // Agentic
   "/docs/technical-view/generative-ai/agentic/single-agent": "lateness",
