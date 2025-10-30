@@ -89,6 +89,7 @@ export const TRACKING_EVENTS = {
     DOWNLOAD_REGRESSION: "btn-download-regression",
     DOWNLOAD_TIME_SERIES_FORECASTING: "btn-download-time-series-forecasting",
     DOWNLOAD_ANOMALY_DETECTION: "btn-download-anomaly-detection",
-    DOWNLOAD_CLASSIFICATION: "btn-download-classification"
+    DOWNLOAD_CLASSIFICATION: "btn-download-classification",
+    DOWNLOAD_CLUSTERING: "btn-download-clustering"
   }
 } as const;
