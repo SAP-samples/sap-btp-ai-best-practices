@@ -1,6 +1,6 @@
 ---
 title: "Classification"
-description: ""
+description: "Classification is a fundamental machine learning technique aimed at organizing input data into distinct classes. During the classification process, the model undergoes training using the 'train subset' function, followed by evaluation using the 'test subset' function. A notable distinction between classification and regression tasks lies in their output variables. While classification deals with discrete target variables, regression tasks involve continuous output variables."
 hide_title: true
 sidebar_class_name: hidden
 ---
@@ -69,6 +69,17 @@ import PageContributors from "@site/src/components/PageContributors";
     </div>
   </div>
 </div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/classification"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLASSIFICATION"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
@@ -224,6 +235,17 @@ The final choice should align with your team’s expertise and project requireme
 <Tabs groupId="language">
 <TabItem value="python" label="Python" default>
 
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/classification/Python"
+    className="button button--primary button--lg download-source-btn--tab"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLASSIFICATION"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
 ### Recommendation
 Use the **hana-ml** library for interacting with SAP HANA PAL and APL algorithms via the Python runtime environment.
 
@@ -242,7 +264,19 @@ Use the **hana-ml** library for interacting with SAP HANA PAL and APL algorithms
 
 ### Reference Code
 **Recommended**
-- [SAP BTP AI Best Practices - Sample Code](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/classification)
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/classification"
+        target="_blank"
+        trackingFeature="DOWNLOAD_CLASSIFICATION"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
 
 **Relevant Code**  
 *HybridGradientBoostingTree (HGBT)*
