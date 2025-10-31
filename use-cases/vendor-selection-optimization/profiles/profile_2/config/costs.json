@@ -1,0 +1,20 @@
+{
+  "cost_components": {
+    "cost_BasePrice": "True",
+    "cost_Tariff": "True",
+    "cost_Holding_LeadTime": "True",
+    "cost_Holding_LTVariability": "True",
+    "cost_Holding_Lateness": "True",
+    "cost_Risk_PriceVolatility": "True",
+    "cost_Impact_PriceTrend": "True",
+    "cost_Logistics": "True"
+  },
+  "economic_impact_parameters": {
+    "EIP_ANNUAL_HOLDING_COST_RATE": 0.25,
+    "EIP_SafetyStockMultiplierForLTVar_Param": 1.65,
+    "EIP_RiskPremiumFactorForPriceVolatility_Param": 0.25,
+    "EIP_PlanningHorizonDaysForPriceTrend_Param": 90,
+    "PRICE_TREND_CUTOFF_DAYS": 180,
+    "EIP_BaseLogisticsCostRate_Param": 0.15
+  }
+}

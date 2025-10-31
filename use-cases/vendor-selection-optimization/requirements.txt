@@ -1,0 +1,15 @@
+streamlit
+pandas
+matplotlib
+generative-ai-hub-sdk[all]
+python-dotenv
+plotly
+pulp
+scipy
+psutil
+fastapi
+uvicorn[standard]
+pydantic
+aiofiles
+python-multipart
+httpx
