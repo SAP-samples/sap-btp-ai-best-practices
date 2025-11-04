@@ -1,5 +1,5 @@
 python-dotenv
-generative-ai-hub-sdk[langchain]
+sap-ai-sdk-gen
 langchain-openai
 langchain
 langchain-community
