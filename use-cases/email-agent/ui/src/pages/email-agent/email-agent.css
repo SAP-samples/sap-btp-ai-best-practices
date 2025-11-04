@@ -1,0 +1,196 @@
+/* Page specific styles */
+.email-agent-container {
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.email-agent-toolbar {
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+#run-email-agent {
+  margin-right: -0.25rem;
+}
+
+/* Minimal loader wrapper for BusyIndicator (block so it sits below button) */
+.loader-row {
+  display: block;
+  margin: 0.5rem 0 0.75rem;
+  background: transparent;
+}
+
+#email-agent-busy {
+  display: block; /* ensure it can center via auto margins */
+  margin: 2rem auto; /* center horizontally */
+}
+
+/* Result panel - simple bordered card with good defaults for markdown */
+.result-panel {
+  margin-top: 0.75rem;
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-radius: 12px;
+  color: var(--sapTextColor);
+  font-family: var(--sapFontFamily);
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.result-panel:empty {
+  display: none;
+}
+
+.result-panel p {
+  margin: 1rem 0;
+}
+
+.result-panel :first-child {
+  margin-top: 0;
+}
+
+.result-panel :last-child {
+  margin-bottom: 0;
+}
+
+/* Email subject/body styling */
+.email-subject {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.email-body {
+  display: block;
+  margin: 1rem 0 2rem;
+}
+
+/* Preview card spacing */
+#original-email-card {
+  margin-top: 0.75rem;
+}
+
+#preview-html {
+  width: 100%;
+  height: 360px;
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* JSON panel spacing */
+.json-panel {
+  margin-top: 1rem;
+}
+
+/* Decision/meta table */
+.meta-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.25rem 0 0.75rem;
+}
+.meta-table th,
+.meta-table td {
+  background: #fff;
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.875rem;
+}
+.meta-table th {
+  font-weight: bold;
+  color: var(--sapList_HeaderTextColor);
+  width: 180px;
+}
+
+/* Stacked panels spacing */
+.stack-panel {
+  margin-top: 0.75rem;
+}
+
+/* Two-column responsive layout for result + log */
+.result-grid {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.result-grid > * {
+  min-width: 0; /* allow grid children to shrink */
+}
+
+@media (max-width: 1100px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.log-panel {
+  margin-top: 0.75rem;
+  /* Use Panel's own borders and header; avoid double border/padding */
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.log-panel ui5-title {
+  display: block;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.log-panel ui5-timeline {
+  width: 100%;
+}
+
+/* Prevent code blocks from forcing horizontal scroll */
+.result-panel pre,
+.log-panel pre,
+.result-panel code,
+.log-panel code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Tables in result (borrowed from chat-with-tools bubble styles) */
+.result-panel table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.4rem 0;
+  display: table;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.result-panel th,
+.result-panel td {
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-bottom: var(--sapList_BorderWidth) solid var(--sapList_BorderColor);
+  background: #fff;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.875rem;
+  font-weight: normal;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.result-panel th {
+  border-bottom: var(--sapList_BorderWidth) solid var(--sapList_HeaderBorderColor);
+  color: var(--sapList_HeaderTextColor);
+  font-weight: bold;
+}
+
+.result-panel td {
+  color: var(--sapContent_LabelColor);
+}
+
+/* Empty state spacer */
+.empty-state {
+  margin-top: 1.25rem;
+}

@@ -1,0 +1,26 @@
+---
+applications:
+  - name: email-agent-cockpit-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 2048M
+    routes:
+      - route: email-agent-cockpit-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://email-agent-cockpit.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://email-agent-cockpit-api.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: email-agent-cockpit-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: email-agent-cockpit.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://email-agent-cockpit-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: email-agent-cockpit.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))
