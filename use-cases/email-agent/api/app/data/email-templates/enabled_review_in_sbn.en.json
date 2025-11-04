@@ -1,0 +1,6 @@
+{
+  "decision": "ENABLED_REVIEW_IN_SBN",
+  "locale": "en",
+  "subject": "Please review the status of invoices in the SAP Business Network",
+  "body": "Hello {{supplierName}},\n\nWe can see your company is enabled in the SAP Business Network. For invoice status updates, please review the following invoices directly in the SAP Business Network: {{invoiceNumbers}}.\n\nIf you still need assistance after reviewing, reply to this email with any additional details.\n\nBest regards,\nAccounts Payable\n\nNote: This message was generated with AI assistance."
+}

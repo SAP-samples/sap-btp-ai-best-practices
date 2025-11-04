@@ -1,0 +1,6 @@
+{
+  "decision": "REQUEST_COPY",
+  "locale": "en",
+  "subject": "Action needed: copy of invoice(s) for status review",
+  "body": "Hello {{supplierName}},\n\nWe were unable to confirm the status for the invoice(s) you referenced. To complete our review, please see below:\n\nMissing invoice(s): {{notFoundInvoices}}\n\nLocated invoices (for reference): {{foundInvoices}}\nStatus details: {{foundStatuses}}\n\nPlease reply with a copy of each missing invoice and the following details to help us locate it quickly:\n- Company code\n- PO number (if any)\n- Invoice amount and currency\n- Invoice date\n\nThank you,\nAccounts Payable\n\nNote: This message was generated with AI assistance."
+}
