@@ -53,12 +53,6 @@ Each best practice includes code samples in multiple programming languages (Type
 ```
 sap-btp-ai-best-practices/
 ├── best-practices/               # Best practices implementations
-│   ├── access-to-generative-ai-models/
-│   ├── content-filtering/
-│   ├── data-masking/
-│   ├── prompt-templating/
-│   ├── vector-rag-embedding/
-│   └── vector-rag-query/
 └── use-cases/                    # End-to-end use case implementations
 ```
 
