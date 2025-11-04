@@ -1,8 +1,7 @@
 ---
 title: "Classification"
 description: "Classification is a fundamental machine learning technique aimed at organizing input data into distinct classes. During the classification process, the model undergoes training using the 'train subset' function, followed by evaluation using the 'test subset' function. A notable distinction between classification and regression tasks lies in their output variables. While classification deals with discrete target variables, regression tasks involve continuous output variables."
-hide_title: true
-sidebar_class_name: hidden
+hide_title: false
 ---
 
 import TabItem from "@theme/TabItem";
@@ -182,26 +181,93 @@ Handling of text data and moreover text embeddings as features has emerged as cr
 ### Algorithm Selection  
 With the great variety of algorithms, the classification scenario type as well as data patterns like number of rows (observations), number of features / type of features and cardinality of features influence the selection of classification models and their use cases.
 
-| Dataset Size | Algorithm | Description |
-|---------------|------------|--------------|
-| **Small to Medium size data sets** | Logistic Regression | Used in simple binary classification problems, such as predicting "yes" or "no" labels. |
-|  | k – Nearest Neighbors (k – NN) |  |
-|  | Decision Trees | Used in cases for easy model interpretability and model explainability. |
+<table>
+  <thead>
+    <tr>
+      <th>Dataset Size</th>
+      <th>Algorithm</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3"><strong>Small to Medium size data sets</strong></td>
+      <td>Logistic Regression</td>
+      <td>Used in simple binary classification problems, such as predicting "yes" or "no" labels.</td>
+    </tr>
+    <tr>
+      <td>k – Nearest Neighbors (k – NN)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Decision Trees</td>
+      <td>Used in cases for easy model interpretability and model explainability.</td>
+    </tr>
+  </tbody>
+</table>
 
-| Dataset Size | Algorithm | Description |
-|---------------|------------|--------------|
-| **Medium to Large data sets** | Random Forest | Used for complex classification problems where accuracy is highly relevant. |
-|  | Support Vector Machines (SVM) | Used for classification scenarios with clear margin of separation, e.g., image classification. |
-|  | XGBoost | Used in high performance classification problems, e.g., fraud detection. |
-|  | Neural Networks | Also known as Deep Learning, it is used for complex and high dimensional data scenarios, e.g., speech recognition. |
-|  | LightGBM | Used for large scale and high performance applications, e.g., web search ranking. |
-|  | Multinomial Naive Bayes | Used for discrete data, specially for text classification tasks where word counts are used as features for sentiment analysis. |
+<br/>
 
+<table>
+  <thead>
+    <tr>
+      <th>Dataset Size</th>
+      <th>Algorithm</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="6"><strong>Medium to Large data sets</strong></td>
+      <td>Random Forest</td>
+      <td>Used for complex classification problems where accuracy is highly relevant.</td>
+    </tr>
+    <tr>
+      <td>Support Vector Machines (SVM)</td>
+      <td>Used for classification scenarios with clear margin of separation, e.g., image classification.</td>
+    </tr>
+    <tr>
+      <td>XGBoost</td>
+      <td>Used in high performance classification problems, e.g., fraud detection.</td>
+    </tr>
+    <tr>
+      <td>Neural Networks</td>
+      <td>Also known as Deep Learning, it is used for complex and high dimensional data scenarios, e.g., speech recognition.</td>
+    </tr>
+    <tr>
+      <td>LightGBM</td>
+      <td>Used for large scale and high performance applications, e.g., web search ranking.</td>
+    </tr>
+    <tr>
+      <td>Multinomial Naive Bayes</td>
+      <td>Used for discrete data, specially for text classification tasks where word counts are used as features for sentiment analysis.</td>
+    </tr>
+  </tbody>
+</table>
 
-| Dataset Size | Algorithm | Description |
-|---------------|------------|--------------|
-| **Very Large data sets** | Deep Learning, i.e., Convolutional Neural Networks (CNN) architecture for images, Recurrent Neural Networks (RNN) for sequence data. | Used for very large and complex datasets, e.g., natural language processing. |
-|  | Distributed Machine Learning Frameworks such as Spark MLLib, TensorFlow. | Used for scalable machine learning scenarios across distributed computing environments, e.g., large scale recommendation systems. |
+<br/>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dataset Size</th>
+      <th>Algorithm</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="2"><strong>Very Large data sets</strong></td>
+      <td>Deep Learning, i.e., Convolutional Neural Networks (CNN) architecture for images, Recurrent Neural Networks (RNN) for sequence data.</td>
+      <td>Used for very large and complex datasets, e.g., natural language processing.</td>
+    </tr>
+    <tr>
+      <td>Distributed Machine Learning Frameworks such as Spark MLLib, TensorFlow.</td>
+      <td>Used for scalable machine learning scenarios across distributed computing environments, e.g., large scale recommendation systems.</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ### Algorithm experimentation and selection
 AutoML frameworks like [SAP HANA Cloud PAL’s AutoML](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/automl-automl) implementation greatly help users in probing multiple algorithms and parameter variations for a given scenario for selecting the best possible algorithm and model. In the following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/usecase-examples/sapcommunity-automl-examples/Example%20-%20Using%20PAL%20AutoML%20for%20Classification.ipynb) you can view an example on how to apply it.
