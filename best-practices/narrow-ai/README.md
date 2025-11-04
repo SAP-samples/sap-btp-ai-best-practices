@@ -2,13 +2,6 @@
 
 This section of the repository contains best practices for implementing Narrow AI solutions on the SAP Business Technology Platform (BTP). Each subdirectory focuses on a specific predictive or classical machine learning technique, with sample code, documentation, and guidance.
 
-## Available Best Practices
-
-| Topic                                     | Description                                                                                                                           |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| [Linear Regression](./linear-regression/) | Demonstrates how to build and evaluate linear regression models for predicting housing prices using SAP HANA and the hana-ml library. |
-| [Anomaly Detection](./anomaly-detection/) | Shows techniques for detecting anomalies and outliers in tabular and time series data using SAP HANA and multiple ML algorithms.      |
-
 ## Getting Started
 
 To get started with a specific best practice:
