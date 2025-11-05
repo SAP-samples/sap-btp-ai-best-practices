@@ -1,7 +1,7 @@
 ---
 title: "Training and Deployment of Custom AI Models"
-description: ""
-hide_title: false
+description: "Train and deploy custom AI models within SAP BTP to augment existing capabilities and integrate tailored AI solutions into business processes."
+hide_title: true
 ---
 
 import TabItem from "@theme/TabItem";
@@ -173,7 +173,7 @@ AI Core supports container-based deployment. In order to deploy your model, you 
 3. [Set up your environment for container-ready development](https://developers.sap.com/tutorials/ai-core-code.html): SAP AI Core allows Docker/container-based deployment. Before you deploy your model, you need to create a Docker/container for the same.  
 4. Build your custom AI model in a container-ready environment: You can build your custom AI model as per your requirement using classical machine learning models, neural networks, or lightweight LLMs as well. Below are some of the references for your model development.  
    a. [Build a House Price Predictor Model](https://developers.sap.com/tutorials/ai-core-code.html): Based on your use case, you can leverage [best practice content](/docs/technical-view/narrow-ai) to build your Custom AI models.  
-   b. Yoga Pose Image Classification: Use [training](https://github.com/amanichopra/model-serving-aicore) and [inference](https://developers.sap.com/tutorials/ai-core-tensorflow-byod.html) pipeline to create a classifier for yoga pose images.  
+   b. Yoga Pose Image Classification: Use [training](https://github.com/amanichopra/sap-aicore-train/tree/main) and [inference](https://github.com/amanichopra/model-serving-aicore) pipeline to create a classifier for yoga pose images.  
    c. [Utilizing GPUs in SAP AI Core](https://developers.sap.com/tutorials/ai-core-tensorflow-byod.html): If your business application requires image processing, audio/video processing, or large computation, GPU provide a significant boost in processing time (both training and inference). You can leverage AI core instances with GPU support to leverage the same.  
    d. [Ingest data into your AI model with SAP AI Core](https://developers.sap.com/tutorials/ai-core-data.html)  
 5. [Generate Metrics and Compare Models in SAP AI Core](https://developers.sap.com/tutorials/ai-core-metrics.html): You can run all your experiments in an AI Core container and generate several metrics to compare the models to find the best fit for your business problem.  
