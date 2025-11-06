@@ -155,7 +155,7 @@ export default function About(): React.ReactNode {
               <h2 className={styles.roadmapHeading}>See What's Next</h2>
               <p className={styles.roadmapDescription}>Curious about upcoming BTP AI Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
               <div className={styles.roadmapButtonWrapper}>
-                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20251028.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
+                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20251106.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
                   <Icon name="workflow-tasks" className={styles.roadmapButtonIcon} style={{ marginRight: 8, fontSize: 22 }} />
                   Explore the Roadmap
                 </a>
@@ -175,11 +175,16 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG (2/2) Query Pipeline" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/kg-rag-creation" text="Knowledge Graph RAG (1/2) Creation" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/kg-rag-query-pipeline" text="Knowledge Graph RAG (2/2) Query Pipeline" />
-                  <IconLinkButton href="/docs/technical-view/ai-services/sap-document-ai" text="Document AI" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
+                  <IconLinkButton href="/docs/technical-view/narrow-ai/classification" text="Classification" />
+                  <IconLinkButton href="/docs/technical-view/narrow-ai/clustering" text="Clustering" />
+                  <IconLinkButton href="/docs/technical-view/narrow-ai/training-deployment-custom-ai-models" text="Training and Deployment of Custom AI Models" />
+                  <IconLinkButton href="/docs/technical-view/ai-services/sap-document-ai" text="Document AI" />
                   <IconLinkButton href="/docs/technical-view/ai-services/custom-joule-skills" text="Custom Joule Skills" />
+                  <IconLinkButton href="/docs/technical-view/generative-ai/rag/document-grounding" text="Document Grounding" disabled={true} />
+                  <IconLinkButton href="/docs/technical-view/ai-services/sap-translation-hub" text="SAP Translation Hub" disabled={true} />
                 </div>
                 <p>
                   Further SAP BTP AI Best Practices are in preparation. <strong>Stay tuned</strong> to keep your AI development on SAP BTP at the forefront!
