@@ -1,8 +1,7 @@
 ---
 title: "Clustering"
-description: ""
-hide_title: true
-sidebar_class_name: hidden
+description: "Clustering aims to partition a dataset into subsets (clusters), such that data points within the same cluster exhibit high intra-cluster similarity, while points in different clusters exhibit low inter-cluster similarity."
+hide_title: false
 ---
 
 import TabItem from "@theme/TabItem";
@@ -46,22 +45,22 @@ import PageContributors from "@site/src/components/PageContributors";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Clustering (intro)_external.mp4")}>
             <Icon name="video" />
-            <span>Teaser [TODO]</span>
+            <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Predictive AI - Clustering.mp4")}>
               <Icon name="video" />
-              <span>Webinar [TODO]</span>
+              <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/pdfs/BTP AI Best Practices - Predictive AI - Clustering.pdf")}>
               <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
+              <span>Webinar (PDF Presentation)</span>
             </Link>
           </li>
         </LoginWall>
@@ -69,6 +68,17 @@ import PageContributors from "@site/src/components/PageContributors";
     </div>
   </div>
 </div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLUSTERING"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
@@ -174,7 +184,7 @@ SAP HANA Predictive Analytics Library, offers a wide range of Clustering algorit
 
 ### Data Preparation and Model Evaluation
 The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
-For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](https://sap.sharepoint.com/sites/210313/SitePages/Data%20prep%20and%20model%20evaluation.aspx) page.
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
@@ -193,6 +203,17 @@ The final choice should align with your team’s expertise and project requireme
 <div className="tabs-with-background">
 <Tabs groupId="language">
 <TabItem value="python" label="Python" default>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering/python"
+    className="button button--primary button--lg download-source-btn--tab"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLUSTERING"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
 
 ### Recommendation
 
@@ -217,8 +238,19 @@ SAP Developer Tutorials:
 ### Reference Code
 
 **Recommended**
-
-- [SAP BTP AI Best Practices - Sample Code](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering)
+<ul>
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering"
+        target="_blank"
+        trackingFeature="DOWNLOAD_CLUSTERING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
 
 **Relevant Code**
 

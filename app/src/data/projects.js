@@ -5,6 +5,30 @@
 
 export const projects = [
   {
+    id: "agentic-email-automation",
+    title: "Agentic Email Automation",
+    description:
+      "AI Email Agent that prioritizes and answers emails end-to-end, integrating with SAP S/4HANA, Ariba, and more systems to traverse decision trees and compliance gates.",
+    categories: [],
+    industries: [],
+    icon: "workflow-tasks",
+    docsPath: "agentic-email-automation",
+    sampleFiles: [],
+    appUrl: "https://email-agent-cockpit.cfapps.eu10-004.hana.ondemand.com/email-agent",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/email-agent",
+    originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-powered-email-cockpit",
+    videoUrl: "",
+    onePagerFile: "images/Slide5.jpeg",
+    isExternal: true
+  },
+  {
     id: "ai-powered-email-cockpit",
     title: "AI-Powered Email Cockpit",
     description: "An easy-to-use tool with an email-style interface and built-in chatbot to quickly organize, track, and resolve payment-related requests.",
@@ -21,9 +45,9 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    // sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-powered-email-cockpit",
-    internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-powered-email-cockpit",
-    onePagerFile: "images/Slide48.jpg",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-powered-email-cockpit",
+    internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-powered-email-cockpit/tree/release-ai-in-a-day",
+    onePagerFile: "images/Slide1.jpeg",
     isExternal: true
   },
   {
@@ -35,12 +59,17 @@ export const projects = [
     icon: "energy-saving-lightbulb",
     docsPath: "utilities-tariff-mapping-cockpit",
     sampleFiles: ["data/Residential Service – Rate 10 (Small file).pdf", "data/Riverview Tariff Book 2025 (Large file).pdf"],
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_8efsik7w",
     appUrl: "https://utilities-tariff-mapping-cockpit.cfapps.eu10-004.hana.ondemand.com/validate/step1-upload",
     completionDate: "2025-08-11",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
         title: "Access to Generative AI Models"
+      },
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/prompt-templating",
+        title: "Prompt Templating"
       }
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/utilities-tariff-mapping-cockpit",
@@ -146,8 +175,9 @@ export const projects = [
         title: "Anomaly Detection"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/anomaly-detection",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Amgen-Anomaly_detection",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_k3irwolb",
     onePagerFile: "images/Slide26.jpg",
     isExternal: true
   },
@@ -169,14 +199,14 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/vendor-selection-optimization",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/procurement_assistant",
     onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
   },
   {
     id: "apex-assistant-post-sales-chatbot",
-    title: "Apex Assistant - Post Sales Chatbot",
+    title: "Apex Assistant: Post Sales Chatbot",
     description:
       "This app helps the customers to know the detail program for the car and schedule an appointment for new services. Customer can ask about the previous car services and information related.",
     categories: [],
@@ -192,9 +222,9 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/post-sales-chatbot",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/post-sales-chatbot",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Zapata_Bot",
-    onePagerFile: "images/Slide18.jpg",
+    onePagerFile: "images/Slide8.jpeg",
     isExternal: true
   },
   {
@@ -207,7 +237,7 @@ export const projects = [
     icon: "compare-2",
     docsPath: "sap-rfqx-document-analysis-application-v2",
     sampleFiles: [],
-    appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
+    // appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
     relatedBestPractices: [
       {
@@ -223,7 +253,7 @@ export const projects = [
         title: "Graph-based RAG (2/2) KG Query Pipeline"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/intelligent-negotiation-assistant-procurement",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Traton_RFQx",
     onePagerFile: "images/Ai4U - Flipbook.jpg",
     isExternal: true
@@ -253,7 +283,7 @@ export const projects = [
         title: "Graph-based RAG (2/2) KG Query Pipeline"
       }
     ],
-    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/rfqx-doc-analysis-utilities",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/rfqx-doc-analysis-utilities",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/UC_RFQ",
     isExternal: true
   },
@@ -296,8 +326,8 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
-    internalSourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/customer-credit-check",
+    internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Sesajal_DataExtraction",
     onePagerFile: "images/Slide44.jpg",
     isExternal: true
   },
@@ -322,8 +352,9 @@ export const projects = [
         title: "Vector-based RAG (1/2) Embedding"
       }
     ],
-    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/dev/use-cases/ai-capability-matcher",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-capability-matcher",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/AI-Category-Matcher",
+    onePagerFile: "images/Slide6.jpeg",
     isExternal: true
   },
   {
@@ -516,7 +547,7 @@ export const projects = [
   },
   {
     id: "agentic-cold-chain-logistics",
-    title: "Agentic Cold Chain Logistics",
+    title: "Agentic Transportation Lane Risk Analysis",
     description: "AI-driven container optimization using predictive risk metrics and historical shipment data with automated assignment and mitigation strategies.",
     categories: [],
     industries: [],
@@ -528,7 +559,7 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/illy.git",
     videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_0tb3z8d5",
-    onePagerFile: "images/Slide30.jpg",
+    onePagerFile: "images/Slide4.jpg",
     isExternal: true
   },
   {
@@ -588,7 +619,7 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-log-analyzer",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-log-analyzer",
     videoUrl: "",
     onePagerFile: "",
@@ -630,7 +661,7 @@ export const projects = [
   },
   {
     id: "dairy-maximizing-yield-minimizing-waste",
-    title: "AI-Powered Dairy: Maximizing Yield, Minimizing Waste",
+    title: "AI-Powered Dashboard for Maximizing Yield, Minimizing Waste",
     description:
       "An AI-powered platform unifies dairy supply chain data to enhance visibility, optimize efficiency, strengthen vendor partnerships, and unlock multimillion-pound savings.",
     categories: [],
@@ -643,7 +674,7 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "",
     videoUrl: "",
-    onePagerFile: "images/Slide20.jpg",
+    onePagerFile: "images/Slide3.jpeg",
     isExternal: true
   },
   {

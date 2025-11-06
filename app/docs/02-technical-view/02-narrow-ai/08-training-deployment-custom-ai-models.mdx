@@ -1,8 +1,7 @@
 ---
 title: "Training and Deployment of Custom AI Models"
-description: ""
+description: "Train and deploy custom AI models within SAP BTP to augment existing capabilities and integrate tailored AI solutions into business processes."
 hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -46,22 +45,22 @@ import PageContributors from "@site/src/components/PageContributors";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/BTP AI Best Practices - Training and deployment of custom models (intro)_external.mp4")}>
             <Icon name="video" />
-            <span>Teaser [TODO]</span>
+            <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/videos/BTP AI Best Practices - Training and deployment of custom AI Models.mp4")}>
               <Icon name="video" />
-              <span>Webinar [TODO]</span>
+              <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/training-deployment-custom-ai-models/pdfs/BTP AI Best Practices - Training and deployment of custom AI Models.pdf")}>
               <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
+              <span>Webinar (PDF Presentation)</span>
             </Link>
           </li>
         </LoginWall>
@@ -173,14 +172,14 @@ AI Core supports container-based deployment. In order to deploy your model, you 
 2. [Setup for Git Repositories](https://developers.sap.com/tutorials/ai-core-helloworld.html): This sets up your git repositories to have easier development management as well as pipeline management for model deployment in AI Core.  
 3. [Set up your environment for container-ready development](https://developers.sap.com/tutorials/ai-core-code.html): SAP AI Core allows Docker/container-based deployment. Before you deploy your model, you need to create a Docker/container for the same.  
 4. Build your custom AI model in a container-ready environment: You can build your custom AI model as per your requirement using classical machine learning models, neural networks, or lightweight LLMs as well. Below are some of the references for your model development.  
-   a. [Build a House Price Predictor Model](https://sap.sharepoint.com/sites/210313/SitePages/Technical%20-%20Narrow%20AI.aspx): Based on your use case, you can leverage [best practice content](https://github.com/amanichopra/sap-aicore-train/tree/main) to build your Custom AI models.  
-   b. Yoga Pose Image Classification: Use [training](https://github.com/amanichopra/model-serving-aicore) and [inference](https://developers.sap.com/tutorials/ai-core-tensorflow-byod.html) pipeline to create a classifier for yoga pose images.  
-   c. [Utilizing GPUs in SAP AI Core](https://developers.sap.com/tutorials/ai-core-data.html): If your business application requires image processing, audio/video processing, or large computation, GPU provide a significant boost in processing time (both training and inference). You can leverage AI core instances with GPU support to leverage the same.  
+   a. [Build a House Price Predictor Model](https://developers.sap.com/tutorials/ai-core-code.html): Based on your use case, you can leverage [best practice content](/docs/technical-view/narrow-ai) to build your Custom AI models.  
+   b. Yoga Pose Image Classification: Use [training](https://github.com/amanichopra/sap-aicore-train/tree/main) and [inference](https://github.com/amanichopra/model-serving-aicore) pipeline to create a classifier for yoga pose images.  
+   c. [Utilizing GPUs in SAP AI Core](https://developers.sap.com/tutorials/ai-core-tensorflow-byod.html): If your business application requires image processing, audio/video processing, or large computation, GPU provide a significant boost in processing time (both training and inference). You can leverage AI core instances with GPU support to leverage the same.  
    d. [Ingest data into your AI model with SAP AI Core](https://developers.sap.com/tutorials/ai-core-data.html)  
 5. [Generate Metrics and Compare Models in SAP AI Core](https://developers.sap.com/tutorials/ai-core-metrics.html): You can run all your experiments in an AI Core container and generate several metrics to compare the models to find the best fit for your business problem.  
 6. [Make Predictions for your AI model with SAP AI Core](https://developers.sap.com/tutorials/ai-core-deploy.html): Once you have finalized your model, you can create an inference pipeline to make it available for integration with your business applications.  
 
-The above steps help you build and deploy your AI model on the AI core. AI Launchpad provides you a unified access to AI Core and helps you manage your configuration, deployments end-to-end.
+The above steps help you build and deploy your AI model on the AI Core. AI Launchpad provides you a unified access to AI Core and helps you manage your configuration, deployments end-to-end.
 
 If you wish to perform the same activities using the command line in VS Code, you can leverage the [SAP AI Core Toolkit for VS Code](https://help.sap.com/docs/sap-ai-core/sap-ai-core-toolkit/sap-ai-core-toolkit?locale=en-US) and perform the same steps. [SAP AI Core using VS Code Toolkit](https://developers.sap.com/tutorials/ai-core-vs-code-toolkit.html) explains the step-by-step process to achieve the same.
 

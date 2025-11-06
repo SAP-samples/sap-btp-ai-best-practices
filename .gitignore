@@ -18,3 +18,5 @@ _site/
 Gemfile.lock
 .DS_Store
 .env
+
+.idea
