@@ -1,0 +1,26 @@
+---
+applications:
+  - name: agentic-chatbot-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 2048M
+    routes:
+      - route: agentic-chatbot-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://agentic-chatbot.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://agentic-chatbot-api.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: agentic-chatbot-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: agentic-chatbot.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://agentic-chatbot-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: agentic-chatbot.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))
