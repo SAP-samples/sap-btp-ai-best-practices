@@ -661,7 +661,7 @@ export const projects = [
   },
   {
     id: "dairy-maximizing-yield-minimizing-waste",
-    title: "AI-Powered Dashboard for Maximizing Yield, Minimizing Waste",
+    title: "Data Analyst Chatbot Agent with SAC Dashboard integration",
     description:
       "An AI-powered platform unifies dairy supply chain data to enhance visibility, optimize efficiency, strengthen vendor partnerships, and unlock multimillion-pound savings.",
     categories: [],
@@ -669,12 +669,41 @@ export const projects = [
     icon: "nutrition-activity",
     docsPath: "dairy-maximizing-yield-minimizing-waste",
     sampleFiles: [],
-    appUrl: "",
+    appUrl: "https://agentic-chatbot.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
-    sourceCodeUrl: "",
-    originalSourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/agentic-chatbot",
+    originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/organic-valley-ai-utilities",
     videoUrl: "",
     onePagerFile: "images/Slide3.jpeg",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    isExternal: true
+  },
+  {
+    id: "document-outlier-detection",
+    title: "Document Outlier Detection",
+    description: "Detect outliers in tabular data documents using AI, and generate a report with the outliers found.",
+    categories: [],
+    industries: [],
+    icon: "alert",
+    docsPath: "document-outlier-detection",
+    sampleFiles: [],
+    appUrl: "https://document-outlier-detection.cfapps.eu10-004.hana.ondemand.com/outlier-detection",
+    completionDate: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/document-outlier-detection",
+    originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/organic-valley-ai-utilities",
+    videoUrl: "",
+    onePagerFile: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
@@ -692,6 +721,12 @@ export const projects = [
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Organic-Valley_final",
     videoUrl: "",
     onePagerFile: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
