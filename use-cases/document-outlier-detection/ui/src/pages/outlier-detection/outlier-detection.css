@@ -1,0 +1,96 @@
+/* Home page specific styles */
+.excel-validation-container {
+  padding: 1rem;
+}
+
+.upload-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* Keep the label on a single line and let the uploader take remaining space */
+.upload-row ui5-label {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.upload-row ui5-file-uploader {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.status {
+  margin-top: 0.75rem;
+}
+
+.preview,
+.issues {
+  margin-top: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.table-scroll {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.issues-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Excel-like grid lines for the preview table */
+.excel-validation-container ui5-table {
+  /* border-left: 1px solid #cdd4db; */
+}
+
+.excel-validation-container ui5-table-header-row ui5-table-header-cell,
+.excel-validation-container ui5-table-row ui5-table-cell {
+  box-sizing: border-box;
+  border-right: 1px solid #cdd4db;
+}
+.excel-validation-container ui5-table-header-row ui5-table-header-cell:first-child,
+.excel-validation-container ui5-table-row ui5-table-cell:first-child {
+  border-left: 1px solid #cdd4db;
+}
+
+.excel-validation-container ui5-table-header-row ui5-table-header-cell {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+/* Make the first column (row index) look like header */
+.excel-validation-container ui5-table-row ui5-table-cell:first-child,
+.excel-validation-container ui5-table-header-row ui5-table-header-cell:first-child {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.flagged-cell {
+  color: var(--sapNegativeElementColor);
+  background: var(--sapButton_Reject_Hover_Background) !important;
+  box-shadow: -2px -2px 0 0 var(--sapMessage_ErrorBorderColor) inset, 2px 2px 0 0 var(--sapMessage_ErrorBorderColor) inset !important;
+}
+
+/* Row/column dashed highlights for flagged lines */
+.flagged-row-cell {
+  background: var(--sapErrorBackground) !important;
+}
+
+.flagged-col-header,
+.flagged-col-cell {
+  background: var(--sapErrorBackground) !important;
+}
+
+.actions {
+  margin-top: 1rem;
+}
