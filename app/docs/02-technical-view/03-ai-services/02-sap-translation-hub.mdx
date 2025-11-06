@@ -1,0 +1,201 @@
+---
+title: "SAP Translation Hub"
+description: ""
+hide_title: true
+sidebar_class_name: hidden
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>SAP Translation Hub</h1>
+</div>
+
+::::danger[IMPORTANT - How to make this page visible]
+
+- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
+- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
+
+Don't forget to remove this message.
+
+::::
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+            <Icon name="video" />
+            <span>Teaser [TODO]</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+              <Icon name="video" />
+              <span>Webinar [TODO]</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/#TODO")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation) [TODO]</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+...
+
+### Expected Outcome
+
+...
+
+<LoginWall>
+
+### Benefits
+
+...
+
+### Key Concepts
+
+...
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+...
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+...
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+...
+
+<div className="tabs-with-background">
+<Tabs groupId="language">
+<TabItem value="python" label="Python" default>
+
+<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
+  <span>Download Source Code</span>
+</TrackableLink>
+
+...
+
+</TabItem>
+
+<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+
+<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
+  <span>Download Source Code</span>
+</TrackableLink>
+
+...
+
+</TabItem>
+
+<TabItem value="cap-app" label="CAP">
+
+<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
+  <span>Download Source Code</span>
+</TrackableLink>
+
+...
+
+</TabItem>
+
+</Tabs>
+</div>
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
+</ul>
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+
+</div>
+
+</LoginWall>

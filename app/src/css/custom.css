@@ -45,6 +45,8 @@
 
   /* Table of contents */
   --ifm-toc-border-color: var(--sap-horizon-neutral-5);
+
+  --ifm-alert-border-color: var(--sap-horizon-neutral-5);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -398,6 +400,10 @@ h2 .step-number {
 }
 .section-with-background.purple {
   background: #f0ecfe;
+}
+
+.section-with-background.green {
+  background: #e6f7e6;
 }
 
 .section-with-background.gradient-violet-blue {
@@ -1138,4 +1144,34 @@ html button#truste-consent-required:hover {
     width: 100px;
     height: 100px;
   }
+}
+
+/* Details */
+
+details.alert {
+  border: 1px solid var(--sap-horizon-neutral-5);
+  background-color: var(--sap-horizon-neutral-2) !important;
+  color: var(--ifm-heading-color);
+  --docusaurus-details-decoration-color: var(--ifm-color-primary);
+  --ifm-alert-border-color: var(--ifm-color-primary);
+}
+
+[data-theme="dark"] details.alert {
+  border-color: var(--sap-horizon-neutral-10);
+  background-color: var(--sap-horizon-neutral-11) !important;
+}
+
+details.alert summary > * {
+  margin: 0;
+  font-size: 1rem;
+  display: inline-block;
+}
+
+details.alert summary a {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+details.alert summary a:hover {
+  text-decoration: underline;
 }

@@ -1,0 +1,599 @@
+---
+title: "Clustering"
+description: "Clustering aims to partition a dataset into subsets (clusters), such that data points within the same cluster exhibit high intra-cluster similarity, while points in different clusters exhibit low inter-cluster similarity."
+hide_title: false
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Clustering</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Clustering (intro)_external.mp4")}>
+            <Icon name="video" />
+            <span>Teaser</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Predictive AI - Clustering.mp4")}>
+              <Icon name="video" />
+              <span>Webinar</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/pdfs/BTP AI Best Practices - Predictive AI - Clustering.pdf")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLUSTERING"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+Clustering aims to partition a dataset into subsets (clusters), such that data points within the same cluster exhibit high intra-cluster similarity, while points in different clusters exhibit low inter-cluster similarity.
+
+### Expected Outcome
+
+In essence, the clustering model outputs a partition of dataset into groups that share similar characteristics
+
+<LoginWall>
+
+### Benefits
+
+- **Unsupervised Pattern Discovery**: Clustering identifies hidden structures or natural groupings in unlabeled data without prior knowledge or supervision.
+- **Data Simplification and Summarization**: It reduces the complexity of large datasets by grouping similar data points, making it easier to analyze and interpret.
+- **Anomaly Detection**: Clustering aids in anomaly detection by identifying normal groupings within a dataset, making it easier to spot data points that deviate significantly from the norm. These outliers often indicate unusual or rare events such as fraud, system faults, or other anomalies that require attention.
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Supported SAP HANA versions and editions
+
+SAP HANA’s Machine Learning capabilities, includes both the Predictive Analysis Library (PAL) and the Automated Predictive Library (APL), are supported on various SAP HANA versions and editions. Key supported platforms include: 
+
+- **SAP HANA Cloud**: Fully supported and recommended platform due to easier management of components like PAL and APL. More information on [HANA Cloud and Setup process](/docs/technology/sap-hana-cloud#setup).
+  - [Prerequisites](https://support.sap.com/en/alm/sap-cloud-alm/operations/expert-portal/setup-managed-services/setup-hana-cloud.html?anchorId=section_2065216453_c#section_copy_copy):
+    - You need to have access to SAP BTP Cockpit ([Setup Guide](/docs/technology/sap-business-technology-platform#setup-guide)).
+    - Your user in BTP Cockpit needs to be a member with the space role "Space Developer" for the space in which you want to create the SAP HANA Cloud database instance was created
+- **SAP HANA express edition**: Used for development and testing. [Installation instructions for SAP HANA](https://developers.sap.com/group.hxe-install-clients.html) and [Installation instructions for Client API](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/2.0.06/en-US/Installation.html).
+- **SAP Datasphere (formerly Data Warehouse Cloud)**: Supports PAL and API functions, provided underlying [SAP HANA Cloud Script Server](https://help.sap.com/docs/SAP_DATASPHERE/9f804b8efa8043539289f42f372c4862/287194276a7d4d778ec98fdde5f61335.html) is enabled for the tenant
+
+Note, PAL and APL are also available from [SAP HANA Platform 2.0 SPS 04](https://help.sap.com/doc/9c87e50e69c744f785f41ec5568b47d8/2.0.04/en-US/SAP_HANA_Machine_Learning_Overview_Guide_en.pdf) as well as SAP HANA express edition
+
+
+### Required SAP HANA Components
+
+- **SAP HANA Cloud**: PAL and APL are pre-installed within the SAP HANA Cloud environment. During configuration of the database instance, the necessary services need to be enabled and user permissions to be granted.
+- **Predictive Analysis Library (PAL)**: provides a wide range of common and specialized native in-database functions for predictive analysis and machine learning in scenarios like classification, regression, time series forecasting, outlier detection, text processing and analysis as well as text embedding.
+- **Automated Predictive Library (APL)**: provides native in-database functions for creating predictive models in a simplified manner due to the automation of many of the steps. While APL supports creating clustering models, it is designed to be an automated framework and does not expose full control over the machine learning model internal working.
+
+### Required User Authorizations and Roles
+
+Executing PAL and APL functions requires specific database privileges. These are granted via predefined roles:
+
+- **For [PAL](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/security-security-253f2b5?locale=en-US)**: You must be assigned one of the following roles to execute PAL procedures. The roles for the PAL library are automatically created when the Application Function Library (AFL) is enabled. The role names are:
+  - `AFL__SYS_AFL_AFLPAL_EXECUTE`
+  - `AFL__SYS_AFL_AFLPAL_EXECUTE_WITH_GRANT_OPTION`
+- **For [APL](https://help.sap.com/docs/apl/419fd47c26b345239fdbb5e476a6bc54/654f4d920c5846b6b56903c7b06b0785.html)**:
+  - *SAP HANA Cloud*: The database role `sap.pa.apl.base.roles::APL_EXECUTE` is required. This role grants privileges to execute APL stored procedures, access related schemas, and use the APL cache. It should be granted by a database administrator to the APL user.
+- **General Privileges**: Beyond specific PAL/APL roles, users will need standard SQL privileges to access the data tables used as input for the algorithms (e.g., SELECT on relevant schemas/tables) and potentially privileges to create temporary tables or views depending on the workflow (e.g., CREATE TEMPORARY TABLE).
+
+### Summary 
+
+| **Prerequisite Category** | **Item** | **Notes** |
+|----------------------------|----------|-----------|
+| **SAP HANA Cloud Environment** | SAP HANA Cloud, SAP HANA Cloud trial and free-tier | See trial / free-tier limitations. |
+| **SAP HANA Cloud Configuration** | Enabled services | Script Server and NLP services |
+| **User Authorizations** | PAL Execution Role Granted | User needs `AFL__SYS_AFL_AFLPAL_EXECUTE` (Cloud/On-Prem) role. |
+|  | APL Execution Role Granted | User needs `sap.pa.apl.base.roles::APL_EXECUTE` (Cloud/On-Prem Procedure) or direct AFL roles (On-Prem Direct). |
+|  | Data Access Privileges (SELECT) | User needs `SELECT` access on input data tables/views. |
+|  | Object Creation Privileges (Optional) | May need `CREATE TEMPORARY TABLE` etc., depending on workflow. |
+
+### High-level Reference Architecture
+![Clustering - High-level Reference Architecture](@site/static/narrow-ai/clustering/images/arch.png)
+
+#### Calling PAL and APL Functions
+
+- PAL functions can be called through the SQL interface or using the Python or R Machine Learning clients (hana-ml).
+- APL functions can be called through the SQL interface or using the Python Machine Learning client (hana-ml).
+- The Natural Language Processing functions for Text Analysis, Named Entity Recognition or Part of Speech tagging can be called via PAL functions. In addition, the Text Embedding function can be called via PAL functions as well as the SQL function [VECTOR_EMBEDDING()](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-vector-engine-guide/creating-text-embeddings-in-sap-hana-cloud).
+- Both PAL and APL functions can be called out of the box in the HANA Cloud Database Core Container, or as part of the HANA Cloud Elastic Compute Nodes.
+- SAP BTP Applications can embed use of PAL or APL functions as part of standard SQLScript design-time artifacts, e.g. multi-target or full-stack CAP applications. Furthermore, usage of PAL and APL functions may also be utilized via applications leveraging Python runtimes and scripts using the Python Machine Learning client (hana-ml)
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+Implementing clustering effectively involves several key decisions and adherence to best practices: 
+
+### Leverage In-Database ML functions from SAP HANA whenever possible
+
+- **Prioritize HANA ML**: If your data resides in SAP HANA or SAP Datasphere, using `hana-ml` is generally the most efficient approach due to minimized data movement and optimized performance.
+
+### Algorithm Selection
+
+SAP HANA Predictive Analytics Library, offers a wide range of Clustering algorithms. Choosing the right Clustering model in SAP HANA PAL depends on several key factors related to both the characteristics of your data and the business problem you're trying to address. Some of the commonly used algorithms are as follows:
+
+- **K-Means** algorithm partitions n observations or records into k clusters in which each observation belongs to the cluster with the nearest center. Clustering works to group records together according to an algorithm or mathematical formula that attempts to find centroids, or centers, around which similar records gravitate. Given an initial set of k means m<sub>1</sub>, ..., m<sub>k</sub>, the algorithm proceeds by alternating between two steps:  
+  - Assignment step: assigns each observation to the cluster with the closest mean.  
+  - Update step: calculates the new means to be the center of the observations in the cluster.  
+  The algorithm repeats until the assignments no longer change.
+
+- **DBSCAN** (Density-Based Spatial Clustering of Applications with Noise) is a density-based data clustering algorithm. It finds a number of clusters starting from the estimated density distribution of corresponding nodes. DBSCAN requires two parameters: scan radius (eps) and the minimum number of points required to form a cluster (minPts). The algorithm starts with an arbitrary starting point that has not been visited. This point's eps-neighborhood is retrieved, and if the number of points it contains is equal to or greater than minPts, a cluster is started. Otherwise, the point is labeled as noise. These two parameters are very important and are usually determined by user.  
+  PAL provides a method to automatically determine these two parameters. You can choose to specify the parameters by yourself or let the system determine them for you.
+
+- **Agglomerate Hierarchical Clustering** is a widely used clustering method which can find natural groups within a set of data. The idea is to group the data into a hierarchy or a binary tree of the subgroups. A hierarchical clustering can be either agglomerate or divisive, depending on the method of hierarchical decomposition.  
+  The implementation in PAL follows the agglomerate approach, which merges the clusters with a bottom-up strategy. Initially, each data point is considered as an own cluster. The algorithm iteratively merges two clusters based on the dissimilarity measure in a greedy manner and forms a larger cluster. Therefore, the input data must be numeric and a measure of dissimilarity between sets of data is required, which is achieved by using the following two parameters:  
+  - An appropriate metric (a measure of distance between pairs of groups)  
+  - A linkage criterion which specifies the distances between groups.  
+
+  An advantage of hierarchical clustering is that it does not require the number of clusters to be specified as the input. And the hierarchical structure can also be used for data summarization and visualization.
+- **Spectral clustering** is an algorithm evolved from graph theory, and has been widely used in clustering. Its main idea is to treat all data as points in space, which can be connected by edges. The edge weight between two points farther away is low, while the edge weight between two points closer is high. Cutting the graph composed of all data points to make the edge weight sum between different subgraphs after cutting as low as possible, while make the edge weight sum within the subgraph as high as possible to achieve the purpose of clustering.  
+  It performs a low-dimension embedding of the affinity matrix between samples, followed by k-means clustering of the components of the eigenvectors in the low dimensional space.
+
+### Data Preparation and Model Evaluation
+The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+When developing clustering models with SAP tools and libraries, the choice of your application's runtime dictates the relevant information. Different approaches can be used to embed the time series scenario artifacts.
+ 
+
+### Programming Model Selection Guidelines
+When developing clustering scenarios with SAP HANA’s Predictive Analysis Library (PAL), consider the following guidelines:
+
+- **Recommended Approach (Data Science Workflows)**: Utilize the Python hana-ml library for a streamlined, intuitive experience aligned with standard data science practices, including convenient data manipulation and integration with machine learning workflows. This approach yields best productivity during ML model experimentation until the final model of choice and parameterization has been determined.
+- **Alternative Approaches**:
+  - **SQLScript database procedures and table functions** are the typical **HANA design-time artifacts** for embedding and invoking PAL and APL procedures into BTP CAP or XSA full-stack applications. Artifact generations from the hana-ml machine learning client in Python is supported.
+
+The final choice should align with your team’s expertise and project requirements.
+
+<div className="tabs-with-background">
+<Tabs groupId="language">
+<TabItem value="python" label="Python" default>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering/python"
+    className="button button--primary button--lg download-source-btn--tab"
+    target="_blank"
+    trackingFeature="DOWNLOAD_CLUSTERING"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+### Recommendation
+
+Use the hana_ml library for interacting with SAP HANA PAL and APL algorithms directly from Python.
+
+### SDKs
+
+- [hana_ml](https://help.sap.com/doc/1d0ebfe5e8dd44d09606814d83308d4b/latest/en-US/hana_ml.html)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- [Developing AI Models with the Python Machine Learning Client for SAP HANA](https://sap.plateau.com/learning/user/deeplink.do?linkId=ITEM_DETAILS&componentID=LSC_127518&componentTypeID=COURSE&revisionDate=1725890244000&nativelogin=y#/8A265CC6841B3310190018FA82E8C7D9)
+- [Outlier Detection by Clustering using Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/outlier-detection-by-clustering-using-python-machine-learning-client-for/ba-p/13469349)
+- [Model Storage with Python Machine Learning Client for SAP HANA](https://community.sap.com/t5/technology-blog-posts-by-sap/model-storage-with-python-machine-learning-client-for-sap-hana/ba-p/13483099)
+
+SAP Developer Tutorials:
+
+- [Predictive AI with SAP AI Core](https://developers.sap.com/group.ai-core-get-started-basics.html) (General AI Core usage)
+
+### Reference Code
+
+**Recommended**
+<ul>
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/clustering"
+        target="_blank"
+        trackingFeature="DOWNLOAD_CLUSTERING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+**Relevant Code**
+
+SAP HANA APL unsupervised clustering algorithm
+
+
+```python
+from hana_ml.algorithms.apl.clustering import AutoUnsupervisedClustering
+from hana_ml.dataframe import ConnectionContext, DataFrame
+Connecting to SAP HANA
+​
+CONN = ConnectionContext('HDB_HOST', HDB_PORT, 'HDB_USER', 'HDB_PASS')
+​
+# Creates Hana DataFrame
+hana_df = DataFrame(CONN, 'select * from APL_SAMPLES.CENSUS')
+Creating and fitting the model
+​
+model = AutoUnsupervisedClustering(CONN, nb_clusters=5)
+model.fit(data=hana_df, key='id')
+Debriefing
+​
+model.get_metrics()
+OrderedDict([('SimplifiedSilhouette', 0.3448029020802121), ('RSS', 4675.706587754118),...
+model.get_metrics_by_cluster()
+{'Frequency': {1: 0.23053242076908276,
+      2: 0.27434649954646656,
+      3: 0.09628652318517908,
+      4: 0.29919463456199663,
+      5: 0.09963992193727494},
+     'IntraInertia': {1: 0.6734978174937322,
+      2: 0.7202839995396123,
+      3: 0.5516800856975772,
+      4: 0.6969632183111357,
+      5: 0.5809322138167139},
+     'RSS': {1: 5648.626195319932,
+      2: 7189.15459940487,
+      3: 1932.5353401986129,
+      4: 7586.444631316713,
+      5: 2105.879275085588},
+     'SimplifiedSilhouette': {1: 0.1383827622819234,
+      2: 0.14716862328457128,
+      3: 0.18753797605134545,
+      4: 0.13679980173383793,
+      5: 0.15481377834381388},
+     'KL': {1: OrderedDict([('relationship', 0.4951910610641741),
+                   ('marital-status', 0.2776259711735807),
+                   ('hours-per-week', 0.20990189265572687),
+                   ('education-num', 0.1996353893520096),
+                   ('education', 0.19963538935200956),
+                   ...
+​
+# Predicting which cluster a data point belongs to
+​
+applyout_df = model.predict(hana_df)
+applyout_df.collect() # returns the output as a pandas DataFrame
+    id  CLOSEST_CLUSTER_1  DISTANCE_TO_CLOSEST_CENTROID_1
+0   30                  3                        0.640378
+1   63                  4                        0.611050
+2   66                  3                        0.640378
+3  110                  4                        0.611050
+4  335                  1                        0.851054
+​
+                            
+# Determining the 2 closest clusters
+                            
+model.set_params(extra_applyout_settings={'mode':'closest_distances', 'nb_distances': 2})
+applyout_df = model.predict(hana_df)
+applyout_df.collect() # returns the output as a pandas DataFrame
+    id  CLOSEST_CLUSTER_1  ...  CLOSEST_CLUSTER_2  DISTANCE_TO_CLOSEST_CENTROID_2
+0   30                  3  ...                  4                        0.730330
+1   63                  4  ...                  1                        0.851054
+2   66                  3  ...                  4                        0.730330
+3  110                  4  ...                  1                        0.851054
+4  335                  1  ...                  4                        0.906003
+​
+                            
+# Retrieving the distances to all clusters
+​
+model.set_params(extra_applyout_settings={'mode': 'all_distances'})
+applyout_df = model.predict(hana_df)
+applyout_df.collect() # returns the output as a pandas DataFrame
+    id  DISTANCE_TO_CENTROID_1               ... DISTANCE_TO_CENTROID_5
+0   30                  3               ...      1.160697
+1   63                  4               ...      1.160697
+2   66                  3               ...      1.160697
+​
+                            
+# Saving the model in the schema named 'MODEL_STORAGE'. Please model_storage class for further features of model storage.
+​
+model_storage = ModelStorage(connection_context=CONN, schema='MODEL_STORAGE')
+model.name = 'My model name'
+model_storage.save_model(model=model)
+Reloading the model for further use
+​
+model2 = AutoUnsupervisedClustering(conn_context=CONN)
+model2.load_model(schema_name='MySchema', table_name='MyTable')
+applyout2 = model2.predict(hana_df)
+applyout2.head(3).collect()
+    id  CLOSEST_CLUSTER_1  DISTANCE_TO_CLOSEST_CENTROID_1
+0   30                  3                        0.640378
+1   63                  4                        0.611050
+2   66                  3                        0.640378
+​
+                            
+# Exporting the SQL apply code
+​
+model = AutoUnsupervisedClustering(CONN, nb_clusters=5,
+                                       calculate_sql_expressions='enabled')
+model.fit(data=hana_df, key='id')
+sql = model.export_apply_code(code_type='HANA',
+                              key='id',
+                              schema_name='APL_SAMPLES',
+                              table_name='CENSUS')
+```
+
+</TabItem>
+
+<TabItem value="sql" label="SQL">
+
+### Recommendation
+
+SAP HANA's Predictive Analysis Library (PAL) algorithms can be directly invoked through SQLScript. This approach is beneficial for:
+
+- **Performance Optimization:** Minimizes data movement by executing directly within the database.
+- **Integration:** Allows embedding ML logic within database procedures, views, or calculation views for seamless integration with existing SAP HANA applications.
+- **Governance:** Provides a standardized approach within existing database governance frameworks.
+
+When implementing with SQLScript, you'll typically:
+
+1. Create parameter tables with algorithm-specific settings.  
+2. Prepare input data in the required format.  
+3. Call the PAL procedure.  
+4. Process the resulting output tables.
+
+### SDKs
+
+- [SAP HANA Predictive Analysis Library (PAL)](https://help.sap.com/docs/SAP_HANA_PLATFORM/2cfbc5cf2bc14f028cfbe2a2bba60a50/c9eeed704f3f4ec39441434db8a874ad.html?version=2.0.05&locale=en-US&q=PCA)
+
+### Tutorials and Learning Journeys
+
+SAP Community Blogs:
+
+- [SAP HANA PAL Quick Start](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-hana-pal-quick-start/ba-p/13084367)
+
+The following links point to the relevant SAP HANA PAL documentation for the SQLScript procedures:
+
+
+### Reference Code
+
+KMeans 
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_KMEANS_DATA_TBL;
+CREATE COLUMN TABLE PAL_KMEANS_DATA_TBL(
+    "ID" INTEGER,
+    "V000" DOUBLE,
+    "V001" VARCHAR(2),
+    "V002" DOUBLE
+);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (0, 0.5, 'A', 0.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (1, 1.5, 'A', 0.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (2, 1.5, 'A', 1.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (3, 0.5, 'A', 1.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (4, 1.1, 'B', 1.2);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (5, 0.5, 'B', 15.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (6, 1.5, 'B', 15.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (7, 1.5, 'B', 16.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (8, 0.5, 'B', 16.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (9, 1.2, 'C', 16.1);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (10, 15.5, 'C', 15.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (11, 16.5, 'C', 15.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (12, 16.5, 'C', 16.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (13, 15.5, 'C', 16.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (14, 15.6, 'D', 16.2);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (15, 15.5, 'D', 0.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (16, 16.5, 'D', 0.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (17, 16.5, 'D', 1.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (18, 15.5, 'D', 1.5);
+INSERT INTO PAL_KMEANS_DATA_TBL VALUES (19, 15.7, 'A', 1.6);
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL(
+    "PARAM_NAME" NVARCHAR(256), 
+    "INT_VALUE" INTEGER, 
+    "DOUBLE_VALUE" DOUBLE, 
+    "STRING_VALUE" NVARCHAR(1000)
+);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.2, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('GROUP_NUMBER', 4, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('INIT_TYPE', 1, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_LEVEL',2, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('MAX_ITERATION', 100, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('EXIT_THRESHOLD', NULL, 1.0E-6, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CATEGORY_WEIGHTS', NULL, 0.5, NULL);
+​
+CALL _SYS_AFL.PAL_KMEANS(PAL_KMEANS_DATA_TBL, "#PAL_PARAMETER_TBL", ?, ?, ?, ?, ?);
+​
+```
+
+DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_DBSCAN_DATA_TBL;
+CREATE COLUMN TABLE PAL_DBSCAN_DATA_TBL (
+    "ID" INTEGER, 
+    "V1" DOUBLE, 
+    "V2" DOUBLE,
+    "V3" VARCHAR(10)
+);
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(1, 0.10, 0.10, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(2, 0.11, 0.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(3, 0.10, 0.11, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(4, 0.11, 0.11, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(5, 0.12, 0.11, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(6, 0.11, 0.12, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(7, 0.12, 0.12, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(8, 0.12, 0.13, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(9, 0.13, 0.12, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(10, 0.13, 0.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(11, 0.13, 0.14, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(12, 0.14, 0.13, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(13, 10.10, 10.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(14, 10.11, 10.10, 'F');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(15, 10.10, 10.11, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(16, 10.11, 10.11, 'E');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(17, 10.11, 10.12, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(18, 10.12, 10.11, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(19, 10.12, 10.12, 'B');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(20, 10.12, 10.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(21, 10.13, 10.12, 'F');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(22, 10.13, 10.13, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(23, 10.13, 10.14, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(24, 10.14, 10.13, 'D');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(25, 4.10, 4.10, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(26, 7.11, 7.10, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(27, -3.10, -3.11, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(28, 16.11, 16.11, 'A');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(29, 20.11, 20.12, 'C');
+INSERT INTO PAL_DBSCAN_DATA_TBL VALUES(30, 15.12, 15.11, 'A');
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL (
+    "PARAM_NAME" VARCHAR(100), 
+    "INT_VALUE" INTEGER, 
+    "DOUBLE_VALUE" DOUBLE, 
+    "STRIN_VALUE" VARCHAR(100)
+);
+​
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.2, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('AUTO_PARAM', NULL, NULL, 'true');
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_METHOD', 1, NULL, NULL);
+​
+CALL _SYS_AFL.PAL_DBSCAN (PAL_DBSCAN_DATA_TBL, "#PAL_PARAMETER_TBL", ?, ?, ?, ?);
+```
+
+Agglomerate Hierarchical Clustering
+
+```sql
+SET SCHEMA DM_PAL;
+​
+DROP TABLE PAL_HIERARCHICAL_CLUSTERING_DATA_TBL;
+CREATE COLUMN TABLE PAL_HIERARCHICAL_CLUSTERING_DATA_TBL ("POINT" NVARCHAR(100), "X1" DOUBLE, "X2" DOUBLE ,  "X3" INTEGER);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('0', 0.5, 0.5, 1);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('1', 1.5, 0.5, 2);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('2', 1.5, 1.5, 2);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('3', 0.5, 1.5, 2);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('4', 1.1, 1.2, 2);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('5', 0.5, 15.5, 2);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('6', 1.5, 15.5, 3);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('7', 1.5, 16.5, 3);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('8', 0.5, 16.5, 3);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('9', 1.2, 16.1, 3);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('10', 15.5, 15.5, 3);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('11', 16.5, 15.5, 4);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('12', 16.5, 16.5, 4);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('13', 15.5, 16.5, 4);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('14', 15.6, 16.2, 4);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('15', 15.5, 0.5, 4);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('16', 16.5, 0.5, 1);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('17', 16.5, 1.5, 1);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('18', 15.5, 1.5, 1);
+INSERT INTO PAL_HIERARCHICAL_CLUSTERING_DATA_TBL VALUES ('19', 15.7, 1.6, 1);
+​
+DROP TABLE #PAL_PARAMETER_TBL;
+CREATE LOCAL TEMPORARY COLUMN TABLE #PAL_PARAMETER_TBL ("PARAM_NAME" VARCHAR(256), "INT_VALUE" INTEGER, "DOUBLE_VALUE" DOUBLE, "STRING_VALUE" VARCHAR(1000));
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('THREAD_RATIO', NULL, 0.5, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CLUSTER_NUM', 4, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CLUSTER_METHOD', 4, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_FUNC', 10, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('DISTANCE_DIMENSION', NULL, 3, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('NORMALIZE_TYPE', 0, NULL, NULL);
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CATEGORICAL_VARIABLE', NULL, NULL, 'X3');
+INSERT INTO #PAL_PARAMETER_TBL VALUES ('CATEGORY_WEIGHTS', NULL, 0.1, NULL);
+​
+CALL _SYS_AFL.PAL_HIERARCHICAL_CLUSTERING (PAL_HIERARCHICAL_CLUSTERING_DATA_TBL, #PAL_PARAMETER_TBL, ?, ?);
+```
+
+</TabItem>
+
+</Tabs>
+</div>
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
+  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/decision-support/data-clustering" text="Data Clustering" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={[
+  "rajeshwari-kute",
+  "francisco-robledo",
+  "luis-marques"
+  ]} />
+
+</div>
+
+</LoginWall>

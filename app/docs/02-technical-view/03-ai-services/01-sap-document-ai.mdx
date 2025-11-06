@@ -1,0 +1,385 @@
+---
+title: "SAP Document AI"
+description: ""
+hide_title: true
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+import RelatedProjects from "@site/src/components/RelatedProjects";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>SAP Document AI</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("ai-services/sap-document-ai/videos/BTP AI Best Practices - Document AI (intro).mp4")}>
+            <Icon name="video" />
+            <span>Teaser</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("ai-services/sap-document-ai/videos/BTP AI Best Practices - Document AI.mp4")}>
+              <Icon name="video" />
+              <span>Webinar</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("ai-services/sap-document-ai/pdfs/BTP AI Best Practices - SAP Document AI.pdf")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/document-ai"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_DOCUMENT_AI"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+SAP Document AI is a end-to-end document processing solution under SAP Business Technology Platform(BTP) AI services offerings that automates the extraction of structured and unstructured data information from business documents. It leverages advanced technologies, including machine learning and generative AI, to automate the extraction of information from business documents, thereby reducing errors and saving time. The service is designed to be efficient and adaptable, supporting multitenancy, which allows multiple users to share resources seamlessly. This feature is particularly beneficial for businesses with complex workflows and diverse teams.
+
+The service supports multitenancy, allowing it to be used in applications shared by multiple tenants, which is beneficial for businesses aiming to streamline operations. Available in BTP run-time environments, it includes features like instant learning, which uses feedback to enhance extraction quality, ensuring continuous improvement and reliability over time.
+
+As SAP Document AI is a managed service, SAP keeps on adding newer features and extend the capability of this service. e.g. [Supported file formats](https://help.sap.com/docs/document-information-extraction/document-information-extraction/supported-file-types-all), such as CSV, XLSX, and XML in [multiple languages](https://help.sap.com/docs/document-information-extraction/document-information-extraction/supported-languages-and-countries-regions) to increase versatility for various business needs, improved machine learning models for various standard documents (like Invoice, Purchase order etc.). You can check upcoming features at its [roadmap page](https://roadmaps.sap.com/board?PRODUCT=73554900100800002861&range=CURRENT-LAST#Q3%202025).
+
+<LoginWall>
+
+SAP Document AI comes in two different flavours:
+
+- **Standard Edition:** Standard SAP Document AI service which leverages pre-trained ML models to support a variety of business documents. This service also allows you to add custom templates and schema for data extraction which helps you to extract information from documents for which model is not pre-trained.
+- **Premium Edition:** SAP Document AI premium edition is an advanced offering from SAP which also leverages capability of [LLMs](/docs/glossary#llm-large-language-model) to significantly improve the extraction result quality and a coverage to a much broader set of business documents without the need of custom templating with [multi-language](https://help.sap.com/docs/document-information-extraction/document-information-extraction/languages-premium-edition) support.
+
+To ease the consumption of the service by business user, SAP has provided a dedicated user interface for this service which helps them manage [documents](https://help.sap.com/docs/document-information-extraction/document-information-extraction/using-document), [schema configurations](https://help.sap.com/docs/document-information-extraction/document-information-extraction/using-schema-configuration), [templates](https://help.sap.com/docs/document-information-extraction/document-information-extraction/using-template). This service also comes with an API end-point that you can consume within your application.
+
+### Expected Outcome
+
+This best practice helps you understand how you can leverage SAP Document AI to extract information from your business documents.
+
+### Benefits
+
+- **Accelerate productivity with automated and integrated workflows**
+  - Automate the extraction of relevant information from business documents
+- **Enhance accuracy and quality of file handling with AI at scale**
+  - Improved data extraction accuracy.
+  - Easy to scale with multi-tenancy support.
+- **Simplify operations with intuitive, secure experience**
+  - Reduce manual effort to process document
+  - User friendly experience to extract information from documents.
+
+### Key Concepts
+
+- **Default Extractor:** A predefined means of extracting information from common header or line item fields. Default extractors correspond to the output terms extracted by the pretrained model. There are several fields for which default extractors are available e.g. Due Date, Tax Rate, Buyer Name, and Delivery Note Number.
+- **Document Type:** A classification for documents from which information is extracted. There are two document types: [standard documents](https://help.sap.com/docs/document-information-extraction/document-information-extraction/standard-document-types?q=default+extractor) and [custom documents](https://help.sap.com/docs/document-information-extraction/document-information-extraction/custom-document-types?q=default+extractor).
+- **Schema:** [Schema](https://help.sap.com/docs/document-information-extraction/document-information-extraction/using-schema-configuration?q=SAP+Schema) is a collection of header and line item fields used to extract information from a document. There are two type of schemas available:
+  - **SAP Schema:** A Pre-defined collection of headers and line item fields used when uploading documents for extraction. Schemas reduce the effort involved in managing fields for extraction and help ensure consistency.
+  - **Custom Schema:** Service administrator can create custom schema or copy SAP schemas as a basis for creating their own schemas to extract the information.
+- **Template:** [Template](https://help.sap.com/docs/document-information-extraction/document-information-extraction/using-template?q=SAP+Schema) is an outline that shows where fields for extraction are located in a particular document layout. Templates are built on a schema. After creating a template, you associate one or more documents with it.
+- **Extraction confidence range:** Value range indicating the probable accuracy of results returned. Extraction confidence ranges are color coded, with red denoting low probability (0% to 50%), yellow denoting moderate probability (51% to 79%), and green denoting high probability (80% to 100%). You can also [update the confidence ranges](https://help.sap.com/docs/document-information-extraction/document-information-extraction/change-confidence-range-settings) as per your use case.
+- **Instant learning:** [Instant learning](https://help.sap.com/docs/document-information-extraction/document-information-extraction/instant-learning-premium-edition-only?q=instant+learning) is a feature that enables the user to provide feedback to enhance extraction quality. When users edit extraction results for a document and confirm their entries, their feedback has an immediate effect. As a result, the quality of extraction improves the next time users upload documents including fields of the type edited.
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Commercial
+
+- SAP Business Technology Platform subaccount
+- SAP Document AI / Document Information Extraction Service
+  - **Base Edition(blocks_of_100):** for Standard SAP Document AI/ Document Information Extraction service. Standard Service comes by default if you already have SAP Build Process Automation subscription.
+  - **Premium Edition:** For advanced usage, the premium edition is available as a subscription in the BTP service catalog.
+
+As this service is a managed service, it is offered by various service plans and usually charged in block of documents. You can find more details on the service plans on our [help portal](https://help.sap.com/docs/document-information-extraction/document-information-extraction/service-plans?q=instant+learning). Visit [SAP Discovery Center](https://discovery-center.cloud.sap/serviceCatalog/document-information-extraction?region=all&tab=service_plan) for pricing for associated service plans.
+
+Please note that this service would require your document to be upload to SAP Business Technology Platform tenant to process and extract the data, thus its also important for you to check the [availability](https://discovery-center.cloud.sap/serviceCatalog/document-information-extraction/?region=all&tab=service_plan) of this service in your region or country, if you have any data movement related constraints.
+
+### Technical
+
+1. Set up a SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/docs/technology/sap-business-technology-platform))
+2. Using SAP Document AI/ Document Information Extraction Service (Standard Edition) ([Setup Guide](https://developers.sap.com/tutorials/cp-aibus-dox-booster-app.html))
+3. Using SAP Document AI/ Document Information Extraction Service (Premium Edition) ([Setup Guide](https://developers.sap.com/tutorials/cp-aibus-dox-booster-app.html))
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+#### Document Template and Schema Configuration
+
+- **Always Use a Schema:** It is recommended to [always use a schema](https://help.sap.com/docs/document-information-extraction/document-information-extraction/best-practices-schema-configuration?q=default+extractorhttps://help.sap.com/docs/document-information-extraction/document-information-extraction/best-practices-schema-configuration) when uploading documents to the Document AI UI. Schemas help manage fields for extraction centrally, reducing manual effort and inconsistencies.
+- **Select Appropriate Templates:** If using a schema with a template, select the template from the dropdown in the Select Document step. If unsure, choose Detect Automatically to find the best template for your document.
+- **Create Templates from Extraction Results:** When a suitable template isn't available, create a template based on the extraction results for your documents.
+
+#### Table Structures for Information Extraction
+
+- **Use Standard Table Structures:** It is recommended to use tables with standard structures where headers are arranged horizontally from left to right. This format ensures better extraction results as it avoids nested structures and overlapping items.
+- **Use Default Extractors:** It is beneficial to use default extractors for all line items when configuring the corresponding schema for custom tables. If you are using Premium edition and default extractor is not resulting in good results, it is recommended to remove the default extractors from schema to instruct service to use direct LLM based extraction.
+
+#### Data Enrichment
+
+- **Keep Master Data Updated:** To improve the performance of the data enrichment feature, ensure that your master data is up to date and activated.
+- **Avoid Placeholder Values:** Do not use placeholder values for fields that lack a value. Remove these fields instead to ensure better enrichment results.
+- **Include Essential Fields:** Always include keys like name and address1 with valid supplier or customer information. Whenever possible, include taxId and bankAccount information in the businessEntity field.
+- **Adjust Enrichment Confidence Threshold:** Use the enrichmentConfidenceThreshold configuration key to adjust the similarity confidence threshold for data enrichment to low, high, or medium.
+- **Manual Data Activation:** For better control, use manual data activation instead of automatic activation, especially with large numbers of data records.
+
+#### Extraction Using Generative AI
+
+- **Use Premium Edition for Generative AI:** Extraction using generative AI is available with the premium edition service plan. It is recommended to use this plan to access advanced features and improve extraction results.
+- **Field descriptions:** For extraction using generative AI, the description acts as the prompt for document processing. Thus, it is important to provide a field description so that it clearly and distinguishably identifies the field.
+- **Monitor Confidence Scores:** The Document AI service returns confidence scores for extracted results. It is beneficial to monitor these scores to assess the accuracy of the extraction; however, if you are using the premium edition and LLM based extraction, the confidence score may not be as reliable as it is in standard edition.
+- **List of Values:** This is an another interesting way to improve the data extraction quality, if the attribute/entity which you would like to extract takes a set of fixed values, you can use this feature and the extraction service will try to find the closest match to list of values instead of extracting it as it is. This reduces a significant effort in post processing of the results in subsequent processes. You can also use this feature to perform in additional scenarios e.g. Document Classification.
+- **Instant Learning:** To use a schema for [instant learning](https://help.sap.com/docs/document-information-extraction/document-information-extraction/instant-learning-premium-edition-best-practices?q=instant+learning), you must include at least one field with the setup type auto. Select this [setup type](https://help.sap.com/docs/document-information-extraction/document-information-extraction/setup-types) for all fields with which you want to use instant learning. You can enable/disable instant learning feature using [configuration API](https://developers.sap.com/tutorials/cp-aibus-dox-activate-instant-learning.html). This is a powerful feature, and you can leverage this feature during user testing to incorporate their feedback to ensure the majority of user's scenarios are covered before using this service as productive.
+
+#### Security and Data Management
+
+- **Data Deletion:** To ensure all data ever submitted to the service is deleted, if usage of the service is not required, delete the service instances. This action is irreversible. If your documents are possessing personal data, you should [setup your configurations](https://help.sap.com/docs/document-information-extraction/document-information-extraction/data-protection-and-privacy#deletion-of-personal-data) to maintain highest data privacy standard.
+- **Consent Management:** Customers are responsible for obtaining relevant [consent to process](https://help.sap.com/docs/document-information-extraction/document-information-extraction/data-protection-and-privacy#consent) personal data, including approval by controllers to use SAP as a processor.
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+### Programming Model Selection Guidelines
+
+SAP Document AI is a service which enables both low-code/no-code users as well as pro-code users to use the service and extract the required information for documents seamlessly.
+
+<br />
+If you would like to use a Document AI Standard Edition, it is recommended to use it via [SAP Build Process Automation(SBPA)](https://www.sap.com/products/technology-platform/process-automation/features.html)
+as it helps to achieve your outcome very quickly due to out-of-the-box integration and in a low-code/no-code way. You can follow a [step-by-step guide](https://developers.sap.com/tutorials/spa-dox-create-automation..html)
+to create an automation (in low-code/no-code way) using SAP Document AI service.
+
+However, if you are using the standard in a custom application or would like to consume the Premium edition, you should go after an API based integration. SAP AI services publish detailed APIs which you can leverage to perform different activities using Document AI. You can find the API details on [SAP API Hub](https://api.sap.com/api/document_information_extraction_api/overview). You may find further details on this API interface at [SAP help page](https://help.sap.com/docs/document-information-extraction/document-information-extraction/api-reference).
+
+In order to use the API, you would require and instance of the SAP Document AI/ Document Information Extraction in your BTP subaccount. You can use service keys from this instance to call the API endpoints.
+
+While there are several endpoints serving different functions, you will be using [Document Endpoint](https://api.sap.com/api/document_information_extraction_api/resource/Document) to extract the fields from the document.
+
+<div className="tabs-with-background">
+<Tabs groupId="language">
+
+<TabItem value="low-code-no-code" label="Low-code / No-code">
+
+### Recommendation
+
+SAP Document AI standard edition is embedded within SAP Build Process Automation(SBPA). SAP Build process Automation provides a low-code no-code way to build automations. Document Information extraction is a pre-defined activity within SBPA which user can consume to extract the data from the documents.
+
+### SDKs
+
+- SAP Build Process Automation(SBPA) provides a collection of activities for extracting and enriching information under [Document Information Extraction SDK](https://help.sap.com/docs/build-process-automation/sap-build-process-automation/document-information-extraction-sdk). As its an embedded integration, SDK is updated with newer activities time to time to support your development requirement.
+
+### Tutorials and Learning Journeys
+
+- [Create an Automation to Extract Invoice Details](https://developers.sap.com/tutorials/spa-dox-create-automation..html)
+- [Process and approve your invoices with SAP Build Process Automation](https://discovery-center.cloud.sap/missiondetail/3260/3344/)
+- [Shape Machine Learning to Process Standard Business Documents](https://developers.sap.com/mission.btp-aibus-shape-ml.html)
+- [Shape Machine Learning to Process Custom Business Documents](https://developers.sap.com/mission.btp-aibus-shape-ml-custom.html)
+- [Extract Information from Standard Documents with Generative AI and Document Information Extraction](https://developers.sap.com/tutorials/cp-aibus-dox-ui-gen-ai-std.html)
+- [Extract Information from Custom Documents with Generative AI and Document Information Extraction](https://developers.sap.com/tutorials/cp-aibus-dox-ui-gen-ai.html)
+
+</TabItem>
+
+<TabItem value="python" label="Python" default>
+
+<TrackableLink
+  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/document-ai"
+  className="button button--primary button--lg download-source-btn--tab"
+  target="_blank"
+  trackingFeature="DOWNLOAD_DOCUMENT_AI"
+>
+  <span>Download Source Code</span>
+</TrackableLink>
+
+### Recommendation
+
+Python is often the preferred language for developing AI applications. While Document AI offers a low-code/no-code interface ideal for business users, professional developers can leverage SAP-published client libraries for deeper integration. These clients help standardize and accelerate application development, making it easier to embed the service into custom solutions.
+
+### SDKs
+
+- Python [Document Information Extraction Library](https://github.com/SAP/business-document-processing/tree/main/sap_business_document_processing) provides clients to which helps you classify the document and extract the information from the document using REST API.
+
+### Tutorials and Learning Journeys
+
+- Document Information Extraction library documentation covers a [step by step excercises](https://github.com/SAP/business-document-processing/tree/main/doc_inf_ext_exercises) on data extraction using Document Information Extraction UI and using REST API.
+
+### Reference Code
+
+<ul>
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/document-ai/python"
+        target="_blank"
+        trackingFeature="DOWNLOAD_DOCUMENT_AI"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+#### Relevant Code
+
+```python
+# Import DOX API client
+from env_variables import *
+from sap_business_document_processing import DoxApiClient
+import json
+from utils import display_capabilities
+from sap_business_document_processing.document_information_extraction_client.constants import CONTENT_TYPE_PDF
+​
+# Instantiate object used to communicate with Document Information Extraction REST API
+api_client = DoxApiClient(url, client_id, client_secret, uaa_url)
+​
+​
+# Get the available document types and corresponding extraction fields
+capabilities = api_client.get_capabilities()
+display_capabilities(capabilities)
+​
+# Check which clients exist for this tenant
+api_client.get_clients()
+# Create a new client with the id 'c_00' and name 'Client 00'
+api_client.create_client(client_id='c_00', client_name='Client 00')
+​
+# The constants provide supported content types that can be imported, e.g. for PDF, PNG, JPEG or TIFF files as well as the
+# CONTENT_TYPE_UNKNOWN that lets the library fetch the content type automatically based on the file's extension
+​
+​
+# Specify the fields that should be extracted
+header_fields = ["documentNumber","taxId","purchaseOrderNumber","shippingAmount","netAmount","senderAddress","senderName","grossAmount",
+                 "currencyCode","receiverContact","documentDate","taxAmount","taxRate","receiverName","receiverAddress"]
+line_item_fields = ["description","netAmount","quantity","unitPrice"]
+​
+# Extract information from invoice document
+document_result = api_client.extract_information_from_document(document_path='jan_bill_download.pdf',
+                                                               client_id='default',
+                                                               document_type='invoice',
+                                                               mime_type=CONTENT_TYPE_PDF,
+                                                               header_fields=header_fields,
+                                                               line_item_fields=line_item_fields)
+​
+​
+# Check the extracted data
+​
+json_object = json.dumps(document_result, indent=2)
+​
+# Writing to result.json
+with open("result.json", "w") as outfile:
+    outfile.write(json_object)
+​
+# # Let's visualize the extracted values on the invoice document
+# from utils import display_extraction
+# display_extraction(document_result, 'jan_bill_download.pdf')
+```
+
+</TabItem>
+
+<TabItem value="javascript-typescript" label="JavaScript/TypeScript" default>
+
+SAP AI services have published detailed APIs which you can leverage to perform different activities using Document AI. You can find the API details on [SAP API Hub](https://api.sap.com/api/document_information_extraction_api/overview). You may find further details on this API interface at [SAP help page](https://help.sap.com/docs/document-information-extraction/document-information-extraction/api-reference). You can find API endpoints serving different functions, you will be using [Document Endpoint](https://api.sap.com/api/document_information_extraction_api/resource/Document) to extract the fields from the document.
+
+You can call these API endpoint from Javascript/Typescript applications to extract the data from your business documents.
+
+</TabItem>
+
+<TabItem value="cap" label="CAP" default>
+
+SAP AI services have published detailed APIs which you can leverage to perform different activities using Document AI. You can find the API details on [SAP API Hub](https://api.sap.com/api/document_information_extraction_api/overview). You may find further details on this API interface at [SAP help page](https://help.sap.com/docs/document-information-extraction/document-information-extraction/api-reference). You can find API endpoints serving different functions, you will be using [Document Endpoint](https://api.sap.com/api/document_information_extraction_api/resource/Document) to extract the fields from the document.
+
+You can call these API endpoint from CAP application to extract the data from your business documents.
+
+</TabItem>
+
+<TabItem value="java" label="Java" default>
+
+SAP AI services have published detailed APIs which you can leverage to perform different activities using Document AI. You can find the API details on [SAP API Hub](https://api.sap.com/api/document_information_extraction_api/overview). You may find further details on this API interface at [SAP help page](https://help.sap.com/docs/document-information-extraction/document-information-extraction/api-reference). You can find API endpoints serving different functions, you will be using [Document Endpoint](https://api.sap.com/api/document_information_extraction_api/resource/Document) to extract the fields from the document.
+
+You can call these API endpoint from Java application to extract the data from your business documents.
+
+</TabItem>
+
+</Tabs>
+</div>
+
+<RelatedProjects />
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/generative-ai/plain/access-to-generative-ai-models" text="Access to Generative AI Models" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/information-extraction-from-documents" text="Information Extraction from Documents" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+    <PageContributors contributorIds={[
+        "chirag-gupta",
+        "bhagabat-prasad-behera",
+        "luis-marques"
+    ]}/>
+
+</div>
+
+</LoginWall>
