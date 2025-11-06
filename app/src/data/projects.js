@@ -11,7 +11,7 @@ export const projects = [
       "AI Email Agent that prioritizes and answers emails end-to-end, integrating with SAP S/4HANA, Ariba, and more systems to traverse decision trees and compliance gates.",
     categories: [],
     industries: [],
-    icon: "email",
+    icon: "workflow-tasks",
     docsPath: "agentic-email-automation",
     sampleFiles: [],
     appUrl: "https://email-agent-cockpit.cfapps.eu10-004.hana.ondemand.com/email-agent",
