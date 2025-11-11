@@ -357,14 +357,27 @@ export default function initEmailCockpitPage() {
   }
 
   function setTags(tags) {
-    // Keep Inbox
-    const inbox = tagsList.querySelector("ui5-li[data-tag='']");
+    // Ensure we have an Inbox item reference (create if missing)
+    const existingInbox = tagsList.querySelector("ui5-li[data-tag='']");
+    const inbox =
+      existingInbox ||
+      (() => {
+        const li = document.createElement("ui5-li");
+        li.setAttribute("type", "Active");
+        li.setAttribute("icon", "inbox");
+        li.textContent = "Inbox";
+        li.dataset.tag = "";
+        return li;
+      })();
     tagsList.innerHTML = "";
-    if (inbox) tagsList.appendChild(inbox);
     // Compute counts from all emails
-    const inboxCount = allEmailsCache.length;
-    if (inboxCount && inbox) {
+    const inboxCount = allEmailsCache.filter((e) => !(e.tags && e.tags.length)).length;
+    if (inbox) {
       inbox.setAttribute("additional-text", String(inboxCount));
+      // Only show Inbox if it has emails
+      if (inboxCount > 0) {
+        tagsList.appendChild(inbox);
+      }
     }
     const tagCounts = new Map();
     allEmailsCache.forEach((e) => {
@@ -389,10 +402,52 @@ export default function initEmailCockpitPage() {
     return emails.filter((email) => String(email.priority || "").toLowerCase() === priority);
   }
 
+  function selectFolderItem(li) {
+    if (!li || !tagsList) return;
+    // Clear any existing selection
+    try {
+      tagsList.querySelectorAll("ui5-li").forEach((item) => {
+        item.selected = false;
+      });
+    } catch {}
+    // Mark this one as selected
+    li.selected = true;
+    // Also update list selectedItems for consistency
+    try {
+      tagsList.selectedItems = [li];
+    } catch {}
+  }
+
+  async function selectFirstFolderAndRender() {
+    // Pick first folder item in the list
+    const firstItem = tagsList?.querySelector("ui5-li");
+    if (!firstItem) {
+      // No folders to select; clear view
+      currentTag = null;
+      emailsCache = [];
+      filteredEmailsCache = [];
+      renderEmails(filteredEmailsCache);
+      if (emailsTitle) emailsTitle.textContent = "Inbox";
+      if (emailsCount) emailsCount.textContent = "0";
+      clearPreview();
+      return;
+    }
+    currentTag = firstItem.dataset?.tag || null;
+    selectFolderItem(firstItem);
+    await loadAndRender(currentTag, currentPriority);
+    // Update header title and counts
+    const baseEmails = currentTag ? allEmailsCache.filter((e) => (e.tags || []).includes(currentTag)) : allEmailsCache.filter((e) => !(e.tags && e.tags.length));
+    const filteredCount = filterEmailsByPriority(baseEmails, currentPriority).length;
+    if (emailsTitle) emailsTitle.textContent = currentTag || "Inbox";
+    if (emailsCount) emailsCount.textContent = String(filteredCount);
+  }
+
   async function loadAndRender(tag = null, priority = "all") {
     const emails = await fetchEmails(tag);
-    emailsCache = emails;
-    filteredEmailsCache = filterEmailsByPriority(emails, priority);
+    // For Inbox (no tag), only show untagged emails
+    const baseEmails = tag ? emails : emails.filter((e) => !(e.tags && e.tags.length));
+    emailsCache = baseEmails;
+    filteredEmailsCache = filterEmailsByPriority(baseEmails, priority);
     renderEmails(filteredEmailsCache);
     clearPreview();
     updateResetButtonVisibility();
@@ -470,12 +525,11 @@ export default function initEmailCockpitPage() {
       classifyBtn.disabled = true;
       await classifyAllEmails();
       // Refresh data (all emails and tags)
-      const [tags, emails] = await Promise.all([fetchTags(), fetchEmails(currentTag)]);
-      allEmailsCache = await fetchEmails();
+      const [tags, allEmails] = await Promise.all([fetchTags(), fetchEmails()]);
+      allEmailsCache = allEmails;
       setTags(tags);
-      emailsCache = emails;
-      filteredEmailsCache = filterEmailsByPriority(emails, currentPriority);
-      renderEmails(filteredEmailsCache);
+      // Always select and render the first folder after classification
+      await selectFirstFolderAndRender();
       updateResetButtonVisibility();
       if (toast) {
         toast.textContent = "Emails classified successfully";
@@ -499,13 +553,11 @@ export default function initEmailCockpitPage() {
       resetBtn.disabled = true;
       await resetEmails();
       // Refresh all data after reset
-      const [tags, emails] = await Promise.all([fetchTags(), fetchEmails(currentTag)]);
-      allEmailsCache = await fetchEmails();
+      const [tags, allEmails] = await Promise.all([fetchTags(), fetchEmails()]);
+      allEmailsCache = allEmails;
       setTags(tags);
-      emailsCache = emails;
-      filteredEmailsCache = filterEmailsByPriority(emails, currentPriority);
-      renderEmails(filteredEmailsCache);
-      clearPreview();
+      // Always select and render the first folder after reset
+      await selectFirstFolderAndRender();
       updateResetButtonVisibility();
       if (toast) {
         toast.textContent = "Dataset reset to unclassified";
@@ -526,12 +578,10 @@ export default function initEmailCockpitPage() {
     const li = ev.detail.item;
     currentTag = li?.dataset?.tag || null;
     // Mark the clicked folder as selected
-    try {
-      tagsList.selectedItems = [li];
-    } catch {}
+    selectFolderItem(li);
     await loadAndRender(currentTag, currentPriority);
     // Update header title and count after folder change
-    const baseEmails = currentTag ? allEmailsCache.filter((e) => (e.tags || []).includes(currentTag)) : allEmailsCache;
+    const baseEmails = currentTag ? allEmailsCache.filter((e) => (e.tags || []).includes(currentTag)) : allEmailsCache.filter((e) => !(e.tags && e.tags.length));
     const filteredCount = filterEmailsByPriority(baseEmails, currentPriority).length;
     if (emailsTitle) emailsTitle.textContent = currentTag || "Inbox";
     if (emailsCount) emailsCount.textContent = String(filteredCount);
@@ -563,8 +613,10 @@ export default function initEmailCockpitPage() {
 
       const [tags, emails] = await Promise.all([fetchTags(), fetchEmails()]);
       allEmailsCache = emails;
-      emailsCache = emails;
-      filteredEmailsCache = filterEmailsByPriority(emails, currentPriority);
+      // Default Inbox view: show only untagged emails
+      const baseEmails = emails.filter((e) => !(e.tags && e.tags.length));
+      emailsCache = baseEmails;
+      filteredEmailsCache = filterEmailsByPriority(baseEmails, currentPriority);
       setTags(tags);
       renderEmails(filteredEmailsCache);
       updateResetButtonVisibility();
@@ -575,7 +627,7 @@ export default function initEmailCockpitPage() {
       const inboxItem = tagsList?.querySelector("ui5-li[data-tag='']");
       if (inboxItem && tagsList) {
         try {
-          tagsList.selectedItems = [inboxItem];
+          selectFolderItem(inboxItem);
         } catch {}
       }
     } catch (e) {
