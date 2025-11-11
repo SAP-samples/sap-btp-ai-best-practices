@@ -11,11 +11,9 @@
     },
     "sentDate": "2025-07-15T07:01:00",
     "messageId": "AR@tymemai.com",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -31,11 +29,9 @@
     },
     "sentDate": "2025-08-14T08:07:00",
     "messageId": "ar@tiger.com",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -51,11 +47,9 @@
     },
     "sentDate": "2025-08-14T13:19:00",
     "messageId": "ja@email.com",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -71,11 +65,9 @@
     },
     "sentDate": "2025-08-14T12:38:00",
     "messageId": "ar@office.com",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -91,11 +83,9 @@
     },
     "sentDate": "2025-08-14T07:42:00",
     "messageId": "AccountsReceivable@gencomp.com",
-    "tags": [
-      "Short Payments"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -111,11 +101,9 @@
     },
     "sentDate": "2025-08-12T14:30:00Z",
     "messageId": "<inv001@techcorp.com>",
-    "tags": [
-      "Receiving of Invoice Notification"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -131,11 +119,9 @@
     },
     "sentDate": "2025-08-13T10:15:00Z",
     "messageId": "<w9update002@medical.supplies>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -151,11 +137,9 @@
     },
     "sentDate": "2025-08-14T15:10:00Z",
     "messageId": "<lookup004@printing.works>",
-    "tags": [
-      "Expedited Payment Request"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -171,11 +155,9 @@
     },
     "sentDate": "2025-08-13T12:20:00Z",
     "messageId": "<internal004@finance.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -191,11 +173,9 @@
     },
     "sentDate": "2025-08-14T08:30:00Z",
     "messageId": "<resolved003@security.tech>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "resolved",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -211,11 +191,9 @@
     },
     "sentDate": "2025-08-14T14:25:00Z",
     "messageId": "<payment004@cleaning.pro>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -231,11 +209,9 @@
     },
     "sentDate": "2025-08-13T09:15:00Z",
     "messageId": "<reroute006@hr.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -251,11 +227,9 @@
     },
     "sentDate": "2025-08-14T13:15:00Z",
     "messageId": "<progress003@equipment.rental>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -271,11 +245,9 @@
     },
     "sentDate": "2025-08-14T10:20:00Z",
     "messageId": "<lookup005@software.dev>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -291,11 +263,9 @@
     },
     "sentDate": "2025-08-13T15:45:00Z",
     "messageId": "<internal005@facilities.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -311,11 +281,9 @@
     },
     "sentDate": "2025-08-13T11:10:00Z",
     "messageId": "<payment005@office.supplies>",
-    "tags": [
-      "Short Payments"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -331,11 +299,9 @@
     },
     "sentDate": "2025-08-14T09:40:00Z",
     "messageId": "<resolved004@training.corp>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "resolved",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -351,11 +317,9 @@
     },
     "sentDate": "2025-08-14T11:55:00Z",
     "messageId": "<w9update003@marketing.external>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -371,11 +335,9 @@
     },
     "sentDate": "2025-08-13T14:00:00Z",
     "messageId": "<reroute007@compliance.internal>",
-    "tags": [
-      "Expedited Payment Request"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -391,11 +353,9 @@
     },
     "sentDate": "2025-08-14T08:50:00Z",
     "messageId": "<lookup006@landscaping.services>",
-    "tags": [
-      "Receiving of Invoice Notification"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -411,11 +371,9 @@
     },
     "sentDate": "2025-08-13T16:45:00Z",
     "messageId": "<payment006@waste.management>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -431,11 +389,9 @@
     },
     "sentDate": "2025-08-14T07:20:00Z",
     "messageId": "<internal006@quality.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -451,11 +407,9 @@
     },
     "sentDate": "2025-08-14T12:30:00Z",
     "messageId": "<progress004@telecom.provider>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -471,11 +425,9 @@
     },
     "sentDate": "2025-08-14T15:30:00Z",
     "messageId": "<resolved005@maintenance.pro>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "resolved",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -491,11 +443,9 @@
     },
     "sentDate": "2025-08-13T13:50:00Z",
     "messageId": "<reroute008@logistics.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -511,11 +461,9 @@
     },
     "sentDate": "2025-08-14T14:40:00Z",
     "messageId": "<lookup007@consulting.plus>",
-    "tags": [
-      "Changes to Invoices"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -531,11 +479,9 @@
     },
     "sentDate": "2025-08-13T10:45:00Z",
     "messageId": "<payment007@events.management>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -551,11 +497,9 @@
     },
     "sentDate": "2025-08-14T08:05:00Z",
     "messageId": "<internal007@risk.internal>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -571,11 +515,9 @@
     },
     "sentDate": "2025-08-13T09:30:00Z",
     "messageId": "<w9update004@design.studio>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -591,11 +533,9 @@
     },
     "sentDate": "2025-08-14T13:25:00Z",
     "messageId": "<lookup008@shipping.express>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -611,11 +551,9 @@
     },
     "sentDate": "2025-08-14T11:20:00Z",
     "messageId": "<resolved006@translation.services>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "resolved",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -631,11 +569,9 @@
     },
     "sentDate": "2025-08-13T14:30:00Z",
     "messageId": "<reroute009@analytics.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "low",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -651,11 +587,9 @@
     },
     "sentDate": "2025-08-14T10:10:00Z",
     "messageId": "<payment008@healthcare.provider>",
-    "tags": [
-      "Payment Inquiries"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -671,11 +605,9 @@
     },
     "sentDate": "2025-08-13T12:45:00Z",
     "messageId": "<internal008@audit.internal>",
-    "tags": [
-      "Other/Unclear"
-    ],
-    "status": "action-needed",
-    "priority": "critical",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   },
@@ -691,11 +623,9 @@
     },
     "sentDate": "2025-08-14T15:05:00Z",
     "messageId": "<progress005@food.services>",
-    "tags": [
-      "Vendor data updates"
-    ],
-    "status": "action-needed",
-    "priority": "medium",
+    "tags": [],
+    "status": "",
+    "priority": "",
     "thread_id": "",
     "folder": ""
   }
