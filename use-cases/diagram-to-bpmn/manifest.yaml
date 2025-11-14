@@ -1,0 +1,28 @@
+applications:
+  - name: diagram-to-bpmn-api
+    memory: 512M
+    disk_quota: 1G
+    path: ./api # Points to API folder
+    buildpacks:
+      - python_buildpack
+    command: python -m app.main
+    routes:
+      - route: diagram-to-bpmn-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      ALLOWED_ORIGIN: https://diagram-to-bpmn.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: diagram-to-bpmn-ui
+    memory: 256M
+    disk_quota: 1G
+    path: ./ui-UI5 # Points to UI folder
+    buildpacks:
+      - nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    routes:
+      - route: diagram-to-bpmn.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://diagram-to-bpmn-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: diagram-to-bpmn.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))
