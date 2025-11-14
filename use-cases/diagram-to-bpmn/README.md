@@ -19,11 +19,11 @@ This application provides an intuitive web interface for converting process diag
 
 The application consists of two main components:
 
-- **Frontend**: Streamlit-based web interface for user interaction
+- **Frontend**: UI5 Web Components interface built with Vite for user interaction
 - **Backend**: FastAPI service handling image processing and LLM integration
 
 ```
-Diagram_to_BPMN/
+diagram-to-bpmn/
 ├── api/                    # FastAPI backend application
 │   ├── app/
 │   │   ├── main.py        # FastAPI application entry point
@@ -33,14 +33,17 @@ Diagram_to_BPMN/
 │   │   ├── prompts/       # LLM prompt templates
 │   │   └── utils/         # Utility functions
 │   └── requirements.txt   # Backend dependencies
-├── ui/                     # Streamlit frontend application
+├── ui-UI5/                # UI5 Web Components frontend application
 │   ├── src/
-│   │   ├── Home.py        # Main UI application
-│   │   ├── api_client.py  # API communication
-│   │   └── utils.py       # UI utilities
-│   ├── static/            # Static assets (CSS, images)
-│   ├── streamlit_app.py   # Streamlit entry point
-│   └── requirements.txt   # Frontend dependencies
+│   │   ├── pages/         # Page components (home, etc.)
+│   │   ├── services/      # API client and services
+│   │   ├── modules/       # Router and navigation modules
+│   │   ├── config/        # Configuration files
+│   │   └── main.js        # Application entry point
+│   ├── public/            # Static assets (images, logos)
+│   ├── index.html         # HTML entry point
+│   ├── vite.config.js     # Vite build configuration
+│   └── package.json       # Frontend dependencies
 ├── diagrams/              # Sample diagram images for testing
 ├── docs/                  # Documentation
 ├── manifest.yaml          # Cloud Foundry deployment configuration
@@ -51,7 +54,8 @@ Diagram_to_BPMN/
 
 Before running the application, ensure you have:
 
-- **Python 3.10+** (for local development)
+- **Python 3.10+** (for backend API development)
+- **Node.js 18+ and npm** (for frontend UI5 development)
 - **Cloud Foundry CLI** (for deployment to SAP BTP)
 - **SAP GenAI Hub Access** with valid credentials
 - **Network Access** to selected LLM providers (OpenAI, Anthropic, Google Vertex)
@@ -66,13 +70,13 @@ Create environment files for both frontend and backend:
 # For the backend API
 cp api/.env.example api/.env
 
-# For the frontend UI
-cp ui/.env.example ui/.env
+# For the frontend UI5 application
+cp ui-UI5/.env.example ui-UI5/.env
 ```
 
 Configure your credentials in the `.env` files:
 - **`api/.env`**: Add your `AICORE_*` credentials and set a secure `API_KEY`
-- **`ui/.env`**: Ensure `API_KEY` matches the backend configuration
+- **`ui-UI5/.env`**: Set `VITE_API_BASE_URL` (default: `http://127.0.0.1:8000`) and `VITE_API_KEY` to match the backend configuration
 
 ### 2. Backend Setup
 
@@ -98,30 +102,27 @@ The API server will start on `http://localhost:8000`. You can explore the intera
 Open a new terminal window:
 
 ```bash
-# Navigate to the UI directory
-cd ui
-
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+# Navigate to the UI5 directory
+cd ui-UI5
 
 # Install dependencies
-pip install -r requirements.txt
+npm install
 
-# Run the Streamlit application
-python streamlit_app.py
+# Run the development server
+npm run dev
 ```
 
-The web interface will be available at `http://localhost:8501`.
+The web interface will be available at `http://localhost:5173` (or the port shown in the terminal). For production builds, use `npm run build` to create optimized static files.
 
 ## Usage
 
 ### Web Interface
 
 1. **Upload Diagram**: Use the file uploader to select a process diagram image
-2. **Select AI Model**: Choose from available providers and models in the sidebar
-3. **Generate BPMN**: Click "Generate BPMN XML" to process the image
-4. **Download Result**: Download the generated BPMN XML file for import into Signavio
+2. **Generate BPMN**: Click "Generate BPMN XML" to process the image
+3. **Download Result**: Download the generated BPMN XML file for import into Signavio
+
+The UI5 interface provides a modern, responsive design with SAP Fiori-inspired components for an intuitive user experience.
 
 ### Supported File Formats
 
