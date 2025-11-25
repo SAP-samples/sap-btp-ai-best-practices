@@ -1,8 +1,6 @@
 ---
 title: "Document Grounding with SAP Document Management Service"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -24,15 +22,6 @@ import PageContributors from "@site/src/components/PageContributors";
   <h1>Document Grounding with SAP Document Management Service</h1>
 </div>
 
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
-
 <div className="section-with-background">
   <div className="row">
     <div className="col col--8">
@@ -42,151 +31,209 @@ Don't forget to remove this message.
           <Link to="#1-overview">Overview</Link>
         </li>
         <li>
-          <Link to="#2-pre-requisites">Pre-requisites</Link>
+          <Link to="#2-btp-pre-requisites">BTP Pre-requisites</Link>
         </li>
         <li>
-          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
-        </li>
-        <li>
-          <Link to="#4-implementation">Implementation</Link>
+          <Link to="#3-setting-up-guidelines">Setting up Guidelines</Link>
         </li>
       </ol>
     </div>
-    <div className="col col--4">
-      <ul className="resource-links">
-        <li>
-          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
-            <Icon name="video" />
-            <span>Teaser [TODO]</span>
-          </Link>
-        </li>
-        <LoginWall renderOnlyWhenLoggedIn={true}>
-          <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
-              <Icon name="video" />
-              <span>Webinar [TODO]</span>
-            </Link>
-          </li>
-          <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/#TODO")}>
-              <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
-            </Link>
-          </li>
-        </LoginWall>
-      </ul>
-    </div>
   </div>
 </div>
-
-<LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
-    <span>Download Source Code</span>
-  </TrackableLink>
-</LoginWall>
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
 
-...
+SAP Document Management Service (DMS) is a cloud service on SAP Business Technology Platform (BTP) that allows enterprises to securely store, organize, and manage documents in a scalable repository. It provides:
+- Centralized document storage and retrieval.
+- API access via CMIS and REST interfaces.
+- Options for both Integration (API access) and Repository (document storage) plans.
 
-### Expected Outcome
+By integrating DMS with the SAP Document Grounding Service (part of Generative AI Hub), enterprises can:
+- Feed enterprise documents into Large Language Models (LLMs).
+- Improve contextual grounding for generative AI.
+- Reduce hallucinations and provide business-relevant, accurate responses.
 
-...
+Please refer the list of [content types](https://help.sap.com/docs/joule/integrating-joule-with-sap/set-up-document-grounding) supported with Document Grounding service.
 
 <LoginWall>
 
-### Benefits
+## <span className="step-number">2</span> <span className="step-title">BTP Pre-requisites</span>
 
-...
+BTP Set up
 
-### Key Concepts
+- **SAP AI Core** (Extended Plan).
+- **SAP AI Launchpad** (Standard Plan).
+- **Cloud Foundry Runtime**.
+- **SAP Document Management Service** (DMS) with:
+  - *Integration Option* (sdm) entitlement.
+  - *Repository Option (sdm-repository)* entitlement. Grounding Management on AI Core
+  - Access to DMS APIs with OAuth 2.0 credentials.
+  - Users with authorization to create repositories and upload documents.
 
-...
+## <span className="step-number">3</span> <span className="step-title">Setting up Guidelines</span>
 
-## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+### 3.1 Configure Document Management Service
 
-...
+**Initial Set up:**
 
-## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+- In the Service Marketplace, create an instance of Document Management – Integration Option (standard plan).
 
-...
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-01.png)
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-02.png)
 
-## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+- Create a Service Key for this instance and note the values:
 
-...
+  token URL → uaa.url/oauth/token?grant_type=client_credentials <br />
+  client secret → uaa.clientsecret <br />
+  client ID → uaa.clientid <br />
+  service_url → endpoints.ecmservice.url/rest/v2/repositories <br />
 
-<div className="tabs-with-background">
-<Tabs groupId="language">
-<TabItem value="python" label="Python" default>
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-03.png)
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+**Create a Repository:**
 
-...
+- Generate an Access Token using the service key credentials.
 
-</TabItem>
+``` python
+import requests
+from requests.auth import HTTPBasicAuth
+​
+def get_oauth_token(token_url: str, client_id: str, client_secret: str):
+    """
+    Fetch OAuth token from SAP BTP UAA service.
+​
+    Args:
+        token_url (str): Token endpoint URL.
+        client_id (str): OAuth client ID.
+        client_secret (str): OAuth client secret.
+​
+    Returns:
+        Response object or None if request fails.
+    """
+    try:
+        response = requests.post(token_url, auth=HTTPBasicAuth(client_id, client_secret))
+        response.raise_for_status()
+        return response
+    except requests.exceptions.RequestException as e:
+        print("Error fetching token:", e)
+        return None
+```
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+- Use obtained access token to create a Repository in Document Management Service. Once the repository is created, keep a note of the corresponding Repository ID.
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+``` python
+import requests
+​
+def create_repository(service_url: str, access_token: str, display_name="TestRepository", description="TestRepository_For_Grounding_Servie_Testing"):
+    """
+    Create a repository in SAP DMS using the Integration Option.
+    """
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "repository": {
+            "displayName": display_name,
+            "description": description,
+            "repositoryType": "internal",
+            "isVersionEnabled": "true",
+            "isAIEnabled": "true"
+        }
+    }
+    try:
+        response = requests.post(service_url, headers=headers, json=payload)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.RequestException as e:
+        print("Error creating repository:", e)
+        return None
+​
+      
+# Pass service url, and newly obtained access token to the following function to run.      
+​
+response = create_repsitory(service_url, access_token, display_name="Grounding_Service_SDM_Integration",
+                            description="Repository for Grounding Service testing with SDM AI enabled")
+```
 
-...
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-04.png)
 
-</TabItem>
+- Get Updated Service key <br/>
+  Once the repository is created with AI enabled option, the service key is updated with ai-bridge endpoint. You need to visit the service key created for DMS integration option and note the aibridgeservice.url.
 
-<TabItem value="cap-app" label="CAP">
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-05.png)
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+- Upload Documents <br/>
+  Next is to upload the documents to your newly created DMS repository.
 
-...
+``` python
+def upload_document_to_root_folder(service_url: str, access_token: str, repository_id: str, file_path: str, file_name: str = None):
+    """
+    Upload a document to a specific folder in the repository.
+    """
+    ecm_url = service_url.replace("/rest/v2/repositories", "/browser")
+    url = f"{ecm_url}/{repository_id}/root"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    if not file_name:
+        file_name = file_path.split("/")[-1]
+    files = {
+        "cmisaction": (None, "createDocument"),
+        "propertyId[0]": (None, "cmis:name"),
+        "propertyValue[0]": (None, file_name),
+        "propertyId[1]": (None, "cmis:objectTypeId"),
+        "propertyValue[1]": (None, "cmis:document"),
+        "content": (file_name, open(file_path, "rb")),
+        "_charset_": (None, "UTF-8")
+    }
+    response = requests.post(url, headers=headers, files=files)
+    if response.status_code in [200, 201]:
+        print(f"Document '{file_name}' uploaded successfully.")
+        return response.json()
+    else:
+        print("Error uploading document:", response.status_code, response.text)
+        return None
+      
+# Mention the path where  you have stored all your documents.
+# For example we have stored it in data folder hence we have mentioned data.
+​
+import glob
+fl_names = glob.glob("data/*")
+for file_path in fl_nms:
+    file_path = file_path.replace("\\", "/")
+    print(file_path)
+    response = upload_document_to_root_folder(
+        service_url,
+        access_token,
+        repository_id,
+        file_path,
+        file_name = None
+    )
+```
 
-</TabItem>
+### 3.2 Configure Document Grounding Service
 
-</Tabs>
-</div>
+- Create a generic secret collection on AI Launchpad. Refer [SAP Help](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/grounding-generic-secrets-for-sap-document-management-service-f8919a4c43994141a5581352d94a4666#example) to find the steps and key collection format. The page shows only API approach to the same. However, if you want to create the generic secret on AI Launchpad, please refer the below screenshot.
 
-<br />
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-06.png)
 
-<div className="section-with-background blue">
+- Create Data Repository pointing to DMS <br/>
+  Go to Document Management section under Generative AI Hub and create a new repository. Select your DMS specific generic secret from the dropdown list.
 
-## <span className="post-article-first-title">Related Best Practices</span>
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-07.png)
+**Note:** Grounding Service with SAP DMS, takes sometime to sync and keep the pipeline ready for querying. You need to wait for sometime for the sync to be completed. You should be able to see the documents and chunks upon successful syncing.
 
-<ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
-</ul>
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-08.png)
 
-</div>
+- Run Search <br/>
+  We can run the search option to search documents for a query. Click on the Run Search option.
 
-<br />
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-09.png)
 
-<div className="section-with-background purple">
-
-## Related AI Capabilities
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
-</ul>
-
-</div>
+![Configure Document Management Service](@site/static/generative-ai/document-grounding-dms/images/configure-10.png)
 
 <br />
 
@@ -194,7 +241,7 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={["bhagabat-prasad-behera", "kumar-sahoo"]} />
 
 </div>
 

@@ -72,6 +72,21 @@
     "viral-singh": {
       "name": "Singh, Viral",
       "photo": "/img/contributors/viral-singh.jpg"
+    },
+    "kumar-sahoo": {
+      "name": "Sahoo, Manoj Kumar",
+      "photo": "/img/contributors/kumar-sahoo.jpg"
+    },
+    "adinath-auti": {
+      "name": "Auti, Adinath"
+    },
+    "shubham-tyagi": {
+      "name": "Tyagi, Shubham",
+      "photo": "/img/contributors/shubham-tyagi.jpg"
+    },
+    "jyoti-singh": {
+      "name": "Singh, Jyoti",
+      "photo": "/img/contributors/jyoti-singh.jpg"
     }
   }
 }

@@ -1,8 +1,6 @@
 ---
 title: "Document Grounding with SAP WorkZone"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -24,15 +22,6 @@ import PageContributors from "@site/src/components/PageContributors";
   <h1>Document Grounding with SAP WorkZone</h1>
 </div>
 
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
-
 <div className="section-with-background">
   <div className="row">
     <div className="col col--8">
@@ -42,151 +31,123 @@ Don't forget to remove this message.
           <Link to="#1-overview">Overview</Link>
         </li>
         <li>
-          <Link to="#2-pre-requisites">Pre-requisites</Link>
+          <Link to="#2-btp-pre-requisites">BTP Pre-requisites</Link>
         </li>
         <li>
-          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
-        </li>
-        <li>
-          <Link to="#4-implementation">Implementation</Link>
+          <Link to="#3-setting-up-guidelines">Setting up Guidelines</Link>
         </li>
       </ol>
     </div>
-    <div className="col col--4">
-      <ul className="resource-links">
-        <li>
-          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
-            <Icon name="video" />
-            <span>Teaser [TODO]</span>
-          </Link>
-        </li>
-        <LoginWall renderOnlyWhenLoggedIn={true}>
-          <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
-              <Icon name="video" />
-              <span>Webinar [TODO]</span>
-            </Link>
-          </li>
-          <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/#TODO")}>
-              <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
-            </Link>
-          </li>
-        </LoginWall>
-      </ul>
-    </div>
   </div>
 </div>
-
-<LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
-    <span>Download Source Code</span>
-  </TrackableLink>
-</LoginWall>
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
 
-...
-
-### Expected Outcome
-
-...
+SAP Build Work Zone provides a unified, role-based digital workspace on SAP BTP that aggregates content and applications from SAP, custom, and third-party systems. SAP AI Core’s Document Grounding service, part of the Generative AI Hub, uses Retrieval-Augmented Generation (RAG) to ground AI outputs in enterprise data, reducing hallucinations and improving factual accuracy.
+ 
+When integrated, Work Zone acts as a knowledge source for Document Grounding—allowing AI Core to access your business content directly from Work Zone. The Advanced Edition supports native AI and direct grounding integration through configuration, while the Standard Edition requires a custom client for API-based access.
 
 <LoginWall>
 
-### Benefits
+## <span className="step-number">2</span> <span className="step-title">BTP Pre-requisites</span>
 
-...
+Below are the prerequisites for integrating SAP AI Core document grounding with SAP Work Zone:
+- Grounding Management on AI Core
+- Work Zone advanced edition tenant and access credentials (OAuth2 ClientID and Client Secret)
+- Role - Work Zone Administrator
 
-### Key Concepts
+There are three types of roles in SAP Build Work Zone, advanced edition:
+- Default roles that are assigned automatically during the onboarding process
+- Local roles that are created manually to allow access to local apps
+- Remote roles that are added from remote content providers.
 
-...
+| Role Title in the Content Manager          | Role Collection Name in the SAP BTP Cockpit | Description |
+| ------------------------------------------- | -------------------------------------------- | ----------- |
+| SAP Work Zone Administrator Read Only       | Workzone_Admin_Read_Only                     | A role that enables a support administrator to support the company administrator by giving them access to a subset of features. This role is mainly used to allow support admins access to the UI screens when investigating issues without the ability to change customer configurations. |
+| SAP Work Zone Administrator                 | Workzone_Admin                               | A role assigned to company administrators. Enables them to carry out admin tasks in the Administration Console and to configure sites according to the organization’s needs. |
+| SAP Work Zone Area Administrator            | Workzone_Area_Admin                          | A role assigned to area administrators. Enables them to carry out tasks in a specific area. Can also do a smaller subset of the company administrator’s tasks. |
+| SAP Work Zone Internal End User             | Workzone_End_User                            | A role assigned to internal end users, allowing them to use SAP Build Work Zone, advanced edition. |
+| SAP Work Zone External End User             | Workzone_External_User                       | A role assigned to external end users, allowing them to use SAP Build Work Zone, advanced edition. |
+| SAP Workflow service Admin Role             | Workflow_Admin                               | Role assigned to administrators working on SAP Workflow service. |
+| SAP Workflow service End User Role          | Workflow_End_User                            | Role assigned to end users working on SAP Workflow service. |
+| Full Access User                            | Workzone_End_User                            | An end user role for all users in the company. |
 
-## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+## <span className="step-number">3</span> <span className="step-title">Setting up Guidelines</span>
 
-## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+### 3.1 Create an OAuth client for Document Grounding
 
-...
+In the Admin Console, go to **External Integrations** > **OAuth Clients**, and click **Add OAuth Client**.
+- Name - provide a meaningful name such as "Document Grounding OAuth Client".
+- Integration URL - provide any URL in the format of "https://www.yoururl.com. This is a mandatory field, however, the URL isn't validated so you can enter any URL.
+ 
+**Important** - once the OAuth client is created, note down the values of the Key and Secret. <br />
+Reference: https://help.sap.com/docs/build-work-zone-advanced-edition/sap-build-work-zone-advanced-edition/add-oauth-client
 
-## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/create-01.png)
 
-...
+### 3.2 Enable the document grounding feature
 
-<div className="tabs-with-background">
-<Tabs groupId="language">
-<TabItem value="python" label="Python" default>
+In the Admin Console, go to **Feature Enablement** > **Features**, and in the **Feature Management** section, enable the option **Enable document grounding integration**. Select the OAuth client that you created in the previous step and save your changes.
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/create-02.png)
 
-...
+### 3.3 Create a destination for this integration.
 
-</TabItem>
+In the subaccount cockpit, go to Connectivity Destinations, and create a new destination with the following details:
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+| Parameter                    | Description                                                  | Example Value / Source                                                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                         | A unique, symbolic name for the destination (e.g., AiCoreOrchestration). | User-defined. This name will be referenced in the card's manifest.json.                                                                                         |
+| Type                         | The communication protocol.                                  | HTTP                                                                                                                                                             |
+| URL                          | The base URL of the SAP AI Core API.                         | The URL is https://\<DWS URL\>/api/v1/dg-pipeline/metadata<br/><br/>You can find the value of your tenant DWS URL in the Admin Console, Overview screen.        |
+| Proxy Type                   | The network path to the target system.                       | Internet                                                                                                                                                         |
+| Authentication               | The method used to secure the connection.                    | OAuth2ClientCredentials                                                                                                                                          |
+| Client ID                    | The client identifier for the OAuth2 flow.                   | The value of the clientid property from the AI Core service key.                                                                                                |
+| Client Secret                | The client secret for the OAuth2 flow.                       | The value of the clientsecret property from the AI Core service key.                                                                                            |
+| Token Service URL            | The endpoint for obtaining the OAuth access token.           | The value of the url property from the AI Core service key, with /oauth/token appended.<br/><br/>For example: https://xxx.workzone.ondemand.com/api/v1/auth/token. |
+| Token Service URL Type       | The endpoint type for obtaining the OAuth access token.      | Dedicated                                                                                                                                                        |
+| HTML5.DynamicDestination     | Enables dynamic access to the destination to any logged-in user. | True                                                                                                                                                             |
+| SetXForwardedHeaders         | -                                                            | False                                                                                                                                                            |
+| HTML5.SetXForwardedHeaders   | -                                                            | False                                                                                                                                                            |
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
 
-...
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/create-03.png)
+Reference: https://help.sap.com/docs/build-work-zone-advanced-edition/sap-build-work-zone-advanced-edition-on-china-shanghai-region/integration-with-document-grounding-preview-release
 
-</TabItem>
+### 3.4 Create Generic Secret on AI Launchpad
 
-<TabItem value="cap-app" label="CAP">
+Now on SAP AI Launchpad, Create a Generic Secret under SAP AI Core Administration.
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+The Generic Secret must have the following parameters in JSON format:
 
-...
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/create-04.png)
 
-</TabItem>
+**Sidenote** - Make sure to assign document-grounding and documentRepositoryType as Key and true, and WorkZone as value respectively while creating a Generic Secret.
 
-</Tabs>
-</div>
+Reference: https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generic-secrets-for-contextualization-with-workzone-8737ceb3ac2b4178aafc84994323b76a
 
-<br />
+### 3.5 Upload documents to Work Zone
 
-<div className="section-with-background blue">
+Now on SAP Build Work Zone - Advanced edition application, create a new Workspace and upload a document that we need to use as an AI Source in the grounding service.
 
-## <span className="post-article-first-title">Related Best Practices</span>
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/upload-01.png)
 
-<ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
-</ul>
+After uploading the document in the newly created Workspace, go to the **Administration console** > **Area and Workspace Configuration** > **Workspaces**. Click on Actions and Enable as AI Source against the newly created Workspace for document grounding.
 
-</div>
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/upload-02.png)
 
-<br />
+### 3.6 Create Data Repository on Document Grounding
 
-<div className="section-with-background purple">
+Now, create a Data Repository under Grounding Management.
 
-## Related AI Capabilities
+![OAuth Client Creation](@site/static/generative-ai/document-grounding-workzone/images/upload-03.png)
 
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
+Open the newly created **Data Repository Pipeline** within **Grounding Management** in **SAP AI Launchpad**. The documents previously uploaded to the new workspace in the **Work Zone application** will now be visible here. 
 
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
-  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
-</ul>
-
-</div>
+Note: It might take sometime for the documents to appear in the Data Repository Pipeline.
 
 <br />
 
@@ -194,7 +155,7 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={["bhagabat-prasad-behera", "shubham-tyagi"]} />
 
 </div>
 
