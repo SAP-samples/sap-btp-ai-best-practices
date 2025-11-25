@@ -1,8 +1,6 @@
 ---
 title: "SAP Translation Hub"
 description: ""
-hide_title: true
-sidebar_class_name: hidden
 ---
 
 import TabItem from "@theme/TabItem";
@@ -23,15 +21,6 @@ import PageContributors from "@site/src/components/PageContributors";
 <div className="hero-header">
   <h1>SAP Translation Hub</h1>
 </div>
-
-::::danger[IMPORTANT - How to make this page visible]
-
-- To make this page visible on the sidebar, you need to remove the <code>sidebar_class_name: hidden</code> from the top of the file.
-- To enable the links to this page (for example in the <code>index.mdx</code> file), you need to remove the <code>disabled=true</code> from the <code>IconLinkButton</code> component on that specific page.
-
-Don't forget to remove this message.
-
-::::
 
 <div className="section-with-background">
   <div className="row">
@@ -80,7 +69,7 @@ Don't forget to remove this message.
 </div>
 
 <LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="#EXAMPLE_CODE_LINK" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
+  <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/translation-hub" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
     <span>Download Source Code</span>
   </TrackableLink>
 </LoginWall>
@@ -89,68 +78,249 @@ Don't forget to remove this message.
 
 ### Description
 
-...
+**SAP Translation Hub** is a cloud-based AI service on the SAP Business Technology Platform (SAP BTP) that streamlines translation for both SAP and non-SAP applications. Organizations may have their own repositories of pre-approved and verified translations, so called **Multilingual Text Repository (MLTR)**. SAP Translation Hub provides access to **SAP's MLTR** and combines it with **Machine Translation** (MT) and **Large Language Model** (LLM) options, enabling efficient and accurate multilingual content translation for text, software user interfaces and documents. The service ensures speed without compromising consistency, allowing organizations to deliver high-quality localized experiences. Users can access it through an intuitive web UI or via REST APIs, and you can also upload **company MLTR** to enforce domain terminology and align translations with enterprise standards.
 
 ### Expected Outcome
 
-...
+This best practice helps you understand how you can leverage SAP Translation Hub capabilities into your software system to build the multilingual capability or to effectively translate text/document into multiple languages. In addition to understanding how to set up multilingual capabilities, this guide shows you how to select the appropriate translation provider, whether SAP’s domain‑trained machine translation or a large language model for different content types.
 
 <LoginWall>
 
 ### Benefits
 
-...
+- **Accelerated Time-to-Market**: Automating translations means you can release multilingual applications faster. SAP Translation Hub helps speed up localization by providing instant translations, drastically reducing the time needed to prepare additional language versions.
+- **Cost Savings**: By leveraging machine translation and existing translations through MLTR, organizations can reduce translation costs while still achieving good quality.
+- **Broad Language Coverage**: With support for many languages through LLM integration, you can target up to 54 languages and 2,800 language pairs, and with SAP MT, you can target up to 40 languages with 90 language pairs. SAP Translation Hub allows you to localize content for a global audience. Even languages or dialects not covered by SAP’s Machine Translation can be handled via the LLM-based translation option.
+- **Consistency and Quality**: The service ensures consistent terminology usage by drawing from SAP’s vetted multilingual repository. Common UI terms and phrases will be uniform across all your applications. The built-in quality index and review workflow further enhance overall translation quality by flagging where human correction may be needed.
+- **Intelligent Translation with Flexibility**: Users have the flexibility to choose the translation engine best suited to the content of SAP domain-trained machine translation for SAP-specific UI texts, or a generative AI-based engine for more general content.
+- **Integration into Development Workflows**: The SAP Translation Hub can be integrated into your existing development. It offers APIs and direct integration with sources like Git repositories and ABAP systems, making it easy for developers to pull in translations. This seamless integration saves time and reduces errors by embedding translation steps into the application lifecycle.
 
 ### Key Concepts
 
-...
+The SAP Translation Hub includes the service for Software Translation as well as the Document Translation service in one offering. The services are available in the SAP BTP multi-environment, Cloud Foundry, and Kubernetes, as well as the Kyma environment.
+- **Software Translation**
+  - **Translate software and UI texts**: You can translate software texts using multiple translation sources:
+    - **Multilingual Text Repository (MLTR)**: Contains verified SAP translations.
+    - **Company MLTR**: Stores your organization’s approved translations.
+    - **AI-based Translation Options**: SAP Machine Translation (SAP MT) or Large Language Models (LLMs)
+  - **Software Translation UI** supports integrated translation workflows where you can translate, edit, and update texts. 
+- **Document Translation**
+  - **Translate documents using AI-powered MT**: Machine translate text and files using the Document Translation service from SAP Translation Hub, providing secure, AI-powered machine translation engines into 40 target languages, trained for the best results on SAP-related content.
+  - **Translate documents using LLMs**: Leverage large language models (LLMs) to translate text and files via the Document Translation service from SAP Translation Hub, providing 54 target languages best suited for more general content translation needs.
+  - **Language Identification**: This feature automatically detects the source language of your input during translation and is available both via the APIs and in the UI’s Text Translation tab. It’s useful when the source language is not known upfront.
+
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-...
+### Commercial
+
+- SAP Business Technology Platform subaccount
+- SAP Translation Hub service
+
+As this service is a managed service, it is offered by various service plans and usually charged in blocks of 100,000 characters. You can find more details on the service plans on our [help portal](https://help.sap.com/docs/translation-hub/sap-translation-hub/what-is-sap-translation-hub). Visit the [SAP Discovery Centre](https://discovery-center.cloud.sap/serviceCatalog/sap-translation-hub?region=all&tab=service_plan) for pricing for associated service plans.
+
+### Technical
+
+- Set up an SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](https://sap.sharepoint.com/sites/210313/SitePages/SAP%20Business%20Technology%20Platform%20(SAP%20BTP).aspx))
+- Set up the SAP Translation Hub Service ([Setup Guide](https://help.sap.com/docs/translation-hub/sap-translation-hub/initial-setup#3.-set-up-the-sap-translation-hub-service.)).
+- Set up for usage of Software Translation service in SAP Translation Hub:
+  - **Software Translation Setup for ABAP Projects**: To use SAP Translation Hub to translate short texts that you create in ABAP systems, several prerequisites are required. To make it easier to make the required settings in the different systems, carry out the steps in the following sequence.
+    - [ABAP Back-End System](https://help.sap.com/docs/translation-hub/sap-translation-hub/abap-back-end-system?locale=en-US&state=PRODUCTION&version=Cloud)
+    - [Cloud Connector](https://help.sap.com/docs/translation-hub/sap-translation-hub/cloud-connector?locale=en-US&state=PRODUCTION&version=Cloud)
+  - **Software Translation Setup for Git Repositories**: You can use SAP Translation Hub to translate texts in ".properties" files that you manage in Git repositories. For different types of Git repository supported by SAP Translation Hub please follow the setup/configuration steps by following below links
+    - [Git Repository Hosted By Your Enterprise](https://help.sap.com/docs/translation-hub/sap-translation-hub/git-repository-hosted-by-your-enterprise) 
+    - [Git Repository Hosted on the Web](https://help.sap.com/docs/translation-hub/sap-translation-hub/git-repository-hosted-on-web) 
+  - **Prerequisites for Integrating Your Own Language Data**: The translations that these translation providers (SAP MLTR and MT) propose can't always meet the specific requirements of your industry or company. In those scenarios it is recommended that you integrate your own language data in the translation process. To use your own language data, you use a company MLTR, which serves as an additional translation provider. Learn how to [prepare XLIFF files that you want to upload to SAP Translation Hub](https://help.sap.com/docs/translation-hub/sap-translation-hub/prerequisites-for-integrating-your-own-language-data) for company MLTR usage.
+    - **For managing the Company MLTR, follow below given steps** - Set up, prepare and maintain your MLTR so that it reliably provides high‑quality translations.
+      - **Create the repository with your own language data**
+        - A company MLTR lets you reuse your organization's approved translations across projects. You can populate it with uploaded XLIFF files or with ABAP object lists. This allows SAP Translation Hub to offer your own vetted translations before falling back to SAP’s repositories or machine translation.
+      - **Prepare the MLTR by linking reference data**
+        - After creating the MLTR, you must link it to the relevant reference data. You should add or remove XLIFF files or add/remove ABAP object lists to reference the correct translations
+      - **Activate the MLTR before use**
+        - To use a company MLTR as a translation provider, at least one MLTR must be activated. Activation checks the XLIFF versions and resolves basic errors, and during activation, you can’t modify the MLTR. You can maintain multiple company MLTRs and choose which one to use in each Software Translation project.
+      - **Update and reactivate as your data evolves**
+        - When you have new or revised XLIFF files or new object lists in your ABAP system, update the MLTR by adding or removing these files and lists, then reactivate it. This ensures that new translations become available and obsolete entries are removed.
+      - **Understand the provider order**
+        - During translation, SAP Translation Hub looks for suitable translations in the company MLTR before consulting SAP’s MLTR, then followed by machine translation or LLM-based translation, except in ABAP scenarios where it first checks for translations already stored in the ABAP system. Keeping your MLTR up‑to‑date maximizes reuse and quality.
+- Set up for Document Translation service in SAP Translation Hub:
+  - **Document Translation UI**: [Provide access via SAP BTP subaccount or integration with your identity service in SAP BTP](https://help.sap.com/docs/translation-hub/sap-translation-hub/authorize-users-to-access-sap-translation-hub-user-interface?version=Cloud) to the Document Translation UI for translation of texts and files within your organization through SAP Translation Hub Document Translation service.
+
+### Solution overview
+
+![Solution Overview](@site/static/ai-services/sap-translation-hub/images/solution-overview.png)
 
 ## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
 
-...
+Begin by mapping your use case to the right capability, like UI for quick runs or APIs for scale. SAP Translation Hub provides multiple translation options with a range of customizations. The first step is to carefully assess the type of content you want to translate and then select the most suitable capability of the SAP Translation Hub service.
+
+While using the SAP Translation Hub service, several key choices and considerations are crucial for effectiveness, fairness, and scalability.
+
+### Understand your Data and translation service required
+
+- Choose a service based on your scenario. What are you translating?
+
+| Scenario                          | Choose                  | Why                                                                  | Examples                              |
+| --------------------------------- | ----------------------- | -------------------------------------------------------------------- | ------------------------------------- |
+| Full documents in various formats | **Document Translation** | Translate whole files via UI or API (sync/async)                     | HTML, DOCX, PPTX, XLIFF, PDF          |
+| App/UI strings you ship with software | **Software Translation** | Works with Git/file or ABAP projects, supports a Quality Index for review | .properties, JSON, XLIFF, ABAP texts |
+
+<br/>
+- What is the execution flow priority set for Software Translation?
+
+| Provider inside Translation Hub        | Priority (processing order) | Used when…                                                       | Role                                                     |
+| -------------------------------------- | --------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------- |
+| Company MLTR                           | 1st                         | You have approved in-house terms for brand, legal, or policy     | Primary source once enabled; enforces your terminology   |
+| SAP MLTR                               | 2nd                         | You want SAP-verified UI terms and maximum reuse of standard concepts | High-quality SAP terminology fallback                    |
+| SAP MT or LLM-based translation        | 3rd                         | No match in either MLTR                                          | Fills gaps automatically with machine translation        |
+
+<br/>
+- Which translation provider you should choose (MT vs LLM-based translation)?
+
+| Engine                         | Use when                                                                 | Strengths                                             | Typical content                                                |
+| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------- |
+| SAP Machine Translation (MT)   | • Text is **technical** or **SAP-specific** (UI/help/specs)               | • Trained for SAP domain<br/>• Consistent<br/>• Terminology aware | Help docs, specs, templates, SAP UI labels                     |
+| LLM-based translation          | • More generic, adherence to SAP terminology not so relevant<br/>• Input is noisy/mixed-language<br/>• When you need broader language coverage | • Natural phrasing<br/>• Flexible<br/>• Broad language support | Marketing copy, mixed/user-generated text, conversational content |
+
+### Software Translation Best Practices
+
+#### 1. Operating mode and scheduling
+
+**Guideline**
+
+- Pick the right translation approach and organize your jobs for efficiency.
+- For small, ad‑hoc software‑translation projects (about 1000 ABAP texts or fewer), use the SAP Translation Hub Software Translation UI as it is best suited to the translation of a relatively low number of ABAP short texts.
+- For medium to large workloads, run the ABAP report RS_LXE_MLTR_GET_TEXTS_FOR_OL as a background job. It is recommended to use this for larger volumes because it fetches proposals directly from SAP Translation Hub and scales better.
+- Use SAP Translation Hub Software Translation REST API to automate software translation in files and CI/CD pipelines. It supports common resource formats (for example, .properties, .xliff) and lets you script uploads, downloads, and project runs without using the UI. The use of XLIFF format is recommended for best results.
+
+#### 2. Review & Post-Edit Workflow Guidelines
+
+Post-editing refers to the human correction and refinement of machine-translated text, ensuring accuracy, fluency and suitability for the target audience. The review step involves a subsequent pass (by the same person or another) to validate and approve those edits, check for consistency with terminology and style, and catch any remaining issues before publication.
+
+**Guidelines**
+
+- **Use two-step review process when you want separation of duties and an explicit approval pass**
+  - Choose a two-step process with both Post-Editing and Review required for customer facing or regulated content with clear ownership.
+- **Use one-step review setup when a single editor is acceptable and speed is the priority**
+  - For internal texts, prototypes, or time-sensitive drafts, a single combined post-editing and review step is adequate. It reduces turnaround time while still allowing basic quality checks.
+- Use the quality index to decide when to accept machine translation proposals (on a 0‑100 scale). Proposals from your company MLTR receive a quality index of 99, while SAP Machine Translation proposals are assigned a low fixed index of 25 and are meant to be reviewed by humans. Use a threshold to for e.g., auto‑accept proposals with a high-quality index and send low‑score proposals for post‑editing by a qualified translator before releasing your app.
+
+#### 3. Performance & Scale
+
+**Guidelines**
+
+- In case you are running long‑running translation projects in the UI then you should adjust the destination HTML5.SocketReadTimeoutInSeconds property to more than 180 seconds via the BTP cockpit as this helps avoid UI time‑outs.
+- Break large translation workloads into chunks of roughly a thousand objects. This reduces the risk of time‑outs and makes it easier to track progress.
+- Choose only the target languages you plan to ship as translating into extra languages increases cost and review effort without benefit.
+
+### Document Translation Best Practices
+
+#### 1. Path Selection - Sync vs Async
+
+It is important to understand the requirement for opting for Synchronous vs Asynchronous API that document translation provides. If the document is large it is recommended to go with async service.
+
+**Guidelines**
+
+- Synchronous API: Best for short documents and interactive UX integration, allows up to 100 MB file size or up to 40,000 characters (varying character limits for specific languages, e.g. [Japanese are documented](https://help.sap.com/docs/translation-hub/sap-translation-hub/document-translation-api-process-documentation?version=Cloud)).
+- Asynchronous API: Best for large files/batches. It allows to translate documents of up to 100MB file size or up to 2,500,000 characters. You can poll status and can retrieve the translation at any time within three days after the translation was completed.
+
+#### 2. Languages & Detection
+
+**Guidelines**
+
+- It is recommended that if you know the source language then always set it. Use language identification only when the source is unknown, please note that even with detection the service will use a single language for the entire document. Results of language detection may be less accurate on short/noisy texts (at least a paragraph of text is ideal for language detection).
+- We do not recommend using the feature for source texts that only contain, for example, numbers, URL, email addresses, spaces, special characters.
+- It is recommended to test how accurate the algorithm is in your use case and with your sample texts and languages in scope before using it in productive use cases
+- If the source language is not correctly identified, the quality of the translation provided is affected. Sometimes what appears to be low translation quality might be a wrongly identified source language.
+- If the source language is identified to be an unsupported source language for the chosen SAP MT translation target language, translation will not be started, but an error is returned instead.
+
+#### 3. Protect Text You Don’t Want Translated
+
+**Guidelines**
+
+Machine translation engines sometimes translate texts that should be left untranslated. To improve translation quality in those cases, you can exclude texts from translation by adding special markup. Excluding texts from translation using special markup is supported for HTML and XLIFF formats and differs slightly for each format. To understand how to achieve this please visit link https://help.sap.com/docs/translation-hub/sap-translation-hub/excluding-texts-from-translation.
+
+#### 4. Recommendations while using PDF file
+
+**Guidelines**
+
+PDF is a format that is intended to be non-editable. The content that reaches the machine translation engine might not be the exact same as the content you see in your PDF. This can cause errors in the final translation and formatting. It is recommended that you review the translated output that you receive as a Word document and make modifications as needed. If possible, and specifically if you are looking into automating a process, we strongly recommend exploring alternatives to using PDF as the translation format.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-...
+### Programming Model Selection Guidelines
+SAP Translation Hub supports both low-code/no-code users as well as pro-code teams. You can translate software strings and full documents entirely in the web UI, or integrate it into apps using the REST API, whichever fits your workflow. 
 
-<div className="tabs-with-background">
-<Tabs groupId="language">
-<TabItem value="python" label="Python" default>
+### Document Translation
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/python" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+For ad-hoc or small-scale needs, use the SAP Translation Hub web UI to upload and translate documents directly. 
+However, for large files or text, go for the API route.
+- **Synchronous endpoints** are designed for short/simple documents where fast turnaround is needed.
+- **Asynchronous endpoints** handle large documents or batches, allowing you to submit jobs, check status, and download results once they are ready.
 
-...
+#### Ways to use SAP Translation Hub Document Translation service
 
-</TabItem>
+The SAP Translation Hub gives you three options via which you can use this service
 
-<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+1. **Document Translation UI**: It is advised to use the UI for on-spot quick translation or if you are doing manual quality checks, quick trials, or small batches.
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/typescript" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+2. **Document Translation API**: In case you are integrating translation into your product or server-side workflows or large batch jobs, it is preferred to use the API routes. You can use sync or async and MT or LLM option depending on your requirements. Please refer to the code below on how to call the different [API's available](https://help.sap.com/docs/translation-hub/sap-translation-hub/api-reference?language=en-US).
 
-...
+    1. Synchronous Document Translation through MT [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_synchronous.ipynb)
 
-</TabItem>
+    2. Asynchronous Document Translation through MT [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_aynchronous.ipynb)
 
-<TabItem value="cap-app" label="CAP">
+    3. Translation using model parameter to select LLM-based translation (available in both sync and async API) [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/text_translation_llm.ipynb)
 
-<TrackableLink href="#EXAMPLE_CODE_LINK/cap" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="">
-  <span>Download Source Code</span>
-</TrackableLink>
+3. **Generative AI Hub (AI Core)**: The translation module of SAP Generative AI Hub orchestration uses the SAP Translation Hub Document Translation service to perform the translation as described in this [code](https://help.sap.com/doc/generative-ai-hub-sdk/CLOUD/en-US/_reference/orchestration-service.html#translation).
 
-...
+#### Sample Code of doing translation via Orchestration 
+```python
+from gen_ai_hub.orchestration.models.translation.translation import InputTranslationConfig, OutputTranslationConfig
+from gen_ai_hub.orchestration.models.translation.sap_document_translation import SAPDocumentTranslation
+from gen_ai_hub.orchestration.models.config import OrchestrationConfig
+from gen_ai_hub.orchestration.models.template import TemplateValue
+from gen_ai_hub.orchestration.models.message import SystemMessage, UserMessage
+from gen_ai_hub.orchestration.models.template import Template
+from gen_ai_hub.orchestration.models.llm import LLM
+​
+​
+input_config = InputTranslationConfig(source_language="en-US", target_language="de-DE")
+output_config = OutputTranslationConfig(source_language="de-DE", target_language="en-US")
+​
+translation_module = SAPDocumentTranslation(
+    input_translation_config=input_config,
+    output_translation_config=output_config)
+​
+config = OrchestrationConfig(
+    template=Template(
+        messages=[
+            SystemMessage("You are a helpful AI assistant."),
+            UserMessage("{{?text}}"),
+        ]
+    ),
+    llm=LLM(
+        name="gpt-4o",
+    ),
+    translation=translation_module
+)
+```
 
-</TabItem>
+### Software Translation 
 
-</Tabs>
-</div>
+For a fast guided experience for translating app/UI strings, use the SAP Translation Hub UI. It is designed for low-code/no-code users and gives you the different project types and it supports the common file formats as well.
+
+However, if you need to integrate translations into your application, then you should go ahead with the API. The API lets you automate uploads, trigger runs, poll status, and download results without using the UI. The following [link](https://help.sap.com/docs/translation-hub/sap-translation-hub/development) explains all the different API's available for Software Translation and you can use below [link](https://api.sap.com/api/translationhub/resource/Domains) to try them out.
+
+### Tutorials and Learning Journeys
+
+Follow a tutorial to get familiar with the features of SAP Translation Hub. Some of the tutorials apply to SAP Translation Hub, Neo environment. They still give you insights into how SAP Translation Hub works.
+
+- To understand the general concepts and features of SAP Translation Hub: [Enable Users in Multilingual Business with SAP Translation Hub](https://learning.sap.com/courses/enable-users-in-multilingual-business-with-sap-translation-hub)
+- How to set up SAP Translation Hub: [Set up SAP Translation Hub](https://developers.sap.com/tutorials/sth-enable-document-translation.html)
+- How to translate a Java properties file using Translation Hub: [Translate a Java Properties File](https://developers.sap.com/tutorials/sth-translate-properties-file.html)
+- How to translate the documents using Translation Hub: [Translate Documents with SAP API Business Hub](https://developers.sap.com/tutorials/sth-document-translation-apihub.html)
+
+In some of the above tutorials, “Neo environment” refers to the SAP legacy BTP environment. Please follow the same steps on the new BTP environment to replicate the same results.
 
 <br />
 
@@ -159,7 +329,7 @@ Don't forget to remove this message.
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+  <IconLinkButton href="/docs/technical-view/generative-ai/plain/access-to-generative-ai-models" text="Access to Generative AI Models" />
 </ul>
 
 </div>
@@ -171,19 +341,11 @@ Don't forget to remove this message.
 ## Related AI Capabilities
 
 <h3>
-  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
-</h3>
-
-<ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
-</ul>
-
-<h3>
   <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
 </h3>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/translation-of-text" text="Translation of Text" />
 </ul>
 
 </div>
@@ -194,7 +356,10 @@ Don't forget to remove this message.
 
 ## Contributors
 
-<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+<PageContributors contributorIds={[
+  "viral-singh", 
+  "francisco-robledo"
+  ]} />
 
 </div>
 
