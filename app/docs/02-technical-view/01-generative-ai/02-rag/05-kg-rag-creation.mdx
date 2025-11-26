@@ -1,0 +1,650 @@
+---
+title: "Graph-based RAG (1/2) KG Creation"
+description: ""
+hide_title: true
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+import RelatedProjects from "@site/src/components/RelatedProjects";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Graph-based RAG (1/2) KG Creation</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-illustration-of-the-process-through-an-example">Illustration of the Process Through an Example</Link>
+        </li>
+        <li>
+          <Link to="#4-expand-your-knowledge">Expand Your Knowledge</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/BTP AI Best Practices - Graph-Based RAG KG Creation (intro)_external.mp4")}>
+            <Icon name="video" />
+            <span>Teaser</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/BTP AI Best Practices - KG RAG - KG Creation.mp4")}>
+              <Icon name="video" />
+              <span>Webinar</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/BTP AI Best Practices - KG RAG - KG Creation.pdf")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/knowledge-graph"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_KG_RAG_CREATION"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+Large language models are good at understanding and generating text, but they need reliable sources of information to provide correct answers to real business questions. A Knowledge Graph (KG) is a smart way to organize facts and show how everything is connected. It combines data from tables, documents, and even expert knowledge. Using a knowledge graph can help AI to focus on real facts, so it makes fewer mistakes and gives you answers you can trust. Another important point is that it reduces the likelihood of LLMs hallucinating, as the context provided helps to clearly define the domain of knowledge.
+
+### Expected Outcome
+
+By creating a knowledge graph using best practices, you’ll get a clear and organized view of your data that shows how key concepts are connected. This helps the RAG system find more relevant information and give better answers.
+
+The results include more accurate and trustworthy responses, fewer mistakes, and a system that’s easier to update and explain.
+
+<LoginWall>
+
+### Key Concepts
+
+Before you begin, it's helpful to know a few key concepts. For example, an "entity" refers to a data element, and a "relationship" shows how elements are related to each other. Once you understand these concepts, working with knowledge graphs will become much easier.
+
+- **Retrieval-Augmented Generation (RAG):** Combines a search step with an LLM. Finds relevant info first, then uses it to generate better answers. You can find more how to use RAG in [SAP BTP related best practice](/docs/technical-view/generative-ai/rag/vector-rag-embedding)
+- **Knowledge Graph (KG):** A network of facts made up of entities (things like people or places) and relationships (how they’re connected).
+  - ![Example Process Flow for a Vector Engine-powered RAG approach](@site/static/generative-ai/kg-rag-creation/images/kg-example.png)
+- [RDF](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/technical-concepts#rdf-%28resource-description-framework%29) **(Resource Description Framework)** is a standard way to represent data as triples: subject, predicate, and object. The relationships encoded in triples are easy to understand.
+- [Triple](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/technical-concepts#triple): The basic building block of a knowledge graph. In knowledge graph notation, facts are expressed as triples.
+  - A **triple** has three parts: **subject – predicate – object** (e.g., “Compressor Motor A– IsMonitoredBy – Vibration Sensor X”)
+  - ![Example Process Flow for a Vector Engine-powered RAG approach](@site/static/generative-ai/kg-rag-creation/images/kg-block.png)
+- **[Ontology](https://en.wikipedia.org/wiki/Ontology_%28information_science%29):** An ontology describes how the entities in your KG relate to each other. It's a conceptualization of _what_ those entities and relationships mean in that domain, and in the context of the related knowledge graph a representation of the types of entities, their properties, and the relationships between them. [OWL](https://en.wikipedia.org/wiki/Web_Ontology_Language) (Web Ontology Language) is a powerful language for defining and representing these ontologies in a machine-readable format.
+- **Entity Extraction:** Pull out important names or terms from text (like “Paris” or “SAP BTP”)
+- **Relation Extraction:** Find how entities are related (e.g., “works at”, “founded by”, “related at”).
+- **Normalization/Deduplication:** The process of merging duplicate or similar entities to keep the graph clean and avoid redundancy.
+  - Example: “IBM”, “I.B.M.”, and “International Business Machines” → one node
+- **[SPARQL](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sparql-reference-guide/sap-hana-cloud-sap-hana-database-sparql-reference-guide?locale=en-US)** is a query language for working with RDF data. You use SPARQL to search, filter, and get information from knowledge graphs built with RDF. Check SAP HANA Cloud Knowledge [Graph Engine](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/sap-hana-knowledge-graph-inside-sap-hana-cloud-database) in SAP HANA Database.
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Commercial
+
+- SAP AI Core with the “Extended” tier on SAP BTP
+- SAP HANA Cloud on SAP BTP
+- SAP AI Launchpad
+
+You can find pricing details for the above services in the [SAP Discovery Center](https://discovery-center.cloud.sap/serviceCatalog?commercialModel=btpea&regions=all).
+
+### Technical
+
+1. Setup SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/docs/technology/sap-business-technology-platform))
+2. Create an instance of SAP HANA Cloud ([Setup Guide](/docs/technology/sap-hana-cloud))
+3. Enable Triple Store Service in SAP HANA Cloud ([Setup Guide](/docs/technology/sap-hana-cloud#enable-triple-store-service-in-sap-hana-cloud))
+4. Create an instance of SAP AI Core ([Setup Guide](/docs/technology/sap-ai-core))
+5. Subscribe to SAP AI Launchpad ([Setup Guide](/docs/technology/sap-ai-launchpad))
+6. Enable [Triple Store Service](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/enable-triple-store?locale=en-US) in SAP HANA Cloud
+
+### High-level reference architecture
+
+![High-level reference architecture](@site/static/generative-ai/kg-rag-creation/images/arch.png)
+
+## <span className="step-number">3</span> <span className="step-title">Illustration of the Process Through an Example</span>
+
+Knowledge Graph Creation Process Flow
+This best practice is about creating a Knowledge Graph from a dataset (it can be for example a PDF file):
+
+1. Define Ontology (optional)
+2. Design Prompts
+3. Create Extraction Workflows
+4. Review Extracted Triples
+5. Store the Knowledge Graph
+
+The diagram below depicts this process.
+![Process Flow Diagram](@site/static/generative-ai/kg-rag-creation/images/flow.png)
+
+In the following we will describe the use case, prerequisites and recommendations for completing the above steps.
+
+The best way to understand how to build and use knowledge graphs is to look at a real-world example to solve a problem that almost every company working with procurement faces.
+
+This example shows how a company can use large equipment specification documents, such as PDFs about industrial motors, to build a knowledge graph. The goal is to extract clear facts about things like power, voltage, and manufacturer for each motor and create a knowledge graph based on this information. This can help the company answer questions about the equipment, quickly find important parts, and organize its data well for reporting or maintenance. The example code takes these real-world documents, extracts the facts, and loads them into a knowledge graph that anyone in the company can search or use for business purposes.
+
+You can find the full source code of this example:
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/knowledge-graph"
+        target="_blank"
+        trackingFeature="DOWNLOAD_KG_RAG_CREATION"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+This example is prepared in Python, and using SDKs like:
+
+- [sap-ai-sdk-gen](https://pypi.org/project/sap-ai-sdk-gen/): This SDK harmonizes the previous 3 SDKs ([SAP Generative AI hub SDK](https://pypi.org/project/generative-ai-hub-sdk/), [SAP AI Core SDK](https://help.sap.com/docs/link-disclaimer?site=https://pypi.org/project/ai-core-sdk/), and [AI API Client SDK](https://pypi.org/project/ai-api-client-sdk/)) as a unified library for Python.
+- [langchain](https://pypi.org/project/langchain/): A framework for developing applications powered by large language models.
+
+### Step 1: Define Ontology (optional)
+
+Defining an [ontology](https://community.sap.com/t5/technology-blog-posts-by-sap/connecting-the-facts-sap-hana-cloud-s-knowledge-graph-engine-for-business/ba-p/13888597) is optional, but it will help you achieve the best results.
+
+In order to define an ontology, first gather expert information on the specific knowledge domain, then formalize the knowledge as an ontology, and finally, format it in a file that can be used in a prompt.
+
+If possible, reuse standard schemas such as [schema.org/Product](https://schema.org/Product) and [DMTF CIM Standard](https://www.dmtf.org/standards/cim).
+
+Like example, if you have an ontology set up for your equipment data, you can use it to make your extraction prompt much more precise. Start by talking to engineers or business experts about what really matters in the domain you are building the ontology for. Write down the main things (like engine power, torque, working voltage) and how they connect. Put these types and properties in a simple list or table, this is your ontology. Use this list to build your extraction prompts, so you only get the facts you need.
+
+For quick setup and prototyping, you can start by writing out the main types and properties as a list or table, this forms a basic ontology. In more advanced scenarios, you can formalize the ontology as a knowledge graph using OWL and manage it directly in SAP HANA Cloud. This lets you reuse the ontology for other tasks, manage it as a living KG, and even feed the ontology (serialized as n-triples) into the prompt for extraction or reasoning.
+
+In our example, when you work with a PDF about industrial motors, you are instructing the LLM to find only the types and relationships that match your business, like Equipment, Power, Voltage, and connections such as "has" or "operates at".
+
+If you have an ontology for [electric](https://schema.org/EngineSpecification) motors, you can focus on properties like “enginePowerKWT”, “torqueNU”, and “workingVoltage”.
+For example, after extraction your triples might look like:
+
+- (Engine Model B, hasWorkingVoltage, 400)
+- (Engine Model B, hasTorqueNU, 300)
+- (Engine Model B, hasEnginePowerKWT, 150)
+  <br />
+
+With the ontology guiding your extraction, you don’t waste time on extra or wrong information, and the triples you get will fit your reporting and business tasks right away. This keeps your data organized and makes the graph clear. Even though it’s optional, a good ontology makes everything easier to use.
+
+Another option is creation ontology from data. Start by looking at your real documents or datasets. Make a list of all the important terms and property names you find. These may come from headings in tables, repeated labels in text, or fields in data sources. For example, you might find that words like “engine power,” “torque,” ​​or “voltage” are used over and over again.
+Then group similar terms together and choose clear names for each property and type. For example, “power,” “enginePower,” and “power_kW” could become “enginePowerKWT” in your ontology.
+
+Then show your draft list to a subject matter expert. Ask if the types and properties are clear, and fix anything that is unclear or missing.
+Finally, use this revised list as your extraction ontology so that your triples are always consistent and relevant to your data.
+
+### Step 2: Design Prompts
+
+When building a Knowledge Graph for RAG workflows, the very first step is to ask, **“How can I reliably extract meaningful triples from my real business documents?”** This question sets the stage for everything that follows, as the value of the graph is determined by the quality and consistency of the triples you generate. Developing the right query is more than just instructing the LLM to “extract facts” – it’s about establishing strict rules, detailed examples, and clarity of format, all so that subsequent automation can run smoothly.
+
+#### Preparing a Prompt for extracting triples
+
+We craft a prompt template that goes beyond basic instruction, making explicit what labels, relationships, and structures the LLM must follow. This template always frames the domain and defines the core concepts for example:
+
+```text
+You are a top-tier algorithm designed for extracting information in structured formats to build a knowledge graph.
+- **Nodes** represent entities and concepts. They're akin to Wikipedia nodes.
+- The aim is to achieve simplicity and clarity in the knowledge graph, making it accessible for a vast audience.
+```
+
+We establish rules for labeling, naming and identification. We also define what relationships are permitted. As well expected data format.
+
+```text
+- **Consistency**: Ensure you use basic or elementary types for node labels.
+- For example, when you identify an entity representing an Equipment, always label it as **"Equipment"**. Avoid using more specific terms like "1500-HP Equipment".
+- **Node IDs**: Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text.
+- **Allowed Node Labels**: Equipment, Voltage, Power, Frequency, Temperature, Current, Efficiency, Manufacturer, Enclosure, Bearing, Test, Location
+- **Allowed Relationship Types**: is a, has, includes, is rated for, operates at, measures, is equipped with, is tested for, provides, is designed for
+​
+  Handling Numerical Data and Dates
+- Numerical data, like voltage, current, efficiency, etc., should be incorporated as attributes or properties of the respective nodes.
+- **No Separate Nodes for Dates/Numbers**: Do not create separate nodes for dates or numerical values. Always attach them as attributes or properties of nodes.
+- **Property Format**: Properties must be in a key-value format.
+- **Naming Convention**: Use camelCase for property keys, e.g., `ratedVoltage`.
+```
+
+In the end we specify the property format and naming. For clarity and reproducibility, we should always includes a real-world example:
+
+```text
+**Strict Compliance**
+Adhere to the rules strictly.
+"""
+    "EXAMPLE\n"
+    "Equipment Model A, a 1125-HP induction Equipment, is rated for 4160V at 60Hz with a full load speed of 3222 RPM. The Equipment is designed with Class F insulation and a Class B temperature rise. It is equipped with RTDs for temperature detection and vibration sensors. "
+    "Efficiency: 95% at full load. Power factor at full load: 0.90. Noise level: 85 dBA at 1 meter.\n\n"
+    f"Output: (Equipment Model A, is a, Equipment){KG_TRIPLE_DELIMITER}"
+    f"(Equipment Model A, has, 1125-HP power){KG_TRIPLE_DELIMITER}"
+    f"(Equipment Model A, operates at, 4160V){KG_TRIPLE_DELIMITER}"
+    f"(Equipment Model A, operates at, 60Hz){KG_TRIPLE_DELIMITER}"
+....
+"""
+```
+
+### Step 3: Create Extraction Workflows
+
+#### 3.1 Import the required libraries
+
+Before working with extraction, LLMs, and SAP HANA, we must have the right libraries available. These libraries help us connect to AI services, load documents, and handle database operations in a unified way.
+
+We import SDKs for LLM orchestration, PDF processing, SAP HANA connectivity, and prompt templating. Using standard libraries ensures that our pipeline is robust, reproducible, and easy for others to understand or adapt.
+
+```python
+import os
+import re
+​
+from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
+from gen_ai_hub.proxy.core.proxy_clients import get_proxy_client
+​
+from hdbcli import dbapi
+import os
+import json
+import numpy as np
+​
+from langchain_community.graphs.networkx_graph import KG_TRIPLE_DELIMITER
+from langchain_core.prompts.prompt import PromptTemplate
+from langchain.indexes.graph import GraphIndexCreator
+from langchain_community.document_loaders import PyPDFLoader
+​
+from hdbcli import dbapi
+import os
+import json
+import numpy as np
+```
+
+#### 3.2 Load environment variables from a local .env file (API keys, DB creds, etc.)
+
+For secure and reusable automation, it’s best practice to keep sensitive information, like API keys and database credentials, outside the codebase. Loading them from a .env file protects secrets and allows code to move easily between dev, test, and production.
+
+We read environment variables at runtime using Python’s built-in libraries or external helpers. This means our credentials never get hard-coded.
+
+The .env file should include the following lines with the appropriate values for access to AI CORE:
+
+```
+AICORE_AUTH_URL="https://*xxxxxxx.authentication.eu10.hana.ondemand.com"
+AICORE_CLIENT_ID= "xxxxxxxx"
+AICORE_CLIENT_SECRET="xxxxx"
+AICORE_BASE_URL="https://api.xxxxxxxx.hana.ondemand.com/v2"
+AICORE_RESOURCE_GROUP="default"
+```
+
+As well credentials for SAP HANA cloud:
+
+```
+hana_address="xxxxx.hanacloud.ondemand.com"
+hana_port= "443"
+hana_user="xxxxx"
+hana_password="xxxxxx"
+hana_encrypt="default"
+```
+
+Use you own values instead ‘xxxxx’.
+
+The code below simply reads credentials from the .env file.
+
+```python
+from dotenv import load_dotenv
+_ = load_dotenv()
+```
+
+#### 3.3 Create triples based on text from pdf
+
+The next practical question is: “**How to turn real documents into knowledge graph triples?**”
+
+We download PDF file, extract its content and concatenate all pages into a single string. Then we use the prompt from step 1 with LLM via AI CORE to extract triples from this content.
+
+In this scenario, we are working with a small document, so it is feasible to provide the entire text as context to the LLM, as modern language models now support long context windows. For most use cases, this approach is sufficient. However, for edge cases where documents exceed the maximum context window, we recommend splitting the document into smaller sections and processing each part sequentially.
+
+For example, the extraction process looks like this:
+
+```python
+# Create a proxy client for the AI Hub
+proxy_client = get_proxy_client('gen-ai-hub')
+chat_llm = ChatOpenAI(proxy_model_name='gpt-4o', proxy_client=proxy_client, temperature=0.0)
+​
+# Build the Knowledge Graph using a Language Model (LLM)
+loader = PyPDFLoader("2312_-_Four_1500-HP_Main_Air_Compressor_Motors_FINAL.pdf")
+docs = loader.load()
+doc_content = 'This is a compressor specification: '
+for doc in docs:
+    doc_content = doc_content + ' ' + doc.page_content
+​
+index_creator = GraphIndexCreator(llm=chat_llm)
+​
+graph = index_creator.from_text(text=doc_content, prompt=KNOWLEDGE_TRIPLE_EXTRACTION_PROMPT)
+​
+# Print triples
+triples  = graph.get_triples()
+print(triples)
+```
+
+Please note the setting temperature=0.0 - this is important so that LLM strictly follows the prompt without any variations.
+
+### Step 4: Review Extracted Triples
+
+Let's quickly check the logic of the triples before loading them into SAP HANA. Early errors are easy to fix, but errors in the database are harder to debug.
+
+We output the extracted triples to the console so that domain expert can inspect the data for obvious problems or inconsistencies. If anything seems strange or incorrect, such as missing data, incorrect relationships, or unexpected values, you can stop the process and fix it immediately. Then go back and refresh Prompt. Make the changes and rerun triple extraction.
+
+Take a few minutes to ensure that the resulting knowledge graph is accurate, usable, and ready for your business needs.
+
+```python
+triples  = graph.get_triples()
+print(triples)
+​
+# Example of output:
+# [
+    ("1500-HP Main Air Compressor Motor", "Equipment", "is a"),
+    ("1500-HP Main Air Compressor Motor", "1500-HP power", "has"),
+    ("1500-HP Main Air Compressor Motor", "4160V", "operates at"),
+    ("1500-HP Main Air Compressor Motor", "60Hz", "operates at"),
+    ("1500-HP Main Air Compressor Motor", "efficiency of 95% or higher at 100% load", "has"),
+    ("1500-HP Main Air Compressor Motor", "power factor of 0.936 or higher", "has"),
+    ("1500-HP Main Air Compressor Motor", "sound level of 85 dB(A) at 3 feet", "has"),
+    ("1500-HP Main Air Compressor Motor", "Class F insulation", "is designed with"),
+    ("1500-HP Main Air Compressor Motor", "Class B temperature rise", "is designed with"),
+    ("1500-HP Main Air Compressor Motor", "vibration sensors", "is equipped with"),
+    ("1500-HP Main Air Compressor Motor", "winding and bearing temperature sensors", "is equipped with"),
+    ("1500-HP Main Air Compressor Motor", "space heaters", "is designed for"),
+    ("1500-HP Main Air Compressor Motor", "main and auxiliary terminal boxes", "is equipped with"),
+    ("1500-HP Main Air Compressor Motor", "continuous duty at 90°C", "is designed for"),
+    ("1500-HP Main Air Compressor Motor", "sound pressure level", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "vibration measurements", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "heat run", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "surge comparison test", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "DC high-potential test", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "bearing dimensional and alignment checks", "is tested for"),
+    ("1500-HP Main Air Compressor Motor", "rotor residual unbalance verification test", "is tested for")
+...
+```
+
+### Step 5: Store the Knowledge Graph
+
+After you’ve checked the triples, save them in the database so you and your team can use them later. To do this, we will load all validated triples into a database that supports graph data, such as SAP HANA Cloud.
+
+This can be done either as a [Knowledge Graph or Property Graph](https://community.sap.com/t5/technology-blog-posts-by-sap/choosing-between-knowledge-graphs-and-property-graphs-in-sap-hana-cloud-and/ba-p/14074575), depending on your project and tools.
+
+When storing triples in an RDF knowledge graph, each entity and relationship in an RDF knowledge graph is represented by an IRI (Internationalized Resource Identifier). An IRI ensures that each object in the graph has a unique, standard name that will work in databases and on the web. For literals​​(such as names or numbers), all special characters must be escaped so that the data is not corrupted when stored. This is why helper functions are needed before inserting triples, otherwise the data may not load or cause errors later.
+
+First, for each triple, subjects and predicates (and objects if they represent entities) are converted to IRIs using to_iri, while values such as numbers or text are treated as literals with appropriate escaping via to_literal, to prevent formatting errors.
+
+```python
+# Functions for converting values to IRIs and literals
+def to_iri(value: str, base: str = "http://example.com/") -> str:
+    import re
+    encoded_part = re.sub(
+        r"[^a-zA-Z0-9\\-_\\.]", lambda m: f"%{ord(m.group(0)):02X}", value
+    )
+    return f"<{base}{encoded_part}>"
+​
+def to_literal(value: str) -> str:
+    if value is None:
+        return '""'
+    escaped = (
+        value.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+    )
+    return f'"{escaped}"'
+```
+
+After the transformation, the SAP HANA [SPARQL_EXECUTE](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/sparql-query-forms-using-sparql-execute) procedure is used to store the extracted triples as a KG in HANA. SAP HANA’s Knowledge Graph engine comprises a [HANA Triple Store](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/enable-triple-store) for storing RDF data and a SPARQL query engine for querying the graph. Storing your data this way allows you to run advanced SPARQL queries and integrate knowledge graph results with other SAP tools and business processes.
+
+The snippet connects to SAP HANA using environment variables for security. It creates an IRI for the graph, subjects, and predicates, and formats each object as either an IRI (if it represents an entity) or as a literal (if it’s a value like text or a number). Then, for each triple, it creates and executes a _SPARQL_EXECUTE_ statement in bulk mode.
+
+```python
+# Connection parameters
+HANA_ADDRESS = os.getenv("hana_address")
+HANA_PORT = os.getenv("hana_port")
+HANA_USER = os.getenv("hana_user")
+HANA_PASSWORD = os.getenv("hana_password")
+GRAPH_NAME = "product_custom_HANA_KG"
+​
+# Connecting to SAP HANA
+conn = dbapi.connect(
+    address=HANA_ADDRESS, port=HANA_PORT, user=HANA_USER, password=HANA_PASSWORD
+)
+cursor = conn.cursor()
+​
+# Defining IRI for graph
+graph_iri = to_iri(GRAPH_NAME, base="http://graph/")
+​
+# Bulk insertion of graph data
+print("[INFO] Inserting data into the graph...")
+​
+# Prepare all triples in one SPARQL INSERT statement
+triples_statements = []
+for subj, pred, obj in triplets:
+    subj_iri = to_iri(subj, base="http://example.com/resource/")
+    pred_iri = to_iri(pred, base="http://example.com/property/")
+    obj_literal = to_literal(obj)
+    triples_statements.append(f"    {subj_iri} {pred_iri} {obj_literal} .")
+​
+# Single bulk INSERT query
+sparql_bulk_insert = f"""
+INSERT DATA {{
+  GRAPH {graph_iri} {{
+{chr(10).join(triples_statements)}
+  }}
+}}
+""".strip()
+​
+try:
+    cursor.callproc("SPARQL_EXECUTE", [sparql_bulk_insert, "", None, None])
+    print(f"[INFO] Bulk insert of {len(triplets)} triples successful.")
+except Exception as e:
+    print(f"[ERROR] Bulk insert failed: {e}")
+    print(f"[ERROR] Query:\n{sparql_bulk_insert}")
+​
+conn.commit()
+cursor.close()
+​
+​
+# Expected output
+# [INFO] Inserting data into the graph...
+# [INFO] Bulk insert of 111 triples successful.
+```
+
+The last step is useful for checking that the knowledge graph is saved correctly in HANA Cloud and for quickly obtaining insights before using the data in business applications.
+
+After loading the triples into SAP HANA, you can run a SPARQL query to validate and analyze the data. In this example, the query counts how many times each property appears in the graph. The script uses _[SPARQL_TABLE](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/sparql-select-queries-using-sparql-table)_ to execute the query and outputs the results so that you can verify the correctness of the data.
+
+```python
+# Form and execute a SPARQL query
+sparql_query = f"""
+SELECT DISTINCT ?s ?p ?o
+FROM {graph_iri}
+WHERE {{
+  ?s ?p ?o
+}}
+"""
+​
+print("[INFO] Executing SPARQL SELECT query...")
+try:
+    cursor.execute(f"SELECT * FROM SPARQL_TABLE('{sparql_query}')")
+    results = cursor.fetchall()
+    if results:
+        print("[RESULT] Query results:")
+        for row in results:
+            # usualy row = (subject, predicate, object)
+            print(row)
+    else:
+        print("[RESULT] No data found.")
+except Exception as e:
+    print(f"[ERROR] SPARQL SELECT query failed: {e}")
+​
+# Closing the connection
+cursor.close()
+conn.close()
+print("[INFO] Connection closed.")
+​
+# Expected output
+# ('http://example.com/resource/Compressor', 'http://example.com/property/terminal%20box%20certifications', 'is designed for')
+# ('http://example.com/resource/Compressor', 'http://example.com/property/terminal%20box%20shipment%20protection', 'is designed for')
+# ('http://example.com/resource/Compressor', 'http://example.com/property/terminal%20box%20quick%20disconnects', 'is designed for')
+# ('http://example.com/resource/Compressor', 'http://example.com/property/IEEE%20522', 'has industry standard')
+# ('http://example.com/resource/Compressor', 'http://example.com/property/ASTM%20A345%2D19', 'has industry standard')
+# ('http://example.com/resource/Compressor', 'http://example.com/property/NEMA%20MG%201%2D20.18', 'has industry standard')
+# ....
+```
+
+### Reference Code
+
+You will find the full example code:
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/knowledge-graph"
+        target="_blank"
+        trackingFeature="DOWNLOAD_KG_RAG_CREATION"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+**What next? Hybrid Approach: Using Knowledge Graphs and LLMs in SAP HANA Cloud**
+
+Now that we have extracted triples from our business documents and stored this knowledge as facts in a knowledge graph inside SAP HANA Cloud, how can we use them to improve AI responses? We can combine this structured data with large language models (LLMs) to augment LLM output with real-time, verifiable data and provide more accurate, explainable answers for business questions. Some sources call this approach [hybrid](https://arxiv.org/pdf/2408.04948), so we will use this term further. This hybrid approach allows you to use both the structured context of your knowledge graph and the flexible language capabilities of LLM in a single workflow.
+
+In SAP HANA Cloud, knowledge graphs are more than just a way to organize data; they can be the foundation for smarter, more reliable AI. When a user asks a question, the system can search the knowledge graph to find relevant entities and facts, and then provide that context directly to the LLM.
+
+By [combining](https://community.sap.com/t5/technology-blog-posts-by-sap/get-hands-on-build-an-intelligent-data-application-powered-by-the-sap-hana/ba-p/13916066) the benefits of knowledge graphs and LLMs in SAP HANA Cloud, you can deliver business answers that are not only understandable and complete, but also fully based on your corporate data. This hybrid method ensures that every AI answer is supported by reliable facts and tailored to the needs of your organization.
+
+## <span className="step-number">4</span> <span className="step-title">Expand Your Knowledge</span>
+
+### Tutorials and Learning Journeys
+
+#### Recommended
+
+- [Building Intelligent Data Applications with SAP HANA Cloud Knowledge Graphs](https://discovery-center.cloud.sap/protected/index.html#/missiondetail/4568/4856/) (Discovery Center Mission)
+- [Python Analysis with Multi-Model Data in SAP HANA Cloud](https://developers.sap.com/group.hana-cloud-database-python-multi-model.html): Learn about the enhancements made to the hana-ml library to support the multi-model capabilities of SAP HANA Cloud, SAP HANA database.
+
+#### Discovery Mission
+
+- [Building Intelligent Data Applications with SAP HANA Cloud Knowledge Graphs.](https://discovery-center.cloud.sap/missiondetail/4568/)
+- Reference code for Discovery mission [SAP HANA Cloud Knowledge Graph Engine (KGE)](https://github.com/IDGCOENA/saphanacloudkge)
+
+#### Reference Code
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/knowledge-graph"
+        target="_blank"
+        trackingFeature="DOWNLOAD_KG_RAG_CREATION"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+#### Other
+
+- [Visualize Spatial Data in SAP HANA Cloud Using Jupyter Notebook](https://developers.sap.com/tutorials/hana-cloud-connection-guide-2.html): Connect your Python script from Jupyter Notebook to SAP HANA Cloud, SAP HANA database, creating a visualization of spatial data in SAP HANA Cloud.
+- [Analyze Graph Workspace in SAP HANA Cloud, SAP HANA Database](https://developers.sap.com/tutorials/hana-cloud-python-analysis-multimodel-3.html): Learn to use algorithms to analyze and process a Graph Workspace in SAP HANA Cloud, SAP HANA database.
+- [Smart Multi-Model Data Processing with SAP HANA Cloud](https://developers.sap.com/group.hana-cloud-smart-multi-model-data.html) Get to know spatial and graph processing in SAP HANA Cloud, SAP HANA database with 10 hands-on exercises. Use your own (trial) database and our sample data to experience the advantages of smart multi-model data processing.
+
+### Additional Materials
+
+**SPARQL syntax in SAP HANA cloud**
+
+- [SAP HANA SQL Reference Guide for SAP HANA Platform](https://help.sap.com/docs/SAP_HANA_PLATFORM/4fe29514fd584807ac9f2a04f6754767/b4b0eec1968f41a099c828a4a6c8ca0f.html) The SAP HANA System Views Reference describes all SYS schema views that allow you to query for various information about the system state using SQL operations.
+- [SPARQL SELECT Queries Using SPARQL_TABLE](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/sparql-select-queries-using-sparql-table) SPARQL SELECT queries examples with SAP HANA database function SPARQL_TABLE.
+- [SPARQL Query Forms Using SPARQL_EXECUTE](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/sparql-query-forms-using-sparql-execute) SPARQL queries with the built-in SAP HANA database procedure SPARQL_EXECUTE.
+
+**KG creation**
+
+- [Choosing Between Knowledge Graphs and Property Graphs in SAP HANA Cloud and Why Both Matter](https://community.sap.com/t5/technology-blog-posts-by-sap/choosing-between-knowledge-graphs-and-property-graphs-in-sap-hana-cloud-and/ba-p/14074575) Guides users on evaluating use-cases to effectively select between Knowledge Graphs, suited for semantic querying via RDF, and Property Graphs, optimized for relationship-intensive analytical workloads, within SAP HANA Cloud.
+- [Get Started with SAP HANA Graph](https://developers.sap.com/group.hana-aa-graph-overview.html) Get an overview of SAP HANA capabilities related to graph processing.
+- [Take Your First Steps with the SAP HANA Graph Engine](https://developers.sap.com/tutorials/hana-cloud-smart-multi-model-7.html) Learn how to prepare your data for the SAP HANA Cloud, SAP HANA database Graph Engine how to create a Graph Workspace.
+
+**KG use cases**
+
+- [Try Out Multi-Model Functionality with the SAP HANA Database Explorer and Database Objects App](https://developers.sap.com/tutorials/hana-dbx-multi-model.html) Explore knowledge graph, property graph, JSON document store, and spatial capabilities in the SAP HANA database explorer.
+- [Connecting the Facts: SAP HANA Cloud’s Knowledge Graph Engine for Business Context](https://community.sap.com/t5/technology-blog-posts-by-sap/connecting-the-facts-sap-hana-cloud-s-knowledge-graph-engine-for-business/ba-p/13888597) Learn how to extend and personalize SAP applications. Follow the SAP technology blog for insights into SAP BTP, ABAP, SAP Analytics Cloud, SAP HANA, and more.
+- [KG: Business Benefits and Use Cases](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-knowledge-graph-guide/business-benefits-and-use-cases) Use cases include intelligent data applications, generative AI, data fabric establishment, and improved decision making.
+
+<RelatedProjects />
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/kg-rag-query-pipeline" text="Knowledge Graph-based RAG - Query Pipeline" />
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-embedding" text="Vector-based RAG (1/2) Embedding" />
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG (2/2) Query Pipeline" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+    <PageContributors contributorIds={[
+        "andrii-rzhaksynskyi",
+        "luis-marques",
+        "marco-cigaina"
+    ]}/>
+
+</div>
+
+</LoginWall>
