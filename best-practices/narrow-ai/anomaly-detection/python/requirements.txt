@@ -1,8 +1,0 @@
-numpy
-pandas
-matplotlib
-seaborn
-scikit-learn
-python-dotenv
-hana_ml
-notebook

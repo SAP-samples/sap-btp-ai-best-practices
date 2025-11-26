@@ -1,6 +1,0 @@
-python-dotenv==1.1.1
-notebook==7.4.5
-jupyterlab==4.4.6
-sap-ai-sdk-gen==5.4.5
-PyMuPDF==1.26.4
-tqdm

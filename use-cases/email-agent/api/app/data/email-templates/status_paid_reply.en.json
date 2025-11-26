@@ -1,6 +1,0 @@
-{
-  "decision": "STATUS_PAID_REPLY",
-  "locale": "en",
-  "subject": "Invoice payment details",
-  "body": "Hello {{supplierName}},\n\nWe have confirmed the following invoice(s) have been paid: {{invoiceNumbers}}.\n\nPayment details:\n{{paymentDetails}}\n\nIf you have any further questions, please let us know.\n\nBest regards,\nAccounts Payable\n\nNote: This message was generated with AI assistance."
-}

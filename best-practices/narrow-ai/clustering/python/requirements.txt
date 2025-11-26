@@ -1,5 +1,0 @@
-hana-ml
-pandas
-seaborn
-matplotlib
-python-dotenv

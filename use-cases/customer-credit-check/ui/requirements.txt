@@ -1,8 +1,0 @@
-# Streamlit UI requirements
-streamlit
-requests
-pandas
-openpyxl
-python-dotenv
-markdown
-xhtml2pdf

@@ -1,1 +1,0 @@
-# Pages package for SAP RFQx Document Analysis Application

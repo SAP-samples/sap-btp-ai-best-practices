@@ -1,7 +1,0 @@
-hana-ml
-pandas
-matplotlib
-numpy
-python-dotenv
-hdbcli
-jupyter

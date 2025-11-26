@@ -1,4 +1,0 @@
-notebook
-jupyterlab
-generative-ai-hub-sdk
-python-dotenv

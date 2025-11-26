@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksap_btp_ai_best_practices_website=self.webpackChunksap_btp_ai_best_practices_website||[]).push([[4902],{577:e=>{e.exports=JSON.parse('{"name":"register-download-route","id":"default"}')}}]);

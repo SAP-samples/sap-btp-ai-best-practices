@@ -1,9 +1,0 @@
-site_name: Example API documentation
-theme:
-  name: material
-plugins:
-  - mkdocstrings
-
-nav:
-  - Home: index.md
-  - API Reference: api_reference.md
