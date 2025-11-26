@@ -1,0 +1,640 @@
+---
+title: "Vector-based RAG (1/2) Embedding"
+description: ""
+hide_title: true
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+import RelatedProjects from "@site/src/components/RelatedProjects";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Vector-based RAG (1/2) Embedding</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("generative-ai/vector-rag-embedding/videos/BTP%20AI%20Best%20Practices%20-%20Vector-based%20RAG%20Embedding%20intro.mp4")}>
+            <Icon name="video" />
+            <span>Teaser</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/vector-rag-embedding/videos/BTP%20AI%20Best%20Practices%20-%20Vector-based%20RAG%20Embedding.mp4")}>
+              <Icon name="video" />
+              <span>Webinar</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/vector-rag-embedding/pdfs/BTP%20AI%20Best%20Practices%20-%20Vector-based%20RAG%20Embedding.pdf")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+Vector databases and Retrieval Augmented Generation ([RAG](/docs/glossary#rag)) are pivotal in enhancing the capabilities of AI systems, particularly in the realm of semantic search and natural language processing. Vector databases, such as those supported by [SAP HANA Cloud](/docs/technology/sap-hana-cloud), store data in high-dimensional vector formats, allowing for efficient similarity searches. These databases are crucial for applications like semantic search, recommendations, and anomaly detection. RAG, on the other hand, leverages vector databases to augment the intelligence of [large language models (LLMs)](/docs/glossary#llm-large-language-model) by integrating external information retrieval into the response generation process.
+
+In the RAG technique, there are 3 important steps:
+
+1. **Retrieve:** Retrieve relevant information from the knowledge base, which is commonly stored in vector databases for faster retrieval.
+2. **Augment:** Add the additional context fetch in the “Retrieve” step and augment the LLM context.
+3. **Generate:** Provide a prompt along with the context from the “Augment” step and generate the results using your choice of LLM.
+
+### Expected Outcome
+
+RAG approach helps LLMs to provide more accurate and contextually relevant answers by accessing a vast repository of vector embeddings, which represent semantic similarities rather than mere keyword matches. The combination of vector databases and RAG enables scalable, low-latency semantic search systems, facilitating advanced applications such as open-domain question answering and data-to-text generation. This best practice will create a deeper understanding of the RAG process flow and the creation of embedding in the Vector Database.
+
+<LoginWall>
+
+### Benefits
+
+- **Semantic Search & Understanding:** Embeddings capture the meaning of text rather than just exact keywords
+- **Improved Retrieval Quality:** Embeddings enable high-quality retrieval from large knowledge bases
+- **Scalability and Efficiency:** Vector databases are optimized for fast, scalable similarity search using embeddings
+
+### Key Concepts
+
+1. **Vector Embeddings:** [Vector embeddings](/docs/glossary#vector-embeddings) are vectors generated by embedding models to map objects like text or images into a high-dimensional space, preserving semantic similarity.
+2. **Similarity Measures:** These are mathematical functions that evaluate the similarity between vectors. Common measures include L2 distance and cosine similarity, which assess the distance and directional similarity between vectors, respectively.
+3. **REAL_VECTOR Data Type:** In SAP HANA Cloud, vectors are stored using the [REAL_VECTOR](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-property-graph-engine-reference/real-vector?locale=en-US&q=Real_vector) data type, which supports operations like creation, serialization, and similarity searches but has limitations such as no defined order and restrictions on arithmetic operations.
+4. **Chunking:** Chunking in Retrieval-Augmented Generation (RAG) refers to the process of dividing large text corpora into smaller, manageable pieces known as chunks. Please refer [Chunking strategies](/docs/technical-view/generative-ai/rag/vector-rag-embedding#decide-on-chunking-strategy-before-embedding) for more details
+
+### Use cases of RAG and Vector Embeddings
+
+Vector databases and RAG are employed in various applications, including semantic search, natural language processing, recommendations, and anomaly detection, providing a robust framework for AI-driven solutions. Among the most compelling use cases to explore with the vector engine are:
+
+- **Semantic search and retrieval:** Leverage vector embeddings to enhance semantic search capabilities, enabling users to find relevant information quickly.
+- **Contextual analysis:** Use vector embeddings for contextual analysis, allowing for a deeper understanding of relationships between different data points within the database.
+- **Informed decision making:** Utilize vector embeddings to build intelligent data applications, unlocking insights and facilitating more informed decision-making.
+- **Optimized large language models (LLMs):** Enhance the output of LLMs by utilizing vector embeddings to optimize and add context to the generated content.
+
+#### Example Process Flow for a Vector Engine-powered RAG approach
+
+![Example Process Flow for a Vector Engine-powered RAG approach](@site/static/generative-ai/vector-rag-embedding/images/Process_Flow_for_a_Vector_Engine.png)
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Commercial
+
+- SAP AI Core with the “Extended” tier on SAP Business Technology Platform (This is required to enable usage of GenAI Hub)
+- SAP HANA Cloud on SAP BTP
+- SAP AI Launchpad
+
+You can find pricing details for the above services in the [SAP Discovery Center](https://discovery-center.cloud.sap/serviceCatalog?commercialModel=btpea&regions=all).
+
+### Technical
+
+1. Setup SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/docs/technology/sap-business-technology-platform))
+2. Create an instance of SAP HANA Cloud ([Setup Guide](/docs/technology/sap-hana-cloud))
+3. Create an instance of SAP AI Core ([Setup Guide](/docs/technology/sap-ai-core#setup))
+4. Subscribe to SAP AI Launchpad ([Setup Guide](/docs/technology/sap-ai-launchpad))
+
+### High-level reference architecture
+
+![High-level Reference Architecture](@site/static/generative-ai/vector-rag-embedding/images/architecture.png)
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+### Choose the Right Embedding Model
+
+Which model to use for embedding creation
+
+#### Guidelines
+
+- General-purpose RAG: Use high-performing general models like OpenAI or Cohere.
+- Domain-specific RAG: Choose models fine-tuned on your domain (e.g., legal, finance, healthcare).
+- Consider model size vs. inference speed and cost.
+- Use multilingual models if your documents span multiple languages.
+
+#### Some available options to do that currently are:
+
+- OpenAI API Embedding models
+- Access to Open Source LLM Model API's (e.g. LLAMA2, PHI-2, MISTRAL, GROK,etc)
+- SAP GenAI Hub (Enterprise grade access to a curated set of models e.g text-embedding-3-small,text-embedding-3-large,text-embedding-ada-002 from OpenAI e.g. and amazon–titan-embed-text from Azure). To know more about all the available models under GenAI hub, please refer [SAP Note](https://me.sap.com/notes/3437766).
+
+### Decide on Chunking Strategy Before Embedding
+
+How you break documents into smaller text units
+
+#### Guidelines
+
+- Prefer semantic chunking (e.g., sentences, paragraphs) over arbitrary splits.
+- Maintain context by optionally overlapping chunks (e.g., sliding window).
+- Include metadata (e.g., title, tags, document ID) with each chunk to enable post-filtering.
+- Some additional chunking methods can also be used. e.g. recursive character based chunking(preserve the context better), context-enriched chunking (easier retrieval)
+
+### Normalize Input Text
+
+How to preprocess text before embedding.
+
+#### Guidelines
+
+- Clean the text: remove boilerplate, HTML, excessive whitespace, special characters.
+- Lowercase (depending on model behavior).
+- Standardize symbols, punctuation, and encoding.
+- Keep a balance, don’t strip away useful context like section headers or lists.
+
+### Choosing Vector Indexing
+
+How to improve similarity search within Vector DB
+
+#### Guidelines
+
+- Ensure your vector columns are indexed.
+- One of the best option is to use Hierarchical Navigable Small World (HNSW) index, this indexing is available in SAP HANA.
+- These indexes accelerate query times by reducing the computational load required to find similar vectors.
+
+### Quality Assurance & Evaluation
+
+How to verify that the embeddings represent your content well.
+
+#### Guidelines
+
+- Sample chunks and test nearest-neighbor searches manually.
+- Use similarity scoring tools to visualize cluster quality.
+- Run pilot queries to see if embeddings return intuitive, relevant results.
+- Log retrieval outcomes and get user feedback early.
+
+### Embedding Update Strategy
+
+When and how to regenerate embeddings
+
+#### Guidelines
+
+- Automate re-embedding when documents are added/changed.
+- Use versioning to track changes in content or embedding models.
+- Store old embeddings if you need backward compatibility or A/B testing.
+
+### Multi-language and Tokenization Considerations
+
+How to handle multiple languages and encoding
+
+#### Guidelines
+
+- Ensure your embedding model supports the language(s) in your data.
+- Avoid creating mixed-language chunks—keep chunks in a single language.
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+Below you can find the necessary information to develop a project in your favorite language using the [official SAP Libraries and SDKs](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/libraries-and-sdks).
+
+### Programming Model Selection Guidelines
+
+Programming and Runtime Selection Guidelines
+While the Business Technology platform provides support for different development languages and several application runtimes, here are some of the recommendations while developing AI applications within the SAP ecosystem:
+
+- **Backend-Only API:** Use **Python** or **JavaScript/TypeScript** (strong async capabilities, Node.js ecosystem).
+  - **AI Workloads** - Use Python or any other language to build Docker images and host the AI application backend in AI Core. For an application that requires GPU resources for training/inference, AI Core-based deployment helps you scale the applications easily. For the code samples below, you would not require Docker-based development.
+- **Fullstack Application (UI & Backend):** Use **CAP** (Cloud Application Programming Model) for optimized performance, scalability, and seamless SAP integration.
+
+SAP offers strong development libraries and SDKs to support your development in the language of your choice. Refer to the [official SAP Libraries and SDKs](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/libraries-and-sdks) page for the list of all available options.
+
+<div className="tabs-with-background">
+<Tabs groupId="language">
+<TabItem value="python" label="Python" default>
+
+<TrackableLink
+  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/python"
+  className="button button--primary button--lg download-source-btn--tab"
+  target="_blank"
+  trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+>
+  <span>Download Source Code</span>
+</TrackableLink>
+
+<h3>Recommendation</h3>
+
+Python is one of the well-maintained and industry wide accepted language for AI/ML related developments. SAP also provides multiple SDKs to support development in Python. We recommend using the [SAP Generative AI hub SDK](https://pypi.org/project/generative-ai-hub-sdk/) to harness the power of generative AI models. If you are leveraging AI Core for deploy AI workload, you can use [SAP AI Core SDK](https://pypi.org/project/ai-core-sdk/) along with the [AI API Client SDK](https://pypi.org/project/ai-api-client-sdk/) for managing the AI Core lifecycle efficiently.
+
+<h3>SDK</h3>
+
+With this SDK you can leverage the power of generative models available in the generative AI Hub of SAP AI Core, it provides model access by wrapping the native SDKs of the model providers (OpenAI, Amazon, Google), through langchain or the orchestration service.
+
+- **[SAP Generative AI hub SDK](https://pypi.org/project/generative-ai-hub-sdk/) (Recommended for building apps)**
+- [SAP AI Core SDK](https://help.sap.com/docs/link-disclaimer?site=https://pypi.org/project/ai-core-sdk/) and [AI API Client SDK](https://pypi.org/project/ai-api-client-sdk/) (managing the AI Core lifecycle)
+- [HANA_ML SDK](https://pypi.org/project/hana-ml/) (Unified interface to leverage AI/ML capability in native HANA)
+
+<h3>Tutorials and Learning Journeys</h3>
+
+- If you are new to AI core and lifecycle management in AI Launchpad, we recommend going through [Predictive AI with SAP AI Core](https://developers.sap.com/group.ai-core-get-started-basics.html) tutorial to make yourself comfortable with its features and available best practices.
+- [RAG with HANA Vector Engine](https://developers.sap.com/tutorials/ai-core-genai-hana-vector.html) curates step by step process to do hands-on exercise on RAG leveraging HANA Vector Database.
+
+<h3>Reference Code and Step-by-step Instructions</h3>
+
+#### Recommended
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/python"
+        target="_blank"
+        trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+
+You can also kickstart your development by referencing the below Python notebooks, which leverage [SAP GenAI hub SDK](https://pypi.org/project/generative-ai-hub-sdk/) to harness the LLM capabilities for RAG implementation:
+
+- [RAG with HANA VectorDB Example](https://github.com/SAP-samples/ai-core-samples/blob/main/08_VectorStore/Hana/rag_hana_vector.ipynb)
+- [GenAI - Vector DB Example](https://github.tools.sap/IA-C/sap-genai-hub-with-sap-hana-cloud-vector-engine/blob/main/genAI_vectordb.ipynb)
+- [Short video](https://www.sap.com/assetdetail/2023/12/08854b59-9f7e-0010-bca6-c68f7e60039b.html) that covers a step-by-step walkthrough of a Python notebook for the RAG scenario leveraging HANA Vector Engine.
+
+Additionally, you can also refer [SAP community blog](https://community.sap.com/t5/technology-blogs-by-sap/hana-vector-engine-and-langchain/ba-p/13636959) on the usage of HANA vectorDB and the Langchain framework.
+
+<h4>Relevant Code</h4>
+
+```python
+from langchain_community.document_loaders import TextLoader
+from langchain_community.vectorstores.hanavector import HanaDB
+from langchain_core.documents import Document
+from langchain_openai import OpenAIEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
+
+# Load the sample document "state_of_the_union.txt" and create chunks from it.
+text_documents = TextLoader("/workspaces/integration-api-recommend-service/_temp/AICore.txt").load()
+text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+text_chunks = text_splitter.split_documents(text_documents)
+print(f"Number of document chunks: {len(text_chunks)}")
+
+# Initialize embeddings model
+EMBEDDINGS_MODEL = "text-embedding-ada-002"
+
+from gen_ai_hub.proxy.langchain.openai import OpenAIEmbeddings
+embeddings = OpenAIEmbeddings(proxy_model_name=EMBEDDINGS_MODEL)
+
+# Initialize HANA Vector Store instance
+db = HanaDB(
+    embedding=embeddings, connection=connection, table_name="AICORE_VECTOR_TABLE"
+)
+# Delete already existing documents from the table
+db.delete(filter={})
+
+# add the loaded document chunks
+db.add_documents(text_chunks)
+```
+
+</TabItem>
+
+<TabItem value="javascript-typescript" label="JavaScript/TypeScript">
+
+<TrackableLink
+  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/typescript"
+  className="button button--primary button--lg download-source-btn--tab"
+  target="_blank"
+  trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+>
+  <span>Download Source Code</span>
+</TrackableLink>
+
+<h3>Recommendation</h3>
+
+The [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) is the official SAP AI SDK for TypeScript.
+
+<h3>SDK</h3>
+
+With this SDK you can leverage the power of generative models available in the generative AI Hub of SAP AI Core, it provides model access by wrapping the native SDKs of the model providers (OpenAI, Amazon, Google), through langchain or the orchestration service.
+
+- [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js)
+
+<h3>Learning Journeys</h3>
+
+#### Recommended
+
+There are currently no learning journeys using the official SDK.
+
+<h3>Reference Code</h3>
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/typescript"
+        target="_blank"
+        trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+- [SAP Cloud SDK for AI - Compute Embedding](https://github.com/SAP/ai-sdk-js/blob/main/sample-code/src/foundation-models/azure-openai.ts) (Look at the computeEmbedding() function to
+create embeddings to store in a Vector Database) - [SAP Cloud SDK for AI - Document Grounding](https://github.com/SAP/ai-sdk-js/blob/main/sample-code/src/document-grounding.ts) (To
+use the Document Grounding feature)
+
+<h4>Relevant Code</h4>
+
+```typescript
+// Upload CSV File, then prepare embeddings and store in HANA DB
+app.post("/uploadScienceData", upload.single("csvFile"), async (req: Request, res: Response): Promise<void> => {
+  try {
+    const filePath = req.file?.path;
+    if (!filePath) {
+      res.status(400).send("No file uploaded.");
+    } else {
+      // Parse the CSV file
+      const scienceDataRows: any[] = await parseFile(filePath);
+      // Break into chunks
+      let scienceDataChunks: any[] = [];
+      scienceDataRows.forEach((row: IScienceData) => {
+        let index = 0;
+        while (index < row.Topic.length) {
+          scienceDataChunks.push({ ...row, ID: uuidv4(), Topic: row.Topic.slice(index, index + chunkSize) });
+          index += chunkSize;
+        }
+      });
+      // Create Embeddings
+      const embeddingResults = await oAiSdk.createEmbeddings(scienceDataChunks, embeddingBatchSize);
+      // Store in DB
+      const columns = "TOPIC, DIFFICULTY_LEVEL, CATEGORY, ID, EMBEDDING";
+      const values = embeddingResults.map((row: any) => Object.values(row));
+      const result = await oHanaDb.executeBatchQuery(`INSERT INTO AI_DB_SCIENCE_DATA (${columns}) VALUES (?,?,?,?,TO_REAL_VECTOR(?))`, values);
+      // Return the results
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: error instanceof Error ? error.message : "An unknown error occurred"
+    });
+  }
+});
+```
+
+```typescript
+/**
+* Create Embeddings
+* @param {Array<IScienceData>} science data - An array of science data.
+* @return {Promise} - Returns a Promise that resolves to an array of embeddings.
+*/
+public createEmbeddings = async (rows: Array<IScienceData>, batchSize: number): Promise<any> => {
+  try {
+    const client = this.getEmbeddingClient(this.resourceGroupId);
+​
+    for (let i = 0; i < rows.length / batchSize; i++) {
+      const startIndex = i * batchSize;
+      const batchTopics = rows.slice(startIndex, startIndex + batchSize).map((row) => row.Topic);
+      const batchResponse = await client.run({ input: batchTopics });
+      const batchEmbeddings = batchResponse.getEmbeddings();
+      batchEmbeddings.forEach((response: any, idx: number) => {
+        rows[startIndex + idx].Embedding = `[${response!.join(",")}]`;
+      });
+    }
+    return rows;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Error creating embeddings";
+    throw new Error(errorMessage);
+  }
+};
+​
+private readonly getEmbeddingClient = (resourceGroupId: string) => {
+  return new AzureOpenAiEmbeddingClient({
+    modelName: "text-embedding-3-small",
+  });
+};
+```
+
+</TabItem>
+
+<TabItem value="cap-app" label="CAP">
+
+<TrackableLink
+  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/cap"
+  className="button button--primary button--lg download-source-btn--tab"
+  target="_blank"
+  trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+>
+  <span>Download Source Code</span>
+</TrackableLink>
+
+<h3>Recommendation</h3>
+
+There are 2 SDKs available for developing CAP applications, we recommend using the [SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) because it's the official SAP AI SDK, but the [CAP LLM Plugin](https://www.npmjs.com/package/cap-llm-plugin) has great code sample code to learn from.
+
+<h3>SDKs</h3>
+
+With this SDK you can leverage the power of generative models available in the generative AI Hub of SAP AI Core, it provides model access by wrapping the native SDKs of the model providers (OpenAI, Amazon, Google), through langchain or the orchestration service.
+
+- **[SAP Cloud SDK for AI](https://github.com/SAP/ai-sdk-js) (Recommended)**
+- [CAP LLM Plugin](https://www.npmjs.com/package/cap-llm-plugin)
+
+<h3>Learning Journeys</h3>
+
+#### Recommended
+
+There are currently no learning journeys using the official SDK.
+
+#### Other
+
+- While you build your own application using SAP Cloud SDK or CAP LLM Plugin, you can refer SAP Discovery Center mission [GenAI Mail Insights: Develop a CAP application using GenAI and Retrieval Augmented Generation (RAG)](https://discovery-center.cloud.sap/missiondetail/4371/4655/). This mission covers a step-by-step process customer support scenario.
+
+<h3>Reference Code</h3>
+
+#### Recommended
+
+<ul className="download-source-link-in-list-container">
+  <li>
+    <strong>
+      <TrackableLink
+        href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/vector-rag-embedding/cap"
+        target="_blank"
+        trackingFeature="DOWNLOAD_VECTOR_RAG_EMBEDDING"
+      >
+        <span>SAP BTP AI Best Practices - Sample Code</span>
+      </TrackableLink>
+    </strong>
+  </li>
+</ul>
+- [SAP Cloud SDK for AI - Compute Embedding](https://github.com/SAP/ai-sdk-js/blob/main/sample-code/src/foundation-models/azure-openai.ts) (Look at the computeEmbedding() function to
+create embeddings to store in a Vector Database) - [SAP Cloud SDK for AI - Document Grounding](https://github.com/SAP/ai-sdk-js/blob/main/sample-code/src/document-grounding.ts) (To
+use the Document Grounding feature)
+
+#### Other
+
+- [CAP LLM Plugin - Harmonized RAG Quickstart CAP Application using CAP LLM Plugin's harmonized chat completion powered by SAP AI Core's orchestration service](https://github.com/SAP-samples/cap-llm-plugin-samples/tree/main/samples/harmonized-rag-app)
+- [CAP LLM Plugin - RAG Quickstart using CAP LLM Plugin](https://github.com/SAP-samples/cap-llm-plugin-samples/tree/main/samples/rag-quickstart-app)
+
+<h4>Relevant Code</h4>
+
+```typescript
+// Upload CSV File, then prepare embeddings and store in HANA DB
+app.post("/uploadScienceData", upload.single("csvFile"), async (req: Request, res: Response): Promise<void> => {
+  try {
+    const filePath = req.file?.path;
+    if (!filePath) {
+      res.status(400).send("No file uploaded.");
+    } else {
+      // Parse the CSV file
+      const scienceDataRows: any[] = await parseFile(filePath);
+      // Break into chunks
+      let scienceDataChunks: any[] = [];
+      scienceDataRows.forEach((row: IScienceData) => {
+        let index = 0;
+        while (index < row.Topic.length) {
+          scienceDataChunks.push({ ...row, ID: uuidv4(), Topic: row.Topic.slice(index, index + chunkSize) });
+          index += chunkSize;
+        }
+      });
+      // Create Embeddings
+      const embeddingResults = await oAiSdk.createEmbeddings(scienceDataChunks, embeddingBatchSize);
+      // Store in DB
+      const columns = "TOPIC, DIFFICULTY_LEVEL, CATEGORY, ID, EMBEDDING";
+      const values = embeddingResults.map((row: any) => Object.values(row));
+      const result = await oHanaDb.executeBatchQuery(`INSERT INTO AI_DB_SCIENCE_DATA (${columns}) VALUES (?,?,?,?,TO_REAL_VECTOR(?))`, values);
+      // Return the results
+      res.status(200).json(result);
+    }
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: error instanceof Error ? error.message : "An unknown error occurred"
+    });
+  }
+});
+```
+
+```typescript
+/**
+* Create Embeddings
+* @param {Array<IScienceData>} science data - An array of science data.
+* @return {Promise} - Returns a Promise that resolves to an array of embeddings.
+*/
+public createEmbeddings = async (rows: Array<IScienceData>, batchSize: number): Promise<any> => {
+  try {
+    const client = this.getEmbeddingClient(this.resourceGroupId);
+​
+    for (let i = 0; i < rows.length / batchSize; i++) {
+      const startIndex = i * batchSize;
+      const batchTopics = rows.slice(startIndex, startIndex + batchSize).map((row) => row.Topic);
+      const batchResponse = await client.run({ input: batchTopics });
+      const batchEmbeddings = batchResponse.getEmbeddings();
+      batchEmbeddings.forEach((response: any, idx: number) => {
+        rows[startIndex + idx].Embedding = `[${response!.join(",")}]`;
+      });
+    }
+    return rows;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Error creating embeddings";
+    throw new Error(errorMessage);
+  }
+};
+​
+private readonly getEmbeddingClient = (resourceGroupId: string) => {
+  return new AzureOpenAiEmbeddingClient({
+    modelName: "text-embedding-3-small",
+  });
+};
+```
+
+</TabItem>
+
+</Tabs>
+</div>
+
+<RelatedProjects />
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
+</ul>
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={["chirag-gupta", "bhagabat-prasad-behera", "luis-marques", "francisco-robledo", "marco-cigaina", "dan-antonio", "ian-humphries"]} />
+
+</div>
+
+</LoginWall>

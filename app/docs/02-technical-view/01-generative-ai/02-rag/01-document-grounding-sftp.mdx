@@ -1,0 +1,198 @@
+---
+title: "Document Grounding with SFTP File Server"
+description: ""
+hide_title: true
+sidebar_class_name: hidden
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Document Grounding with SFTP File Server</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-btp-pre-requisites">BTP Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-setting-up-guidelines">Setting up Guidelines</Link>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+This document outlines the integration of an existing SFTP Server with SAP AI Core Document Grounding. The purpose of this integration is to enable secure storage and retrieval of documents used for AI model grounding and orchestration within SAP AI Core. By connecting an external SFTP server, AI Core can access relevant files required during inference or fine-tuning workflows.
+
+The guide provides end-to-end instructions covering credential management through AI Core Secrets, and configuration of data pipeline to securely access the files hosted on an SFTP server. This integration ensures data privacy, scalability, and compliance with enterprise security standards while maintaining seamless interoperability between AI Core services and external storage systems.
+
+The following document types are supported for SFTP:
+
+| Document (File) Format                       | Content Refresh | Document Content                               | Maximum Number of Documents                    |
+| --------------------------------------------- | --------------- | ----------------------------------------------- | ------------------------------------------------ |
+| PDF, HTML, TXT, JPEG, JPG, DOCX, PNG, TIFF, PPT | Daily          | Plain Text<br/>PPT only: Images, Plain Text, Table | Maximum of 2000 Documents per Pipeline           |
+
+
+<LoginWall>
+
+## <span className="step-number">2</span> <span className="step-title">BTP Pre-requisites</span>
+
+Below are the prerequisites for integrating SAP AI Core document grounding with an SFTP server:
+
+1. SFTP Server Availability
+    1. An operational SFTP server is available and accessible over the internet.
+    2. The SFTP server hostname, port, user credentials (username, password) are available.
+    3. The server allows **password-based authentication**, as this is required for AI Core integration.
+2. **SFTP Server Public Key**
+    1. The server’s host (public) key must be retrieved and recorded. This is used by SAP AI Core for host verification as part of two-level authentication.
+    2. To extract the public key from the server, run the following command from a local terminal or PowerShell (replace `<hostname>` and `<port>` with actual values):
+      ``` bash
+      ssh-keyscan -p <port> <hostname>
+      ```
+    3. Identify and record the key types (e.g., ecdsa-sha2-nistp256) and the corresponding public key strings. These values are required during AI Core secret creation. There might be multiple public keys, please record all of them.
+3. **SFTP Connectivity Validation**
+    1. The SFTP connection has been tested successfully from a local environment (e.g., via WinSCP or command-line SFTP) using the same credentials intended for AI Core.
+4. **Required Files**
+    1. The files to be grounded are already uploaded to the SFTP directory.
+5. **SAP BTP Enterprise Account and Subaccount with entitlements for:**
+    1. SAP AI Core (Extended Plan).
+    2. SAP AI Launchpad (Standard Plan).
+    3. Cloud Foundry Runtime
+    4. BTP roles and access:
+
+| Role Collection                    | Description                           | Includes                           |
+| ---------------------------------- | ------------------------------------- | ----------------------------------- |
+| ailaunchpad_connections_editor     | Manage AI Core connections            | Viewer, Editor                      |
+| ailaunchpad_mloperations_editor    | Manage ML scenarios and deployments   | Viewer, Editor                      |
+| ailaunchpad_genai_manager          | Manage prompts and orchestration      | Viewer, Experimenter, Manager       |
+| ailaunchpad_genai_administrator    | Administer GenAI Hub                  | Viewer, Admin                       |
+
+
+## <span className="step-number">3</span> <span className="step-title">Setting up Guidelines</span>
+
+### 3.1 Create SFTP secret in JSON format
+
+In this step, you define the generic secret that allows **SAP AI Core** to connect securely with your **SFTP server.**
+The secret stores the connection credentials, authentication type, and server host key information required for two-level authentication.
+
+**Prepare the Secret Definition** <br />
+Create a JSON file (for example, sftp_secret.json) with the following structure:
+```json
+{
+
+  "url": "<base64-encoded value for https://<sftp-hostname>:<port>>",
+
+  "authentication": " <base64 encoded value for NoAuthentication>",
+
+  "description": "<base64-encoded-description>",
+
+  "password": "<base64-encoded-password>",
+
+  "user": "<base64-encoded-username>",
+
+  "public_key": "<base64-encoded-server-public-key>",
+
+  "public_key_type": "<base64-encoded-key-type>"
+
+}
+```
+
+**Field Descriptions:**
+
+| Field           | Description                                                                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| url             | Full SFTP endpoint URL in the format `https://<hostname>:<port>`, base64 encoded*                                                             |
+| authentication  | NoAuthentication (default value), base64 encoded                                                                                                                   |
+| description     | A short description of the secret for identification, base64 encoded.                                                                                              |
+| password        | The SFTP user’s password, base64 encoded.                                                                                                                          |
+| user            | The SFTP username, base64 encoded.                                                                                                                                 |
+| public_key      | The SFTP **server’s public key**, base64 encoded. This is obtained using the ssh-keyscan command during prerequisites.                                |
+| public_key_type | The server’s key type (for example, ecdsa-sha2-nistp256), base64 encoded.                                                                                          |
+
+***Note(\*):***
+The url parameter must be provided in the format `https://<hostname>:<port>`. <br />
+SAP AI Core automatically converts this URL internally to `sftp://` format when establishing the connection
+
+### 3.2 Add Generic Secret to AI Launchpad
+
+1. Log in to your SAP AI Launchpad using your credentials. <br />
+    Ensure that you are in the correct AI Core instance or workspace where the Document Grounding service will run.
+2. In the left-hand navigation pane, choose SAP AI Core Administration à Generic Secrets à Add
+3. In the **Add Secret** dialog, provide the following details:
+    - Name: A unique name for your secret (for example, azure-sftp-grounding-secret)
+    - Secret: Paste the JSON definition from the JSON (e.g. sftp_secret.json) file
+    - Add the following key-value pairs as labels:
+
+| Key                                      | Value  |
+| ---------------------------------------- | ------ |
+| ext.ai.sap.com/document-grounding        | true   |
+| ext.ai.sap.com/documentRepositoryType    | SFTP   |
+
+4. Click Add to Save the secret
+
+### 3.3 Create a Data Repository using Grounding Management
+
+1. Log in to SAP AI Launchpad
+2. Navigate to Generative AI → Grounding Management
+3. Select Create Repository <br />
+    This opens the Grounding Management Wizard, which guides you through step-by-step repository setup.
+4. Select the Document Store Type as SFTP
+
+![Create a Data Repository](@site/static/generative-ai/document-grounding-sftp/images/create-01.png)
+
+5. Select Document Grounding Generic Secret from the dropdown, previously created.
+
+![Create a Data Repository](@site/static/generative-ai/document-grounding-sftp/images/create-02.png)
+
+6. Click on Create.
+
+***Note:***
+SAP AI Core uses a **two-level authentication** method when connecting to SFTP server:
+  - **Server Public Key Verification** – AI Core first validates the server’s identity using the stored public key.
+  - **User Authentication** – After the server is verified, the connection is established using the SFTP user credentials (username and password).
+
+
+7. Click on newly created Data Repository to view the document Chunks and the metadata. This repository can further be used in the Document Grounding service of Orchestration.
+
+![Create a Data Repository](@site/static/generative-ai/document-grounding-sftp/images/create-03.png)
+
+***Note:***
+
+There might be **multiple public keys** for your SFTP sever. While creating data pipeline on AI Launchpad, if you get connection error, we recommend that you please try with all available public keys and corresponding key types **in iteration** to connect successfully.
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={["bhagabat-prasad-behera", "jyoti-singh"]} />
+
+</div>
+
+</LoginWall>
