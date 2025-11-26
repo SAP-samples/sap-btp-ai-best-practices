@@ -1,0 +1,331 @@
+---
+title: "Document Grounding"
+description: "Document Grounding is a service on the SAP Business Technology Platform (SAP BTP) that allows you to connect your enterprise data sources to your generative AI applications."
+hide_title: true
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import LoginWall from "@site/src/components/LoginWall";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
+import TrackableLink from "@site/src/components/TrackableLink";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Link from "@docusaurus/Link";
+import PageContributors from "@site/src/components/PageContributors";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Document Grounding</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+        <li>
+          <Link target="_blank" to={useBaseUrl("generative-ai/document-grounding/videos/BTP AI Best Practices - Document Grounding (intro)_external.mp4")}>
+            <Icon name="video" />
+            <span>Teaser</span>
+          </Link>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/document-grounding/videos/BTP AI Best Practices - Document Grounding.mp4")}>
+              <Icon name="video" />
+              <span>Webinar</span>
+            </Link>
+          </li>
+          <li>
+            <Link target="_blank" to={useBaseUrl("generative-ai/document-grounding/pdfs/BTP AI Best Practices - Document Grounding.pdf")}>
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </Link>
+          </li>
+        </LoginWall>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/document-grounding" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+SAP Document Grounding is a managed service offering under the Generative AI Hub on SAP Business Technology Platform (BTP). It is built on the principles of [Retrieval-Augmented Generation (RAG)](https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/rag) but provided as a ready-to-use capability. Instead of designing and maintaining custom data and vector pipelines, developers can directly connect enterprise document sources — such as **Amazon S3**, **SharePoint**, **SAP Document Management Service (DMS)**, **SAP Work Zone**, or **SFTP** file servers — and use them in AI orchestration workflows with minimal setup.
+
+Once a data source is connected through one of the managed connectors, the service automatically handles document ingestion, chunking, embedding creation, and retrieval. This approach is recommended for most enterprise scenarios, as it provides end-to-end lifecycle management, including automatic content refresh when source documents are updated.
+
+For advanced or large-scale use cases, the Document Grounding **Vector API** allows developers to directly ingest pre-chunked and pre-embedded data into the service. This method provides fine-grained control over chunking logic, metadata enrichment, and batching behavior — ideal for scenarios where ingestion performance or metadata precision is critical. For example, developers can preprocess documents locally, create embeddings in batches, and push them via the Vector API to optimize throughput. More details can be found in the official documentation: [Preparing Data Using Vector API](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/preparing-data-using-vector-api-2a9f1493456d40daafe1a0006a8c7058).
+
+By combining automated ingestion with flexible APIs, SAP Document Grounding provides a scalable and enterprise-grade foundation for generative AI applications grounded in trusted, company-specific knowledge.
+
+### Key Concepts
+
+- Retrieval-Augmented Generation (RAG): A hybrid AI approach that retrieves relevant information from external knowledge sources before generating a response, ensuring accuracy and factual grounding.
+- Embedding: Numerical representations of text segments (chunks) that capture semantic meaning and are stored for efficient similarity-based retrieval.
+- Chunking: The process of splitting long documents into smaller, meaningful text blocks to improve retrieval relevance during AI inference.
+- Managed Connectors: Prebuilt connectors provided by SAP to integrate data sources such as S3, SharePoint, or DMS without custom development.
+
+### Expected Outcome
+
+By implementing SAP Document Grounding, organizations can:
+- Enable enterprise-grade Retrieval Augmented Generation without managing your own pipelines.
+- Seamlessly integrate internal documents and business knowledge into generative AI applications.
+- Reduce the risk of hallucinations and improve accuracy in model-generated responses.
+- Accelerate AI project delivery with built-in ingestion, vectorization, and lifecycle management.
+- Ensure data security, governance, and compliance aligned with SAP’s enterprise standards.
+
+<LoginWall>
+
+### Benefits
+
+- Simplified Architecture: No need to build or maintain custom RAG pipelines.
+- Plug-and-Play Connectors: Connect enterprise data sources directly.
+- Scalability and Performance: Managed Data Repositories to process data at scale.
+- Security and Compliance: Fully operated within SAP-managed environments.
+- Extensibility: Use Vector API for fine-grained control and advanced customization.
+
+### Common Use Cases
+
+The Document Grounding service can be applied across multiple enterprise scenarios where factual, context-aware AI responses are required. Examples include:
+
+- Invoice Validation & Processing: Validate extracted invoice data against purchase orders, goods receipts, or contracts to ensure compliance.
+- Risk and Compliance Summarization: Analyze lengthy policies or audit reports to extract key compliance points and obligations.
+- Contract Clause Extraction & Verification: Identify, compare, and verify specific contractual clauses (e.g., payment terms, liability limits) across documents.
+- Knowledge Retrieval from Internal Repositories: Let employees query internal handbooks or SOPs in natural language and get grounded, context-aware answers.
+- Contextual Assistance in SAP Business Processes: Power intelligent copilots that provide policy lookups or contextual answers within SAP applications.
+
+These use cases show how Document Grounding acts as the bridge between enterprise data and generative AI, ensuring LLM outputs remain accurate, compliant, and knowledge-driven.
+
+### Security and Compliance
+
+- Enterprise-Grade Protection: The Document Grounding service operates entirely within SAP-managed environments, ensuring enterprise-grade data protection and compliance with regional and global standards. All data processing, embedding generation, and retrieval occur inside the customer’s SAP BTP tenant, without transferring content to public or third-party environments.
+- Data Isolation and Control: Each customer’s embeddings and metadata are stored in isolated Grounding Data Repository or Cloud Foundry (Optional) instances linked to their BTP subaccount. No data is shared across tenants or reused for model training, ensuring full tenant isolation.
+- Secret Management: Access credentials (for sources such as S3 or SharePoint) are securely stored as Generic Secrets in SAP AI Launchpad. These secrets are encrypted at rest and can be managed or rotated via the Launchpad UI or through the AI Core API.
+- Content Security and Masking: During orchestration, the AI Core service supports content masking, filtering, and translation modules to protect sensitive or personally identifiable information (PII) before it is passed to an LLM.
+- Compliance and Data Residency: SAP Document Grounding inherits the compliance certifications of SAP BTP, including GDPR and ISO 27001. Data remains within the same regional data center as the customer’s BTP subaccount unless explicitly configured otherwise.
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Commercial
+
+- SAP AI Core with the “Extended” tier on SAP Business Technology Platform
+- SAP AI Launchpad
+- Document repository access (e.g., SharePoint, Amazon S3)
+
+You can find pricing details for the above services in the [SAP Discovery Center](https://discovery-center.cloud.sap/serviceCatalog?commercialModel=btpea&regions=all).
+
+### Technical
+
+1. Setup SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](https://btp-ai-bp.docs.sap/docs/technology/sap-business-technology-platform))
+2. Follow this tutorial to set up your environment and entitlements ([SAP Developer Tutorial](https://developers.sap.com/tutorials/btp-cockpit-entitlements.html), [SAP AI Core Documentation](https://help.sap.com/docs/sap-ai-core?version=CLOUD))
+3. Secrets for source document repository ([SAP Help](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generic-secrets-for-grounding-e1a201c1fc2e4eb3a570efd81a3b3616))
+4. Create an instance of SAP AI Core ([Setup Guide](https://btp-ai-bp.docs.sap/docs/technology/sap-ai-core#setup))
+5. Subscribe to SAP AI Launchpad ([Setup Guide](https://btp-ai-bp.docs.sap/docs/technology/sap-ai-launchpad))
+
+### High-level reference architecture
+
+![Document Grounding Reference Architecture](@site/static/generative-ai/document-grounding/images/arch.png)
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+#### Data Repository Creation
+
+A Data Repository or Collection in Document Grounding service is basically a reference to your enterprise knowledge base. 
+
+- There are multiple ways to create a Data Repository (also called as Collection) - use AI Launchpad, Document Management Pipeline API or SAP Cloud AI SDK. Give an appropriate name to the Repository as an identifier for better management.
+- For S3 document storage, do not specify the S3 sub-directory path while creating a Collection if you are planning to include metadata as well. Currently using both is [restricted](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/create-document-grounding-pipeline-using-pipelines-api-with-metadata-3c56d6c230534adc8e4157570bde5624).
+- Use Vector API for direct uploads. Ensure documents are properly chunked and indexed before use.
+- Refresh and validate the documents in Data Repository to confirm successful ingestion.
+
+#### Metadata Management
+
+- If you are using Vector API, you are anyway adding metadata with each chunk while ingesting into the grounding service.
+- For S3, SharePoint and SFTP: create and host metadata server separately ([SAP Help](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generic-secrets-for-contextualization-dade07ed33cf4dd996878e69be61d1a7)). Please note, the path of the document in your source repository (e.g. /project1/document_1.pdf) is correctly mentioned in the corresponding hosted metadata for successful mapping during retrieval. For SAP Document Management Service, Metadata server is not required as DMS itself handles metadata internally.
+- To refresh the vectors with changes in source, Grounding Service considers data source (S3/SharePoint/SFT) as source of truth. However, if metadata server is added, the service considers metadata as the source of truth to incorporate any changes into the grounding pipeline.
+
+#### Grounding Configuration
+
+- Define repository IDs and required filters in the orchestration pipeline.
+- Configure retrieval parameters (such as maximum chunk count or top-k documents) based on performance and accuracy needs.
+- [OPTIONAL] Use metadata filters to restrict results to relevant documents.
+
+#### Retrieval and Verification
+
+- You can join multiple repositories for retrieval process. 
+- If you intend to use SAP Help documents in your grounding solution, then add `“help.sap.com”` as repository type in your list of repositories
+
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+### Connect your Knowledge Source with Document Grounding
+Currently Document Grounding service supports the following data sources out-of-the-box.
+
+- AWS S3 (available through Object Store on SAP BTP):  <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/document-grounding/python" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Follow the link</TrackableLink> to connect with S3 source
+- SharePoint: Follow the [link](/docs/technical-view/generative-ai/rag/document-grounding-sharepoint) to know about the steps on how to enable SharePoint source
+- SAP Document Management Service: Follow the [link](/docs/technical-view/generative-ai/rag/document-grounding-dms) to know about the steps to connect with SAP DMS
+- SAP Work Zone: Follow the [link](/docs/technical-view/generative-ai/rag/document-grounding-workzone) to connect with SFTP file server
+- SFTP File Server: Follow the [link](/docs/technical-view/generative-ai/rag/document-grounding-sftp) to know the steps to enable SFTP File Server
+
+Additionally, you can use Vector API to ingest chunks, and metadata directly into the grounding service pipeline. <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/generative-ai/document-grounding/python/Document_Grounding_Vector_API.ipynb" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Follow the link</TrackableLink> to know the steps to process your source data.
+<br/>
+You need to provide credentials for the data source in form of Generic Secrets on AI Launchpad for grounding service to authenticate. For each data source, the format of credentials may vary, please refer [SAP Help](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/generic-secrets-for-grounding-e1a201c1fc2e4eb3a570efd81a3b3616) for instructions to add the same.
+<br/>
+Once the Generic Secret key collection is created, the next step is to create a Data Repository that would automatically fetch the data from the source for indexing and retrieval subsequently. For flexibility, there are different ways available to perform the activities - use AI Launchpad interface, or APIs or SDK.
+<br/>
+Note: These supported data sources are different from Document Grounding capabilities in Joule.
+
+### Programming Model Selection Guidelines
+
+BTP provides support for different development languages and several application runtimes, here are some of the recommendations while developing AI applications within the SAP ecosystem:
+
+- **Backend-Only API**: Use **Python** or **JavaScript/TypeScript** (strong async capabilities, Node.js ecosystem).
+  - **AI Workloads** - Use Python or any other language to build Docker images and host the AI application backend in AI Core. 
+- **Full-stack Application (UI & Backend)**: Use **CAP** (Cloud Application Programming Model) for optimized performance, scalability, and seamless SAP integration.
+
+SAP offers strong development libraries and SDKs to support your development in the language of your choice. Refer to the [official SAP Libraries and SDKs](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/libraries-and-sdks) page for the list of all available options.
+
+<div className="tabs-with-background">
+<Tabs groupId="language">
+<TabItem value="python" label="Python" default>
+
+<TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/document-grounding" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">
+  <span>Download Source Code</span>
+</TrackableLink>
+
+### Recommendation
+
+Python is one of the well-maintained and industry wide accepted languages for AI/ML related developments. SAP also provides multiple SDKs to support development in Python. We recommend using the [SAP Cloud SDK for AI](https://sap.github.io/ai-sdk/) to harness the power of generative AI models. If you are leveraging AI Core for deploy any AI workload, you can use [SAP AI SDK Core](https://pypi.org/project/sap-ai-sdk-core/) for managing the AI Core lifecycle efficiently.
+
+### SDKs
+
+With SDK you will be able to perform Document Grounding related steps programmatically. Here are two SDKs that you can leverage your development activities.
+- [SAP Cloud SDK for AI](https://sap.github.io/ai-sdk/) (**Python**): The Base SDK can be used with any implementation of AI API. Because it is independent of the runtime implementation, it doesn't provide access to runtime-specific APIs. For example, maintaining object store secrets is specific to SAP AI Core and is therefore not included in the Base SDK.
+- [SAP AI SDK Core](https://pypi.org/project/sap-ai-sdk-core/): It can be used to interact with SAP AI Core. It provides access to all public lifecycle and administration APIs.
+
+### Tutorials and Learning Journeys
+
+- If you are new to AI core and lifecycle management in AI Launchpad, we recommend going through [Generative AI With AI Core](https://developers.sap.com/mission.ai-core.html) tutorial to make yourself comfortable with its features and available best practices.
+- We also recommend that you to go through the [Access to Generative AI Models](https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models) page and experiment with GenAI hub models.
+- To perform RAG using Document Grounding service you can refer the curated <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/document-grounding" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Best Practice notebooks</TrackableLink> for various document sources.
+
+
+      
+
+- Additionally, you can refer [SAP Tutorial for Document Grounding](https://developers.sap.com/tutorials/ai-core-orchestration-grounding.html).
+
+### Reference Code and Guidelines 
+
+#### Code Base
+
+<TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/generative-ai/document-grounding/python" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">SAP BTP AI Best Practices - Python Sample Code (End-to-End Document Grounding With Various Data Sources</TrackableLink>
+- S3:
+  - Using SDK - <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/generative-ai/document-grounding/python/Document_Grounding_S3_SDK.ipynb" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Document_Grounding_S3_SDK.ipynb</TrackableLink>
+  - Using API - <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/generative-ai/document-grounding/python/Document_Grounding_S3_API.ipynb" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Document_Grounding_S3_API.ipynb</TrackableLink>
+- Direct Vector Data Ingestion:
+  - Using Vector API - <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/generative-ai/document-grounding/python/Document_Grounding_Vector_API.ipynb" target="_blank" trackingFeature="DOWNLOAD_DOCUMENT_GROUNDING">Document_Grounding_Vector_API.ipynb</TrackableLink>
+
+<br/>
+#### Guidelines to Setup Data Sources
+
+- SAP Document Management Service: [Connect DMS with Document Grounding](/docs/technical-view/generative-ai/rag/document-grounding-dms)
+- SharePoint: [Connect SharePoint with Document Grounding](/docs/technical-view/generative-ai/rag/document-grounding-sharepoint)
+- SAP Work Zone: [Connect SAP Work Zone with Document Grounding](/docs/technical-view/generative-ai/rag/document-grounding-workzone)
+- SFTP file server: [Connect SFTP Server with Document Grounding](/docs/technical-view/generative-ai/rag/document-grounding-sftp)
+
+<br/>
+#### API Collection
+
+SAP provides a collection of APIs to manage pipelines and vector collections, and support querying also.
+- API Collection and Documentation: [Document Grounding APIs](https://api.sap.com/api/DOCUMENT_GROUNDING_API/overview)
+
+</TabItem>
+
+<TabItem value="javascript-java" label="Java and JavaScript">
+
+You can also use Java SDK and JavaScript SDK also for Document Grounding operations. Please follow the corresponding SDK specific steps mentioned in the [tutorial](https://developers.sap.com/tutorials/ai-core-orchestration-grounding.html).
+
+</TabItem>
+
+</Tabs>
+</div>
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-embedding" text="Vector-based RAG - Embedding" />
+  <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG - Query Pipeline" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/content-creation")}>Content Creation</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/content-creation/generate-text-specific-knowledge" text="Generate Text based on Proprietary, Specific Knowledge" />
+</ul>
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/information-analysis-and-processing")}>Information Analysis & Processing</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/information-analysis-and-processing/qa-on-enterprise-knowledge-base" text="Question & Answers on Enterprise Knowledge Base" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={[
+  "bhagabat-prasad-behera", 
+  "andrii-rzhaksynskyi"
+  ]} />
+
+</div>
+
+</LoginWall>

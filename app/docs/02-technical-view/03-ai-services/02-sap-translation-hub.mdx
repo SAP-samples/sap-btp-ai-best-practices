@@ -1,6 +1,7 @@
 ---
 title: "SAP Translation Hub"
-description: ""
+description: "SAP Translation Hub is a cloud-based AI service on the SAP Business Technology Platform (SAP BTP) that streamlines translation for both SAP and non-SAP applications."
+hide_title: true
 ---
 
 import TabItem from "@theme/TabItem";
@@ -44,22 +45,22 @@ import PageContributors from "@site/src/components/PageContributors";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+          <Link target="_blank" to={useBaseUrl("ai-services/sap-translation-hub/videos/BTP AI Best Practices - SAP Translation Hub (intro)_external.mp4")}>
             <Icon name="video" />
-            <span>Teaser [TODO]</span>
+            <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/videos/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("ai-services/sap-translation-hub/videos/BTP AI Best Practices - Translation Hub.mp4")}>
               <Icon name="video" />
-              <span>Webinar [TODO]</span>
+              <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("generative-ai/kg-rag-creation/pdfs/#TODO")}>
+            <Link target="_blank" to={useBaseUrl("ai-services/sap-translation-hub/pdfs/BTP AI Best Practices - Translation Hub.pdf")}>
               <Icon name="pdf-attachment" />
-              <span>Webinar (PDF Presentation) [TODO]</span>
+              <span>Webinar (PDF Presentation)</span>
             </Link>
           </li>
         </LoginWall>
@@ -69,7 +70,7 @@ import PageContributors from "@site/src/components/PageContributors";
 </div>
 
 <LoginWall renderOnlyWhenLoggedIn={true}>
-  <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/translation-hub" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="">
+  <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/translation-hub" className="button button--primary button--lg download-source-btn" target="_blank" trackingFeature="DOWNLOAD_TRANSLATION_HUB">
     <span>Download Source Code</span>
   </TrackableLink>
 </LoginWall>
@@ -121,7 +122,7 @@ As this service is a managed service, it is offered by various service plans and
 
 ### Technical
 
-- Set up an SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](https://sap.sharepoint.com/sites/210313/SitePages/SAP%20Business%20Technology%20Platform%20(SAP%20BTP).aspx))
+- Set up an SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/docs/technology/sap-business-technology-platform))
 - Set up the SAP Translation Hub Service ([Setup Guide](https://help.sap.com/docs/translation-hub/sap-translation-hub/initial-setup#3.-set-up-the-sap-translation-hub-service.)).
 - Set up for usage of Software Translation service in SAP Translation Hub:
   - **Software Translation Setup for ABAP Projects**: To use SAP Translation Hub to translate short texts that you create in ABAP systems, several prerequisites are required. To make it easier to make the required settings in the different systems, carry out the steps in the following sequence.
@@ -259,17 +260,21 @@ However, for large files or text, go for the API route.
 
 #### Ways to use SAP Translation Hub Document Translation service
 
+<TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/ai-services/translation-hub" className="button button--primary button--lg download-source-btn--tab" target="_blank" trackingFeature="DOWNLOAD_TRANSLATION_HUB">
+  <span>Download Source Code</span>
+</TrackableLink>
+
 The SAP Translation Hub gives you three options via which you can use this service
 
 1. **Document Translation UI**: It is advised to use the UI for on-spot quick translation or if you are doing manual quality checks, quick trials, or small batches.
 
 2. **Document Translation API**: In case you are integrating translation into your product or server-side workflows or large batch jobs, it is preferred to use the API routes. You can use sync or async and MT or LLM option depending on your requirements. Please refer to the code below on how to call the different [API's available](https://help.sap.com/docs/translation-hub/sap-translation-hub/api-reference?language=en-US).
 
-    1. Synchronous Document Translation through MT [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_synchronous.ipynb)
+    1. Synchronous Document Translation through MT <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_synchronous.ipynb" target="_blank" trackingFeature="DOWNLOAD_TRANSLATION_HUB">GitHub Link</TrackableLink>
 
-    2. Asynchronous Document Translation through MT [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_aynchronous.ipynb)
+    2. Asynchronous Document Translation through MT <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/document_translation_aynchronous.ipynb" target="_blank" trackingFeature="DOWNLOAD_TRANSLATION_HUB">GitHub Link</TrackableLink>
 
-    3. Translation using model parameter to select LLM-based translation (available in both sync and async API) [GitHub Link](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/text_translation_llm.ipynb)
+    3. Translation using model parameter to select LLM-based translation (available in both sync and async API) <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/ai-services/translation-hub/text_translation_llm.ipynb" target="_blank" trackingFeature="DOWNLOAD_TRANSLATION_HUB">GitHub Link</TrackableLink>
 
 3. **Generative AI Hub (AI Core)**: The translation module of SAP Generative AI Hub orchestration uses the SAP Translation Hub Document Translation service to perform the translation as described in this [code](https://help.sap.com/doc/generative-ai-hub-sdk/CLOUD/en-US/_reference/orchestration-service.html#translation).
 
