@@ -178,6 +178,10 @@ const config: Config = {
             {
               label: "Glossary",
               href: `${baseUrl}docs/glossary`
+            },
+            {
+              label: "SAP BTP Guidance Framework",
+              href: `https://discovery-center.cloud.sap/guidance-framework`
             }
           ]
         },
