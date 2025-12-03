@@ -24,7 +24,7 @@ export const projects = [
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/email-agent",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-powered-email-cockpit",
-    videoUrl: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_51n3w4w0",
     onePagerFile: "images/Slide5.jpeg",
     isExternal: true
   },
@@ -130,6 +130,10 @@ export const projects = [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
         title: "Access to Generative AI Models"
+      },
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/rag/document-grounding",
+        title: "Document Grounding"
       }
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/product-catalog-seach",
@@ -237,7 +241,7 @@ export const projects = [
     icon: "compare-2",
     docsPath: "sap-rfqx-document-analysis-application-v2",
     sampleFiles: [],
-    // appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
+    appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
     relatedBestPractices: [
       {
@@ -306,7 +310,7 @@ export const projects = [
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-pdf-information-extraction",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Sesajal_DataExtraction",
-    onePagerFile: "",
+    onePagerFile: "images/Slide9.jpg",
     isExternal: true
   },
   {
@@ -421,6 +425,12 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/text-classification",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
@@ -436,6 +446,12 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/bago-argentina.git",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
@@ -559,7 +575,7 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/illy.git",
     videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_0tb3z8d5",
-    onePagerFile: "images/Slide4.jpg",
+    onePagerFile: "images/Slide4.jpeg",
     isExternal: true
   },
   {
@@ -672,7 +688,7 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/agentic-chatbot",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/organic-valley-ai-utilities",
-    videoUrl: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_npo3xufq",
     onePagerFile: "images/Slide3.jpeg",
     relatedBestPractices: [
       {
