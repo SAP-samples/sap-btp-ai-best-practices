@@ -1,0 +1,86 @@
+{
+  "name": "purchase-order-extractor",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap-cloud-sdk/resilience": "*",
+    "@sap-cloud-sdk/http-client": "^4.1.2",
+    "@sap-cloud-sdk/util": "^4.1.2",
+    "@sap/cds": "^9",
+    "@sap/xssec": "^4",
+    "express": "^4",
+    "hdb": "^2.26.1"
+  },
+  "devDependencies": {
+    "@cap-js/cds-typer": ">=0.1",
+    "@cap-js/cds-types": "^0.14.0",
+    "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9",
+    "@types/node": "^22.0.0",
+    "cds-plugin-ui5": "^0.13.0",
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5",
+    "tsx": "^4",
+    "typescript": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-purchaseorderextraction": "cds watch --open purchaseorderextraction/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy purchase-order-extractor --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-po-so-material-mapping": "cds watch --open posomaterialmapping/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "imports": {
+    "#cds-models/*": "./@cds-models/*/index.js"
+  },
+  "cds": {
+    "requires": {
+      "auth": {
+        "[development]": {
+          "kind": "dummy"
+        },
+        "[production]": {
+          "kind": "xsuaa",
+          "restrict_all_services": false
+        }
+      },
+      "[production]": {
+        "db": "hana"
+      },
+      "[hybrid]": {
+        "db": "hana"
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true,
+      "GENERATIVE_AI_HUB": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "GENERATIVE_AI_HUB",
+          "requestTimeout": "300000"
+        },
+        "DEPLOYMENT_ID": "dc29d51f3a94d40a",
+        "RESOURCE_GROUP_ID": "default",
+        "API_VERSION": "2024-12-01-preview"
+      },
+      "DOX-PREMIUM": {
+        "kind": "rest",
+        "credentials": {
+          "destination": "DOX-PREMIUM",
+          "requestTimeout": "300000"
+        },
+        "CLIENT": "ai4u_po2so"
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/purchaseorderextraction",
+    "app/po-so-material-mapping"
+  ]
+}

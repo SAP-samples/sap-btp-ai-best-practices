@@ -1,0 +1,280 @@
+{
+  "_version": "1.76.0",
+  "sap.app": {
+    "id": "purchaseorderextraction",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.19.0",
+      "toolsId": "2d53e962-fbdb-4246-824b-452f4c3144e4"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/service/DocumentService/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "AI4UPurchaseOrderExtraction-display": {
+          "semanticObject": "AI4UPurchaseOrderExtraction",
+          "action": "display",
+          "title": "{{AI4UPurchaseOrderExtraction-display.flpTitle}}",
+          "subTitle": "{{AI4UPurchaseOrderExtraction-display.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.141.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "purchaseorderextraction.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "PurchaseOrdersList",
+          "target": "PurchaseOrdersList"
+        },
+        {
+          "pattern": "PurchaseOrders({key}):?query:",
+          "name": "PurchaseOrdersObjectPage",
+          "target": "PurchaseOrdersObjectPage"
+        },
+        {
+          "pattern": "PurchaseOrders({key})/lineItems({key2}):?query:",
+          "name": "LineItemsObjectPage",
+          "target": "LineItemsObjectPage"
+        }
+      ],
+      "targets": {
+        "PurchaseOrdersList": {
+          "type": "Component",
+          "id": "PurchaseOrdersList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/PurchaseOrders",
+              "variantManagement": "Page",
+              "navigation": {
+                "PurchaseOrders": {
+                  "detail": {
+                    "route": "PurchaseOrdersObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  },
+                  "columns": {
+                    "DataField::documentNumber": {
+                      "width": "10rem"
+                    }
+                  }
+                }
+              },
+              "content": {
+                "header": {
+                  "actions": {
+                    "SyncDOX": {
+                      "press": "purchaseorderextraction.ext.controller.SyncDocumentHandler.syncDocuments",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Sync Documents"
+                    },
+                    "generateMappings": {
+                      "press": "purchaseorderextraction.ext.controller.SyncDocumentHandler.generateMappings",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Generate Mappings",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "SyncDOX"
+                      }
+                    }
+                  }
+                }
+              },
+              "initialLoad": "Enabled",
+              "defaultTemplateAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#table"
+            }
+          }
+        },
+        "PurchaseOrdersObjectPage": {
+          "type": "Component",
+          "id": "PurchaseOrdersObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/PurchaseOrders",
+              "navigation": {
+                "lineItems": {
+                  "detail": {
+                    "route": "LineItemsObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "lineItems/@com.sap.vocabularies.UI.v1.LineItem#LineItems": {
+                  "columns": {
+                    "DataField::supplierMaterialNumber": {
+                      "width": "12rem"
+                    },
+                    "DataField::customerMaterialNumber": {
+                      "width": "12rem"
+                    }
+                  }
+                }
+              },
+              "content": {
+                "body": {
+                  "sections": {
+                    "DocumentPreview": {
+                      "template": "purchaseorderextraction.ext.fragment.DocumentPreview",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "Customer1"
+                      },
+                      "title": "Document"
+                    }
+                  }
+                },
+                "header": {
+                  "actions": {
+                    "loadPDF": {
+                      "press": "purchaseorderextraction.ext.controller.PDFHandler.loadPDF",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "Load PDF",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataFieldForAction::DocumentService.file"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "LineItemsObjectPage": {
+          "type": "Component",
+          "id": "LineItemsObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/PurchaseOrders/lineItems",
+              "controlConfiguration": {
+                "mappingCandidates/@com.sap.vocabularies.UI.v1.LineItem#MaterialMatchingCandidates": {
+                  "tableSettings": {
+                    "selectAll": false,
+                    "selectionLimit": -26,
+                    "selectionMode": "Single"
+                  },
+                  "columns": {
+                    "DataField::lineitem::customerMaterialNumber": {
+                      "width": "12rem"
+                    },
+                    "DataField::lineitem::description": {
+                      "width": "10rem"
+                    },
+                    "DataField::mapping::supplierMaterialNumber": {
+                      "width": "10rem"
+                    },
+                    "DataField::lineitem::supplierMaterialNumber": {
+                      "width": "12rem"
+                    },
+                    "DataField::mapping::customerMaterialNumber": {
+                      "width": "10rem"
+                    },
+                    "DataField::mapping::materialDescription": {
+                      "width": "10rem"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "purchaseorderextractor.service"
+  }
+}

@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+	<VBox id="_IDGenVBox">
+		
+		<PDFViewer id="_IDGenPDFViewer" source="{= ${pdfContent} ? 'service/DocumentService/PurchaseOrders(ID=' + ${ID} + ',IsActiveEntity=true)/pdfContent/$value' : '' }" 
+		isTrustedSource="true" title="{filename}" height="400px">
+				<layoutData>
+					<FlexItemData id="_IDGenFlexItemData1" growFactor="1" />
+				</layoutData>
+			</PDFViewer>
+	
+	</VBox>
+</core:FragmentDefinition>
