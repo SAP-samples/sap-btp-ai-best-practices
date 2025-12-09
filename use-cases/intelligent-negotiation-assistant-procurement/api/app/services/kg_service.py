@@ -49,6 +49,60 @@ class KGService:
         self.supplier2_name = os.getenv("SUPPLIER2_NAME", "SupplierB")
         # Ensure base directory exists for dynamic runs
         self.supplier_dir.mkdir(parents=True, exist_ok=True)
+        self._supplier_index_path = self.supplier_dir / "index.json"
+
+    # ============
+    # Index helpers
+    # ============
+
+    def _load_supplier_index(self) -> Dict[str, Any]:
+        """Load supplier index JSON, returning an empty skeleton on failure."""
+        default: Dict[str, Any] = {"suppliers": []}
+        if not self._supplier_index_path.exists():
+            return default
+        try:
+            with open(self._supplier_index_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict) and isinstance(data.get("suppliers"), list):
+                return data
+        except Exception:
+            pass
+        return default
+
+    def _save_supplier_index(self, data: Dict[str, Any]) -> None:
+        """Persist supplier index JSON safely, avoiding partial writes."""
+        tmp_path = self._supplier_index_path.with_suffix(".tmp")
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        tmp_path.replace(self._supplier_index_path)
+
+    def _update_supplier_index(self, new_suppliers: List[Dict[str, Any]]) -> None:
+        """Merge new supplier metadata into the index file."""
+        if not new_suppliers:
+            return
+
+        index_data = self._load_supplier_index()
+        existing = {
+            str(entry.get("id")): entry
+            for entry in index_data.get("suppliers", [])
+            if isinstance(entry, dict) and entry.get("id")
+        }
+        now_iso = datetime.now(timezone.utc).isoformat()
+
+        for supplier in new_suppliers:
+            supplier_id = str(supplier.get("id", "")).strip()
+            if not supplier_id:
+                continue
+            merged = dict(existing.get(supplier_id, {}))
+            merged.update(supplier)
+            if not merged.get("created_at"):
+                merged["created_at"] = now_iso
+            merged["updated_at"] = now_iso
+            existing[supplier_id] = merged
+
+        index_data["suppliers"] = list(existing.values())
+        self._save_supplier_index(index_data)
 
     def list_static_suppliers(self) -> Dict[str, List[Dict[str, str]]]:
         """Return the list of statically packaged supplier KGs.
@@ -295,58 +349,71 @@ class KGService:
         )
         return result
 
-    def create_from_uploads(
-        self,
-        supplier1_name: str,
-        supplier1_files: List[Any],
-        supplier2_name: str,
-        supplier2_files: List[Any],
-    ) -> Dict[str, Any]:
-        """Create KGs for two suppliers from uploaded PDFs using image-mode.
+    def _create_supplier_run(self, supplier_name: str, supplier_files: Optional[List[Any]]) -> Dict[str, Any]:
+        """Create directories, store uploads, and run KG extraction for a supplier."""
+        dirs = self._prepare_supplier_run_dir(supplier_name)
+        saved_files = self._save_uploads(supplier_files or [], dirs["pdfs_dir"])
 
-        Saves PDFs and per-file KG outputs under app/data/kg/suppliers/.
-        Returns supplier identifiers and paths needed for later unification.
-        """
-        # Prepare directories for both suppliers
-        s1_dirs = self._prepare_supplier_run_dir(supplier1_name)
-        s2_dirs = self._prepare_supplier_run_dir(supplier2_name)
+        kg_outputs: List[Dict[str, str]] = []
+        for src in saved_files:
+            result = self._extract_image_based(src, dirs["kgs_dir"])
+            kg_outputs.append(result.get("output_files", {}))
 
-        # Save uploaded PDFs
-        s1_pdfs = self._save_uploads(supplier1_files, s1_dirs["pdfs_dir"]) if supplier1_files else []
-        s2_pdfs = self._save_uploads(supplier2_files, s2_dirs["pdfs_dir"]) if supplier2_files else []
-
-        # Extract KGs per file (image mode)
-        s1_kg_outputs: List[Dict[str, str]] = []
-        for pdf in s1_pdfs:
-            result = self._extract_image_based(pdf, s1_dirs["kgs_dir"])  # writes *_kg.json/graphml.gz
-            s1_kg_outputs.append(result.get("output_files", {}))
-
-        s2_kg_outputs: List[Dict[str, str]] = []
-        for pdf in s2_pdfs:
-            result = self._extract_image_based(pdf, s2_dirs["kgs_dir"])  # writes *_kg.json/graphml.gz
-            s2_kg_outputs.append(result.get("output_files", {}))
-
-        # Build response payload with identifiers and paths
         return {
-            "supplier1": {
-                "id": s1_dirs["supplier_id"],
-                "name": supplier1_name,
-                "root_dir": s1_dirs["root_dir"],
-                "pdfs_dir": s1_dirs["pdfs_dir"],
-                "kgs_dir": s1_dirs["kgs_dir"],
-                "pdfs": s1_pdfs,
-                "kg_outputs": s1_kg_outputs,
-            },
-            "supplier2": {
-                "id": s2_dirs["supplier_id"],
-                "name": supplier2_name,
-                "root_dir": s2_dirs["root_dir"],
-                "pdfs_dir": s2_dirs["pdfs_dir"],
-                "kgs_dir": s2_dirs["kgs_dir"],
-                "pdfs": s2_pdfs,
-                "kg_outputs": s2_kg_outputs,
-            },
+            "id": dirs["supplier_id"],
+            "name": supplier_name,
+            "root_dir": dirs["root_dir"],
+            "pdfs_dir": dirs["pdfs_dir"],
+            "kgs_dir": dirs["kgs_dir"],
+            "pdfs": saved_files,
+            "kg_outputs": kg_outputs,
         }
+
+    def create_from_uploads(self, suppliers: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Create KGs for one or more suppliers from uploaded files using image-mode.
+
+        Saves files and per-file KG outputs under app/data/kg/suppliers/.
+        Returns identifiers and paths needed for later unification.
+
+        Args:
+            suppliers: List of dicts with 'name' and 'files' keys.
+        """
+        if not suppliers:
+            raise ValueError("At least one supplier must be provided for KG creation.")
+
+        created_suppliers: List[Dict[str, Any]] = []
+        for supplier in suppliers:
+            if not supplier:
+                continue
+            name = str(supplier.get("name", "")).strip()
+            files = supplier.get("files")
+            if not name:
+                raise ValueError("Each supplier entry must include a non-empty name.")
+            created_suppliers.append(self._create_supplier_run(name, files))
+
+        if not created_suppliers:
+            raise ValueError("No valid suppliers supplied for KG creation.")
+
+        response: Dict[str, Any] = {"suppliers": created_suppliers}
+        # Backward compatible keys
+        if created_suppliers:
+            response["supplier1"] = created_suppliers[0]
+        if len(created_suppliers) > 1:
+            response["supplier2"] = created_suppliers[1]
+
+        # Persist metadata so /kg/static/list reflects newly created runs
+        index_entries: List[Dict[str, Any]] = []
+        for supplier in created_suppliers:
+            index_entries.append({
+                "id": supplier["id"],
+                "name": supplier["name"],
+                "root_dir": supplier["root_dir"],
+                "kgs_dir": supplier["kgs_dir"],
+                "source": "dynamic",
+            })
+        self._update_supplier_index(index_entries)
+
+        return response
 
     def unify_supplier(self, supplier_id: str) -> Dict[str, Any]:
         """Unify all per-file KGs for a given supplier run directory.
