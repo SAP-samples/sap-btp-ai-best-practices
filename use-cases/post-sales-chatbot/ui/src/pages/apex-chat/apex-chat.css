@@ -1,0 +1,413 @@
+/* Page wrapper with white background */
+.chat-page-wrapper {
+  background: var(--sapBaseColor, #ffffff);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 52px);
+}
+
+/* Chat page specific styles */
+.chat-container {
+  padding: 1rem 1rem;
+  margin: 0 auto;
+  max-width: calc(800px + 2rem);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 84px);
+  box-sizing: border-box;
+}
+
+/* Chat header with reset button */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--sapGroup_BorderColor);
+  margin-bottom: 0.5rem;
+}
+
+.chat-header ui5-title {
+  color: var(--sapTextColor);
+}
+
+/* Splash styles */
+.splash {
+  display: none;
+  min-height: 320px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.splash.visible {
+  display: flex;
+}
+
+/* While splash is visible, hide only the timeline but keep the composer visible */
+.splash.visible + .chat-container {
+  height: auto;
+}
+.splash.visible + .chat-container .timeline {
+  display: none;
+}
+
+.splash-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  color: #ffffff;
+  flex: 1 1 auto;
+}
+
+/* Apex automotive gradient - professional blue/teal theme */
+.splash-background.apex-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0c1929 0%, #1a365d 25%, #2c5282 50%, #1a365d 75%, #0c1929 100%);
+}
+
+.splash-highlights {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 1200px 600px at 30% 20%, rgba(66, 153, 225, 0.15) 0%, transparent 40%),
+    radial-gradient(ellipse 800px 400px at 70% 80%, rgba(56, 178, 172, 0.12) 0%, transparent 35%),
+    radial-gradient(ellipse 1000px 500px at 50% 50%, rgba(99, 179, 237, 0.08) 0%, transparent 40%);
+}
+
+.splash-hero .hero-icon {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  color: #fff;
+}
+
+.splash-copy {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(800px, calc(100% - 2rem));
+}
+
+.splash-copy ui5-text {
+  color: #fff;
+  text-shadow: none;
+}
+.splash-copy ui5-text.headline {
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  font-family: "72", var(--sapFontFamily);
+  font-synthesis-weight: none;
+}
+.splash-copy ui5-text.hero-sub {
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 300;
+  font-family: "72", var(--sapFontFamily);
+  font-synthesis-weight: none;
+}
+
+.splash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background: var(--sapBaseColor, #ffffff);
+  color: var(--sapTextColor, #1d2d3e);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.quick-actions ui5-button,
+.quick-action,
+.quick-actions .quick-action {
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  height: 1.75rem;
+  font-weight: normal;
+  box-shadow: 0px 0px 2px rgba(44, 82, 130, 0.16), 0px 4px 8px rgba(44, 82, 130, 0.16);
+}
+
+.quick-actions ui5-button:hover,
+.quick-action:hover,
+.quick-actions .quick-action:hover {
+  border-color: transparent;
+}
+
+.chat-container .timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-radius: 12px;
+}
+
+/* Layout helpers */
+.timeline {
+  flex: 1 1 0;
+  overflow: auto;
+  margin-top: 0.5rem;
+  min-height: 0;
+}
+
+.composer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.5rem 0 0;
+  position: relative;
+}
+
+.composer ui5-textarea {
+  flex: none;
+  width: 100%;
+  --sapField_BorderCornerRadius: 0.5rem;
+}
+
+.composer ui5-textarea::part(textarea) {
+  padding-right: 3rem;
+  box-shadow: 0px 0px 2px rgba(44, 82, 130, 0.16), 0px 8px 16px rgba(44, 82, 130, 0.16);
+  border-radius: 0.5rem;
+}
+
+.composer ui5-button {
+  align-self: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.composer-note {
+  margin-top: 0.75rem;
+  font-size: 11px;
+  color: var(--sapContent_LabelColor);
+  display: block;
+  text-align: center;
+}
+
+.message-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin: 0.25rem 0;
+}
+
+.bubble-col.user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.timestamp {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.timestamp-row {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.message-row.assistant {
+  justify-content: flex-start;
+}
+
+.bubble {
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--sapGroup_BorderColor);
+  line-height: 1.4;
+  font-family: var(--sapFontFamily);
+  font-size: 16px;
+}
+
+.typing-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.typing-hint {
+  color: var(--sapContent_LabelColor);
+  font-style: italic;
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}
+
+/* Standalone loader row */
+.loader-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+  padding: 0.4rem 0.6rem;
+  background: transparent;
+}
+
+.loader-hint {
+  color: var(--sapContent_LabelColor);
+  font-style: italic;
+  font-size: 1rem;
+  margin-left: 0.25rem;
+}
+
+/* Gradient loader ring when tool is active - Apex teal theme */
+.loader-ring {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  position: relative;
+  background: conic-gradient(from 0deg, #4299e1, #38b2ac, var(--sapBrandColor), #4299e1);
+  -webkit-mask: radial-gradient(farthest-side, transparent 70%, #000 71%);
+  mask: radial-gradient(farthest-side, transparent 70%, #000 71%);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bubble.assistant {
+  background: var(--sapAssistant_Answer_Background, #f7fafc);
+  color: var(--sapTextColor);
+  border-radius: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.bubble.user {
+  background: var(--sapInformationBackground, #ebf8ff);
+  border-color: transparent;
+  border-radius: 0.5rem 0.5rem 0 0.5rem;
+  color: var(--sapTextColor);
+}
+
+.bubble.user p {
+  margin: 0;
+}
+
+.bubble p {
+  margin: 1rem 0 1rem 0;
+}
+
+.bubble ul,
+.bubble ol {
+  margin: 1rem 0 1rem 1rem;
+  padding-left: 1rem;
+}
+
+.bubble li {
+  margin: 0.15rem 0;
+}
+
+.bubble pre,
+.bubble code,
+.bubble pre code {
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 2px;
+  font-size: 0.75rem;
+  color: var(--sapTextColor);
+}
+
+.bubble :first-child {
+  margin-top: 0;
+}
+
+.bubble :last-child {
+  margin-bottom: 0;
+}
+
+.meta-row {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  opacity: 0.7;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Tables inside chat bubbles (rendered from Markdown) */
+.bubble table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.4rem 0;
+  display: table;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.bubble th,
+.bubble td {
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-bottom: var(--sapList_BorderWidth) solid var(--sapList_BorderColor);
+  background: #fff;
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.875rem;
+  font-weight: normal;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+.bubble th {
+  border-bottom: var(--sapList_BorderWidth) solid var(--sapList_HeaderBorderColor);
+  color: var(--sapList_HeaderTextColor);
+  font-weight: bold;
+}
+.bubble td {
+  color: var(--sapContent_LabelColor);
+}
+
+.bubble tr {
+  width: 100%;
+}
+
+.bubble caption {
+  caption-side: bottom;
+  padding-top: 0.25rem;
+  font-size: 0.875em;
+  opacity: 0.8;
+}

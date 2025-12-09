@@ -1,153 +1,317 @@
-# Apex Automotive Services Post-Sale Service Chatbot
+# Apex Automotive Services Post-Sales Chatbot
 
-## 1. Overview
+An AI-powered customer service chatbot for automotive dealerships that provides vehicle owners with conversational access to their service history, vehicle information, promotions, and appointment scheduling. Built with a ReAct (Reasoning + Acting) agent pattern using LangGraph and OpenAI's GPT-4o model.
 
-This document describes the structure and functionality of the Apex Automotive Services Post-Sale Service Chatbot. The chatbot is designed to interact with users via a web interface, understand their requests regarding vehicle service history, promotions, and appointments, retrieve relevant information from CSV data files, and generate natural language responses using a Large Language Model (LLM) accessed via SAP AI Core.
+## Overview
 
-The application uses Flask to provide the web UI and Gunicorn as the WSGI server for deployment, suitable for platforms like Cloud Foundry.
+This application enables automotive customers to interact naturally with their dealership's service center through a conversational interface. Customers can identify themselves, query their vehicles, review service history, get maintenance recommendations, discover active promotions, and request service appointments.
 
-The chatbot follows a Retrieval-Augmented Generation (RAG) pattern:
-1.  User input from the web interface is sent to the Flask backend.
-2.  The input is parsed to identify intent and entities using an LLM (`llm_handler_chatbot.py`).
-3.  Based on the intent, specific functions retrieve relevant data directly from pandas DataFrames loaded from CSV files (`actions_chatbot.py`, `data_handler_chatbot.py`).
-4.  This retrieved, structured data is then formatted into a prompt.
-5.  The LLM generates a user-facing response based on the prompt and retrieved data (`llm_handler_chatbot.py`).
-6.  The response is sent back to the web interface for display, with Markdown formatting rendered in the browser.
-7.  Conversation history is maintained server-side (in memory) to provide context for intent parsing and response generation (`main_ui.py`).
+## Architecture
 
-## 2. Project Structure
+The application follows a two-tier architecture deployed on SAP BTP Cloud Foundry:
 
 ```
-/Post_Sales_Chatbot/  # Root Folder
-├── main_ui.py                # Flask application entry point & web routes
-├── main_chatbot.py           # Original terminal-based chatbot (for reference)
-├── config_chatbot.py         # Configuration constants (paths, prompts, model names)
-├── data_handler_chatbot.py   # Data loading and cleaning from CSV files
-├── llm_handler_chatbot.py    # LLM initialization, intent parsing, response generation
-├── actions_chatbot.py        # Core logic functions (data retrieval, specific actions)
-├── new_tables/               # Directory containing source CSV data files
-│   ├── Cliente.csv
-│   ├── Unidad.csv
-│   ├── Servicios.csv
-│   ├── Operacion.csv
-│   ├── Campanas.csv
-│   ├── Kits.csv
-│   └── Materiales.csv
-├── templates/                # HTML templates for Flask UI
-│   └── index.html
-├── .env.copy                 # Environment variables for LOCAL development (API keys, etc.)
-├── requirements.txt          # Python package dependencies
-├── manifest.yml              # Cloud Foundry deployment manifest
-├── DOCUMENTATION.md          # Additional documentation
-└── README.md                 # This file (Project Root README)
++-------------------+         +-------------------+
+|                   |  HTTP   |                   |
+|   Frontend (UI)   +-------->+   Backend (API)   |
+|   Node.js/Vite    |         |   Python/FastAPI  |
+|   SAP UI5 WebComp |         |   LangGraph Agent |
+|                   |         |                   |
++-------------------+         +--------+----------+
+                                       |
+                                       v
+                              +-------------------+
+                              |  SAP Gen AI Hub   |
+                              |     (GPT-4o)      |
+                              +-------------------+
 ```
-*(Note: Data files are located in `new_tables/` directory)*
 
-## 3. File Descriptions
+### Backend (API)
 
-*   **`main_ui.py`**:
-    *   The main Flask application script.
-    *   Defines web routes (`/`, `/api/chat`, `/api/reset`).
-    *   Handles requests from the frontend, calls the chatbot logic (`process_user_message`), and returns JSON responses.
-    *   Manages conversation state and history (in memory for simplicity).
-    *   Loads data and initializes the LLM on startup.
-    *   Configured to serve static files from the `static/` folder and templates from the `templates/` folder.
+- **Framework:** FastAPI with Uvicorn ASGI server
+- **LLM Integration:** LangChain + LangGraph for ReAct agent orchestration
+- **Model Provider:** SAP Generative AI Hub (OpenAI proxy)
+- **Data Storage:** CSV files loaded into Pandas DataFrames
 
-*   **`config_chatbot.py`**:
-    *   Stores configuration constants like the path to the data tables (`NEW_TABLES_PATH`), the LLM model name (`LLM_MODEL_NAME`), and the initial persona prompt (`INITIAL_PROMPT`).
-    *   Centralizes settings for easy modification.
+### Frontend (UI)
 
-*   **`data_handler_chatbot.py`**:
-    *   Responsible for loading and cleaning data from the CSV files located in the `new_tables/` directory.
-    *   Contains the `load_data()` function which reads CSVs into pandas DataFrames, handling date parsing and basic data cleaning (duplicates, types).
+- **Build Tool:** Vite
+- **UI Framework:** SAP UI5 Web Components (Core, Fiori, AI)
+- **Features:** Real-time streaming, markdown rendering, responsive design
 
-*   **`llm_handler_chatbot.py`**:
-    *   Handles all direct interactions with the Large Language Model (LLM) via the SAP AI Core SDK (`gen-ai-hub`).
-    *   Initializes the `ChatOpenAI` client using settings from `config_chatbot.py` and environment variables.
-    *   Contains `generate_response_llm()` for generating natural language responses based on provided prompts.
-    *   Contains `parse_intent_llm()` which uses the LLM to analyze user input and chat history, returning structured intent and entities in JSON format.
+## Project Structure
 
-*   **`actions_chatbot.py`**:
-    *   Contains the core business logic and data retrieval functions that interact with the loaded DataFrames (using original DB column names).
-    *   Functions like `find_client`, `get_client_units`, `get_service_history`, `get_promotions`, etc., perform direct lookups.
-    *   Functions like `handle_appointment_request` or `get_next_service_recommendation_context` prepare context and call `generate_response_llm` for tasks requiring LLM generation based on retrieved data.
+```
+post-sales-chatbot/
+├── api/                          # Backend API
+│   ├── app/
+│   │   ├── main.py               # FastAPI application entry
+│   │   ├── config.py             # Configuration and prompts
+│   │   ├── security.py           # API key authentication
+│   │   ├── routers/
+│   │   │   └── apex_chat.py      # Chat endpoints
+│   │   ├── models/               # Pydantic models
+│   │   │   ├── chat.py
+│   │   │   ├── session.py
+│   │   │   └── chat_history.py
+│   │   ├── services/
+│   │   │   ├── data_handler.py   # CSV data loading
+│   │   │   └── session_manager.py
+│   │   └── utils/
+│   │       └── langgraph/
+│   │           ├── common.py     # LLM factory
+│   │           └── apex_tools.py # Agent tools
+│   ├── data/
+│   │   └── new_tables/           # CSV data files
+│   └── requirements.txt
+├── ui/                           # Frontend application
+│   ├── src/
+│   │   ├── main.js               # App initialization
+│   │   ├── config/
+│   │   │   └── routes.js
+│   │   ├── modules/
+│   │   │   ├── router.js
+│   │   │   └── navigation.js
+│   │   ├── services/
+│   │   │   └── api.js            # API client
+│   │   └── pages/
+│   │       └── apex-chat/        # Chat interface
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+├── manifest.yaml                 # Cloud Foundry deployment
+└── deploy.sh                     # Deployment script
+```
 
-*   **`main_chatbot.py`**:
-    *   The original entry point for the terminal-based version of the application. Kept for reference.
+## Features
 
-*   **`new_tables/`**:
-    *   Contains the source data in CSV format used by the chatbot.
+### Conversational Capabilities
 
-*   **`templates/index.html`**:
-    *   The main HTML file for the chat interface.
-    *   Includes HTML structure, CSS styling, and JavaScript for handling user input, sending requests, displaying messages, and rendering Markdown.
+The chatbot provides eight specialized tools through its ReAct agent:
 
-*   **`.env`**:
-    *   Stores sensitive information like API keys required by the LLM client **for local development only**.
+| Tool | Description |
+|------|-------------|
+| `find_client` | Identify customer by email, phone, VIN, license plate, or name |
+| `list_client_vehicles` | List all vehicles registered to the customer |
+| `select_vehicle` | Select a specific vehicle for subsequent queries |
+| `get_vehicle_details` | Retrieve detailed vehicle information (make, model, year, mileage, VIN) |
+| `get_service_history` | Get the last 3 service visits with dates, operations, and prices |
+| `get_next_service_recommendation` | Recommend service based on mileage (10,000 km milestones) |
+| `get_promotions` | Find active promotions for the customer's vehicle |
+| `schedule_appointment` | Request appointment scheduling with date/time preferences |
 
-*   **`requirements.txt`**:
-    *   Lists the necessary Python packages. Install using `pip install -r requirements.txt`. Includes `Flask`, `gunicorn`, `pandas`, `langchain-openai`, `generative-ai-hub-sdk`, etc.
+### Real-Time Streaming
 
-*   **`manifest.yml`**:
-    *   Configuration file for deploying the application to Cloud Foundry using `cf push`. Specifies memory, buildpack, start command (using Gunicorn), and service bindings.
+The chat interface uses NDJSON streaming to provide real-time feedback:
+- Tool execution hints show which operation is in progress
+- Responses stream as they are generated
+- Markdown formatting is rendered live
 
-*   **`DOCUMENTATION.md`**:
-    *   Additional documentation file containing detailed information about the chatbot implementation.
+### Session Management
 
-## 4. Key Functions (Core Logic)
+- Sessions persist across interactions with automatic cleanup after 60 minutes
+- Conversation context is maintained for multi-turn dialogues
+- Selected vehicle context carries across queries
 
-*   **`data_handler_chatbot.load_data()`**: Loads and cleans CSV files into a dictionary of pandas DataFrames.
-*   **`llm_handler_chatbot.generate_response_llm(prompt)`**: Generates LLM response based on a prompt.
-*   **`llm_handler_chatbot.parse_intent_llm(user_input, chat_history)`**: Parses user intent and extracts entities using the LLM.
-*   **`actions_chatbot.*`**: Various functions to retrieve specific data from DataFrames (using original column names).
-*   **`main_ui.process_user_message(...)`**: Orchestrates the process of parsing intent, calling actions, and generating the final response within the Flask app context.
+## Data Model
 
-## 5. Running the Chatbot
+The application uses CSV files to store dealership data:
 
-### 5.1 Local Development
+| Table | Description |
+|-------|-------------|
+| `Cliente.csv` | Customer master data (name, contact info, RFC) |
+| `Unidad.csv` | Vehicle records (VIN, make, model, year, mileage) |
+| `Servicios.csv` | Service history (order number, dates, service codes) |
+| `Operacion.csv` | Service operation descriptions |
+| `Kits.csv` | Service packages with pricing |
+| `Campanas.csv` | Active promotional campaigns |
+| `Materiales.csv` | Parts and materials reference |
 
-1.  **Navigate to Project Root:** Open your terminal in the `Post_Sales_Chatbot` directory.
-2.  **Create Virtual Environment (Recommended):**
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # On Windows use `.venv\Scripts\activate`
-    ```
-3.  **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Set Environment Variables:** Create a `.env` file in the project root by changing the name of the `.env.copy` into `.env` and add your necessary environment variables (e.g., `AICORE_CLIENT_ID`, `AICORE_CLIENT_SECRET`, etc.).
-5.  **Ensure Data Files:** Make sure the `new_tables/` directory exists and contains the required CSV files.
-6.  **Run the Flask App:**
-    ```bash
-    python main_ui.py
-    ```
-7.  **Access UI:** Open your web browser and go to `http://localhost:5001`.
+## Prerequisites
 
-### 5.2 Cloud Foundry Deployment
+- Python 3.11+
+- Node.js 18+
+- Cloud Foundry CLI (for deployment)
+- SAP BTP account with:
+  - Cloud Foundry environment
+  - SAP AI Core with Generative AI Hub access
 
-1.  **Prerequisites:**
-    *   Cloud Foundry CLI (`cf`) installed and logged in to the target space.
-2.  **Deploy:** Push the application using the manifest file.
-    ```bash
-    cf push
-    ```
-    Cloud Foundry will use the `manifest.yml` file, install dependencies from `requirements.txt`, bind the `chatbot-creds` service (or your equivalent service name), and start the application using Gunicorn.
+## Local Development
+
+### Backend Setup
+
+1. Navigate to the API directory:
+   ```bash
+   cd api
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file with required environment variables:
+   ```env
+   AICORE_AUTH_URL=""
+   AICORE_CLIENT_ID=""
+   AICORE_CLIENT_SECRET=""
+   AICORE_BASE_URL=""
+   AICORE_RESOURCE_GROUP=""
+   API_KEY="<your-api-key>"
+   ```
+
+5. Start the development server:
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+
+### Frontend Setup
+
+1. Navigate to the UI directory:
+   ```bash
+   cd ui
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env` file:
+   ```env
+   VITE_API_BASE_URL=http://localhost:8000
+   VITE_API_KEY="<your-api-key>"
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open http://localhost:5173 in your browser
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/apex/chat` | Send message and receive single response |
+| POST | `/api/apex/chat/stream` | Send message with NDJSON streaming response |
+| POST | `/api/apex/reset` | Reset conversation and get initial greeting |
+| GET | `/api/health` | Health check endpoint |
+
+### Authentication
+
+All API endpoints require an `X-API-Key` header with a valid API key.
+
+### Example Request
+
+```bash
+curl -X POST "http://localhost:8000/api/apex/chat" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: your-api-key" \
+  -d '{"message": "I am john.doe@email.com. What vehicles do I have?"}'
+```
+
+## Deployment
+
+### Cloud Foundry Deployment
+
+1. Login to Cloud Foundry:
+   ```bash
+   cf login -a <api-endpoint>
+   ```
+
+2. Set required environment variables or use the deployment script:
+   ```bash
+   export AICORE_AUTH_URL=<your-auth-url>
+   export AICORE_CLIENT_ID=<your-client-id>
+   export AICORE_CLIENT_SECRET=<your-client-secret>
+   export AICORE_RESOURCE_GROUP=<your-resource-group>
+   export AICORE_BASE_URL=<your-base-url>
+   ```
+
+3. Run the deployment script:
+   ```bash
+   ./deploy.sh
+   ```
+
+   The script will:
+   - Generate a random API key if not provided
+   - Deploy both API and UI applications
+   - Configure CORS and environment variables
 
 
-## 6. Adding New Intents/Situations
+## Configuration
 
-To add functionality for handling a new type of user request (a new "intent" or "situation"), you need to modify the following files:
+### Environment Variables
 
-1.  **`llm_handler_chatbot.py`**:
-    *   **Update `intents` list:** Add your new intent name (e.g., `"check_repair_status"`) to the `intents` list within the `parse_intent_llm` function. 
-    *   **Update `entities_description`:** If your new intent requires specific information (entities), define it here (e.g., `repair_order_id (string)`).
-    *   **Update Examples (Recommended):** Add an example of the expected JSON output for your new intent in the prompt within `parse_intent_llm` (e.g., `{{"intent": "check_repair_status", "entities": {{"repair_order_id": "RO12345"}}}}`).
+#### Backend (API)
 
-2.  **`actions_chatbot.py`**:
-    *   **Create Action Function:** Define a new Python function for the new intent's logic (e.g., `def check_repair_status(all_data, repair_order_id):`). It should accept `all_data` and necessary `entities`, retrieve data, prepare a prompt, call `generate_response_llm`, and return the response string.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AICORE_AUTH_URL` | SAP AI Core authentication URL | Required |
+| `AICORE_CLIENT_ID` | SAP AI Core client ID | Required |
+| `AICORE_CLIENT_SECRET` | SAP AI Core client secret | Required |
+| `AICORE_RESOURCE_GROUP` | SAP AI Core resource group | Required |
+| `AICORE_BASE_URL` | SAP AI Core base URL | Required |
+| `LLM_MODEL_NAME` | LLM model name | `gpt-4o` |
+| `LLM_TEMPERATURE` | Response randomness (0.0-1.0) | `0.0` |
+| `TABLES_PATH` | Path to CSV data files | `data/new_tables` |
+| `API_KEY` | API authentication key | Required |
+| `APP_ENV` | Environment mode | `development` |
+| `ALLOWED_ORIGIN` | CORS allowed origin | `*` (dev) |
+| `SESSION_EXPIRY_MINUTES` | Session timeout | `60` |
 
-3.  **`main_ui.py`**:
-    *   **Add `elif` block:** In the `process_user_message` function, add a new `elif intent == "your_new_intent_name":` block.
-    *   **Call Action Function:** Inside this block, call the corresponding action function from `actions_chatbot.py`, passing the required entities.
-    *   **Handle Dependencies:** Add checks for `current_conversation_state` prerequisites if needed (e.g., checking if the client is identified).
+#### Frontend (UI)
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_API_BASE_URL` | Backend API URL |
+| `VITE_API_KEY` | API authentication key |
+| `VITE_APP_HOST` | Application host URL |
+
+## Example Interactions
+
+### Customer Identification
+```
+User: Hi, I'm john.doe@email.com
+Bot: Hello John! I found your account. You have 2 vehicles registered...
+```
+
+### Service History Query
+```
+User: What's the service history for my Ford Explorer?
+Bot: Here's the service history for your 2022 Ford Explorer (VIN: 1FMSK8DH...):
+     - Dec 1, 2024: Oil Change & Filter - $89.99
+     - Sep 15, 2024: Tire Rotation - $45.00
+     - Jun 10, 2024: Annual Inspection - $125.00
+```
+
+### Service Recommendation
+```
+User: When should I bring it in for service?
+Bot: Based on your current mileage of 47,500 km, I recommend scheduling
+     your 50,000 km service soon. This includes...
+```
+
+### Appointment Scheduling
+```
+User: Can I schedule an appointment for next Tuesday at 10am?
+Bot: I'd be happy to help schedule your appointment for Tuesday, December 17th
+     at 10:00 AM. What service would you like to have performed?
+```
+
+## Security Considerations
+
+- API key authentication required for all endpoints
+- CORS configured for production origins only
+- Session isolation with automatic expiry
+- No PII logged or persisted beyond session
+- Data access controlled through singleton DataHandler
+
