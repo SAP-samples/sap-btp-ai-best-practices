@@ -1,0 +1,9 @@
+site_name: ai-core-video
+theme:
+  name: material
+plugins:
+  - mkdocstrings
+
+nav:
+  - Home: docs/index.md
+  - API Reference: docs/api_reference.md
