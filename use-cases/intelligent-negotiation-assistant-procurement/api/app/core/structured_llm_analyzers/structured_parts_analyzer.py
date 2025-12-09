@@ -23,13 +23,10 @@ from app.core.llm import create_llm
 from .business_context import format_prompt_with_business_context
 
 
-# ==== POC-specific constants and helpers (strict categories) ====
-CORE_PART_CATEGORIES_DEFAULT = [
-    "Part A",
-    "Part B",
-    "Part C",
-]
-OTHERS_CATEGORY = "Others"
+# ==== Generic defaults and helpers (domain-agnostic categories) ====
+# If not provided by caller, categories will be inferred by the LLM (free text)
+CORE_PART_CATEGORIES_DEFAULT: List[str] = []
+OTHERS_CATEGORY = "Other"
 
 
 def _slugify(text: str) -> str:
@@ -40,19 +37,20 @@ def _slugify(text: str) -> str:
 
 def _normalize_category(raw: Optional[str], core_categories: List[str]) -> str:
     """
-    Map any incoming category to one of the strict core categories or Others.
-    This generic version performs only a case-insensitive direct match against
-    provided categories and otherwise returns Others.
+    Normalize a raw category value.
+    - If explicit core categories were provided, map case-insensitively; otherwise return a title-cased free-text category.
+    - Fallback to "Other" when missing.
     """
     if not raw:
         return OTHERS_CATEGORY
-    val = str(raw).strip().lower()
-
-    # Try direct match against provided categories (case-insensitive)
-    for c in core_categories:
-        if val == c.lower():
-            return c
-    return OTHERS_CATEGORY
+    if core_categories:
+        val = str(raw).strip().lower()
+        for c in core_categories:
+            if val == c.lower():
+                return c
+        return OTHERS_CATEGORY
+    # No fixed categories provided: keep author's category text
+    return str(raw).strip().title()
 
 
 def _strip_code_fences(text: str) -> str:
@@ -191,8 +189,13 @@ def _normalize_volume_pricing_list(items: Any) -> List[Dict[str, Any]]:
 
 def _build_concentrated_from_parts(parts: List[Dict[str, Any]], supplier_name: str, core_categories: List[str]) -> Dict[str, Any]:
     """Build UI-friendly concentrated_parts from flat parts list."""
-    buckets: Dict[str, List[Dict[str, Any]]] = {c: [] for c in core_categories}
-    buckets[OTHERS_CATEGORY] = []
+    # When explicit core categories are provided, pre-create only those buckets plus "Other".
+    # Otherwise (no core categories), enable dynamic bucketing: create a bucket for each
+    # encountered category on the fly, while still keeping an "Other" bucket available.
+    dynamic_buckets = not bool(core_categories)
+    buckets: Dict[str, List[Dict[str, Any]]] = ({OTHERS_CATEGORY: []} if dynamic_buckets else {c: [] for c in core_categories})
+    if not dynamic_buckets:
+        buckets[OTHERS_CATEGORY] = []
 
     for p in parts:
         cat = _normalize_category(p.get("category"), core_categories)
@@ -212,17 +215,38 @@ def _build_concentrated_from_parts(parts: List[Dict[str, Any]], supplier_name: s
             "confidence": 0.8,
             "rationale": "LLM-consolidated",
         }
-        buckets[cat].append(item)
+        # In dynamic mode, create new buckets for unseen categories.
+        if dynamic_buckets:
+            if cat not in buckets:
+                buckets[cat] = []
+            buckets[cat].append(item)
+        else:
+            # In fixed mode, unknown categories are normalized to "Other" by _normalize_category,
+            # but guard defensively in case of unexpected values.
+            if cat not in buckets:
+                cat = OTHERS_CATEGORY
+            buckets[cat].append(item)
 
     categories_payload: List[Dict[str, Any]] = []
-    for cat in core_categories:
-        if buckets[cat]:
-            categories_payload.append({
-                "category": cat,
-                "key": _slugify(cat),
-                "items": buckets[cat],
-                "summary": {"count": len(buckets[cat])},
-            })
+    if dynamic_buckets:
+        # Emit all non-"Other" categories discovered dynamically, in sorted order for stability.
+        for cat in sorted([k for k in buckets.keys() if k != OTHERS_CATEGORY]):
+            if buckets.get(cat):
+                categories_payload.append({
+                    "category": cat,
+                    "key": _slugify(cat),
+                    "items": buckets[cat],
+                    "summary": {"count": len(buckets[cat])},
+                })
+    else:
+        for cat in core_categories:
+            if buckets[cat]:
+                categories_payload.append({
+                    "category": cat,
+                    "key": _slugify(cat),
+                    "items": buckets[cat],
+                    "summary": {"count": len(buckets[cat])},
+                })
 
     other_bucket = {
         "category": "Other",
@@ -243,14 +267,27 @@ def _build_concentrated_from_parts(parts: List[Dict[str, Any]], supplier_name: s
 
 
 def _build_prompt_for_llm(kg_data: Dict[str, Any], supplier_name: Optional[str], allowed_categories: List[str]) -> str:
-    categories_list = ", ".join(allowed_categories + [OTHERS_CATEGORY])
     supplier_context = f"Supplier: {supplier_name}\n" if supplier_name else ""
+    if allowed_categories:
+        categories_list = ", ".join(allowed_categories + [OTHERS_CATEGORY])
+        category_instructions = (
+            f"STRICT CATEGORY RULES:\n"
+            f"- You MUST assign each part to exactly one of: [{categories_list}]. Never invent categories.\n"
+            f"- If you are unsure, use \"{OTHERS_CATEGORY}\".\n"
+        )
+        category_field_desc = f"one of {categories_list}"
+    else:
+        category_instructions = (
+            "CATEGORY GUIDANCE:\n"
+            "- Assign each part to a meaningful high-level category name (free text).\n"
+            f"- Use \"{OTHERS_CATEGORY}\" only if no suitable category applies.\n"
+        )
+        category_field_desc = "free-text category (e.g., Component, Subassembly, System, Other)"
+
     return f"""
 You are an expert technical analyst extracting parts information from a supplier knowledge graph.
 {supplier_context}
-STRICT CATEGORY RULES:
-- You MUST assign each part to exactly one of: [{categories_list}]. Never invent categories.
-- If you are unsure or category is not in the provided set, use "{OTHERS_CATEGORY}".
+{category_instructions}
 
 DEDUPLICATION & CONSOLIDATION RULES:
 - Multiple nodes can describe the same physical part (different names/numbers). Merge them into a single part entry.
@@ -258,23 +295,26 @@ DEDUPLICATION & CONSOLIDATION RULES:
 - Include all alternative identifiers in alternative_numbers.
 - Always include precise source references: exact filename and chunk_id.
 
+SPECIFICATION RULES:
+- Capture dimensions, weight, materials, and performance metrics exactly as stated.
+- If fields like torque_capacity or operating_temperature are not relevant, leave them blank and use other_specs for domain-specific attributes.
+
 VOLUME PRICING RULES (CRITICAL):
 - volume_pricing.volume MUST be a quantity descriptor (e.g., "70,000 units/year", "500 pcs", "100 sets").
 - NEVER put years or date ranges in volume (e.g., "2029-2032" is INVALID for volume).
-- price_per_unit MUST be a numeric price per unit (EUR). If unavailable, use null.
+- price_per_unit MUST be a numeric price per unit. If the exact price is not available, use null.
 - discount_percentage is optional and numeric; use null if not applicable.
 
-ALSO EXTRACT the system-level object: overall_system, representing the complete solution or assembly relevant to the parts in scope (domain-agnostic),
-including consolidated specs/pricing if present and sources.
+ALSO EXTRACT the system-level object: overall_product_system, representing the complete product, system, or service assembled from major components, including consolidated specs/pricing if present and sources.
 
-Return ONLY valid JSON with this exact structure (no markdown, no prose):
+Return ONLY valid JSON with this exact structure (no markdown, no prose). Leave fields blank if the data does not apply, and capture domain-specific metrics in other_specs when needed:
 {{
   "parts": [
     {{
       "part_number": "primary part number or identifier",
       "alternative_numbers": ["other identifiers or part numbers"],
       "part_name": "concise human-readable name",
-      "category": "one of {categories_list}",
+      "category": "{category_field_desc}",
       "description": "brief description",
       "technical_specifications": {{
         "dimensions": "",
@@ -286,7 +326,7 @@ Return ONLY valid JSON with this exact structure (no markdown, no prose):
       }},
       "pricing": {{
         "unit_price": null,
-        "currency": "EUR",
+        "currency": "<ISO currency code from the source>",
         "volume_pricing": [{{"volume": "quantity only (e.g., 70000 units/year)", "price_per_unit": null, "discount_percentage": null}}],
         "cost_breakdown": [{{"component": "", "amount": null, "percentage": null}}]
       }},
@@ -300,10 +340,10 @@ Return ONLY valid JSON with this exact structure (no markdown, no prose):
       "sources": [{{"filename": "file.ext", "chunk_id": "page_X"}}]
     }}
   ],
-  "overall_system": {{
+  "overall_product_system": {{
     "title": "",
     "description": "",
-    "components": [],
+    "components": ["<major component 1>", "<major component 2>"],
     "technical_specifications": {{
       "torque_capacity": "",
       "weight": "",
@@ -312,7 +352,7 @@ Return ONLY valid JSON with this exact structure (no markdown, no prose):
     }},
     "pricing_summary": {{
       "unit_price": null,
-      "currency": "EUR",
+      "currency": "<ISO currency code from the source>",
       "volume_pricing": [{{"volume": "quantity only (e.g., 70000 units/year)", "price_per_unit": null}}],
       "notes": ""
     }},
@@ -768,21 +808,21 @@ def analyze_parts_structured(
             "sources": _ensure_sources(p.get("sources")),
         })
 
-    # Overall system (generic). Backward compatibility for 'overall_clutch_system'
-    overall_in = None
-    if isinstance(raw_result.get('overall_system'), dict):
-        overall_in = raw_result.get('overall_system')
+    # Overall system (generic). Prefer generic key, fall back to legacy key from older prompts
+    overall = None
+    if isinstance(raw_result.get('overall_product_system'), dict):
+        overall = raw_result.get('overall_product_system')
     elif isinstance(raw_result.get('overall_clutch_system'), dict):
-        overall_in = raw_result.get('overall_clutch_system')
-    # Default empty structure
-    overall = overall_in if isinstance(overall_in, dict) else {
-        "title": "",
-        "description": "",
-        "components": [],
-        "technical_specifications": {"torque_capacity": "", "weight": "", "dimensions": "", "other_specs": []},
-        "pricing_summary": {"unit_price": None, "currency": "EUR", "volume_pricing": [], "notes": ""},
-        "sources": [],
-    }
+        overall = raw_result.get('overall_clutch_system')
+    else:
+        overall = {
+            "title": "",
+            "description": "",
+            "components": [],
+            "technical_specifications": {"torque_capacity": "", "weight": "", "dimensions": "", "other_specs": []},
+            "pricing_summary": {"unit_price": None, "currency": "EUR", "volume_pricing": [], "notes": ""},
+            "sources": [],
+        }
 
     # Sanitize overall pricing summary as well
     if isinstance(overall, dict):
@@ -806,10 +846,8 @@ def analyze_parts_structured(
 
     result: Dict[str, Any] = {
         "parts": normalized_parts,
-        # New generic key
-        "overall_system": overall,
-        # Backward compatible alias for downstream consumers
-        "overall_clutch_system": overall,
+        "overall_product_system": overall,
+        "overall_clutch_system": overall,  # legacy alias for backward compatibility
         "parts_summary": parts_summary,
         "concentrated_parts": concentrated,
         "supplier_name": supplier_name or "Unknown Supplier",
