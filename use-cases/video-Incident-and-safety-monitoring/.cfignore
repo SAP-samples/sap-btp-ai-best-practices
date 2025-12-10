@@ -1,0 +1,57 @@
+# Cloud Foundry ignore file for ai-core-video
+# Exclude local development artifacts and unnecessary files from upload
+
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python caches and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Node/npm/yarn artifacts (not needed for staticfile buildpack)
+node_modules/
+*.map
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs and temporary files
+*.log
+tmp/
+.temp/
+.cache/
+
+# Environment files and secrets (provided via CF env vars)
+.env
+.env.*
+secrets.json
+
+# Git
+.git/
+.gitignore
+
+# Tests and docs (not required for runtime deployment)
+tests/
+docs/
+mkdocs.yml
+
+# Local media copies (root-level, keep only webapp assets)
+Audio/
+Video/
+
+# Generated images or artifacts
+*.png
+*.jpg
+*.jpeg
+*.gif
