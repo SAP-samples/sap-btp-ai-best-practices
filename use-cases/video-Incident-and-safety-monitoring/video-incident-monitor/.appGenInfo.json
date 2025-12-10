@@ -1,0 +1,29 @@
+{
+  "generationParameters": {
+    "generationDate": "Thu Dec 04 2025 11:24:13 GMT+0000 (Greenwich Mean Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "https://localhost:5000/odata/v4/VideoIncidentService/",
+    "appName": "video-incident-monitor",
+    "appTitle": "Video Incident & Safety Monitoring",
+    "appDescription": "SAP Fiori application for video and audio incident analysis using AI",
+    "appNamespace": "",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.136.7",
+    "enableCodeAssist": false,
+    "enableEslint": false,
+    "enableTypeScript": false,
+    "showMockDataInfo": true,
+    "generatorVersion": "1.19.6",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "MediaAnalysis"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="VideoIncidentService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+
+      <!-- Entity Type: MediaAnalysis -->
+      <EntityType Name="MediaAnalysis">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="fileName" Type="Edm.String" MaxLength="255"/>
+        <Property Name="fileType" Type="Edm.String" MaxLength="20"/>
+        <Property Name="mimeType" Type="Edm.String" MaxLength="100"/>
+        <Property Name="fileSize" Type="Edm.Int32"/>
+        <Property Name="filePath" Type="Edm.String" MaxLength="500"/>
+        <Property Name="uploadedAt" Type="Edm.DateTimeOffset"/>
+
+        <!-- Analysis Parameters -->
+        <Property Name="instruction" Type="Edm.String" MaxLength="2000"/>
+        <Property Name="temperature" Type="Edm.Decimal" Scale="2" Precision="3"/>
+        <Property Name="maxTokens" Type="Edm.Int32"/>
+
+        <!-- Analysis Results -->
+        <Property Name="status" Type="Edm.String" MaxLength="20"/>
+        <Property Name="analysisResult" Type="Edm.String"/>
+        <Property Name="incidentDetected" Type="Edm.Boolean"/>
+        <Property Name="incidentType" Type="Edm.String" MaxLength="100"/>
+        <Property Name="severity" Type="Edm.String" MaxLength="20"/>
+
+        <!-- Metrics -->
+        <Property Name="promptTokens" Type="Edm.Int32"/>
+        <Property Name="completionTokens" Type="Edm.Int32"/>
+        <Property Name="totalTokens" Type="Edm.Int32"/>
+        <Property Name="processingTime" Type="Edm.Int32"/>
+
+        <Property Name="analyzedAt" Type="Edm.DateTimeOffset"/>
+        <Property Name="analyzedBy" Type="Edm.String" MaxLength="100"/>
+      </EntityType>
+
+      <!-- Entity Container -->
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="MediaAnalysis" EntityType="VideoIncidentService.MediaAnalysis">
+          <Annotation Term="UI.HeaderInfo">
+            <Record Type="UI.HeaderInfoType">
+              <PropertyValue Property="TypeName" String="Media Analysis"/>
+              <PropertyValue Property="TypeNamePlural" String="Media Analyses"/>
+              <PropertyValue Property="Title">
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="fileName"/>
+                </Record>
+              </PropertyValue>
+              <PropertyValue Property="Description">
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="fileType"/>
+                </Record>
+              </PropertyValue>
+            </Record>
+          </Annotation>
+
+          <!-- List Report LineItem -->
+          <Annotation Term="UI.LineItem">
+            <Collection>
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="fileName"/>
+                <PropertyValue Property="Label" String="File Name"/>
+              </Record>
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="fileType"/>
+                <PropertyValue Property="Label" String="Type"/>
+              </Record>
+              <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Status"/>
+                <PropertyValue Property="Label" String="Status"/>
+              </Record>
+              <Record Type="UI.DataFieldForAnnotation">
+                <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Severity"/>
+                <PropertyValue Property="Label" String="Severity"/>
+              </Record>
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="uploadedAt"/>
+                <PropertyValue Property="Label" String="Uploaded"/>
+              </Record>
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="incidentDetected"/>
+                <PropertyValue Property="Label" String="Incident"/>
+              </Record>
+            </Collection>
+          </Annotation>
+
+          <!-- Selection Fields (Filters) -->
+          <Annotation Term="UI.SelectionFields">
+            <Collection>
+              <PropertyPath>fileName</PropertyPath>
+              <PropertyPath>fileType</PropertyPath>
+              <PropertyPath>status</PropertyPath>
+              <PropertyPath>severity</PropertyPath>
+              <PropertyPath>incidentDetected</PropertyPath>
+            </Collection>
+          </Annotation>
+
+          <!-- Status DataPoint -->
+          <Annotation Term="UI.DataPoint" Qualifier="Status">
+            <Record Type="UI.DataPointType">
+              <PropertyValue Property="Value" Path="status"/>
+              <PropertyValue Property="Title" String="Status"/>
+            </Record>
+          </Annotation>
+
+          <!-- Severity DataPoint -->
+          <Annotation Term="UI.DataPoint" Qualifier="Severity">
+            <Record Type="UI.DataPointType">
+              <PropertyValue Property="Value" Path="severity"/>
+              <PropertyValue Property="Title" String="Severity"/>
+            </Record>
+          </Annotation>
+
+          <!-- Object Page Facets -->
+          <Annotation Term="UI.Facets">
+            <Collection>
+              <!-- General Information Section -->
+              <Record Type="UI.ReferenceFacet">
+                <PropertyValue Property="Label" String="General Information"/>
+                <PropertyValue Property="ID" String="GeneralInfo"/>
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneralInfo"/>
+              </Record>
+
+              <!-- Analysis Results Section -->
+              <Record Type="UI.ReferenceFacet">
+                <PropertyValue Property="Label" String="Analysis Results"/>
+                <PropertyValue Property="ID" String="AnalysisResults"/>
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#AnalysisResults"/>
+              </Record>
+
+              <!-- Technical Details Section -->
+              <Record Type="UI.ReferenceFacet">
+                <PropertyValue Property="Label" String="Technical Details"/>
+                <PropertyValue Property="ID" String="TechnicalDetails"/>
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#TechnicalDetails"/>
+              </Record>
+            </Collection>
+          </Annotation>
+
+          <!-- Field Group: General Info -->
+          <Annotation Term="UI.FieldGroup" Qualifier="GeneralInfo">
+            <Record Type="UI.FieldGroupType">
+              <PropertyValue Property="Data">
+                <Collection>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="fileName"/>
+                    <PropertyValue Property="Label" String="File Name"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="fileType"/>
+                    <PropertyValue Property="Label" String="File Type"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="mimeType"/>
+                    <PropertyValue Property="Label" String="MIME Type"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="fileSize"/>
+                    <PropertyValue Property="Label" String="File Size (bytes)"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="uploadedAt"/>
+                    <PropertyValue Property="Label" String="Uploaded At"/>
+                  </Record>
+                </Collection>
+              </PropertyValue>
+            </Record>
+          </Annotation>
+
+          <!-- Field Group: Analysis Results -->
+          <Annotation Term="UI.FieldGroup" Qualifier="AnalysisResults">
+            <Record Type="UI.FieldGroupType">
+              <PropertyValue Property="Data">
+                <Collection>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="status"/>
+                    <PropertyValue Property="Label" String="Status"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="incidentDetected"/>
+                    <PropertyValue Property="Label" String="Incident Detected"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="incidentType"/>
+                    <PropertyValue Property="Label" String="Incident Type"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="severity"/>
+                    <PropertyValue Property="Label" String="Severity"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="analysisResult"/>
+                    <PropertyValue Property="Label" String="Analysis Result"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="analyzedAt"/>
+                    <PropertyValue Property="Label" String="Analyzed At"/>
+                  </Record>
+                </Collection>
+              </PropertyValue>
+            </Record>
+          </Annotation>
+
+          <!-- Field Group: Technical Details -->
+          <Annotation Term="UI.FieldGroup" Qualifier="TechnicalDetails">
+            <Record Type="UI.FieldGroupType">
+              <PropertyValue Property="Data">
+                <Collection>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="instruction"/>
+                    <PropertyValue Property="Label" String="Instruction"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="temperature"/>
+                    <PropertyValue Property="Label" String="Temperature"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="maxTokens"/>
+                    <PropertyValue Property="Label" String="Max Tokens"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="promptTokens"/>
+                    <PropertyValue Property="Label" String="Prompt Tokens"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="completionTokens"/>
+                    <PropertyValue Property="Label" String="Completion Tokens"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="totalTokens"/>
+                    <PropertyValue Property="Label" String="Total Tokens"/>
+                  </Record>
+                  <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="processingTime"/>
+                    <PropertyValue Property="Label" String="Processing Time (s)"/>
+                  </Record>
+                </Collection>
+              </PropertyValue>
+            </Record>
+          </Annotation>
+        </EntitySet>
+      </EntityContainer>
+
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

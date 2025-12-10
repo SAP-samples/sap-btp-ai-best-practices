@@ -1,0 +1,239 @@
+<mvc:View
+    controllerName="videoincidentmonitor.controller.AnalyzeMedia"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:form="sap.ui.layout.form"
+    displayBlock="true">
+
+    <Page
+        id="analyzeMediaPage"
+        title="Video Incident &amp; Safety Monitoring"
+        showNavButton="false">
+
+        <content>
+            <ScrollContainer
+                height="100%"
+                width="100%"
+                vertical="true"
+                horizontal="false">
+
+                <layout:VerticalLayout
+                    width="100%"
+                    class="sapUiContentPadding">
+
+                    <!-- Header Section -->
+                    <Title text="Analyze Video &amp; Audio with AI" level="H2" class="sapUiMediumMarginTop"/>
+                    <Text text="Upload media files for safety incident detection using Gemini 2.5 Pro" class="sapUiTinyMarginBottom"/>
+
+                    <!-- File Upload Section -->
+                    <Panel
+                        headerText="1. Select Media File"
+                        expandable="false"
+                        expanded="true"
+                        class="sapUiResponsiveMargin"
+                        width="auto">
+
+                        <content>
+                            <VBox class="sapUiSmallMargin">
+                                <!-- Media Type Selection -->
+                                <Label text="Media Type:" labelFor="mediaTypeSelect"/>
+                                <SegmentedButton
+                                    id="mediaTypeSelect"
+                                    selectedKey="video"
+                                    selectionChange=".onMediaTypeChange">
+                                    <items>
+                                        <SegmentedButtonItem key="video" text="Video" icon="sap-icon://video"/>
+                                        <SegmentedButtonItem key="audio" text="Audio" icon="sap-icon://microphone"/>
+                                    </items>
+                                </SegmentedButton>
+
+                                <!-- File Upload -->
+                                <Label text="Upload File:" labelFor="fileUploader" class="sapUiMediumMarginTop"/>
+                                <VBox>
+                                    <FileUploader
+                                        id="fileUploader"
+                                        name="mediaFile"
+                                        uploadUrl="/upload"
+                                        uploadOnChange="false"
+                                        change=".onFileChange"
+                                        fileType="mp4,avi,mov,webm,wav,mp3,ogg,flac"
+                                        placeholder="Choose a file..."
+                                        width="400px"/>
+                                    <Text id="fileInfo" text="" class="sapUiTinyMarginTop"/>
+                                </VBox>
+
+                                <!-- Media Preview -->
+                                <VBox id="mediaPreviewBox" visible="false" class="sapUiMediumMarginTop">
+                                    <Label text="Preview:"/>
+                                    <core:HTML id="mediaPreview" content="" class="sapUiTinyMarginTop"/>
+                                </VBox>
+                            </VBox>
+                        </content>
+                    </Panel>
+
+                    <!-- Analysis Parameters Section -->
+                    <Panel
+                        headerText="2. Configure Analysis"
+                        expandable="true"
+                        expanded="true"
+                        class="sapUiResponsiveMargin"
+                        width="auto">
+
+                        <content>
+                            <VBox class="sapUiSmallMargin">
+                                <!-- Instruction -->
+                                <Label text="Instruction for AI:" labelFor="instructionText"/>
+                                <TextArea
+                                    id="instructionText"
+                                    value="Analyze this media for safety violations. Are there any incidents or hazards?"
+                                    rows="4"
+                                    width="100%"
+                                    placeholder="Enter your question or instruction..."
+                                    class="sapUiTinyMarginTop"/>
+
+                                <!-- Advanced Settings -->
+                                <VBox class="sapUiMediumMarginTop">
+                                    <Label text="Temperature (0.0 - 2.0):" labelFor="temperatureSlider"/>
+                                    <HBox alignItems="Center">
+                                        <Slider
+                                            id="temperatureSlider"
+                                            value="0.7"
+                                            min="0"
+                                            max="2"
+                                            step="0.1"
+                                            enableTickmarks="true"
+                                            width="300px"
+                                            liveChange=".onTemperatureChange"/>
+                                        <Text id="temperatureValue" text="0.7" class="sapUiTinyMarginBegin"/>
+                                    </HBox>
+
+                                    <Label text="Max Tokens:" labelFor="maxTokensInput" class="sapUiSmallMarginTop"/>
+                                    <Input
+                                        id="maxTokensInput"
+                                        value="2000"
+                                        type="Number"
+                                        width="200px"/>
+                                </VBox>
+                            </VBox>
+                        </content>
+                    </Panel>
+
+                    <!-- Action Button -->
+                    <VBox class="sapUiResponsiveMargin">
+                        <Button
+                            id="analyzeButton"
+                            text="Analyze Media"
+                            type="Emphasized"
+                            icon="sap-icon://play"
+                            press=".onAnalyze"
+                            enabled="false"
+                            width="200px"/>
+                    </VBox>
+
+                    <!-- Results Section -->
+                    <Panel
+                        id="resultsPanel"
+                        headerText="3. Analysis Results"
+                        expandable="false"
+                        expanded="true"
+                        visible="false"
+                        class="sapUiResponsiveMargin"
+                        width="auto">
+
+                        <content>
+                            <VBox class="sapUiSmallMargin">
+                                <!-- Status -->
+                                <HBox alignItems="Center">
+                                    <Label text="Status:"/>
+                                    <ObjectStatus
+                                        id="analysisStatus"
+                                        text="Processing..."
+                                        state="Information"
+                                        class="sapUiTinyMarginBegin"/>
+                                </HBox>
+
+                                <!-- Progress -->
+                                <ProgressIndicator
+                                    id="analysisProgress"
+                                    visible="false"
+                                    percentValue="0"
+                                    displayValue="Analyzing..."
+                                    state="Information"
+                                    class="sapUiMediumMarginTop"/>
+
+                                <!-- Results Text -->
+                                <VBox id="resultsBox" visible="false" class="sapUiMediumMarginTop">
+                                    <Label text="AI Analysis:"/>
+                                    <VBox class="sapUiTinyMarginTop" style="background-color: #f5f5f5; padding: 1rem; border-radius: 0.5rem; border-left: 4px solid #0a6ed1;">
+                                        <Text id="analysisResultText" text="" renderWhitespace="true"/>
+                                    </VBox>
+
+                                    <!-- Incident Detection -->
+                                    <HBox alignItems="Center" class="sapUiMediumMarginTop">
+                                        <Label text="Incident Detected:"/>
+                                        <ObjectStatus
+                                            id="incidentStatus"
+                                            text="No"
+                                            state="Success"
+                                            class="sapUiTinyMarginBegin"/>
+                                    </HBox>
+
+                                    <!-- Severity -->
+                                    <HBox alignItems="Center" visible="false" id="severityBox" class="sapUiSmallMarginTop">
+                                        <Label text="Severity:"/>
+                                        <ObjectStatus
+                                            id="severityStatus"
+                                            text=""
+                                            class="sapUiTinyMarginBegin"/>
+                                    </HBox>
+
+                                    <!-- Metrics -->
+                                    <VBox class="sapUiMediumMarginTop">
+                                        <Label text="Metrics:"/>
+                                        <HBox class="sapUiTinyMarginTop">
+                                            <VBox class="sapUiSmallMarginEnd">
+                                                <Label text="Prompt Tokens:"/>
+                                                <Text id="promptTokens" text="-"/>
+                                            </VBox>
+                                            <VBox class="sapUiSmallMarginEnd">
+                                                <Label text="Completion Tokens:"/>
+                                                <Text id="completionTokens" text="-"/>
+                                            </VBox>
+                                            <VBox class="sapUiSmallMarginEnd">
+                                                <Label text="Total Tokens:"/>
+                                                <Text id="totalTokens" text="-"/>
+                                            </VBox>
+                                            <VBox>
+                                                <Label text="Processing Time:"/>
+                                                <Text id="processingTime" text="-"/>
+                                            </VBox>
+                                        </HBox>
+                                    </VBox>
+
+                                    <!-- Download Button -->
+                                    <Button
+                                        text="Download Report"
+                                        icon="sap-icon://download"
+                                        press=".onDownloadReport"
+                                        class="sapUiMediumMarginTop"
+                                        width="200px"/>
+                                </VBox>
+                            </VBox>
+                        </content>
+                    </Panel>
+
+                    <!-- View All Analyses Link -->
+                    <VBox class="sapUiResponsiveMargin">
+                        <Link
+                            text="View All Analyses"
+                            press=".onViewAll"
+                            class="sapUiMediumMarginTop"/>
+                    </VBox>
+
+                </layout:VerticalLayout>
+            </ScrollContainer>
+        </content>
+    </Page>
+</mvc:View>
