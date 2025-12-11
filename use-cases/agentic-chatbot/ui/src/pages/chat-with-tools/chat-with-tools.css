@@ -45,6 +45,16 @@
   background: var(--sapBaseColor, #ffffff);
 }
 
+@media (max-width: 1000px) {
+  .dashboard-panel {
+    display: none;
+  }
+  .chat-panel {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
 /* Chat page specific styles */
 .chat-container {
   padding: 1rem;
