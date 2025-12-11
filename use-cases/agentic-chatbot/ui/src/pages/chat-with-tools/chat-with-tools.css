@@ -2,20 +2,70 @@
 .chat-page-wrapper {
   background: var(--sapBaseColor, #ffffff);
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Horizontal layout */
+  flex-wrap: nowrap;
+  gap: 0;
+  height: calc(100vh - 52px); /* Full height */
   min-height: calc(100vh - 52px);
+  overflow: hidden; /* Prevent global scroll */
+}
+
+/* Dashboard Panel (Left) */
+.dashboard-panel {
+  flex: 0 0 auto; /* Size based on content (image width) */
+  width: auto;
+  overflow: hidden; /* Keep image contained */
+  background: #f5f6f7;
+  border-right: 1px solid #d9d9d9;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  /* Remove center/stretch alignment to let content dictate size */
+}
+
+.dashboard-image {
+  height: 100%; /* Always fill panel height */
+  width: auto; /* Maintain aspect ratio */
+  max-width: none; /* Do not constrain width */
+  max-height: 100%;
+  display: block;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0; /* Remove radius to flush with edges if needed, or keep 4px */
+}
+
+/* Chat Panel (Right) */
+.chat-panel {
+  flex: 1 1 auto; /* Take remaining space */
+  min-width: 320px; /* Ensure chat doesn't collapse too much */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  background: var(--sapBaseColor, #ffffff);
+}
+
+@media (max-width: 900px) {
+  .dashboard-panel {
+    display: none;
+  }
+  .chat-panel {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
 }
 
 /* Chat page specific styles */
 .chat-container {
-  padding: 1rem 1rem;
-  margin: 0 auto;
-  max-width: calc(800px + 2rem);
+  padding: 1rem;
+  margin: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 84px);
+  /* height is managed by flex parent */
+  flex: 1;
   box-sizing: border-box;
+  overflow: hidden; /* Ensure timeline scrolls, not container */
 }
 
 /* Splash styles */
@@ -25,16 +75,18 @@
   align-items: center;
   justify-content: space-between; /* keep actions at the bottom */
   padding: 0;
-  flex: 1 1 auto; /* take remaining vertical space */
+  flex: 1; /* Take all available space in chat panel */
   flex-direction: column;
 }
 
 .splash.visible {
   display: flex;
 }
+
 /* While splash is visible, hide only the timeline but keep the composer visible */
 .splash.visible + .chat-container {
   height: auto;
+  flex: 0 0 auto; /* Allow splash to take space */
 }
 .splash.visible + .chat-container .timeline {
   display: none;
