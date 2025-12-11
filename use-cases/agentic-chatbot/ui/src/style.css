@@ -12,10 +12,10 @@ body {
 }
 
 /* Border and radius to look good on SAC */
-ui5-navigation-layout {
+/* ui5-navigation-layout {
   border: 1px solid var(--sapScrollBar_FaceColor);
   border-radius: 1rem;
-}
+} */
 
 .content {
   min-height: 400px;
