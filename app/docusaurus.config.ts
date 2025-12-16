@@ -101,7 +101,25 @@ const config: Config = {
     ]
   ],
 
-  plugins: [registerDownloadRoute],
+  plugins: [
+    registerDownloadRoute,
+    () => ({
+      name: "google-site-verification",
+      injectHtmlTags() {
+        return {
+          headTags: [
+            {
+              tagName: "meta",
+              attributes: {
+                name: "google-site-verification",
+                content: "eVc1KK3OGfcizMJIFjE3xLzlEICj84WRxf4Gy_BxUyk"
+              }
+            }
+          ]
+        };
+      }
+    })
+  ],
 
   themeConfig: {
     // Social card image
