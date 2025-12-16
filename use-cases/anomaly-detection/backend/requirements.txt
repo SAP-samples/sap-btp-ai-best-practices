@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+python-multipart
+pandas
+numpy
+python-dotenv
+plotly
+scipy
+matplotlib
+scikit-learn
+shap
+joblib
+pathlib2
+sap-ai-sdk-gen
+seaborn
+
