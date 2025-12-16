@@ -262,6 +262,9 @@ export default function initApexChatPage() {
 
   async function resetConversation() {
     conversation.length = 0;
+
+    // Show loading indicator immediately to skip splash screen
+    conversation.push({ role: "assistant", content: "..." });
     renderMessages();
 
     try {
@@ -269,16 +272,21 @@ export default function initApexChatPage() {
       if (data.session_id) {
         setSessionId(data.session_id);
       }
-      conversation.push({ role: "assistant", content: data.message, ts: Date.now() });
+      // Replace loading placeholder with actual message
+      const last = conversation[conversation.length - 1];
+      if (last && last.role === "assistant") {
+        last.content = data.message;
+        last.ts = Date.now();
+      }
       renderMessages();
     } catch (error) {
       console.error("Reset error:", error);
-      // Fallback greeting
-      conversation.push({
-        role: "assistant",
-        content: "Hello! I'm Apex Assistant, your customer service helper for Apex Automotive Services. How can I assist you today? Please share your name, email, or phone number to get started.",
-        ts: Date.now()
-      });
+      // Replace loading placeholder with fallback greeting
+      const last = conversation[conversation.length - 1];
+      if (last && last.role === "assistant") {
+        last.content = "Hello! I'm Apex Assistant, your customer service helper for Apex Automotive Services. How can I assist you today? Please share your name, email, or phone number to get started.";
+        last.ts = Date.now();
+      }
       renderMessages();
     }
   }
