@@ -1,0 +1,52 @@
+PHARMACEUTICAL ANOMALY DETECTION SUMMARY
+==================================================
+Analysis Date: 2025-09-29 15:33:01
+Model Type: Isolation Forest (sklearn)
+Dataset: datasets/merged_with_features_selected_ordered.csv
+
+MODEL CONFIGURATION:
+  - Number of Trees: 150
+  - Max Samples per Tree: 512
+  - Expected Contamination Rate: 4.5%
+  - Features Used: 16
+
+DETECTION RESULTS:
+  - Total Samples Analyzed: 4,556
+  - Anomalies Detected: 167 (3.67%)
+  - Normal Samples: 4,389 (96.33%)
+
+TOP 5 HIGHEST RISK SAMPLES:
+  1. Document 12988474: Score=-0.299
+     Month rolling z-score: 210.74...
+  2. Document 12996156: Score=-0.285
+     Month rolling z-score: 210.74...
+  3. Document 12972708: Score=-0.285
+     Month rolling z-score: 210.74...
+  4. Document 12977046: Score=-0.285
+     Month rolling z-score: 62.00...
+  5. Document 12989159: Score=-0.283
+     Month rolling z-score: 62.00...
+
+MOST COMMON ANOMALY PATTERNS:
+  -  10 cases: Month rolling z-score: 210.74...
+  -   8 cases: Month rolling z-score: 99.31...
+  -   8 cases: Month rolling z-score: -2.15...
+  -   6 cases: Month rolling z-score: 62.00...
+  -   4 cases: Month rolling z-score: 1.25...
+
+SHAP-BASED FEATURE INSIGHTS:
+  SHAP Explanations for Top Anomalies:
+    1. Document 12944685 (Score: 0.123):
+       Top contributors: order_share_of_month: 0.009 (decreases anomaly score by 0.007); is_unusual_fulfill...
+    2. Document 12944685 (Score: 0.138):
+       Top contributors: is_unusual_fulfillment_time: 0.000 (increases anomaly score by 0.005); order_share...
+    3. Document 12944685 (Score: 0.139):
+       Top contributors: is_unusual_fulfillment_time: 0.000 (increases anomaly score by 0.005); is_order_qt...
+
+RECOMMENDATIONS:
+  1. Review high-scoring samples for potential issues
+  2. Investigate recurring anomaly patterns
+  3. Consider updating business rules based on findings
+  4. Monitor anomaly rates over time for trends
+  5. Use SHAP feature importance to focus on key anomaly drivers
+  6. Review SHAP visualizations for detailed feature analysis

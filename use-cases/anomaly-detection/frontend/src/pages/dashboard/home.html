@@ -1,0 +1,19 @@
+<div class="home-container">
+  <ui5-title>Home</ui5-title>
+  <br />
+  <ui5-text> This is a template for building applications with UI5 Web Components (Plain JS) and FastAPI. </ui5-text>
+  <ui5-card style="margin-top: 1rem">
+    <ui5-card-header slot="header" title-text="API Health Check">
+      <ui5-icon name="activity-assigned-to-goal" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+    <div style="padding: 1rem">
+      <ui5-text>Click the button to check the health of the backend API.</ui5-text>
+      <div style="margin-top: 1rem">
+        <ui5-button id="health-check-button">Check Health</ui5-button>
+      </div>
+      <ui5-panel id="health-response-panel" header-text="API Response" collapsed style="margin-top: 1rem">
+        <div id="health-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+</div>

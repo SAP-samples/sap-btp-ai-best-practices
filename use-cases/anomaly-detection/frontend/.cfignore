@@ -1,0 +1,14 @@
+# Ignore node_modules - not needed for pre-built deployment
+node_modules/
+
+# Keep dist/ - we deploy pre-built files
+
+# Development files
+.git/
+.DS_Store
+*.log
+src/
+scripts/
+docs/
+vite.config.js
+package-lock.json
