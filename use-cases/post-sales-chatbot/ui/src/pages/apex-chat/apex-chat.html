@@ -1,0 +1,36 @@
+<div class="chat-page-wrapper">
+  <section id="chat-splash" class="splash" aria-hidden="true">
+    <div class="splash-hero">
+      <div class="splash-background apex-gradient"></div>
+      <div class="splash-highlights"></div>
+      <ui5-icon name="car-rental" class="hero-icon" accessible-name="Apex Assistant"></ui5-icon>
+      <div class="splash-copy">
+        <ui5-text class="headline">Welcome to</ui5-text>
+        <ui5-text class="hero-sub">Apex Automotive Services</ui5-text>
+      </div>
+    </div>
+    <div class="splash-actions">
+      <div class="quick-actions" data-ui5-compact-size>
+        <ui5-button id="qa-1" class="quick-action" design="Transparent">Check my vehicles</ui5-button>
+        <ui5-button id="qa-2" class="quick-action" design="Transparent">View service history</ui5-button>
+        <ui5-button id="qa-3" class="quick-action" design="Transparent">Get service recommendation</ui5-button>
+        <ui5-button id="qa-4" class="quick-action" design="Transparent">Check promotions</ui5-button>
+        <ui5-button id="qa-5" class="quick-action" design="Transparent">Schedule appointment</ui5-button>
+      </div>
+    </div>
+  </section>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <ui5-title level="H4">Apex Assistant</ui5-title>
+      <ui5-button id="reset-button" design="Transparent" icon="refresh" tooltip="Reset Conversation">Reset</ui5-button>
+    </div>
+    <div id="chat-timeline" class="timeline"></div>
+
+    <div class="composer">
+      <ui5-textarea id="message-input" placeholder="Type a message..." growing growing-max-rows="12" rows="1"></ui5-textarea>
+      <ui5-button id="send-button" design="Emphasized" icon="paper-plane" tooltip="Send" accessible-name="Send"></ui5-button>
+    </div>
+    <ui5-text class="composer-note">Powered by AI. Verify results.</ui5-text>
+  </div>
+</div>
