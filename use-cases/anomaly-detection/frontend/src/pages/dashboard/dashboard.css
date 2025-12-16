@@ -45,6 +45,7 @@
     border-radius: 0.5rem;
     border: 2px dashed #d0d0d0;
     min-height: 300px;
+    font-family: "72", "72full", Arial, Helvetica, sans-serif;
 }
 
 .order-placeholder p {
