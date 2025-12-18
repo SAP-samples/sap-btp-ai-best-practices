@@ -19,13 +19,6 @@ applications:
     routes:
       - route: video-incident-monitor-backend.cfapps.eu10-004.hana.ondemand.com
     env:
-      # Provide actual values via `cf set-env` (recommended) or modify here before push:
-      AICORE_AUTH_URL: https://dts-ai-core.authentication.eu10.hana.ondemand.com
-      AICORE_CLIENT_ID: sb-8fad0827-27c5-43b0-a9ab-3a3a4ffb2785!b217189|aicore!b540
-      AICORE_CLIENT_SECRET: 68d842c4-0077-44c5-bd7e-aeff1df15f34$Lrvs9nzrOVosWTRU5QnUVyCkeAgJCevsSaKO2RnLfFw=
-      AICORE_BASE_URL: https://api.ai.prod.eu-central-1.aws.ml.hana.ondemand.com/v2
-      AICORE_RESOURCE_GROUP: default
-      # Security and CORS
       API_KEY: ((api_key))
       ALLOWED_ORIGIN: https://video-incident-monitor.cfapps.eu10-004.hana.ondemand.com
     health-check-type: port

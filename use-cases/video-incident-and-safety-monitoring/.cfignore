@@ -33,7 +33,7 @@ tmp/
 .cache/
 
 # Environment files and secrets (provided via CF env vars)
-.env
+# .env  # Uncomment to exclude .env from deployment
 .env.*
 secrets.json
 
