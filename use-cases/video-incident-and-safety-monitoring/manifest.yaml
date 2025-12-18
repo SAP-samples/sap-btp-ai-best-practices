@@ -19,13 +19,6 @@ applications:
     routes:
       - route: video-incident-monitor-backend.cfapps.eu10-004.hana.ondemand.com
     env:
-      # Provide actual values via `cf set-env` (recommended) or modify here before push:
-      AICORE_AUTH_URL: https://*****************.hana.ondemand.com
-      AICORE_CLIENT_ID: sb-********************************8!b540
-      AICORE_CLIENT_SECRET: 68**************************gJCevsSaKO2RnLfFw=
-      AICORE_BASE_URL: https://api.*****************.ondemand.com/v2
-      AICORE_RESOURCE_GROUP: default
-      # Security and CORS
       API_KEY: ((api_key))
       ALLOWED_ORIGIN: https://video-incident-monitor.cfapps.eu10-004.hana.ondemand.com
     health-check-type: port
