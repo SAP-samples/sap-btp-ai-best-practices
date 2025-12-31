@@ -178,7 +178,7 @@ OUTPUT
 
 Request: {{ ?groundingRequest }}
 Context: {{ ?groundingOutput }}`;
-const DEFAULT_CHUNK_COUNT = 150;
+const DEFAULT_CHUNK_COUNT = 50;
 // const DEFAULT_CHUNK_COUNT = 5;
 
 const vendorCatalogMapping = [
