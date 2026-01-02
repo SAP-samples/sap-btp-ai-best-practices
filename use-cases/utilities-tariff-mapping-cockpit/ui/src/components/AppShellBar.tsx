@@ -50,7 +50,7 @@ export function AppShellBar() {
     <>
       <ShellBar
         branding={
-          <ShellBarBranding logo={<img alt="SAP Logo" src="https://sap.github.io/ui5-webcomponents/images/sap-logo-svg.svg" />} onClick={() => navigate("/")}>
+          <ShellBarBranding logo={<img alt="SAP Logo" src="/sap-logo-svg.svg" />} onClick={() => navigate("/")}>
             Utilities Tariff Mapping Cockpit
           </ShellBarBranding>
         }

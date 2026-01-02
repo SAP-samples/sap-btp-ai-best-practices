@@ -178,7 +178,7 @@ OUTPUT
 
 Request: {{ ?groundingRequest }}
 Context: {{ ?groundingOutput }}`;
-const DEFAULT_CHUNK_COUNT = 150;
+const DEFAULT_CHUNK_COUNT = 50;
 // const DEFAULT_CHUNK_COUNT = 5;
 
 const vendorCatalogMapping = [
@@ -398,7 +398,12 @@ function displayResults(response) {
     // Check if the response is a JSON array of products
     const parsed = JSON.parse(responseText);
     if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].name) {
-      products = parsed;
+      products = parsed.map((product) => {
+        if (product.webUrlPageNo) {
+          product.webUrlPageNo = transformSharepointUrl(product.webUrlPageNo);
+        }
+        return product;
+      });
     }
   } catch (e) {
     // If not JSON, treat as regular markdown response
@@ -657,7 +662,7 @@ function createProductCard(product, index) {
       // Extract page number from URL fragment
       let pageNumber = null;
       try {
-        const url = new URL(product.webUrlPageNo);
+        const url = new URL(product.webUrlPageNo, window.location.origin);
         const pageMatch = url.hash.match(/#page=(\d+)/);
         if (pageMatch) {
           pageNumber = pageMatch[1];
@@ -1266,7 +1271,7 @@ function createProductTableRow(product, index) {
     // Extract page number from URL fragment
     let pageNumber = null;
     try {
-      const url = new URL(product.webUrlPageNo);
+      const url = new URL(product.webUrlPageNo, window.location.origin);
       const pageMatch = url.hash.match(/#page=(\d+)/);
       if (pageMatch) {
         pageNumber = pageMatch[1];
@@ -1395,4 +1400,18 @@ function showError(message) {
 
   // Also log to console for debugging
   console.error(message);
+}
+
+function transformSharepointUrl(url) {
+  if (!url) return url;
+
+  // Check if it's a SharePoint URL
+  if (url.includes("sharepoint.com")) {
+    // Extract the filename
+    const parts = url.split("/");
+    const filenameWithParams = parts[parts.length - 1];
+    return `/storage/catalogs/${filenameWithParams}`;
+  }
+
+  return url;
 }
