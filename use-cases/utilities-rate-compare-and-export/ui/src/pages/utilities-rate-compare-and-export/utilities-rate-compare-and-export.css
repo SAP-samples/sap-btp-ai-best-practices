@@ -1,0 +1,100 @@
+/* Utilities rate compare and export styles */
+.rate-mapping-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rate-mapping-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; /* Increased gap slightly */
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.rate-mapping-or-separator {
+  color: var(--sapContent_LabelColor);
+  font-size: var(--sapFontSmallSize);
+  white-space: nowrap;
+  /* Add some margin if gap isn't sufficient or to fine tune */
+  margin: 0 0.25rem;
+}
+
+.rate-mapping-upload-container,
+.rate-mapping-results-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.rate-mapping-upload-section,
+.rate-mapping-result-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0; /* prevent overflow */
+}
+
+.rate-mapping-table-container {
+  overflow: auto;
+  border: 1px solid var(--sapList_BorderColor); /* Optional visual separation */
+  border-top: none;
+}
+
+/* Table visual tuning for better side-by-side comparison */
+.rate-mapping-table-container ui5-table {
+  /* Let the table size itself by content, but not smaller than the container */
+  width: max-content;
+  min-width: 100%;
+  font-size: var(--sapFontSmallSize);
+}
+
+.rate-mapping-table-container ui5-table-header-cell {
+  font-size: var(--sapFontSmallSize);
+  font-weight: 600;
+  white-space: nowrap; /* Excel-like one-line headers */
+}
+
+.rate-mapping-table-container ui5-table-cell {
+  white-space: normal;
+}
+
+.rate-mapping-busy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.rate-diff-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+.rate-diff-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.rate-diff-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .rate-mapping-upload-container,
+  .rate-mapping-results-container {
+    flex-direction: column;
+  }
+}
