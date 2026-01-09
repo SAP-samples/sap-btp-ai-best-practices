@@ -4,7 +4,8 @@ jupyterlab
 PyMuPDF
 pypdf
 boto3
-generative-ai-hub-sdk[langchain]
+sap-ai-sdk-gen[all]
+aioboto3
 langchain_openai
 langchain-google-genai
 langchain-aws
