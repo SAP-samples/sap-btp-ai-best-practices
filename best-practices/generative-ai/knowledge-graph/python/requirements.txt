@@ -1,10 +1,12 @@
 python-dotenv
-generative-ai-hub-sdk[langchain]
+sap-ai-sdk-gen[all]
 langchain-openai
 langchain
 langchain-community
 networkx
 matplotlib
+pypdf
+pygraphviz
 hdbcli
 numpy
 ipython

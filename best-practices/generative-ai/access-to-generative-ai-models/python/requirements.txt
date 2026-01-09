@@ -1,6 +1,7 @@
 notebook
 jupyterlab
-generative-ai-hub-sdk
+sap-ai-sdk-gen
+aioboto3
 python-dotenv
 boto3  # for Amazon Native Implementation
 langchain  # for LangChain Implementation
