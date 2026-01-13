@@ -1,0 +1,55 @@
+<div class="chatbot-container">
+  <!-- Chat area using ui5-page with fixed footer -->
+  <ui5-page class="chat-page" fixed-footer background-design="Solid">
+    <!-- Header -->
+    <ui5-bar slot="header" design="Header">
+      <ui5-title slot="startContent">AI Sales Assistant</ui5-title>
+      <ui5-label slot="endContent">Ask questions about your sales forecast data</ui5-label>
+    </ui5-bar>
+
+    <!-- Scrollable messages area with busy indicator -->
+    <ui5-busy-indicator id="chat-busy" size="M" text="AI is thinking...">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome message -->
+        <div class="message assistant">
+          <div class="message-avatar">
+            <ui5-icon name="da"></ui5-icon>
+          </div>
+          <div class="message-content">
+            <ui5-text>Hello! I'm your AI Sales Assistant. I can help you analyze sales forecasts, create what-if scenarios, and answer questions about your store performance. What would you like to know?</ui5-text>
+          </div>
+        </div>
+      </div>
+    </ui5-busy-indicator>
+
+    <!-- Fixed footer with input -->
+    <div slot="footer" class="chat-input-area">
+      <ui5-textarea
+        id="chat-input"
+        placeholder="Type your question here..."
+        growing
+        growing-max-rows="4"
+        class="chat-input"
+      ></ui5-textarea>
+      <ui5-button id="send-btn" design="Emphasized" icon="paper-plane">
+        Send
+      </ui5-button>
+    </div>
+  </ui5-page>
+
+  <!-- Workflows card -->
+  <ui5-card class="suggestions-card">
+    <ui5-card-header slot="header" title-text="Workflows"></ui5-card-header>
+    <ui5-list id="suggestions-list" mode="SingleSelect">
+      <ui5-li icon="excel-attachment" data-question="Export all sales predictions for 2025">Export all sales predictions for 2025</ui5-li>
+      <ui5-li icon="pdf-attachment" data-question="Generate a PDF report with the findings from this conversation">Generate PDF report</ui5-li>
+      <ui5-li icon="response" data-question="Perform a sensitivity analysis on the current store and date">Perform sensitivity analysis</ui5-li>
+    </ui5-list>
+  </ui5-card>
+
+  <!-- Image Lightbox Modal -->
+  <div id="image-lightbox" class="image-lightbox">
+    <span id="lightbox-close" class="image-lightbox-close">&times;</span>
+    <img id="lightbox-image" src="" alt="Enlarged view">
+  </div>
+</div>

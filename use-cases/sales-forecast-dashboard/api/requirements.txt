@@ -1,0 +1,48 @@
+# Core API dependencies
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-dotenv>=1.0.0
+pydantic>=2.8.0
+
+# Agent dependencies - LangChain ecosystem
+# Pin versions to prevent pip backtracking during deployment
+# These versions are tested to work together with sap-ai-sdk-gen[all]
+langchain==0.3.27
+langchain-core==0.3.80
+langchain-community==0.3.31
+langchain-openai==0.3.35
+langchain-text-splitters==0.3.11
+langgraph==1.0.1
+langgraph-checkpoint==3.0.1
+langgraph-prebuilt==1.0.1
+langgraph-sdk==0.2.15
+
+# SAP GenAI Hub for LLM access
+sap-ai-sdk-gen[all]==5.10.0
+openai==2.12.0
+
+# HANA connectivity
+hana-ml>=2.18.0
+
+# ML dependencies
+catboost>=1.2.0
+numpy>=1.24.0
+pandas>=2.0.0
+shap>=0.44.0
+statsmodels
+holidays>=0.40
+
+# Visualization
+plotly>=5.18.0
+seaborn
+matplotlib>=3.7.0
+
+# PDF generation (for report tool)
+weasyprint>=60.0
+fpdf2
+
+# Caching
+cachetools>=5.3.0
+
+# Excel file reading (for store master, budget data)
+openpyxl>=3.1.0
