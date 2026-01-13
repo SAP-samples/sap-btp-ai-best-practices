@@ -31,17 +31,13 @@ def _get_orchestration_service() -> OrchestrationService:
     return OrchestrationService()
 
 
-async def map_rates(
-    markdown: str, master_csv: str, prompt_key: str = "nc-rates"
-) -> Tuple[str, Any]:
+async def map_rates(markdown: str, prompt_key: str = "nc-rates") -> Tuple[str, Any]:
     """Run the rate-mapping LLM and return the raw CSV string and token usage.
 
     The caller is responsible for validating/parsing the CSV.
     """
     if not markdown.strip():
         raise ValueError("Empty markdown content for rate mapping.")
-    if not master_csv.strip():
-        raise ValueError("Empty master CSV content for rate mapping.")
 
     # Load the specific prompt based on the key
     try:

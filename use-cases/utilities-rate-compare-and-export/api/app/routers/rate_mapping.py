@@ -38,29 +38,12 @@ TRANSCRIBER = DocumentTranscriber(
     auto_grayscale_megapixels=4.0,  # optionally grayscale very large pages
 )
 
-_MASTER_CSV_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "data"
-    / "Rate and Price Keys Master Template.csv"
+# Standard IS-U Migration Header (must match Prompt)
+EXPECTED_CSV_HEADER = (
+    "PRICE_TEMPLATE;PREIS;ABDATUM;BISDATUM;VONZONE_1;BISZONE_1;PREISBTR_1;"
+    "TEXT30;PREISTYP;PREISART;SPARTE;MASS;RUNDART;RUNDUNG;TWAERS;MNGBASIS;"
+    "AKLASSE;TIMBASIS;TIMTYP"
 )
-
-
-def _load_master_csv() -> str:
-    try:
-        with _MASTER_CSV_PATH.open("r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        logger.error("Master CSV file not found at %s", _MASTER_CSV_PATH)
-        raise HTTPException(
-            status_code=500,
-            detail="Master CSV template not found on server.",
-        )
-    except Exception as e:
-        logger.exception("Failed to load master CSV: %s", e)
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to load master CSV template.",
-        )
 
 
 def _parse_csv(csv_text: str):
@@ -139,15 +122,12 @@ async def pdf_rate_mapping(
                 detail="Failed to extract markdown from PDF.",
             )
 
-        # Step 2: Load master CSV
-        master_csv = _load_master_csv()
-        master_header = master_csv.splitlines()[0] if master_csv else ""
+        # Step 2: Extract CSV from LLM output
+        # (We no longer load the master CSV; we use the constant header)
 
         # Step 3: Call LLM to map rates
-        llm_output, map_usage = await map_rates(
-            markdown, master_csv, prompt_key=file_type
-        )
-        csv_text = extract_csv_from_llm_output(llm_output, master_header)
+        llm_output, map_usage = await map_rates(markdown, prompt_key=file_type)
+        csv_text = extract_csv_from_llm_output(llm_output, EXPECTED_CSV_HEADER)
 
         # Step 4: Parse CSV into headers + rows
         headers, rows = _parse_csv(csv_text)
@@ -210,15 +190,9 @@ async def md_rate_mapping(
                 detail="Markdown file contained no readable content.",
             )
 
-        # Load master CSV
-        master_csv = _load_master_csv()
-        master_header = master_csv.splitlines()[0] if master_csv else ""
-
         # Call LLM to map rates
-        llm_output, map_usage = await map_rates(
-            markdown, master_csv, prompt_key=file_type
-        )
-        csv_text = extract_csv_from_llm_output(llm_output, master_header)
+        llm_output, map_usage = await map_rates(markdown, prompt_key=file_type)
+        csv_text = extract_csv_from_llm_output(llm_output, EXPECTED_CSV_HEADER)
 
         # Parse CSV into headers + rows
         headers, rows = _parse_csv(csv_text)
