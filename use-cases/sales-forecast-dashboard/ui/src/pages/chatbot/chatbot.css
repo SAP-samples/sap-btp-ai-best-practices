@@ -1,0 +1,399 @@
+.chatbot-container {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  height: calc(100vh - 80px);
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.chat-page {
+  flex: 2;
+  min-height: 0;
+  height: 100%;
+}
+
+.suggestions-card {
+  width: 320px;
+  flex-shrink: 0;
+  height: fit-content;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Chat Messages Area */
+.chat-messages {
+  padding: 1rem;
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Message Styling */
+.message {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 85%;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.message.assistant .message-avatar {
+  background-color: var(--sapBrandColor);
+  color: white;
+}
+
+.message.user .message-avatar {
+  background-color: var(--sapContent_Illustrative_Color3);
+  color: white;
+}
+
+.message-content {
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--sapTile_Background);
+  box-shadow: var(--sapContent_Shadow0);
+}
+
+.message.user .message-content {
+  background-color: var(--sapBrandColor);
+  color: white;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.message.assistant .message-content {
+  border-bottom-left-radius: 0.25rem;
+}
+
+/* Markdown content styles */
+.message-text {
+  line-height: 1.5;
+}
+
+.message-text p {
+  margin: 0 0 0.5rem 0;
+}
+
+.message-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Table styles */
+.message-text table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.75rem 0;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  display: block;
+}
+
+.message-text th,
+.message-text td {
+  border: 1px solid var(--sapList_BorderColor, #e5e5e5);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.message-text th {
+  background-color: var(--sapList_HeaderBackground, #f5f5f5);
+  font-weight: 600;
+}
+
+.message-text tr:nth-child(even) {
+  background-color: var(--sapList_AlternatingBackground, #fafafa);
+}
+
+.message.user .message-text th,
+.message.user .message-text td {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.message.user .message-text th {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.message.user .message-text tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* List styles */
+.message-text ul,
+.message-text ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.message-text li {
+  margin-bottom: 0.25rem;
+}
+
+/* Code styles */
+.message-text code {
+  background-color: var(--sapBackgroundColor, #f5f5f5);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+.message-text pre {
+  background-color: var(--sapBackgroundColor, #f5f5f5);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 0.5rem 0;
+}
+
+.message-text pre code {
+  background: none;
+  padding: 0;
+}
+
+.message.user .message-text code {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.message.user .message-text pre {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Link styles */
+.message-text a {
+  color: var(--sapLinkColor, #0a6ed1);
+  text-decoration: underline;
+}
+
+.message.user .message-text a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Blockquote styles */
+.message-text blockquote {
+  border-left: 3px solid var(--sapContent_ForegroundBorderColor, #89919a);
+  margin: 0.5rem 0;
+  padding-left: 0.75rem;
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+/* Typing indicator */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 0.5rem;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--sapContent_LabelColor);
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Chat Input Area in Footer */
+.chat-input-area {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid var(--sapGroup_ContentBorderColor);
+  background-color: var(--sapGroup_ContentBackground);
+  align-items: flex-end;
+}
+
+.chat-input-area .chat-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-input-area ui5-button {
+  flex-shrink: 0;
+}
+
+/* Suggestions List */
+#suggestions-list ui5-li {
+  cursor: pointer;
+}
+
+#suggestions-list ui5-li:hover {
+  background-color: var(--sapList_Hover_Background);
+}
+
+/* Attachments */
+.message-attachments {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attachment-image {
+  max-width: 100%;
+  max-height: 400px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sapList_BorderColor, #e5e5e5);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.attachment-image:hover {
+  transform: scale(1.02);
+}
+
+.attachment-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--sapButton_Background, #fff);
+  border: 1px solid var(--sapButton_BorderColor, #0854a0);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--sapButton_TextColor, #0854a0);
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  width: fit-content;
+}
+
+.attachment-download:hover {
+  background-color: var(--sapButton_Hover_Background, #ebf5fe);
+}
+
+.attachment-download ui5-icon {
+  color: inherit;
+}
+
+/* User message attachment styles */
+.message.user .attachment-download {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.message.user .attachment-download:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.message.user .attachment-image {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Image Lightbox Modal */
+.image-lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+}
+
+.image-lightbox.active {
+  display: flex;
+}
+
+.image-lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  cursor: default;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
+}
+
+.image-lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Scenario Context Indicator */
+.scenario-context-indicator {
+  background: var(--sapInformationBackground, #e8f3ff);
+  border: 1px solid var(--sapInformationBorderColor, #0a6ed1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scenario-context-indicator .context-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: var(--sapTextColor);
+}
+
+.scenario-context-indicator .context-header ui5-icon {
+  color: var(--sapInformationColor, #0a6ed1);
+}
+
+.scenario-context-indicator .context-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .chatbot-container {
+    flex-direction: column;
+  }
+
+  .suggestions-card {
+    width: 100%;
+  }
+
+  .chat-page {
+    min-height: 400px;
+  }
+}

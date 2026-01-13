@@ -1,0 +1,19 @@
+# Dependencies - installed fresh by buildpack
+node_modules/
+
+# Build output - generated at runtime
+dist/
+
+# Development files
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
