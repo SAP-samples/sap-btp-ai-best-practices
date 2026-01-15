@@ -17,11 +17,14 @@ import IconLinkButton from "@site/src/components/IconLinkButton";
 
 ### Food for Thought
 
-Generative AI models can automatically translate text from one language to another
+SAP Translation Hub is the official AI Translation Solution for SAP. 
 
-### Example
+Generative AI models can automatically translate text from one language to another. These models can even create and process multilingual content (for example, summarize text) all in one go, without the need for a translation step.
 
-Translating a text field in an application from English to Spanish
+### Examples
+
+- Translating a text field in an application from English to Spanish or Japanese.
+- Processing content from sources in French, German, and Portuguese and creating a summary in English in a pre-defined format.
 
 ### Key Questions
 
@@ -33,13 +36,15 @@ Translating a text field in an application from English to Spanish
 
 <div className="section-with-background blue">
   ## Implementation
-  Translating text can be achieved with a prompt on a foundation model, in particular a large language model. Here you find how to access a foundation model in SAP BTP to implement a use-case that includes “Translation of Text” as an AI functional capability.
 
-[SAP Translation Hub](https://help.sap.com/docs/translation-hub/sap-translation-hub/what-is-sap-translation-hub?version=Cloud) enables you to efficiently translate custom applications, extensions, documentation, and more into a wide scope of languages. SAP Translation Hub is the central translation service behind the Translation Module in AI core (see [Input Translation](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/input-translation?locale=en-US) and [Output Translation](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/output-translation?locale=en-US)).
+[SAP Translation Hub](https://help.sap.com/docs/translation-hub/sap-translation-hub/what-is-sap-translation-hub?version=Cloud) enables you to efficiently translate custom applications, extensions, documentation, and more into a wide scope of languages. SAP Translation Hub is the central translation service behind the Translation Module in AI core (see [Input Translation](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/input-translation?locale=en-US) and [Output Translation](https://help.sap.com/docs/sap-ai-core/sap-ai-core-service-guide/output-translation?locale=en-US)). Visit the [SAP Translation Hub Best Practice](/docs/technical-view/ai-services/sap-translation-hub) for detailed guidelines on how to use SAP Translation Hub. Contact [SAP Translation Hub](mailto:translationhub@sap.com) to discuss your use case.
+
+Creating multilingual content can sometimes be the best option for your AI application. It can be also achieved with a prompt of direct call to a large language model. Visit the [Access to Generative AI models Best Practice](/docs/technical-view/generative-ai/plain/access-to-generative-ai-models) to find how to access a large language model in SAP BTP.
 
 ### Related Best Practices
 
 <ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/ai-services/sap-translation-hub" text="SAP Translation Hub" />
   <IconLinkButton href="/docs/technical-view/generative-ai/plain/" text="Plain (Foundational Model Access)" />
 </ul>
 
