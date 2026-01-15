@@ -7,10 +7,9 @@ export const projects = [
   {
     id: "agentic-email-automation",
     title: "Agentic Email Automation",
+    isAgentic: true,
     description:
       "AI Email Agent that prioritizes and answers emails end-to-end, integrating with SAP S/4HANA, Ariba, and more systems to traverse decision trees and compliance gates.",
-    categories: [],
-    industries: [],
     icon: "workflow-tasks",
     docsPath: "agentic-email-automation",
     sampleFiles: [],
@@ -24,7 +23,7 @@ export const projects = [
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/email-agent",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/ai-powered-email-cockpit",
-    videoUrl: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_51n3w4w0",
     onePagerFile: "images/Slide5.jpeg",
     isExternal: true
   },
@@ -32,8 +31,6 @@ export const projects = [
     id: "ai-powered-email-cockpit",
     title: "AI-Powered Email Cockpit",
     description: "An easy-to-use tool with an email-style interface and built-in chatbot to quickly organize, track, and resolve payment-related requests.",
-    categories: [],
-    industries: [],
     icon: "email",
     docsPath: "ai-powered-email-cockpit",
     sampleFiles: [],
@@ -54,8 +51,6 @@ export const projects = [
     id: "utilities-tariff-mapping-cockpit",
     title: "Utilities Tariff Mapping Cockpit",
     description: "AI‑assisted mapping of utility tariff PDFs/text to SAP IS‑U configuration with review and compliance checks.",
-    categories: [],
-    industries: [],
     icon: "energy-saving-lightbulb",
     docsPath: "utilities-tariff-mapping-cockpit",
     sampleFiles: ["data/Residential Service – Rate 10 (Small file).pdf", "data/Riverview Tariff Book 2025 (Large file).pdf"],
@@ -78,11 +73,94 @@ export const projects = [
     isExternal: true
   },
   {
+    id: "utilities-rate-compare-and-export",
+    title: "Intelligent Tariff Extraction & Comparison",
+    description: "AI-powered extraction and comparison of utility rate tariffs from PDF documents to identify and export rate changes.",
+    icon: "compare-2",
+    docsPath: "utilities-rate-compare-and-export",
+    sampleFiles: ["data/EVERGREEN STATE 2025-11.pdf", "data/EVERGREEN STATE 2025-12.pdf"],
+    videoUrl: "",
+    appUrl: "https://utilities-rate-compare-and-export-live.cfapps.eu10-004.hana.ondemand.com/utilities-rate-compare-and-export",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/utilities-rate-compare-and-export",
+    internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/duke-energy-rate-tariffs",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
+    isExternal: true
+  },
+  {
+    id: "image-diagram-to-signavio",
+    title: "Image Diagram to Signavio",
+    description: "Analyze images of diagrams and transform them into standard BPMN format to be used in Signavio",
+    icon: "tnt/bdd-diagram",
+    docsPath: "image-diagram-to-signavio",
+    sampleFiles: ["data/Process Cab Booking Request PowerPoint.png"],
+    appUrl: "https://diagram-to-bpmn.cfapps.eu10-004.hana.ondemand.com/",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/diagram-to-bpmn",
+    originalSourceCodeUrl: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_2v0t5j5p",
+    onePagerFile: "images/New one pagers.jpg",
+    isExternal: true
+  },
+  {
+    id: "video-incident-and-safety-monitoring",
+    title: "Video Incident and Safety Monitoring",
+    description:
+      "Analyze video to identify personnel on the site, describe ongoing high-risk recovery operations, flag potential safety incidents, and infer basic site conditions such as weather and visibility.",
+    icon: "video",
+    docsPath: "video-incident-and-safety-monitoring",
+    sampleFiles: ["data/railings on the stairs are not installed.mp4", "data/walking along the tube.mp4"],
+    appUrl: "https://video-incident-monitor.cfapps.eu10-004.hana.ondemand.com/analyze-standalone.html",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/video-incident-and-safety-monitoring",
+    isExternal: true,
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_zymttv7o"
+  },
+  {
+    id: "wired-for-intelligence",
+    title: "Wired for Intelligence: powering clean orders from messy customer inputs",
+    description:
+      "Automates the extraction and mapping of sales order data from unstructured customer documents into SAP, reducing manual effort, improving accuracy, and enabling scalable, reliable order processing.",
+    icon: "workflow-tasks",
+    docsPath: "wired-for-intelligence",
+    sampleFiles: [],
+    appUrl:
+      "https://btp-ai-sandbox.launchpad.cfapps.eu10.hana.ondemand.com/0c1d4d1c-2393-498a-8659-b114030ebe73.purchaseorderextractorservice.purchaseorderextraction-0.0.1/index.html",
+    completionDate: "",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/purchase-order-extractor",
+    isExternal: true,
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_2ql2791x",
+    onePagerFile: "images/One-pager.jpg"
+  },
+  {
     id: "intelligent-procurement-assistant",
     title: "Intelligent Procurement Assistant",
     description: "AI assistant that finds materials, recommends approved vendors, and automatically creates purchase requests from catalog, text, or quotation PDFs.",
-    categories: [],
-    industries: [],
     icon: "cart",
     docsPath: "intelligent-procurement-assistant",
     onePagerFile: "images/Slide52.jpg",
@@ -119,19 +197,22 @@ export const projects = [
     title: "Product Catalog Search",
     description:
       "This AI-powered application searches PDF product catalogs and automatically analyzes contracts to determine if specific products can be purchased under existing agreements.",
-    categories: [],
-    industries: [],
     icon: "search",
     docsPath: "product-catalog-search",
-    onePagerFile: "",
+    onePagerFile: "images/Ai4U - Flipbook.jpg",
     sampleFiles: [],
     appUrl: "https://product-catalog-seach-public.cfapps.eu10-004.hana.ondemand.com/grounding-product-catalog",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
         title: "Access to Generative AI Models"
+      },
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/rag/document-grounding",
+        title: "Document Grounding"
       }
     ],
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_p8pta9ul",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/product-catalog-seach",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/european-commission-product-catalog-seach",
     isExternal: true
@@ -141,14 +222,17 @@ export const projects = [
     title: "Underpayment Reasons Identification and Visualization",
     description:
       "Machine learning–based reconciliation of estimated vs. actual reimbursements under Medicare-mandated drug pricing, predicting clerk actions such as write-off, collections, or discount adjustments.",
-    categories: [],
-    industries: ["Health Care Equipment, Services & Pharmaceuticals"],
     icon: "stethoscope",
     docsPath: "reconciliation-of-medicare-mandated-drug-pricing",
     sampleFiles: [],
     appUrl: "https://btp-ai-sandbox.launchpad.cfapps.eu10.hana.ondemand.com/25c37970-20e2-414b-9963-956309c1d217.claimsservice.claims-0.0.1/index.html",
     completionDate: "2025-08-07",
-    relatedBestPractices: [],
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     sourceCodeUrl: "",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/mfp-claim-matching",
     onePagerFile: "images/Slide28.jpg",
@@ -158,8 +242,6 @@ export const projects = [
     id: "sales-order-anomaly-detection",
     title: "Sales Order Anomaly Detection",
     description: "Analyze sales orders and detects anomalies in the data, creates clear explanations on what are the anomalies.",
-    categories: [],
-    industries: ["Health Care Equipment, Services & Pharmaceuticals"],
     icon: "alert",
     docsPath: "sales-order-anomaly-detection",
     sampleFiles: [],
@@ -186,8 +268,6 @@ export const projects = [
     title: "Vendor Selection Optimization",
     description:
       "Procurement optimization application to optimize the allocation of materials from different vendors to optimize total cost while keeping demand, with different tariffs simulation capabilities. Start by selecting a Material Description or Material Number from the left toolbar.",
-    categories: [],
-    industries: [],
     icon: "settings",
     docsPath: "ai-assisted-procurement-optimizer",
     sampleFiles: [],
@@ -199,6 +279,7 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_ndxhkobu",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/vendor-selection-optimization",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/procurement_assistant",
     onePagerFile: "images/Ai4U - Flipbook.jpg",
@@ -209,8 +290,6 @@ export const projects = [
     title: "Apex Assistant: Post Sales Chatbot",
     description:
       "This app helps the customers to know the detail program for the car and schedule an appointment for new services. Customer can ask about the previous car services and information related.",
-    categories: [],
-    industries: ["Automobiles & Components"],
     icon: "car-rental",
     docsPath: "apex-assistant-post-sales-chatbot",
     sampleFiles: ["data/Support data to use.xlsx"],
@@ -225,6 +304,7 @@ export const projects = [
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/post-sales-chatbot",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Zapata_Bot",
     onePagerFile: "images/Slide8.jpeg",
+    isAgentic: true,
     isExternal: true
   },
   {
@@ -232,12 +312,10 @@ export const projects = [
     title: "Intelligent Negotiation Assistant in Procurement",
     description:
       "An AI-powered solution for comparing RFP/RFQ responses, highlighting key offer details, and providing interactive dashboards with part comparisons, certifications, cost breakdowns, and risk insights—complete with a chatbot to access specific information instantly",
-    categories: [],
-    industries: [],
     icon: "compare-2",
     docsPath: "sap-rfqx-document-analysis-application-v2",
     sampleFiles: [],
-    // appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
+    appUrl: "https://rfqx_analysis.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
     relatedBestPractices: [
       {
@@ -262,8 +340,6 @@ export const projects = [
     id: "sap-rfqx-document-analysis-application",
     title: "SAP RFQx Document Analysis Application",
     description: "Quick analyzer of RFQ documents to extract key relevant data and compare offers side by side, suggest best providers and chat about the documents.",
-    categories: [],
-    industries: [],
     icon: "compare-2",
     docsPath: "sap-rfqx-document-analysis-application",
     sampleFiles: [],
@@ -291,8 +367,6 @@ export const projects = [
     id: "document-information-extraction",
     title: "AI-Powered PDF Document Information Extraction",
     description: "This system enables structured information extraction from PDF documents using advanced artificial intelligence with vision capabilities.",
-    categories: [],
-    industries: ["Financial Services"],
     icon: "attachment",
     docsPath: "document-information-extraction",
     sampleFiles: [],
@@ -306,15 +380,13 @@ export const projects = [
     ],
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-pdf-information-extraction",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Sesajal_DataExtraction",
-    onePagerFile: "",
+    onePagerFile: "images/Slide9.jpg",
     isExternal: true
   },
   {
     id: "ai-assisted-customer-credit-check",
     title: "AI Assisted Customer Credit Check",
     description: "A document processing and credit evaluation engine with integrated report generation.",
-    categories: [],
-    industries: ["Financial Services"],
     icon: "money-bills",
     docsPath: "ai-assisted-customer-credit-check",
     sampleFiles: ["data/CGV.pdf", "data/Commercial Investigation.pdf", "data/CSF.pdf", "data/KYC.pdf", "data/Legal Investigation.pdf", "data/Vendor Comments.pdf"],
@@ -335,8 +407,6 @@ export const projects = [
     id: "ai-capability-matcher",
     title: "AI Capability Matcher",
     description: "Match AI capabilities from a dataset with products from a different dataset, to recommend technologies based on description.",
-    categories: [],
-    industries: [],
     icon: "puzzle",
     docsPath: "ai-capability-matcher",
     sampleFiles: ["data/ai_catalog.csv", "data/client_catalog.csv"],
@@ -355,14 +425,13 @@ export const projects = [
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai-capability-matcher",
     internalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/AI-Category-Matcher",
     onePagerFile: "images/Slide6.jpeg",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_w8zgrcz7",
     isExternal: true
   },
   {
     id: "extraction-of-shipments",
     title: "SAP Supply chain: Extraction of shipments",
     description: "AI-driven automation of goods receipt and invoice processing with NLP-enabled notifications and seamless SAP S/4HANA integration.",
-    categories: [],
-    industries: [],
     icon: "shipping-status",
     docsPath: "extraction-of-shipments",
     sampleFiles: [
@@ -386,8 +455,6 @@ export const projects = [
     id: "tax-classification",
     title: "SAP Financial Process: Tax Classification",
     description: "AI-assisted tax validation and anomaly detection across invoices with automated extraction, analysis, and posting in SAP S/4HANA.",
-    categories: [],
-    industries: ["Utilities & Power"],
     icon: "number-sign",
     docsPath: "tax-classification",
     sampleFiles: [
@@ -412,8 +479,6 @@ export const projects = [
     id: "mail-classification",
     title: "Text/Email Classification",
     description: "Application to classify text into configurable categories.",
-    categories: [],
-    industries: [],
     icon: "email",
     docsPath: "mail-classification",
     sampleFiles: ["data/sample_mail.txt"],
@@ -421,29 +486,37 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/text-classification",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
     id: "kpi-wizard",
     title: "KPI Wizard",
     description: "Analyze sales data and creates KPIs.",
-    categories: [],
-    industries: [],
     icon: "bar-chart",
     docsPath: "kpi-wizard",
     sampleFiles: ["data/dummy_sales_data.xlsx"],
-    appUrl: "https://kpi-wizard.cfapps.eu01-canary.hana.ondemand.com/",
+    appUrl: "https://kpi-wizard.cfapps.eu10-004.hana.ondemand.com/",
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/bago-argentina.git",
+    relatedBestPractices: [
+      {
+        url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
+        title: "Access to Generative AI Models"
+      }
+    ],
     isExternal: true
   },
   {
     id: "sales-forecast-and-cash-optimization",
     title: "Sales Forecast and Cash Optimization",
     description: "AI-powered sales performance agent for unified data visibility, decline analysis, and actionable recommendations to protect working capital.",
-    categories: [],
-    industries: ["Automobiles & Components"],
     icon: "future",
     docsPath: "sales-forecast-and-cash-optimization",
     sampleFiles: [],
@@ -459,8 +532,6 @@ export const projects = [
     id: "ai-powered-margin-and-cost-control",
     title: "AI-Powered Margin & Cost Control",
     description: "AI-enabled procurement optimization with anomaly detection, predictive cost forecasting, and conversational insights for margin protection and spend control.",
-    categories: [],
-    industries: ["Energy Equipment & Services"],
     icon: "money-bills",
     docsPath: "ai-powered-margin-and-cost-control",
     sampleFiles: [],
@@ -477,8 +548,6 @@ export const projects = [
     id: "documents-validation",
     title: "Documents Validation",
     description: "AI-powered project documentation agent for automated validation of PDFs/Excels, missing data detection, and vendor communication.",
-    categories: [],
-    industries: ["Utilities & Power"],
     icon: "checklist",
     docsPath: "documents-validation",
     sampleFiles: [
@@ -498,8 +567,6 @@ export const projects = [
     id: "b2b-post-sales",
     title: "SAP Sales Support: Customer Support Agent",
     description: "AI-powered B2B support agent for real-time order, shipment, and billing status with natural language summaries and customer self-service.",
-    categories: [],
-    industries: ["Semiconductor Equipment"],
     icon: "customer",
     docsPath: "b2b-post-sales",
     sampleFiles: [],
@@ -515,8 +582,6 @@ export const projects = [
     id: "financial-statement-agent",
     title: "SAP Financial Process: Financial Statement Assistant",
     description: "AI-powered B2B support agent for real-time order, shipment, and billing status with natural language summaries and customer self-service.",
-    categories: [],
-    industries: ["Materials & Chemicals"],
     icon: "accounting-document-verification",
     docsPath: "financial-statement-agent",
     sampleFiles: [],
@@ -532,8 +597,6 @@ export const projects = [
     id: "pm-data-science",
     title: "SAP Plant Maintenance: Data-Science Assistant",
     description: "AI-driven maintenance intelligence agent for anomaly detection, dynamic KPIs, and natural language insights across integrated data sources.",
-    categories: [],
-    industries: ["Materials & Chemicals"],
     icon: "bar-chart",
     docsPath: "pm-data-science",
     sampleFiles: [],
@@ -549,8 +612,6 @@ export const projects = [
     id: "agentic-cold-chain-logistics",
     title: "Agentic Transportation Lane Risk Analysis",
     description: "AI-driven container optimization using predictive risk metrics and historical shipment data with automated assignment and mitigation strategies.",
-    categories: [],
-    industries: [],
     icon: "fridge",
     docsPath: "agentic-cold-chain-logistics",
     sampleFiles: [],
@@ -559,15 +620,13 @@ export const projects = [
     sourceCodeUrl: "",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/illy.git",
     videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_0tb3z8d5",
-    onePagerFile: "images/Slide4.jpg",
+    onePagerFile: "images/Slide4.jpeg",
     isExternal: true
   },
   {
     id: "cash-optimization",
     title: "Cash Optimization",
     description: "AI-driven payment advisory agent for real-time cash position assessment and proactive payment service recommendations to optimize cash flow.",
-    categories: [],
-    industries: ["Financial Services"],
     icon: "money-bills",
     docsPath: "cash-optimization",
     sampleFiles: [],
@@ -583,8 +642,6 @@ export const projects = [
     id: "ai-agents-for-gr-and-invoice-workflows",
     title: "Touchless Transactions: AI Agents for GR & Invoice Workflows",
     description: "AI-powered goods receipt and invoice processing agent with NLP-driven notifications and seamless SAP S/4HANA automation..",
-    categories: [],
-    industries: ["Consumer Durables & Apparel"],
     icon: "sales-order",
     docsPath: "ai-agents-for-gr-and-invoice-workflows",
     sampleFiles: [],
@@ -596,9 +653,9 @@ export const projects = [
         title: "Access to Generative AI Models"
       }
     ],
-    sourceCodeUrl: "",
+    sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/touchless-transactions-ai-agent-for-gr-and-invoice-workflows",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/adidas-V1",
-    videoUrl: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_8oewer4k",
     onePagerFile: "images/Slide6.jpg",
     isExternal: true
   },
@@ -606,8 +663,6 @@ export const projects = [
     id: "log-analyser",
     title: "Log Analyser",
     description: "AI-powered log analyser for SAP systems, analyzing logs to identify patterns and anomalies.",
-    categories: [],
-    industries: [],
     icon: "log",
     docsPath: "log-analyser",
     sampleFiles: [],
@@ -629,8 +684,6 @@ export const projects = [
     id: "supply-chain-agent",
     title: "Supply Chain Agent",
     description: "AI-powered automation streamlines supply chain reporting by consolidating Excel data, reducing analysis time, and optimizing decision-making.",
-    categories: [],
-    industries: ["Consumer Durables & Apparel"],
     icon: "chain-link",
     docsPath: "supply-chain-agent",
     sampleFiles: [],
@@ -646,8 +699,6 @@ export const projects = [
     id: "sales-order-automation",
     title: "Sales Order Automation",
     description: "AI-driven order processing automates data extraction from customer POs, reducing manual errors and speeding up sales order creation in S4 HANA.",
-    categories: [],
-    industries: ["Consumer Durables & Apparel"],
     icon: "process",
     docsPath: "sales-order-automation",
     sampleFiles: [],
@@ -662,9 +713,8 @@ export const projects = [
   {
     id: "agentic-chatbot",
     title: "Data Analyst Chatbot Agent with SAC Dashboard integration",
+    isAgentic: true,
     description: "An advanced AI Agent, embedded in SAC, that uses the same governed dashboard data and analytics tools to deliver concise, table-formatted insights in real time.",
-    categories: [],
-    industries: ["Food & Beverage"],
     icon: "business-suite/answered",
     docsPath: "agentic-chatbot",
     sampleFiles: [],
@@ -672,8 +722,8 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/agentic-chatbot",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/organic-valley-ai-utilities",
-    videoUrl: "",
-    onePagerFile: "images/Slide3.jpeg",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_npo3xufq",
+    onePagerFile: "images/New one pagers.jpg",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
@@ -686,8 +736,6 @@ export const projects = [
     id: "document-outlier-detection",
     title: "Document Outlier Detection",
     description: "Detect outliers in tabular data documents using AI, and generate a report with the outliers found.",
-    categories: [],
-    industries: [],
     icon: "alert",
     docsPath: "document-outlier-detection",
     sampleFiles: ["data/Sample Data for Mis-key scenario.xlsx"],
@@ -695,8 +743,8 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/document-outlier-detection",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/organic-valley-ai-utilities",
-    videoUrl: "",
-    onePagerFile: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_npo3xufq&kalturaStartTime=133",
+    onePagerFile: "images/New one pagers.jpg",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
@@ -707,10 +755,8 @@ export const projects = [
   },
   {
     id: "sales-order-extractor",
-    title: "Sales Order Extractor",
+    title: "Sales Order Document Extraction",
     description: "Extract sales order data from PDF/Excel documents using AI and automatically create sales orders in SAP HANA.",
-    categories: [],
-    industries: [],
     icon: "sales-order",
     docsPath: "sales-order-extractor",
     sampleFiles: ["data/PO-50871.pdf", "data/PO-84193.pdf"],
@@ -718,8 +764,8 @@ export const projects = [
     completionDate: "",
     sourceCodeUrl: "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/sales-order-extractor",
     originalSourceCodeUrl: "https://github.tools.sap/sap-btp-ai-services-coe/Organic-Valley_final",
-    videoUrl: "",
-    onePagerFile: "",
+    videoUrl: "https://sapvideo.cfapps.eu10-004.hana.ondemand.com/?entry_id=1_1uxl6mt2",
+    onePagerFile: "images/New one pagers.jpg",
     relatedBestPractices: [
       {
         url: "https://btp-ai-bp.docs.sap/docs/technical-view/generative-ai/plain/access-to-generative-ai-models",
@@ -733,8 +779,6 @@ export const projects = [
     title: "Partial Payment Investigation",
     description:
       "SAP BTP AI accelerates deduction clearing by analyzing partial payment data across sources, reducing lead time and supporting AR clerks in process orchestration.",
-    categories: [],
-    industries: ["Food & Beverage"],
     icon: "inspect",
     docsPath: "partial-payment-investigation",
     sampleFiles: [],
@@ -757,12 +801,10 @@ export const projects = [
     title: "Dynamic Pricing Simulation",
     description:
       "SAP BTP AI empowers smarter pricing decisions by predicting margin impacts, optimizing contract selling prices, and reducing uncertainty during sudden material cost increases.",
-    categories: [],
-    industries: ["Food & Beverage"],
     icon: "simulate",
     docsPath: "dynamic-pricing-simulation",
     sampleFiles: [],
-    appUrl: "https://fgf_margin_prototype.cfapps.eu10-004.hana.ondemand.com/",
+    appUrl: "",
     completionDate: "",
     sourceCodeUrl: "",
     originalSourceCodeUrl: "",
@@ -770,74 +812,128 @@ export const projects = [
     onePagerFile: "images/Slide24.jpg",
     isExternal: true
   },
-
   {
-    id: "document-data-extraction-agent",
-    title: "Document Data Extraction Agent",
-    description: "Upload an invoice document to have its information extracted digitally.",
-    categories: [],
-    industries: [],
-    icon: "attachment",
-    docsPath: "document-data-extraction-agent",
-    sampleFiles: ["invoices/sample-invoice-1.pdf", "invoices/sample-invoice-2.pdf", "invoices/sample-invoice-3.pdf", "invoices/chinese_blogger.pdf", "invoices/bejing_2008.pdf"],
-    appUrl: "https://invoiceextraction.cfapps.eu10-004.hana.ondemand.com/",
-    completionDate: "2024-07-28",
-    sourceCodeUrl: "",
-    isExternal: false
-  },
-  {
-    id: "llm-qa-chatbot",
-    title: "LLM Q&A Chatbot",
-    description: "Upload documents to ground chat bot responses.",
-    categories: [],
-    industries: [],
-    icon: "ai",
-    docsPath: "llm-qa-chatbot",
-    sampleFiles: ["dummy_sales_data.xlsx"],
-    appUrl: "https://ai4ucoe-agent.cfapps.eu10-004.hana.ondemand.com/",
-    completionDate: "2024-07-28",
-    sourceCodeUrl: "",
-    isExternal: false
-  },
-  {
-    id: "rfp-evaluation-agent",
-    title: "RFP Evaluation Agent",
-    description: "Upload multiple PDF RFQs and easily compare results.",
-    categories: [],
-    industries: [],
-    icon: "quality-issue",
-    docsPath: "rfp-evaluation-agent",
-    sampleFiles: [
-      "00_RS PRO Squirrel Cage Motor AC Motor, 0.75kW, IE3, 3 Phase, 4 Pole, 400 V, Foot Mount Mounting A700000006779745.pdf",
-      "00_RS PRO Squirrel Cage Motor AC Motor, 3kW, IE3, 3 Phase, 2 Pole, 400 V, Foot Mount Mounting A700000006779801.pdf",
-      "01_JSP EVO2 White Safety Helmet , Adjustable, Ventilated A700000009347754.pdf",
-      "01_Petzl VERTEX VENT White Safety Helmet with Chin Strap, Adjustable, Ventilated 0900766b816f906d.pdf",
-      "02_COVERALL CLEAN 0900766b81525eb9.pdf",
-      "02_Ultra Safe Goggles A700000012793452.pdf",
-      "20191113 Nielsen ServicesAgreement (PDF) Orlando_2019_Nov_13 ver 2.pdf",
-      "20191113 Nielsen ServicesAgreement (PDF) Orlando_2019_Sep_17 ver 1.pdf",
-      "Third Amendment to Amended and Restated Employment Agreement among MediaAlpha 1.pdf",
-      "Third Amendment to Amended and Restated Employment Agreement among MediaAlpha 2.pdf"
-    ],
-    appUrl: "https://uc-rfq-pdf_3.cfapps.eu10-004.hana.ondemand.com/",
-    completionDate: "2024-07-28",
-    sourceCodeUrl: "",
-    isExternal: false
-  },
-  {
-    id: "multi-document-rag",
-    title: "Multi Document RAG - HANA VE & GenAI",
-    description: "Upload files which are vectorized for memory and accuracy via a chatbot",
-    categories: [],
-    industries: [],
-    icon: "database",
-    docsPath: "multi-document-rag",
+    id: "ai-powered-ticket-routing-support",
+    title: "AI-powered Ticket Routing Support",
+    description: "AI-powered real-time guidance to resolve issues independently and automatically classify their requests without manual input.",
+    icon: "business-suite/answered",
+    docsPath: "ai-powered-ticket-routing-support",
     sampleFiles: [],
-    appUrl: "https://multi-rag.cfapps.eu10-004.hana.ondemand.com/",
-    completionDate: "2024-07-28",
+    appUrl: "",
+    completionDate: "",
     sourceCodeUrl: "",
-    isExternal: false
+    originalSourceCodeUrl: "",
+    videoUrl: "",
+    onePagerFile: "images/New one pagers.jpg",
+    isExternal: true
+  },
+  {
+    id: "utilities-high-bill-explainer",
+    title: "Utilities High Bill Explainer",
+    description:
+      "Guide the consumer through easy to understand language on what changes have occurred MoM or YoY to help provide the consumer confidence in the accuracy of their bill.",
+    icon: "money-bills",
+    docsPath: "utilities-high-bill-explainer",
+    sampleFiles: [],
+    appUrl: "",
+    completionDate: "",
+    sourceCodeUrl: "",
+    originalSourceCodeUrl: "",
+    videoUrl: "",
+    onePagerFile: "images/New one pagers.jpg",
+    isExternal: true
+  },
+  {
+    id: "intelligent-store-selling-forecast",
+    title: "Intelligent Store Selling Forecast",
+    description: "Unified forecasting model that integrates store traffic, historical sales, and promotional data to deliver accurate, actionable insights at the store level.",
+    icon: "bar-chart",
+    docsPath: "intelligent-store-selling-forecast",
+    sampleFiles: [],
+    appUrl: "",
+    completionDate: "",
+    sourceCodeUrl: "",
+    originalSourceCodeUrl: "",
+    videoUrl: "",
+    onePagerFile: "images/New one pagers.jpg",
+    isExternal: true
+  },
+  {
+    id: "utilities-best-offer-recommendation-assistant",
+    title: "Utilities Best Offer Recommendation Assistant",
+    description:
+      "A recommendation agent that scans every customer profile and highlights the programs they likely qualify for, then guides CSRs and sales agents with follow up questions to confirm eligibility.",
+    icon: "money-bills",
+    docsPath: "utilities-best-offer-recommendation-assistant",
+    sampleFiles: [],
+    appUrl: "",
+    completionDate: "",
+    sourceCodeUrl: "",
+    originalSourceCodeUrl: "",
+    videoUrl: "",
+    onePagerFile: "images/New one pagers.jpg",
+    isExternal: true
   }
+
+  // {
+  //   id: "document-data-extraction-agent",
+  //   title: "Document Data Extraction Agent",
+  //   description: "Upload an invoice document to have its information extracted digitally.",
+  //   icon: "attachment",
+  //   docsPath: "document-data-extraction-agent",
+  //   sampleFiles: ["invoices/sample-invoice-1.pdf", "invoices/sample-invoice-2.pdf", "invoices/sample-invoice-3.pdf", "invoices/chinese_blogger.pdf", "invoices/bejing_2008.pdf"],
+  //   appUrl: "https://invoiceextraction.cfapps.eu10-004.hana.ondemand.com/",
+  //   completionDate: "2024-07-28",
+  //   sourceCodeUrl: "",
+  //   isExternal: false
+  // },
+  // {
+  //   id: "llm-qa-chatbot",
+  //   title: "LLM Q&A Chatbot",
+  //   description: "Upload documents to ground chat bot responses.",
+  //   icon: "ai",
+  //   docsPath: "llm-qa-chatbot",
+  //   sampleFiles: ["dummy_sales_data.xlsx"],
+  //   appUrl: "https://ai4ucoe-agent.cfapps.eu10-004.hana.ondemand.com/",
+  //   completionDate: "2024-07-28",
+  //   sourceCodeUrl: "",
+  //   isExternal: false
+  // },
+  // {
+  //   id: "rfp-evaluation-agent",
+  //   title: "RFP Evaluation Agent",
+  //   description: "Upload multiple PDF RFQs and easily compare results.",
+  //   icon: "quality-issue",
+  //   docsPath: "rfp-evaluation-agent",
+  //   sampleFiles: [
+  //     "00_RS PRO Squirrel Cage Motor AC Motor, 0.75kW, IE3, 3 Phase, 4 Pole, 400 V, Foot Mount Mounting A700000006779745.pdf",
+  //     "00_RS PRO Squirrel Cage Motor AC Motor, 3kW, IE3, 3 Phase, 2 Pole, 400 V, Foot Mount Mounting A700000006779801.pdf",
+  //     "01_JSP EVO2 White Safety Helmet , Adjustable, Ventilated A700000009347754.pdf",
+  //     "01_Petzl VERTEX VENT White Safety Helmet with Chin Strap, Adjustable, Ventilated 0900766b816f906d.pdf",
+  //     "02_COVERALL CLEAN 0900766b81525eb9.pdf",
+  //     "02_Ultra Safe Goggles A700000012793452.pdf",
+  //     "20191113 Nielsen ServicesAgreement (PDF) Orlando_2019_Nov_13 ver 2.pdf",
+  //     "20191113 Nielsen ServicesAgreement (PDF) Orlando_2019_Sep_17 ver 1.pdf",
+  //     "Third Amendment to Amended and Restated Employment Agreement among MediaAlpha 1.pdf",
+  //     "Third Amendment to Amended and Restated Employment Agreement among MediaAlpha 2.pdf"
+  //   ],
+  //   appUrl: "https://uc-rfq-pdf_3.cfapps.eu10-004.hana.ondemand.com/",
+  //   completionDate: "2024-07-28",
+  //   sourceCodeUrl: "",
+  //   isExternal: false
+  // },
+  // {
+  //   id: "multi-document-rag",
+  //   title: "Multi Document RAG - HANA VE & GenAI",
+  //   description: "Upload files which are vectorized for memory and accuracy via a chatbot",
+  //   icon: "database",
+  //   docsPath: "multi-document-rag",
+  //   sampleFiles: [],
+  //   appUrl: "https://multi-rag.cfapps.eu10-004.hana.ondemand.com/",
+  //   completionDate: "2024-07-28",
+  //   sourceCodeUrl: "",
+  //   isExternal: false
+  // }
 ];
 
 /**
@@ -848,14 +944,17 @@ export function getProjectById(id) {
   return projects.find((project) => project.id === id);
 }
 
-export function getProjectsByCategory(category) {
-  return projects.filter((project) => project.categories.includes(category));
+/**
+ * Visibility helpers
+ */
+
+export function getPublicProjects() {
+  return projects.filter((project) => project.isExternal === true);
 }
 
-export function getProjectsByStatus(status) {
-  return projects.filter((project) => project.status === status);
-}
-
+/**
+ * Get the category label from the category ID
+ */
 export function getCategoryLabel(category) {
   const labels = {
     "ai-ml": "AI/ML",
@@ -870,24 +969,6 @@ export function getCategoryLabel(category) {
     agent: "Agent"
   };
   return labels[category] || category;
-}
-
-export function getStatusLabel(status) {
-  const labels = {
-    active: "Active",
-    "in-development": "In Development",
-    completed: "Completed",
-    archived: "Archived"
-  };
-  return labels[status] || status;
-}
-
-/**
- * Visibility helpers
- */
-
-export function getPublicProjects() {
-  return projects.filter((project) => project.isExternal === true);
 }
 
 /**
