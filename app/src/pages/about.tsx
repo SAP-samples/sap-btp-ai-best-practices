@@ -183,8 +183,8 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/narrow-ai/training-deployment-custom-ai-models" text="Training and Deployment of Custom AI Models" />
                   <IconLinkButton href="/docs/technical-view/ai-services/sap-document-ai" text="Document AI" />
                   <IconLinkButton href="/docs/technical-view/ai-services/custom-joule-skills" text="Custom Joule Skills" />
-                  <IconLinkButton href="/docs/technical-view/generative-ai/rag/document-grounding" text="Document Grounding" disabled={true} />
-                  <IconLinkButton href="/docs/technical-view/ai-services/sap-translation-hub" text="SAP Translation Hub" disabled={true} />
+                  <IconLinkButton href="/docs/technical-view/generative-ai/rag/document-grounding" text="Document Grounding" />
+                  <IconLinkButton href="/docs/technical-view/ai-services/sap-translation-hub" text="SAP Translation Hub" />
                 </div>
                 <p>
                   Further SAP BTP AI Best Practices are in preparation. <strong>Stay tuned</strong> to keep your AI development on SAP BTP at the forefront!
