@@ -108,9 +108,12 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/generative-ai/rag/kg-rag-query-pipeline": "pipeline-analysis",
   "/docs/technical-view/generative-ai/rag/document-grounding": "doc-attachment",
 
-  // Agentic
-  "/docs/technical-view/generative-ai/agentic/single-agent": "lateness",
-  "/docs/technical-view/generative-ai/agentic/multi-agent": "lateness",
+  // Agentic AI
+  "/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained": "course-program",
+  "/docs/technical-view/agentic-ai/concepts/joule-agent-builder": "da",
+  "/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents": "syntax",
+  "/docs/technical-view/agentic-ai/mcp": "connected",
+  "/docs/technical-view/agentic-ai/agentic-ai-security-governance": "locked",
 
   // Narrow AI
   "/docs/technical-view/narrow-ai/regression": "scatter-chart",

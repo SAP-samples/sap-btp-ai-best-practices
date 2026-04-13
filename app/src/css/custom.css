@@ -244,6 +244,7 @@ h6,
   color: var(--ifm-color-primary);
 }
 
+.menu__list-item.hidden,
 .theme-doc-sidebar-item-link.hidden {
   display: none;
 }
@@ -905,7 +906,50 @@ table td.highlight-cell {
   color: var(--sap-horizon-neutral-6); /* Dark mode description color */
 }
 
-/* Disabled State (Copy from feature-button if needed, but not applying for now) */
+/* Disabled State */
+.feature-card.disabled {
+  color: var(--sap-horizon-neutral-7);
+  border-color: var(--sap-horizon-neutral-4);
+  background-color: var(--sap-horizon-neutral-3);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.feature-card.disabled:hover {
+  color: var(--sap-horizon-neutral-7);
+  border-color: var(--sap-horizon-neutral-4);
+  background-color: var(--sap-horizon-neutral-3);
+}
+
+.feature-card.disabled ui5-icon,
+.feature-card.disabled ui5-icon::part(root) {
+  color: var(--sap-horizon-neutral-7);
+}
+
+.feature-card.disabled span {
+  color: var(--sap-horizon-neutral-7);
+}
+
+[data-theme="dark"] .feature-card.disabled {
+  color: var(--sap-horizon-neutral-8);
+  border-color: var(--sap-horizon-neutral-10);
+  background-color: var(--sap-horizon-neutral-11);
+}
+
+[data-theme="dark"] .feature-card.disabled:hover {
+  color: var(--sap-horizon-neutral-8);
+  border-color: var(--sap-horizon-neutral-10);
+  background-color: var(--sap-horizon-neutral-11);
+}
+
+[data-theme="dark"] .feature-card.disabled ui5-icon,
+[data-theme="dark"] .feature-card.disabled ui5-icon::part(root) {
+  color: var(--sap-horizon-neutral-8);
+}
+
+[data-theme="dark"] .feature-card.disabled span {
+  color: var(--sap-horizon-neutral-8);
+}
 
 .pagination-nav__link {
   border: 1px solid var(--sap-horizon-neutral-5);
