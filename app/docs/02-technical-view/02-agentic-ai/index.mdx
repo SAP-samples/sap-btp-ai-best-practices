@@ -1,0 +1,72 @@
+---
+title: Agentic AI
+description: "This page serves as your single point of entry for all knowledge around Agentic AI technology, concepts and development."
+hide_table_of_contents: true
+hide_title: true
+sidebar_class_name: hidden
+---
+
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Agentic AI</h1>
+</div>
+
+<div className="section-with-background blue">
+  <h2>Agentic AI Best Practices</h2>
+  <p>
+    This page serves as your single point of entry for all knowledge around Agentic AI technology, concepts and development.
+  </p>
+</div>
+
+<br />
+
+<div className="row">
+  <div className="col col--6">
+    <h3>
+      <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained")}>Agentic AI Concepts</Link>
+    </h3>
+    <ul className="button-list">
+      <IconLinkButton
+        href="/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained"
+        text="Agentic AI Concepts Explained"
+      />
+    </ul>
+    <h4>Content Based Agents</h4>
+    <ul className="button-list">
+      <IconLinkButton
+        href="/docs/technical-view/agentic-ai/concepts/joule-agent-builder"
+        text="Joule Studio Agent Builder"
+      />
+    </ul>
+    <h4>Code Based Agents</h4>
+    <ul className="button-list">
+      <IconLinkButton
+        href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents"
+        text="Pro-Code AI Agents"
+      />
+    </ul>
+  </div>
+  <div className="col col--6">
+    <h3>Related Best Practices</h3>
+    <ul className="button-list">
+      <IconLinkButton
+        href="/docs/technical-view/ai-services/custom-joule-skills"
+        text="Custom Joule Skills"
+      />
+      <IconLinkButton
+        href="/docs/technical-view/agentic-ai/mcp"
+        text="Model Context Protocol (MCP)"
+      />
+      <IconLinkButton
+        href="/docs/technical-view/agentic-ai/agentic-ai-security-governance"
+        text="Agentic AI Security & Governance"
+      />
+    </ul>
+  </div>
+</div>

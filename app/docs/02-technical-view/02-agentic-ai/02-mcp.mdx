@@ -1,0 +1,325 @@
+---
+title: "Model Context Protocol (MCP)"
+description: "Best practices for implementing and using the Model Context Protocol in agentic AI solutions."
+hide_title: true
+---
+
+import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import LoginWall from "@site/src/components/LoginWall";
+import PageContributors from "@site/src/components/PageContributors";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import RelatedProjects from "@site/src/components/RelatedProjects";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>Model Context Protocol (MCP)</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+    <div className="col col--4">
+      <ul className="resource-links">
+      {/* TODO: Add teaser video, webinar, and PDF resource links */}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{/* TODO: Add Download Source Code TrackableLink when sample repo is ready */}
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
+
+The **Model Context Protocol (MCP)** is an open standard that enables AI agents to connect with tools, external resources, and data sources through a single, standardized interface. Rather than building unique integrations for each service, each with its own authentication methods, data formats, and API patterns, MCP provides a universal protocol through which agents can discover, invoke, and orchestrate any compliant tool.
+
+The core problem MCP solves is the **M-times-N integration challenge**: without a standard, connecting M agents to N tools requires M × N custom integrations. MCP reduces this to M + N by introducing a shared protocol layer. In practice, this means a developer builds one MCP server for their tool, and any MCP-compliant agent can use it immediately.
+
+For SAP, MCP is particularly relevant because enterprise AI agents need to interact with a wide range of backend systems: SAP S/4HANA, Concur, Ariba, SuccessFactors, HANA databases, and third-party services. MCP provides the protocol layer that makes these integrations standardized, maintainable, and secure, enabling the transition from isolated LLM calls to fully functional enterprise agents.
+
+### Expected Outcome
+
+After following this best practice, developers will be able to understand MCP's architecture and interaction flow, evaluate the available SAP deployment models (including the MCP Hub and custom SDK-based servers), implement MCP servers using the official SDKs, test them with the MCP Inspector, integrate with [Joule via Joule Studio](https://help.sap.com/docs/Joule_Studio), and connect AI agents to SAP enterprise systems through standardized MCP interfaces.
+
+<LoginWall>
+
+### Benefits
+
+* **Standardized Integration:** MCP creates a common vocabulary for tools to describe their capabilities to AI agents, eliminating the need for custom integration patterns per service. One protocol connects to many tools.
+* **Real-Time Context:** By enabling agents to access live data from enterprise systems at runtime, MCP drastically reduces hallucinations and ensures responses are grounded in current business data rather than stale training knowledge.
+* **Vendor and Model Flexibility:** MCP decouples tool integrations from the underlying LLM. Switching from one model to another (e.g., GPT to Claude to Gemini) requires no changes to the tool layer, and all integrations remain intact.
+* **Scalability:** New tools and data sources are added by deploying new MCP servers, without modifying the agent or existing servers. The modular architecture scales with the number of enterprise systems to integrate.
+* **Enterprise Security:** MCP servers act as secure intermediaries that handle authentication (including OAuth flows) to backend systems. The LLM and agent never see actual credentials or tokens, maintaining a strong security boundary between the reasoning engine and enterprise data.
+* **Development Productivity:** SAP-developed MCP servers such as the [SAP Fiori MCP Server](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-fiori-tools-update-first-release-of-the-sap-fiori-mcp-server-for/ba-p/14204694), [UI5 MCP Server](https://community.sap.com/t5/technology-blog-posts-by-sap/give-your-ai-agent-some-tools-introducing-the-ui5-mcp-server/ba-p/14200825), and [CAP MCP Server](https://community.sap.com/t5/technology-blog-posts-by-sap/boost-your-cap-development-with-ai-introducing-the-mcp-server-for-cap/ba-p/14202849) integrate closely with LLM-powered coding tools (e.g., GitHub Copilot), enabling automated code generation, refactoring, and bug fixing using SAP-specific best practices and up-to-date documentation. This keeps AI coding assistants grounded in current SAP framework standards rather than outdated training data. See also: [SAP Build introduces new MCP Servers to enable agentic development](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-build-introduces-new-mcp-servers-to-enable-agentic-development-for/ba-p/14205602).
+
+### Key Concepts
+
+* **MCP Host:** The AI application or agent (e.g., an IDE, chat interface, or Claude Desktop) that initiates MCP connections. A host contains one or more MCP clients and provides centralized control over tool access and security.
+* **MCP Client:** The internal component within the host that speaks the MCP protocol and manages connections to one or more MCP servers. It abstracts the complexity of external systems from the agent's reasoning loop.
+* **MCP Server:** An adapter that bridges the standardized MCP protocol and a specific external resource. It translates generic MCP requests into specific commands (SQL queries, REST API calls, file reads) for the target system. Developers build these servers once to make their tools accessible to any MCP-compliant agent.
+* **Local vs. Remote MCP Servers:** MCP servers can be deployed locally (running on the developer's machine, focused on file system operations and local project context) or remotely (hosted centrally over HTTP with enterprise security and IT controls). Remote servers are the recommended approach for production and enterprise scenarios because they enable centralized security, rate limiting, traffic control, and compliance monitoring. Local servers are suitable for inner-loop development and testing.
+* **Prompts, Resources, and Tools:** The three categories of capabilities an MCP server can expose. Prompts are reusable prompt templates. Resources are reference data (documents, database records) the agent can read. Tools are executable operations the agent can invoke to take actions or retrieve data.
+* **MCP Sequence Flow:** The standardized 10-step interaction pattern from user request through tool discovery, LLM evaluation, tool invocation, response formatting, context injection, and final synthesis. Understanding this flow is essential for debugging agent behavior and designing effective MCP servers.
+* **Transport Mechanisms:** MCP supports two transport types. StdIO is used for local subprocess communication (the MCP server runs as a child process of the host). HTTP with Streamable HTTP (replacing the older SSE transport) is used for networked and remote servers, enabling deployment across distributed infrastructure.
+
+---
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+### Commercial
+
+* SAP AI Core with the "Extended" tier on SAP Business Technology Platform (required for Generative AI Hub access)
+* SAP AI Launchpad (optional but recommended for model management and monitoring)
+* For MCP Adapter for CDS: a CAP (Cloud Application Programming Model) project on SAP BTP
+* For MCP Hub: planned for general availability in H1 2026 (not yet commercially available)
+
+You can find pricing details for AI Core "Extended" in the [Discovery Center – AI Core](https://discovery-center.cloud.sap/serviceCatalog/sap-ai-core?tab=service_plan&region=all&service_plan=extended&commercialModel=btpea).
+
+### Technical
+
+* Set up an SAP Business Technology Platform (SAP BTP) subaccount
+* Node.js or Python development environment (for building custom MCP servers and clients)
+* SAP AI Core
+* (Optional) MCP Inspector for testing: `npx @modelcontextprotocol/inspector`
+* (Optional) Python environment with [**SAP Cloud SDK**](https://help.sap.com/doc/generative-ai-hub-sdk/CLOUD/en-US/index.html#) for building code-based MCP clients
+* (Optional) Subscribe to SAP AI Launchpad and configure the Orchestration service
+
+**Note:** For a deeper understanding of LLM model access, configuration, and endpoint settings, refer to the <Link to={useBaseUrl("/docs/technical-view/generative-ai/plain/access-to-generative-ai-models")}>Access to Generative AI Models</Link> best practice page.
+
+---
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+### 3.1 Understand the MCP Architecture Before Building
+
+MCP introduces distinct roles (Host, Client, Server) and a specific interaction sequence. Misunderstanding these roles leads to incorrect implementations where developers conflate the client with the server, hardcode tool definitions into the agent, or bypass the credential isolation that MCP provides.
+
+The **MCP Sequence Flow** describes the 10-step interaction pattern that every MCP-based agent follows. The flow begins with a user request, proceeds through tool discovery, LLM evaluation and decision, tool invocation via the MCP client, backend translation and execution by the MCP server, and concludes with response formatting, context injection back to the LLM, and final synthesis of a human-readable answer. For the full step-by-step breakdown of this flow (including the six actors involved and OAuth security handling), see the [Model Context Protocol (MCP) from Fundamentals to Practice](https://sap.plateau.com/learning/user/common/viewItemDetails.do?componentID=DEV_00012797_WBT&componentTypeID=COURSE&fromSF=Y&revisionDate=1768567829000&menuGroup=Learning&menuItem=Cur&fromDeepLink=true&hideItemDetailsBackLink=true#/DBD0E817362EA6A2190018FAF5DCAE9F) tutorial.
+
+![MCP Architecture Diagram](@site/static/agentic-ai/mcp/images/mcp-architecture-diagram.png)
+
+**Guidelines:**
+* Understand that tool discovery is dynamic: the agent does NOT hardcode tools. It queries the MCP server at runtime, which means adding or removing tools requires no changes to the agent.
+* Credential isolation is a core architectural guarantee: the LLM and agent never see OAuth tokens or API keys. The MCP server manages all authentication to backend systems, including OAuth handshakes and token storage.
+* The six actors in the flow (User, MCP Host, MCP Client, MCP Server, Backend Tool/API, External LLM) have clearly separated responsibilities. Do not collapse these roles when implementing.
+
+### 3.2 Choose a Deployment Model
+
+There are three primary deployment models for MCP servers. Choose based on your maturity level, control requirements, and whether you need a code-based or no-code approach.
+
+| Model | Description | When to Use | SAP Status |
+| :--- | :--- | :--- | :--- |
+| **Client-Hosted** | Developer downloads, compiles, and runs the MCP server locally | Learning, demos, rapid prototyping | Available |
+| **Vendor-Managed Hub (MCP Hub)** | SAP-managed centralized hub for creating and managing MCP servers for multiple tools | Enterprise-scale, no-code server creation, teams without MCP expertise | Planned for H1 2026 |
+| **Customer-Managed Hub** | Customer-managed hub, often extending an existing API Gateway | Full customer control over security, integration, and management | Reference architecture |
+
+**Recommendation:** For MCP server development today, use the official MCP SDKs (see Section 4.4) to build custom servers, or adopt the MCP Hub when it reaches general availability. SAP is also developing an MCP Adapter for CDS that will allow CAP developers to expose services as MCP tools using annotations; this capability is expected to be publicly available in a future release.
+
+### 3.3 MCP Client Selection: Pre-built vs. Code-Based
+
+The MCP client ecosystem offers two approaches, each suited to different use cases.
+
+**Pre-built MCP Clients** are production-ready applications with built-in MCP support. They require zero development overhead; install, configure, and start using MCP servers immediately:
+* **Claude Desktop:** Anthropic's desktop application with native MCP support
+* **Cline:** A VS Code extension acting as an AI coding assistant with MCP integration (code completion, chat, code generation, refactoring)
+* **Cursor / Windsurf:** AI-native IDEs with MCP client capabilities
+* **Opencode:** A CLI-based MCP client
+* **Claude Code:** Anthropic's CLI-based coding assistant with MCP support
+* **GitHub Copilot:** GitHub's AI coding assistant supports MCP integration.
+
+**Code-Based MCP Clients** are development frameworks and SDKs for building custom MCP-enabled applications:
+* **FastMCP:** A Python framework that simplifies building MCP servers using decorators and utilities
+* **Official Python MCP SDK:** The standard Python implementation for building MCP servers and clients (lower-level than FastMCP)
+* **LangChain MCP Adapters:** Integration components that bridge LangChain's AI framework with MCP, allowing MCP tools to be used within LangChain-based agents and workflows
+
+**Guidelines:**
+* **Data privacy warning:** Pre-built clients (Claude Desktop, Cursor, Windsurf, Cline, etc.) route data through their respective third-party LLM providers (Anthropic, OpenAI, etc.), outside SAP's data processing agreements and AI Core's controlled environment. Never use pre-built clients with customer data, personally identifiable information, or proprietary business data. These clients are suitable only for development and testing with synthetic or non-sensitive data. For any scenario involving real enterprise data, use a code-based client connected to an LLM through SAP AI Core, where data processing remains within SAP's governance perimeter.
+* Use **pre-built clients** (Claude Desktop, Cline, Opencode) for testing and validation of MCP servers with non-sensitive data before building custom integrations.
+* Use **code-based clients** ([LangChain MCP Adapters](https://docs.langchain.com/oss/python/langchain/mcp) or the official [Python SDK](https://help.sap.com/doc/generative-ai-hub-sdk/CLOUD/en-US/index.html#)) routed through SAP Generative AI Hub for production SAP applications that handle real business data.
+
+### 3.4 Security Considerations for MCP
+
+General agentic AI security (threat modeling, defense-in-depth controls, OWASP mapping, and governance frameworks) is covered comprehensively in the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page. This section addresses only the security aspects that are specific to MCP's architecture and protocol.
+
+**OAuth Credential Isolation:** MCP's architecture ensures that the LLM and agent never see actual credentials or tokens. When accessing a protected resource triggers an OAuth flow, the MCP server handles the handshake, stores the access token, and propagates it to the backend tool only when necessary. This isolation is a fundamental security guarantee of the protocol. Do not bypass it by passing credentials through the agent layer.
+
+**MCP-Specific Threat Patterns**: Beyond general agentic AI threats, MCP introduces protocol-specific attack vectors including tool misuse via server misconfiguration, prompt template injection, multi-server collision attacks, third-party tool poisoning, and transport layer vulnerabilities. For detailed threat descriptions, attack scenarios, and mitigations for each of these patterns, see the [Model Context Protocol (MCP) from Fundamentals to Practice](https://sap.plateau.com/learning/user/common/viewItemDetails.do?componentID=DEV_00012797_WBT&componentTypeID=COURSE&fromSF=Y&revisionDate=1768567829000&menuGroup=Learning&menuItem=Cur&fromDeepLink=true&hideItemDetailsBackLink=true#/DBD0E817362EA6A2190018FAF5DCAE9F) course and the resources below.
+
+**Prompt Injection:** MCP servers that return data from external sources (documents, user-generated content, database records) are potential vectors for indirect prompt injection. Sanitize and validate all data returned through MCP tools before it enters the LLM context. Rate limiting and traffic control on remote MCP servers are recommended as additional defenses.
+
+For comprehensive threat modeling, security controls, and governance guidance applicable to all agentic AI deployments including MCP-based systems, see the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
+
+### 3.5 Design Effective MCP Tool Descriptions
+
+The quality of tool descriptions directly determines whether the LLM selects the correct tool for a given task. Poorly described tools lead to incorrect invocations, missed capabilities, or agent confusion when multiple similar tools are available.
+
+**Guidelines:**
+* Every tool exposed by an MCP server must include a clear, descriptive text. This description is the primary mechanism by which the LLM understands what the tool does and when to use it.
+* Write descriptions from the AI agent's perspective: explain what the tool does, when to use it, and what data it operates on. Example: "A tool to manage the bookshop inventory. Use this to read, create, update, and delete books."
+* Be specific about supported operations (read, create, update, delete) and any constraints or prerequisites.
+* Avoid generic descriptions like "data tool" or "utility" that provide no guidance for tool selection.
+* Limit the number of tools exposed per MCP server to minimize LLM confusion. A focused server with 5–10 well-described tools outperforms one with 50 vaguely described tools.
+* For MCP Hub deployments, use the built-in AI-assisted tool name optimization features to refine descriptions for LLM comprehension.
+* Cross-reference the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>Pro-Code AI Agents</Link> best practice page for general tool design guidelines applicable beyond MCP.
+
+### 3.6 Joule Integration
+
+SAP's AI copilot, Joule, supports consuming MCP servers through [Joule Studio](https://help.sap.com/docs/Joule_Studio). This enables agents built on Joule to discover and invoke tools exposed by MCP servers deployed on SAP BTP.
+
+**Integration Steps:**
+1. Deploy your MCP server to SAP BTP.
+2. Create an SAP BTP destination pointing to the root of your deployed application. If using XSUAA, select OAuth2ClientCredentials as the authentication method and provide the required credentials and Token Service URL. Set the destination property `sap-joule-studio-mcp-server` to `true`.
+3. Follow the [Joule Studio documentation](https://help.sap.com/docs/Joule_Studio) to access your MCP servers through the destination.
+
+This positions Joule as the orchestrator for agentic workflows consuming MCP tools, consistent with SAP's broader strategy. For more information, consult [Add MCP Servers to Your Joule Agent](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/3d9dfad0bc39468292d508f0808a12fe.html?locale=en-US).
+
+---
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+This section covers the available SAP-provided deployment options for MCP servers (including the MCP Hub), the available SDKs for building custom MCP servers and clients, SAP-specific MCP servers for development, and the A2A protocol as a complementary standard. For hands-on tutorials, step-by-step setup instructions, and detailed workflow walkthroughs, refer to the [SAP Learning Course on MCP](https://sap.plateau.com/learning/user/deeplink.do?linkId=ITEM_DETAILS&componentID=DEV_00012797_WBT&componentTypeID=COURSE&revisionDate=1768567829000#/DBD0E817362EA6A2190018FAF5DCAE9F).
+
+### SAP MCP Adapter for CDS (CAP Plugin) - Coming Soon
+
+SAP is developing an MCP Adapter for CDS that will allow CAP (Cloud Application Programming Model) developers to expose their services as MCP tools using simple annotations. The adapter will automatically create MCP servers from annotated CAP services, translating tool calls to Core Query Notation (CQN) queries without requiring additional implementation. This will add MCP as another protocol alongside OData and REST in the CAP ecosystem.
+
+The adapter is expected to be publicly available in a future release. When available, it will support both Node.js and Java CAP stacks.
+
+For a complete step-by-step tutorial on the MCP adapter concept (architecture, annotation model, and testing with the MCP Inspector), see the [SAP Learning Course on MCP](https://sap.plateau.com/learning/user/deeplink.do?linkId=ITEM_DETAILS&componentID=DEV_00012797_WBT&componentTypeID=COURSE&revisionDate=1768567829000#/DBD0E817362EA6A2190018FAF5DCAE9F).
+
+### SAP MCP Hub (Centralized No-Code Solution)
+
+> The MCP Hub is currently under development and its planned for general availability in H1 2026. The information below reflects its announced capabilities as for Q4 2025
+
+The MCP Hub is a centralized, UI-driven solution that eliminates the need for individual lines of business to maintain their own MCP servers. It handles cross-cutting concerns including security and authorization, observability and scalability, and protocol version management.
+
+**Key features:**
+* **OData and OpenAPI support:** Convert existing APIs to MCP servers without writing code
+* **Modular server creation:** Combine tools from different APIs into specialized MCP servers
+* **Destination-based configuration:** Uses BTP destinations for API connectivity
+* **Tool optimization:** AI-assisted customization of tool names and parameter descriptions for LLM comprehension
+* **Import capabilities:** Import existing MCP servers
+* **Built-in validation:** Automatic evaluation that tools and prompts follow MCP rules before deployment
+* **Test chat:** Built-in MCP Server Test Chat for immediate verification
+
+**Tutorials and Learning Journeys:**
+* [Model Context Protocol (MCP) from Fundamentals to Practice](https://sap.plateau.com/learning/user/common/viewItemDetails.do?componentID=DEV_00012797_WBT&componentTypeID=COURSE&fromSF=Y&revisionDate=1768567829000&menuGroup=Learning&menuItem=Cur&fromDeepLink=true&hideItemDetailsBackLink=true#/DBD0E817362EA6A2190018FAF5DCAE9F)
+
+### SAP MCP Servers for Development
+
+SAP has developed several MCP servers designed to enhance AI-assisted development with SAP technologies. These servers integrate with LLM-powered coding tools (e.g., GitHub Copilot, Cline, Opencode) to provide SAP-specific context, best practices, and automation capabilities.
+
+| MCP Server | Purpose | Blog Post / Documentation |
+| :--- | :--- | :--- |
+| **UI5 MCP Server** | Provides UI5 framework documentation, best practices, and code generation context to AI coding assistants | [Blog: Introducing the UI5 MCP Server](https://community.sap.com/t5/technology-blog-posts-by-sap/give-your-ai-agent-some-tools-introducing-the-ui5-mcp-server/ba-p/14200825) |
+| **Fiori MCP Server** | Enables SAP Fiori project generation, UI field CRUD operations, app modification, and dynamic capability discovery with fallback to doc search via embeddings | [Blog: SAP Fiori MCP Server](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-fiori-tools-update-first-release-of-the-sap-fiori-mcp-server-for/ba-p/14204694) |
+| **CAP MCP Server** | Provides CAP framework documentation and best practices for AI-assisted CAP development | [Blog: MCP Server for CAP](https://community.sap.com/t5/technology-blog-posts-by-sap/boost-your-cap-development-with-ai-introducing-the-mcp-server-for-cap/ba-p/14202849), [GitHub (public)](https://github.com/cap-js/mcp-server) |
+| **UI5 Web Components MCP Server** | Provides context for UI5 Web Components development (recent addition) | |
+
+These servers use fallback mechanisms (like documentation search with embeddings) to enrich LLMs with domain knowledge, improving the correctness and reliability of generated code. They represent the "development support" category of MCP servers, as opposed to "application data access" servers that connect agents to live enterprise data.
+
+See also: [SAP Build introduces new MCP Servers to enable agentic development](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-build-introduces-new-mcp-servers-to-enable-agentic-development-for/ba-p/14205602)
+
+### Available SDKs
+
+The following table lists the official MCP SDKs available for building MCP servers and clients across different programming languages:
+
+| Framework / SDK | Programming Language | Documentation Link |
+| :--- | :--- | :--- |
+| **TypeScript MCP SDK** | TypeScript / JavaScript | [github.com/modelcontextprotocol/typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk) |
+| **Go MCP SDK** | Go | [github.com/modelcontextprotocol/go-sdk](https://github.com/modelcontextprotocol/go-sdk) |
+| **C++ MCP SDK** | C++ | [github.com/GopherSecurity/gopher-mcp](https://github.com/GopherSecurity/gopher-mcp) |
+| **C# MCP SDK** | C# / .NET | [github.com/modelcontextprotocol/csharp-sdk](https://github.com/modelcontextprotocol/csharp-sdk) |
+| **Java MCP SDK** | Java | [github.com/modelcontextprotocol/java-sdk](https://github.com/modelcontextprotocol/java-sdk) |
+| **Kotlin MCP SDK** | Kotlin | [github.com/modelcontextprotocol/kotlin-sdk](https://github.com/modelcontextprotocol/kotlin-sdk) |
+| **PHP MCP SDK** | PHP | [github.com/modelcontextprotocol/php-sdk](https://github.com/modelcontextprotocol/php-sdk) |
+| **Ruby MCP SDK** | Ruby | [github.com/modelcontextprotocol/ruby-sdk](https://github.com/modelcontextprotocol/ruby-sdk) |
+| **Rust MCP SDK** | Rust | [github.com/modelcontextprotocol/rust-sdk](https://github.com/modelcontextprotocol/rust-sdk) |
+| **Swift MCP SDK** | Swift | [github.com/modelcontextprotocol/swift-sdk](https://github.com/modelcontextprotocol/swift-sdk) |
+
+SDKs from the [modelcontextprotocol GitHub organization](https://github.com/modelcontextprotocol) are official. The C++ SDK is community-maintained. For SAP CAP-based development, the `@sap/cds-mcp` plugin is the recommended approach (see Section **SAP MCP Adapter for CDS (CAP Plugin)**).
+
+---
+
+## 5. Testing and Inspection
+
+### MCP Inspector
+
+Use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) to test and validate your MCP servers before connecting them to agents:
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+**Testing workflow:**
+1. Start the MCP Inspector (opens in browser automatically).
+2. Select **Streamable HTTP** as Transport Type.
+3. Enter the URL of your MCP service endpoint (e.g., `http://localhost:3000/mcp`).
+4. Select **Connect**.
+5. Go to the **Tools** tab and select **List Tools** to see all generated tools.
+6. Select a tool (e.g., `query`), choose an entity, and select **Run Tool** to verify data access.
+
+<RelatedProjects />
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents" text="Pro-Code AI Agents" />
+  <IconLinkButton href="/docs/technical-view/agentic-ai/agentic-ai-security-governance" text="Agentic AI Security & Governance" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background purple">
+
+## Related AI Capabilities
+
+<h3>
+  <Link to={useBaseUrl("/docs/functional-view/agentic-workflows")}>Agentic Workflows</Link>
+</h3>
+
+<ul className="button-grid">
+  <IconLinkButton href="/docs/functional-view/agentic-workflows/agentic-workflows" text="Agentic Workflows" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={["francisco-robledo"]} />
+
+</div>
+
+</LoginWall>

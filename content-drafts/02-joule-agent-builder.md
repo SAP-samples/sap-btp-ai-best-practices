@@ -1,0 +1,469 @@
+![Content-based Agents with SAP Joule Studio Agent Builder](https://cdn.hubblecontent.osi.office.net/m365content/publish/235d262e-6785-4a03-9953-65b69541c1ab/901627692.jpg)
+
+# Content-based Agents with SAP Joule Studio Agent Builder
+
+## Steps
+
+**1** [Overview](/sites/210313/SitePages/GenAI%20-%20Plain%20-%20Direct%20-%20Inference%20Request.aspx#1.-overview)  
+**2** [Pre-requisites](/sites/210313/SitePages/AI%20Services%20-%20Custom%20Joule%20Skills.aspx#2.-pre-requisites)  
+**3** [Key Choices and Guidelines](/sites/210313/SitePages/AI%20Services%20-%20Custom%20Joule%20Skills.aspx#3.-key-choices-and-guidelines)  
+**4** [Implementation examples](/sites/210313/SitePages/AI%20Services%20-%20Custom%20Joule%20Skills.aspx#4.-implementation)  
+
+---
+
+## 1. Overview
+
+### Description
+Joule Studio is a capability in SAP Build that lets organizations create and manage custom Joule skills and Joule agents. It supports building deterministic skills and interactive agents, managing versions, deploying updates, and defining permissions for who can use these capabilities. 
+
+Agent builder in Joule Studio focuses on creating custom Joule agents that can handle complex or multi-step tasks by combining instructions, model-backed planning and reasoning, and tools for execution.
+
+### Expected Outcome
+When using Joule Studio to create custom Joule agents, the expected outcome is:
+
+* A context-aware agent definition (name, description, expertise, instructions) that helps Joule identify the agent for a given user intent.
+* A configured set of tools the agent can use, including Joule skills, document grounding resource groups, MCP servers connected via destinations, and other custom agents as tools (subagents). 
+* Execution within the user’s security context using SAP Cloud Identity Services and principal propagation, so authorization checks and access restrictions apply end-to-end. 
+* The ability to test and debug the agent before deployment by reviewing reasoning steps, tool calls, and data flow using test conversations and edge cases. 
+
+### Benefits
+* Extends Joule with organization-specific capabilities by **building custom agents** for complex or multi-step tasks. 
+* **Reuses existing SAP Build artifacts** (connectors, automations, apps, actions) as part of the agent’s execution design. 
+* Supports **integration** with external systems through **destinations and MCP servers**, reducing the need for custom point integrations in the agent definition. 
+* Enables **controlled access** and ongoing maintenance through permissions and managed deployment of updated agent versions.
+
+### Key Concepts
+Some key concepts are part of Build Process Automation and can be found [here](https://help.sap.com/docs/build-process-automation/sap-build-process-automation-dev/using-sap-build-process-automation?state=DRAFT&version=Dev&locale=en-US).
+
+Here are the Joule Studio specific concepts:
+
+* **Joule Studio**: capability in SAP Build for designing, managing, and deploying Joule skills and Joule agents, including permission management. 
+* **Joule agent**: an interactive capability designed to collaborate with Joule to tackle complex or multi-step tasks. 
+* **Agent definition**: metadata plus expertise and instructions used to describe what the agent does and to guide its behavior. 
+* **Tools**: capabilities the agent can call to execute work, including Joule skills, MCP servers via destinations, subagents as tools, and document grounding resource groups in SAP AI Core. 
+* **SAP Cloud Identity Services and principal propagation**: ensures the user’s identity is propagated end-to-end so agents and triggered capabilities run in the user security context with standard authorization checks. 
+* When building AI solutions with SAP, we follow SAP’s approach to **responsible AI**, including SAP’s AI ethics, [security](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx), and compliance commitments. SAP states that its AI ethics is guided by a multi-stakeholder governance framework coordinated by the **AI Ethics Office**, anchored in [**SAP’s Global AI Ethics Policy**](https://www.sap.com/products/artificial-intelligence/ai-ethics.html), and supported by development standards for responsible AI innovation. 
+
+---
+
+## 2. BTP Pre-requisites
+
+### Commercial
+* Joule Subscription
+* SAP Build with build-default service plan
+* License for an active developer user in SAP Build
+* BTP Subaccount with active subscriptions to SAP Build Process Automation and SAP Cloud Identity Services
+
+### Technical
+1. Set up a SAP Business Technology Platform (SAP BTP) subaccount ([Setup Guide](/sites/210313/SitePages/SAP%20Business%20Technology%20Platform%20(SAP%20BTP).aspx))
+2. Set up SAP Build ([Setup Guide](https://help.sap.com/docs/build-service/build-service-guide/initial-setup-of-sap-build?version=Cloud&locale=en-US))
+3. Set up subscription to Cloud Identity Services ([Setup Guide](https://help.sap.com/docs/cloud-identity-services/cloud-identity-services/initial-setup?locale=en-US&version=Cloud&q=Initial))
+4. Set up Joule Studio ([Setup Guide](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/04b323352fa645238211ce017f634d34.html?locale=en-US#set-up-joule-studio-using-the-booster))
+
+### High-level reference architecture
+
+![Extend Joule with Joule Studio](/sites/210313/SiteAssets/SitePages/AI%20Services%20-%20Custom%20Joule%20Skills/2959213451-Joule-Studio-Skills-architecture.jpg)
+
+This [reference architecture](https://architecture.learning.sap.com/docs/ref-arch/06ff6062dc/3) outlines how Joule Studio can be leveraged to integrate and extend SAP and non-SAP solutions across cloud and hybrid landscapes. By tapping into the expertise of citizen developers, Joule Studio facilitates the adaptation, improvement, and innovation of business processes, driving positive business outcomes through sophisticated AI capabilities.
+
+### Integrating and Extending Joule
+
+![Integrating and Extending Joule](/sites/210313/SiteAssets/SitePages/Joule-Agent-Builder/3731419966.png)
+
+The [solution architecture](https://architecture.learning.sap.com/docs/ref-arch/06ff6062dc) consists of the following parts:
+
+* **SAP Business Technology Platform** establishes the foundation for implementing and extending Joule capabilities with Joule and SAP Build Work Zone entitlements. System Landscape in SAP BTP the SAP Business Application systems (e.g., SAP S/4HANA, SAP SuccessFactors,…) are properly set up and configured. If the systems are under the same customer contract, this should be auto-discovered in the System Landscape; otherwise, it can be manually added.
+* **SAP Cloud Identity Services** manages user authentication and authorization for secure access to your SAP Applications and Joule. SAP Cloud Identity Services is a prerequisite for all Joule integrations; therefore, a common SAP Cloud Identity Services instance (prod and non-prod) is recommended for your SAP Business Applications, utilizing a single domain URL (cloud.sap.com) for setup.
+* **SAP Enterprise Systems:** connects Joule with your cloud systems such as SAP S/4HANA Cloud, SAP SuccessFactors, SAP Ariba, SAP Concur, SAP Analytics Cloud, etc, and other third-party applications to enable seamless data exchange and process automation.
+* **Third-party Identity Providers:** supports integration with external identity providers for enhanced security and user management (Optional). This will require additional configurations with SAP Cloud Identity Services to establish trust and enable single sign-on (SSO) capabilities.
+
+---
+
+## 3. Key Choices and Guidelines
+
+### 3.1 Scope and Decomposition Strategy
+
+#### Define the intended scope
+A Joule agent should have a clear and limited scope. The scope defines which business tasks the agent supports, what inputs it expects, and which outcomes it is allowed to produce. A narrow scope improves predictability and simplifies testing and operations.
+
+Key guidelines:
+* Describe the business task in operational terms (for example, “collect required inputs and trigger an approved process” rather than “help with procurement”).
+* Specify what is out of scope, including actions the agent must not perform.
+* Prefer one primary business process per agent. If multiple processes are needed, separate them into dedicated agents or skills.
+
+> *"With Joule Studio, agentic innovation moves closer to the heart of operations. At KPMG, we’re helping to shape trusted solutions that transform business context into measurable value by building specialized AI agents for fulfillment orchestration, supply chain management, and more”.*  
+> - [Valentino Köster, Global Head of SAP360 Program & AI, KPMG AG WPG, Germany](https://community.sap.com/t5/artificial-intelligence-blogs-posts/agent-builder-in-joule-studio-is-now-generally-available-build-your-own/ba-p/14289282) 
+
+#### Choose between a single-agent setup and an orchestration approach
+Use an orchestration approach when the workflow is better handled by combining a main agent with specialized subagents and Joule skills. In Joule Studio, subagents are regular Joule agents that can be added to another agent as tools. This enables agent orchestration within a larger workflow.
+
+Recommended orchestration patterns: 
+* A main agent that coordinates the workflow and calls specialized subagents as reusable tools for specific tasks. 
+* [Specialized subagents](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/e1d5bd4898654a09b82f991755108bd1.html) with focused responsibilities, such as input collection, document or policy interpretation, or exception handling. 
+* [**Joule skills**](https://btp-ai-bp.docs.sap/docs/technical-view/ai-services/custom-joule-skills) for rule-based, deterministic tasks. 
+
+Subagents are regular agents that can be added to another agent.
+Add existing Joule agents to another Joule agent to enable agent orchestration within Joule Studio. This allows a main agent to call specialized agents as reusable tools to handle specific tasks as part of a larger workflow.
+
+Design constraints (Joule Studio): 
+* Subagents run synchronously and sequentially; parallel execution is not supported. 
+* Cyclic dependencies (a subagent calling back the main agent) are not supported. 
+
+#### Reuse existing SAP Build and Joule capabilities
+Prefer reuse over duplicating logic inside the agent instructions. Reuse improves consistency and reduces governance and security effort.
+
+Reuse guidelines:
+* Use **Joule skills** for stable, repeatable actions that map to well-defined operations.
+* Reuse published artifacts from SAP Build where applicable, instead of re-implementing workflow logic in free-text instructions.
+* Keep the agent’s instructions focused on orchestration and decision points, not on detailed procedural logic that belongs in tools or skills.
+
+#### Keep the design testable and maintainable
+Scope and decomposition decisions should support systematic testing and controlled rollout.
+
+Operational guidelines:
+* Avoid “catch-all” agents that try to cover unrelated intents.
+* Align decomposition boundaries with how teams own and maintain artifacts (skills, tools, destinations, or grounding content).
+* Plan for change: treat tools, skills, and grounding resources as versioned dependencies that can evolve independently.
+
+
+### 3.2 Agent Definition Quality
+
+#### Use a precise name and meaningful [description](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/193461e9d8494995bab4889b22afac93.html)
+Use a task-oriented name and a description that makes the purpose clear without additional context. Include the supported domain or process and the expected outcomes. State what is out of scope.
+
+The agent name and description should allow users and administrators to understand the intended purpose without additional context. They also help establish consistent intent matching and reduce accidental use for unrelated requests. Good examples: “*Compensation Proposal Agent*”, “*Logistics Management Agent*”, “*Maintenance Fulfillment Agent*” etc.
+
+**Key guidelines:**
+* Use a task-oriented name that reflects a single business purpose.
+* State the supported process or domain in the description.
+* List the main outcomes the agent can produce (for example, “collect required inputs, validate them, and trigger an approved action”).
+* Explicitly state what is out of scope (for example, “does not approve payments” or “does not change master data”).
+
+#### Define expertise as a controlled operating context
+Expertise should define the agent’s operating context and the type of knowledge it may rely on. It should not be used as a generic “expert in everything” statement.
+
+Use the expertise field to describe the functional area and the systems the agent is expected to interact with. Keep expertise aligned with the tools and data sources available to the agent.
+
+Key guidelines:
+* Describe the agent’s functional area and the systems it is expected to interact with.
+* Keep expertise aligned with [available tools](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/e1d5bd4898654a09b82f991755108bd1.html) and authorized data sources.
+* Avoid instructions that require hidden knowledge or unverified assumptions.
+
+#### Write instructions as operational rules
+Instructions should be written as clear, testable rules. They must guide the agent’s behavior in a predictable way, including how it handles missing information and how it chooses tools.
+
+Key guidelines:
+* Use explicit “must” and “must not” statements for critical constraints.
+* Require the agent to confirm intent and collect missing inputs before taking action.
+* Define the expected interaction pattern (for example, “ask for missing mandatory fields one by one”).
+* Specify how the agent should use tools (for example, “use a skill for deterministic operations; do not simulate results”).
+* Require the agent to stop and request user confirmation before high-impact actions.
+
+**Example:**
+```text
+Instructions
+Classify the given email and create a ticket using the createTicket tool based on the classification result. 
+
+Recommended tools
+If the question is about X then prefer using the open api tool. 
+
+Final Answer
+When giving your final answer ensure that it includes the status codes of the open-api responses. 
+```
+
+#### Document constraints and boundaries explicitly
+An agent definition should include boundaries that prevent unsafe behavior and reduce ambiguity.
+
+Key guidelines:
+* Identify actions that are never allowed (for example, “do not create, change, or delete business objects unless a tool call is available and the user confirms”).
+* Define the acceptable level of autonomy (for example, “draft recommendations, but do not submit final approvals”).
+* Clarify output expectations (for example, “provide a structured summary and list the executed steps and tool results”).
+
+#### Standardize definitions for maintainability
+Agent definitions should be treated as maintainable assets. Consistency across agent metadata and instructions reduces support effort.
+
+Key guidelines:
+* Use a consistent template for name, description, expertise, and instructions across agents.
+* Keep business terms aligned with SAP terminology used in the target process.
+* Version and review changes to instructions as part of controlled release practices.
+
+
+### 3.3 Tooling Strategy
+
+#### Treat tools as the execution layer
+A Joule agent should use [tools](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/e1d5bd4898654a09b82f991755108bd1.html) to execute work. Tools provide controlled integration points and support predictable behavior. Agent instructions should focus on orchestration and decision logic, not on re-implementing business operations in free text.
+
+Key guidelines:
+* Prefer tool calls for any action that affects systems, data, or business outcomes.
+* Do not “simulate” results that should come from a tool.
+* Keep the set of tools minimal and aligned with the agent scope.
+
+#### Use Joule skills for deterministic operations
+Joule skills are suitable when the interaction can be expressed as a deterministic operation with clear inputs and outputs. Skills reduce variability and simplify validation.
+
+Key guidelines:
+* Use skills for actions such as data lookups, validations, and single-step execution where the operation is well-defined.
+* Keep skills small and focused.
+* Reuse existing skills across agents where possible to avoid duplicated logic.
+
+#### Use MCP servers when standardized external tooling is required 
+[MCP servers](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/3d9dfad0bc39468292d508f0808a12fe.html) are appropriate when the agent needs to call external tools through standardized interfaces. MCP is useful for integrating capabilities that are not available as Joule skills, while keeping integration governed through destinations. You can discover [related Best Practice](/sites/210313/SitePages/Model%20Context%20Protocol%20(MCP).aspx).
+
+Key guidelines:
+* Use MCP servers for external system access that is approved and can be exposed as tool endpoints.
+* Define a clear contract for each MCP tool (purpose, required inputs, expected outputs, error behavior).
+* Avoid exposing broad “do everything” MCP tools; create scoped tools that match the agent’s responsibilities.
+
+#### Use Content-based sources and [document grounding](https://developers.sap.com/tutorials/joulestudio-document-grounding.html)
+Document grounding is appropriate when the agent must use enterprise documents as a trusted reference, such as policies, procedures, contracts, or manuals. Grounding reduces the risk of unsupported responses. In Joule Studio, this is supported through document grounding, where business documents are indexed in SAP AI Core and exposed to the agent through a document grounding tool. This enables the agent to retrieve relevant passages from the configured document set and use them as context for responses, instead of relying on general knowledge.
+
+Document grounding introduces additional operational dependencies. Document sets must be maintained, and the integration requires configuration of SAP AI Core and a supported object store, as described in the Joule Studio document grounding setup. Plan for these prerequisites and validate the grounding behavior during testing of the agent.
+
+Key guidelines:
+* Use grounding when the user expects answers that reflect approved documentation rather than general knowledge.
+* Keep grounding sources curated and maintained.
+* Define how grounding results should be used in the response (for example, “summarize and reference the relevant passages”).
+
+#### Define tool selection rules and fallback behavior
+The agent definition should include clear rules for which tools to use, in what order, and what to do when tools fail or return incomplete results.
+
+Key guidelines:
+* Prefer deterministic tools first when the outcome depends on system state.
+* Use grounding before free-text reasoning when factual accuracy depends on internal documents.
+* If a tool fails, do not guess. Explain what failed and request the missing input or propose the next safe step.
+* Define escalation behavior for unsupported requests (for example, “offer a manual checklist or route to a human operator”).
+
+#### Align tooling with governance and least privilege
+Tooling decisions must reflect enterprise constraints. Each tool increases the operational and security surface, so tool access should be restricted.
+
+Key guidelines:
+* Apply least privilege to tool authorization and destination access.
+* Separate read-only tools from write-capable tools where possible.
+* Require explicit confirmation before invoking write-capable tools for high-impact changes.
+
+
+### 3.4 Security and Authorization Model
+Joule Studio [uses](https://help.sap.com/docs/build-process-automation/sap-build-process-automation/security) SAP Cloud Identity Services to ensure agents authenticate correctly and only perform tasks they’re authorized to do. It enforces principal propagation so each skill or agent runs in the user’s security context with the same access checks, and integrates with Joule and AI Core to publish custom agents, run them on models, and ground responses using document grounding and business data. You can also discover [related Best Practice](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx).
+
+#### Run in the user security context
+A Joule agent should execute actions in the user’s security context. This ensures that standard authorization checks apply consistently when the agent accesses data or triggers operations.
+
+Key guidelines:
+* Use identity and authentication based on SAP Cloud Identity Services where applicable.
+* Ensure that tool calls reflect the end user’s permissions, not a shared technical identity.
+* Do not design agents that bypass established application authorizations.
+
+#### Apply least privilege to tools and integrations
+Tool access should be restricted to the minimum required to support the agent’s scope. This reduces risk and simplifies compliance reviews.
+
+Key guidelines:
+* Grant access only to the destinations, skills, and tools required for the defined use case.
+* Prefer read-only access unless write access is required.
+* Separate read and write operations into different tools where possible.
+
+#### Enforce separation of duties for sensitive actions
+Some operations require additional controls due to compliance or business risk (for example, approvals, financial postings, or master data changes). Agents should respect existing separation of duties.
+
+Key guidelines:
+* Do not allow an agent to perform actions that violate established approval and control processes.
+* Use human-in-the-loop controls for high-impact steps.
+* Ensure that audit-relevant actions are executed through tools that can be monitored and traced.
+
+#### Control data exposure and output handling
+Agents should minimize the amount of business data returned and should follow data protection rules in responses.
+
+Key guidelines:
+* Return only data required to complete the user task.
+* Avoid exposing confidential attributes unless the user is authorized and the data is required.
+* Prefer structured summaries over raw data dumps, especially for large results.
+
+#### Keep integration configuration aligned with governance
+Destinations and external tool endpoints are part of the security boundary and should be managed as governed configuration.
+
+Key guidelines:
+* Treat destinations and MCP tool configurations as controlled artifacts with change management.
+* Document which tools access which systems and data categories.
+* Ensure that environment separation (development, test, production) is supported through separate configurations and controlled transport or deployment practices.
+
+Authorization behavior depends on the user context and tool configuration.
+
+
+### 3.5 Human-in-the-Loop Controls
+
+#### Use approvals for high-impact operations
+[Human-in-the-loop](https://en.wikipedia.org/wiki/Human-in-the-loop) controls are required when an agent can trigger actions with financial, legal, operational, or compliance impact. The agent should support collaboration, but it must not replace established approval steps.
+
+Key guidelines:
+* Require user confirmation before executing write-capable tool calls that create, change, or delete business-relevant data.
+* Require explicit approval for actions that submit, post, release, or send information to external parties.
+* Keep approval points consistent with the underlying business process.
+
+#### Separate “draft” from “execute”
+The agent should produce drafts and recommendations first, and only execute after an explicit confirmation. This reduces accidental changes and supports traceability.
+
+Key guidelines:
+* First, summarize the intended action, inputs, and expected outcome.
+* Ask for confirmation using clear, unambiguous wording.
+* Execute only after receiving confirmation in the same conversation context.
+
+#### Confirm inputs and assumptions
+Before execution, the agent should validate that required inputs are present and consistent. If values were inferred or provided indirectly, the agent should confirm them.
+
+Key guidelines:
+* Collect mandatory fields explicitly.
+* Repeat critical values (for example, IDs, dates, amounts, recipients) before execution.
+* If required information is missing, stop and request it instead of guessing.
+
+#### Provide an execution preview and rollback guidance
+Users should understand what will happen and what to do if the result is not as expected. Where rollback is possible, the agent should provide the next safe step.
+
+Key guidelines:
+* Provide an execution preview: what tool will be called, what it will change, and what output is expected.
+* After execution, summarize the result and provide links or identifiers returned by the tool.
+* If an action cannot be reversed, state that clearly before execution.
+
+#### Handle uncertainty safely
+If the agent is not confident due to missing context, tool failures, or ambiguous intent, it should not proceed with execution.
+
+Key guidelines:
+* Ask clarifying questions rather than continuing with partial information.
+* Provide a safe alternative (for example, generate a checklist or a draft for manual review).
+* Escalate to a human operator or process owner where appropriate.
+
+#### Audit-friendly interaction design
+Human-in-the-loop is also a control for compliance. The interaction should make it clear who decided, what was executed, and based on which inputs.
+
+Key guidelines:
+* Log or capture the confirmation step as part of the execution context where supported by the tool or process.
+* Keep the agent’s confirmations short and specific to avoid ambiguous approvals.
+* Avoid “implicit approvals” based on silence or vague user responses.
+
+
+### 3.6 Observability and Operations
+
+* Use the [**Monitor AI Capabilities**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/48971111ec124bde97a3dafb06949c1d.html) functions in Joule Studio to review runtime-relevant information for deployed capabilities and to support operational analysis.
+* Use the [**SAP Audit Log service**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ed3f72f449a743a6b38ddf6d0a8f44f7.html) **for SAP Business Technology Platform (BTP)** as described for Joule Studio to record security-related events.
+* Use [**environments**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/26815f2ceb324b518ed47caec9c0624f.html) in Joule Studio to deploy and run Joule Studio projects and to control how projects are executed in a given runtime context. 
+Use environment-specific configuration where applicable, including destinations used by action projects.
+* Manage and validate [**destinations**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ab5963ad9f124160909f886001285614.html) required by action projects following the Joule Studio guidance for destination management. This includes ensuring the destination configuration is available for the intended environment and runtime.
+* Use the testing capabilities provided in Joule Studio (for example, testing actions where applicable) to validate changes before using them in productive scenarios.
+* For operational issues, follow the documented [troubleshooting](https://help.sap.com/docs/joule/integrating-joule-with-sap/troubleshooting) guidance for Joule and Joule Studio. Use the documented troubleshooting steps as the first-level approach before escalating.
+
+
+### 3.7 Reliability and Error Handling, Testing and debugging, Troubleshooting Strategy
+
+#### Validate required inputs and confirm before execution
+Reliability starts with explicit handling of mandatory inputs and expected formats before invoking tools that read or change business data. Confirm critical values before any write-capable execution and do not proceed when required information is missing. 
+
+Key guidelines:
+* Collect mandatory fields explicitly and validate type and format (IDs, dates, amounts).
+* Confirm critical values before invoking write-capable tools.
+* Do not infer missing business-critical inputs.
+
+#### Prefer skills and tools for deterministic steps
+Use tools as the execution layer. For validations and well-defined operations, prefer [**Joule skills**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/069d69511a2d4db2927a9d8d60a96207.html) and other deterministic tool calls with clear inputs and outputs. Do not simulate results that must come from a tool response.
+
+When a tool call fails, stop the execution path and surface the failure clearly. Do not continue “as if” the tool succeeded. If tool output is incomplete or inconsistent, handle it explicitly (for example, request the missing input or stop before execution). 
+
+Test end-to-end scenarios that represent real user flows, including tool calls and confirmation points. Review [steps](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/127b1c287500451294cc1012f08c8fe4.html) and tool-call behavior in Joule Studio testing views before deployment. Capture test evidence for controlled change and approvals.
+
+Start with testing [simple parts](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/127b1c287500451294cc1012f08c8fe4.html) of the process.
+
+#### Troubleshoot with a layered diagnostic approach
+Use a consistent order when troubleshooting: agent definition and scope, authorizations, tool and destination configuration, and grounding resources (when used). Collect evidence that allows reproducibility (request, selected agent, executed steps, tool results, and returned errors). 
+
+#### [Testing](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/827b93dcdc784b27b6021e535d4f2f73.html) and Debugging Approach (general recommendation)
+Test by scenarios, not by individual prompts. Testing should cover representative end-to-end flows, including tool calls and user confirmations.
+
+Key guidelines:
+* Build a small set of core scenarios that reflect real user tasks.
+* Include variants with missing inputs, ambiguous intent, and authorization gaps.
+* Test both read-only flows and write flows with human-in-the-loop confirmations.
+
+Include negative tests and edge cases. Negative tests reduce production incidents and unclear behavior.
+
+Key guidelines:
+* Unsupported intent (agent must refuse or redirect).
+* Missing mandatory data (agent must request it).
+* Tool errors (agent must stop and provide a safe next step).
+* Conflicting data from tools (agent must not proceed with execution).
+* Large or unexpected outputs (agent must summarize, not dump).
+
+Validate tool selection behavior. Testing must confirm that the agent chooses the correct tools and does not bypass deterministic steps.
+
+Key guidelines:
+* Confirm that critical operations use the intended skills/tools.
+* Confirm that grounding is used when the response must be document-based.
+* Confirm that the agent does not answer from assumptions when tools or grounding are required.
+
+Use test conversations and debugging views. Use the available testing capability to review the agent behavior before release.
+
+Key guidelines:
+* Review the sequence of steps, tool calls, and returned outputs.
+* Validate that user confirmations are requested at the correct point.
+* Capture test evidence for change reviews and approvals.
+
+If you experience a problem with this service, we suggest following the steps outlined below.
+
+Verify the Service Status - check the availability of Joule Studio at [SAP Trust Center](https://help.sap.com/docs/link-disclaimer?site=https://www.sap.com/india/about/trust-center/cloud-service-status.html?locale=en-US&state=PRODUCTION&version=SHIP) or [Cloud Availability Center](https://help.sap.com/docs/link-disclaimer?site=https://support.sap.com/en/my-support/systems-installations/cac.html?anchorId%3Dsection_copy)
+
+For further details on specific SAP Business Technology Platform incidents, refer to [Root Cause Analyses](https://help.sap.com/viewer/product/SCP_RCA/Latest/en-US).
+
+**Contact SAP Support**
+
+You can submit an incident or error report via the SAP Support Portal. For additional information, see [Getting Support](https://help.sap.com/viewer/65de2977205c403bbc107264b8eccf4b/Cloud/en-US/5dd739823b824b539eee47b7860a00be.html).
+
+Please use the following component for your incident:
+
+| Component Name | Component Description |
+| :--- | :--- |
+| CA-JOULE-PRV | Joule Booster/Formation |
+| CA-JOULE-TR | Joule Runtime |
+| BPI-PA-INF | SAP Build Process Automation |
+| CA-BLD-JLE-SKI | Joule Skills |
+| CA-BLD-JLE-TOO | Agent AI |
+
+---
+
+## Implementation Examples
+
+Start your journey by learning how to get Joule in your account:
+
+* [Enabling Joule Studio in SAP Build for existing Joule customers](https://community.sap.com/t5/technology-blog-posts-by-sap/enabling-joule-studio-in-sap-build-for-existing-joule-customers/ba-p/14162550)
+* [Getting Started with Joule Studio in SAP Build - Part 1: Provisioning Joule Studio](https://community.sap.com/t5/technology-blog-posts-by-sap/getting-started-with-joule-studio-in-sap-build-part-1-provisioning-joule/ba-p/14157407)
+
+then look at how to create simple examples. 
+
+To implement Joule agents and Joule skills in a repeatable way, start with a structured preparation phase. The practical guides consistently follow the same logic: set up the SAP BTP landscape and access model, configure connectivity and runtime environments, and validate the development workflow before creating and deploying agents and skills.
+
+**Preparation steps reflected in the practical guides**
+* **Confirm the landscape is set up properly** (SAP BTP prerequisites and readiness checks).
+* **Run the Joule Booster / formation setup** so the required capabilities are enabled in the tenant.
+* **Assign attributes and roles to the user** to ensure the correct authorizations are available for development and operation.
+* **Launch SAP Build Lobby** and verify that the SAP Build workspace is accessible for the project flow.
+* **Configure destinations in SAP BTP and SAP Build Lobby** to enable governed connectivity to external systems and services.
+* **Create a development environment** to separate build and runtime contexts for controlled rollout.
+* **Create a Joule Studio project** (agents/skills project structure) as the unit of lifecycle management.
+* **Create the agent or skill and configure its settings** (including the required dependencies where applicable).
+* **Add tools to the agent** (for example actions, skills, MCP servers, or grounding tools depending on the use case).
+* **Test before deployment** using the provided testing steps in the guide flow (for example “Test your Joule Agent” / “Test your Joule Skills”).
+* **Deploy to an environment** and validate runtime execution in the target environment (standalone vs shared environment where applicable).
+
+| Description | Mission link |
+| :--- | :--- |
+| Get Started with SAP Build Code and Joule using Generative AI (Trial Account) | https://discovery-center.cloud.sap/missiondetail/4441/4727/ |
+| Set Up Joule Studio and start with Joule Skills and Agents in BTP Enterprise Account | https://discovery-center.cloud.sap/missiondetail/4651/4940/ |
+| Build custom Joule skills for SAP and non-SAP systems using Joule Studio | https://discovery-center.cloud.sap/missiondetail/4643/ |
+| Build custom AI Agents with Joule Studio | https://discovery-center.cloud.sap/missiondetail/4665/4954/ |
+| Use Joule Studio with Document Grounding | https://developers.sap.com/tutorials/joulestudio-document-grounding.html |
+| Boosting AI-driven Business Transformation with Joule Agents | https://learning.sap.com/courses/boosting-ai-driven-business-transformation-with-joule-agents/describing-joule-agents |
+
+Don't be afraid to experiment; the best knowledge comes from practical skills.
+
+---
+
+## Related Best Practices
+*(Additional links pending content loading...)*
+
+## Related AI Capabilities
+*(Additional links pending content loading...)*

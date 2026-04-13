@@ -4,13 +4,14 @@ hide_table_of_contents: true
 hide_title: true
 ---
 
-import useBaseUrl from "@docusaurus/useBaseUrl";
 import Link from "@docusaurus/Link";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import Icon from "@site/src/components/Icon";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 import "@ui5/webcomponents-icons/dist/discussion.js";
 import "@ui5/webcomponents-icons/dist/goalseek.js";
+import "@ui5/webcomponents-icons/dist/machine.js";
 import "@ui5/webcomponents-icons/dist/product.js";
-import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 
 <PageViewTracker />
 
@@ -21,7 +22,8 @@ import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 <div className="section-with-background blue">
   <h2>Explore by AI Concept</h2>
   <p>
-    Find best practices structured around key AI technologies and approaches, such as <Link to={useBaseUrl("/docs/technical-view/generative-ai/")}>Generative AI</Link> and{" "}
+    Find best practices structured around key AI technologies and approaches, such as <Link to={useBaseUrl("/docs/technical-view/generative-ai/")}>Generative AI</Link>,{" "}
+    <Link to={useBaseUrl("/docs/technical-view/agentic-ai/")}>Agentic AI</Link>, and{" "}
     <Link to={useBaseUrl("/docs/technical-view/narrow-ai/")}>Narrow AI</Link>.
   </p>
 </div>
@@ -29,14 +31,14 @@ import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 <br />
 
 <div className="row">
-  <div className="col col--4">
+  <div className="col col--6">
     <Link to={useBaseUrl("/docs/technical-view/generative-ai/")} className="feature-card">
       <Icon name="discussion"></Icon>
       <span>Generative AI</span>
       <p>Describes exploring techniques for AI models that create new content (like text or images), covering foundation models, RAG, and agents within SAP.</p>
     </Link>
   </div>
-  <div className="col col--4">
+  <div className="col col--6">
     <Link to={useBaseUrl("/docs/technical-view/narrow-ai/")} className="feature-card">
       <Icon name="goalseek"></Icon>
       <span>Narrow AI</span>
@@ -45,11 +47,23 @@ import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
       </p>
     </Link>
   </div>
-  <div className="col col--4">
+</div>
+
+<br />
+
+<div className="row">
+  <div className="col col--6">
     <Link to={useBaseUrl("/docs/technical-view/ai-services/")} className="feature-card">
       <Icon name="product"></Icon>
       <span>AI Services</span>
       <p>Describes best practices for AI services, such as Document Information Extraction and other services within SAP.</p>
+    </Link>
+  </div>
+    <div className="col col--6">
+    <Link className="feature-card disabled">
+      <Icon name="machine"></Icon>
+      <span>Agentic AI</span>
+      <p>Describes best practices for AI agents that autonomously plan, reason, and execute multi-step tasks using tools, memory, and decision-making capabilities.</p>
     </Link>
   </div>
 </div>
