@@ -23,7 +23,11 @@ import "@ui5/webcomponents-icons/dist/video.js";
   <h1>Model Context Protocol (MCP)</h1>
 </div>
 
+<div className="section-with-background blue">
 This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
+</div>
+
+<br/>
 
 <div className="section-with-background">
   <div className="row">
@@ -65,7 +69,7 @@ For SAP, MCP is particularly relevant because enterprise AI agents need to inter
 
 After following this best practice, developers will be able to understand MCP's architecture and interaction flow, evaluate the available SAP deployment models (including the MCP Hub and custom SDK-based servers), implement MCP servers using the official SDKs, test them with the MCP Inspector, integrate with [Joule via Joule Studio](https://help.sap.com/docs/Joule_Studio), and connect AI agents to SAP enterprise systems through standardized MCP interfaces.
 
-{/* <LoginWall> */}
+<LoginWall>
 
 ### Benefits
 
@@ -322,4 +326,4 @@ npx @modelcontextprotocol/inspector
 
 </div>
 
-{/* </LoginWall> */}
+</LoginWall>

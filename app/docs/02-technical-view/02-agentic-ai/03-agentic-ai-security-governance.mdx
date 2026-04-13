@@ -23,7 +23,11 @@ import "@ui5/webcomponents-icons/dist/video.js";
   <h1>Agentic AI Security & Governance</h1>
 </div>
 
+<div className="section-with-background blue">
 This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It focuses exclusively on the security, ethics, and governance aspects of deploying agentic AI systems within the SAP ecosystem. Threat categories and controls are cross-referenced to the **OWASP Top 10 for LLM Applications (2025)** where applicable.
+</div>
+
+<br/>
 
 <div className="section-with-background">
   <div className="row">
@@ -63,6 +67,8 @@ The attack surface of an agentic system is not just the LLM prompt. It extends t
 
 This page provides opinionated guidance on how to secure agentic AI deployments in SAP environments, based on SAP's security guidelines for agentic AI, the [**OWASP Top 10 for LLM Applications**](https://owasp.org/www-project-top-10-for-large-language-model-applications/), and established threat modeling practices.
 
+<LoginWall>
+
 ### Why This Requires New Security Thinking
 
 Traditional security thinking assumes a human is in the loop for every significant action. Agentic AI breaks this assumption in several ways:
@@ -82,8 +88,6 @@ Traditional security thinking assumes a human is in the loop for every significa
 * **Least Privilege:** Agents should have access only to the minimum tools, data, and permissions required for their specific task. No more.
 * **Human-in-the-Loop (HITL):** A control pattern where critical or irreversible actions require explicit human approval before execution.
 * **Excessive Agency:** The OWASP term [LLM06] for the vulnerability that arises when an agent has more functionality, more permissions, or more autonomy than its task requires, enabling damaging actions from unexpected, manipulated, or hallucinated outputs.
-
-{/* <LoginWall> */}
 
 ### OWASP Top 10 for LLM Applications (2025): Mapping
 
@@ -485,4 +489,4 @@ Before deploying any agentic AI system in an SAP environment, verify that the fo
 
 </div>
 
-{/* </LoginWall> */}
+</LoginWall>

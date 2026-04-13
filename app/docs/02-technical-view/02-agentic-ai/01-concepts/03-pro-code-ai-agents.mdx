@@ -23,7 +23,11 @@ import "@ui5/webcomponents-icons/dist/video.js";
   <h1>Pro-Code AI Agents</h1>
 </div>
 
+<div className="section-with-background blue">
 This best practice page focuses on building production-ready AI agents using code-based approaches within the SAP ecosystem. For security and governance of AI agents, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>**Agentic AI Security and Governance**</Link> best practice page. For connecting agents to enterprise tools and data sources via the Model Context Protocol, see the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/mcp")}>**Model Context Protocol (MCP)**</Link> best practice page.
+</div>
+
+<br/>
 
 <div className="section-with-background">
   <div className="row">
@@ -67,6 +71,8 @@ This best practice page covers two complementary approaches:
    2. **Multi-Agent Routing with Conditional Edges**: LLM-based classifier at the entry point of the graph. The key takeaway is **scoped tool access**: by restricting which tools each agent can call, you reduce cost (fewer tokens describing irrelevant tools), improve reliability (the model is less likely to pick the wrong tool), and enforce domain boundaries
    3. **Enterprise Procurement Workflow**: replaces the toy tools of the first ReAct Agent with six enterprise-grade tools backed by mock data simulating SAP systems.
 
+<LoginWall>
+
 ### Expected Outcome
 
 After following this best practice, developers will be able to:
@@ -76,7 +82,7 @@ After following this best practice, developers will be able to:
 * Integrate agents with SAP services, external APIs, and enterprise data sources via the SAP Generative AI Hub SDK
 * Make informed decisions about agent architecture, tool design, and workflow structure
 
-{/* <LoginWall> */}
+
 
 ### Benefits
 
@@ -317,4 +323,4 @@ The key takeaway is that **graph complexity is not always necessary**. A simple 
 
 </div>
 
-{/* </LoginWall> */}
+</LoginWall>
