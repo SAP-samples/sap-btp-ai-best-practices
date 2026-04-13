@@ -6,28 +6,18 @@ hide_title: true
 
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import Icon from "@site/src/components/Icon";
 import IconLinkButton from "@site/src/components/IconLinkButton";
 import LoginWall from "@site/src/components/LoginWall";
 import PageContributors from "@site/src/components/PageContributors";
+import RelatedProjects from "@site/src/components/RelatedProjects";
 import TrackableLink from "@site/src/components/TrackableLink";
 import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
-import "@ui5/webcomponents-icons/dist/video.js";
 
 <PageViewTracker />
 
 <div className="hero-header">
   <h1>Pro-Code AI Agents</h1>
 </div>
-
-<div className="section-with-background blue">
-This best practice page focuses on building production-ready AI agents using code-based approaches within the SAP ecosystem. For security and governance of AI agents, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>**Agentic AI Security and Governance**</Link> best practice page. For connecting agents to enterprise tools and data sources via the Model Context Protocol, see the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/mcp")}>**Model Context Protocol (MCP)**</Link> best practice page.
-</div>
-
-<br/>
 
 <div className="section-with-background">
   <div className="row">
@@ -50,14 +40,28 @@ This best practice page focuses on building production-ready AI agents using cod
     </div>
     <div className="col col--4">
       <ul className="resource-links">
+      {/* TODO: Add teaser video, webinar, and PDF resource links */}
       </ul>
     </div>
   </div>
 </div>
 
+<LoginWall renderOnlyWhenLoggedIn={true}>
+  <TrackableLink
+    href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents"
+    className="button button--primary button--lg download-source-btn"
+    target="_blank"
+    trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS"
+  >
+    <span>Download Source Code</span>
+  </TrackableLink>
+</LoginWall>
+
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
+
+This best practice page focuses on building production-ready AI agents using code-based approaches within the SAP ecosystem. For security and governance of AI agents, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>**Agentic AI Security and Governance**</Link> best practice page. For connecting agents to enterprise tools and data sources via the Model Context Protocol, see the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/mcp")}>**Model Context Protocol (MCP)**</Link> best practice page.
 
 AI agents are software systems that go beyond simple prompt-response interactions. They can plan, reason, and act iteratively to complete multi-step tasks by calling external tools, APIs, and data sources. Unlike traditional LLM usage ("single prompt" to "single response"), agents operate in a loop: they reason about what to do next, take an action, observe the result, and decide whether to continue or deliver a final answer.
 
@@ -71,7 +75,7 @@ This best practice page covers two complementary approaches:
    2. **Multi-Agent Routing with Conditional Edges**: LLM-based classifier at the entry point of the graph. The key takeaway is **scoped tool access**: by restricting which tools each agent can call, you reduce cost (fewer tokens describing irrelevant tools), improve reliability (the model is less likely to pick the wrong tool), and enforce domain boundaries
    3. **Enterprise Procurement Workflow**: replaces the toy tools of the first ReAct Agent with six enterprise-grade tools backed by mock data simulating SAP systems.
 
-<LoginWall>
+{/* <LoginWall> */}
 
 ### Expected Outcome
 
@@ -213,7 +217,14 @@ The recommended agent framework. LangGraph provides state graphs for defining ag
 
 The code examples are organized as a learning path in two parts. Start with **Part 1** to understand what happens inside a ReAct agent at the lowest level, then continue with **Part 2** to see how a framework handles the same patterns with less boilerplate and more reliability.
 
-[**SAP BTP AI Best Practices - Code-Based Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents)
+<TrackableLink
+  href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents"
+  className="button button--primary button--lg download-source-btn--tab"
+  target="_blank"
+  trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS"
+>
+  <span>Download Source Code</span>
+</TrackableLink>
 
 ---
 
@@ -229,7 +240,7 @@ Understanding the raw ReAct loop is essential before using any framework. The fo
 
 #### Reference Code
 
-* [**SAP BTP AI Best Practices - Code-Based Agents - Native ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/native-react)
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/native-react" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Native ReAct Notebook**</TrackableLink>
 
 ---
 
@@ -239,7 +250,7 @@ LangGraph replaces the manual loop with a structured state graph. Instead of wri
 
 #### Reference Code
 
-* [**SAP BTP AI Best Practices - Code-Based Agents - LangGraph ReAct Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/langgraph-react)
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/langgraph-react" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - LangGraph ReAct Agents**</TrackableLink>
 
 #### 2.1 Basic ReAct Agent
 
@@ -251,7 +262,7 @@ This notebook demonstrates LLM initialization via the SAP GenAI Hub proxy, the `
 
 ##### Reference Code
 
-* [**SAP BTP AI Best Practices - Code-Based Agents - Basic ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/01_react_agent.ipynb)
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/01_react_agent.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Basic ReAct Notebook**</TrackableLink>
 
 #### 2.2 Multi-Agent Routing with Conditional Edges
 
@@ -263,7 +274,7 @@ The key takeaway is **scoped tool access**: by restricting which tools each agen
 
 ##### Reference Code
 
-* [**SAP BTP AI Best Practices - Code-Based Agents - Multi-Agent Routing with Conditional Edges Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/02_multi_step_workflow.ipynb)
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/02_multi_step_workflow.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Multi-Agent Routing with Conditional Edges Notebook**</TrackableLink>
 
 #### 2.3 Enterprise Procurement Workflow
 
@@ -280,7 +291,9 @@ The key takeaway is that **graph complexity is not always necessary**. A simple 
 
 ##### Reference Code
 
-* [**SAP BTP AI Best Practices - Code-Based Agents - Enterprise Procurement Workflow Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/03_procurement_workflow.ipynb)
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/03_procurement_workflow.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Enterprise Procurement Workflow Notebook**</TrackableLink>
+
+<RelatedProjects />
 
 <br />
 
@@ -323,4 +336,4 @@ The key takeaway is that **graph complexity is not always necessary**. A simple 
 
 </div>
 
-</LoginWall>
+{/* </LoginWall> */}

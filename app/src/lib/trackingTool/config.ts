@@ -92,6 +92,7 @@ export const TRACKING_EVENTS = {
     DOWNLOAD_CLASSIFICATION: "btn-download-classification",
     DOWNLOAD_CLUSTERING: "btn-download-clustering",
     DOWNLOAD_DOCUMENT_GROUNDING: "btn-download-document-grounding",
-    DOWNLOAD_TRANSLATION_HUB: "btn-download-translation-hub"
+    DOWNLOAD_TRANSLATION_HUB: "btn-download-translation-hub",
+    DOWNLOAD_PRO_CODE_AI_AGENTS: "btn-download-pro-code-ai-agents"
   }
 } as const;

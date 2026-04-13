@@ -10,12 +10,8 @@ import Icon from "@site/src/components/Icon";
 import IconLinkButton from "@site/src/components/IconLinkButton";
 import LoginWall from "@site/src/components/LoginWall";
 import PageContributors from "@site/src/components/PageContributors";
-import TrackableLink from "@site/src/components/TrackableLink";
 import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
-import "@ui5/webcomponents-icons/dist/video.js";
+import RelatedProjects from "@site/src/components/RelatedProjects";
 
 <PageViewTracker />
 
@@ -44,10 +40,13 @@ import "@ui5/webcomponents-icons/dist/video.js";
     </div>
     <div className="col col--4">
       <ul className="resource-links">
+      {/* TODO: Add teaser video, webinar, and PDF resource links */}
       </ul>
     </div>
   </div>
 </div>
+
+{/* TODO: Add Download Source Code TrackableLink when sample repo is ready */}
 
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
@@ -522,6 +521,8 @@ Please use the following component for your incident:
 | BPI-PA-INF | SAP Build Process Automation |
 | CA-BLD-JLE-SKI | Joule Skills |
 | CA-BLD-JLE-TOO | Agent AI |
+
+<RelatedProjects />
 
 <br />
 

@@ -6,28 +6,17 @@ hide_title: true
 
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import Icon from "@site/src/components/Icon";
 import IconLinkButton from "@site/src/components/IconLinkButton";
 import LoginWall from "@site/src/components/LoginWall";
 import PageContributors from "@site/src/components/PageContributors";
-import TrackableLink from "@site/src/components/TrackableLink";
 import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
-import "@ui5/webcomponents-icons/dist/video.js";
+import RelatedProjects from "@site/src/components/RelatedProjects";
 
 <PageViewTracker />
 
 <div className="hero-header">
   <h1>Agentic AI Security & Governance</h1>
 </div>
-
-<div className="section-with-background blue">
-This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It focuses exclusively on the security, ethics, and governance aspects of deploying agentic AI systems within the SAP ecosystem. Threat categories and controls are cross-referenced to the **OWASP Top 10 for LLM Applications (2025)** where applicable.
-</div>
-
-<br/>
 
 <div className="section-with-background">
   <div className="row">
@@ -50,14 +39,19 @@ This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agent
     </div>
     <div className="col col--4">
       <ul className="resource-links">
+      {/* TODO: Add teaser video, webinar, and PDF resource links */}
       </ul>
     </div>
   </div>
 </div>
 
+{/* TODO: Add Download Source Code TrackableLink when sample repo is ready */}
+
 ## <span className="step-number">1</span> <span className="step-title">Overview</span>
 
 ### Description
+
+This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It focuses exclusively on the security, ethics, and governance aspects of deploying agentic AI systems within the SAP ecosystem. Threat categories and controls are cross-referenced to the **OWASP Top 10 for LLM Applications (2025)** where applicable.
 
 Agentic AI systems introduce a fundamentally different risk profile compared to traditional enterprise applications, and even compared to standard LLM usage. A traditional application follows predefined workflows and responds to user input predictably. A standard LLM call is stateless: one prompt in, one response out. An agent, however, operates autonomously across multiple turns, makes decisions about which tools to call, accumulates memory across steps, and can chain actions that affect real business systems.
 
@@ -448,6 +442,8 @@ Before deploying any agentic AI system in an SAP environment, verify that the fo
 | Stakeholder impact mapping | Ethical risk | — | Medium |
 | User training on overreliance risk | Misinformation | LLM09 | Medium |
 | Incident response plan and kill switch | All threats (response) | — | High |
+
+<RelatedProjects />
 
 <br />
 
