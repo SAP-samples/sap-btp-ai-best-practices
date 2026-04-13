@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-technical-view/agentic-ai/concepts/agentic-ai-concepts-explained" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.7.0">
+<title data-rh="true">Agentic AI Concepts Explained | SAP BTP AI Best Practices</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://btp-ai-bp.docs.sap/img/logo.png"><meta data-rh="true" name="twitter:image" content="https://btp-ai-bp.docs.sap/img/logo.png"><meta data-rh="true" property="og:url" content="https://btp-ai-bp.docs.sap/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Agentic AI Concepts Explained | SAP BTP AI Best Practices"><meta data-rh="true" name="description" content="An overview of Agentic AI concepts, architecture patterns, and key terminology."><meta data-rh="true" property="og:description" content="An overview of Agentic AI concepts, architecture patterns, and key terminology."><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://btp-ai-bp.docs.sap/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained"><link data-rh="true" rel="alternate" href="https://btp-ai-bp.docs.sap/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained" hreflang="en"><link data-rh="true" rel="alternate" href="https://btp-ai-bp.docs.sap/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained" hreflang="x-default"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="SAP BTP AI Best Practices RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="SAP BTP AI Best Practices Atom Feed">
+
+
+
+
+
+<meta name="google-site-verification" content="eVc1KK3OGfcizMJIFjE3xLzlEICj84WRxf4Gy_BxUyk">
+<script src="/cookieConsentConfig.js"></script>
+<script src="https://www.sap.com/sharedlibs/globaltop/script-latest.min.js"></script><link rel="stylesheet" href="/assets/css/styles.18013812.css">
+<script src="/assets/js/runtime~main.8bcd8c8b.js" defer="defer"></script>
+<script src="/assets/js/main.b9d00bf8.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const n=new URLSearchParams(window.location.search).entries();for(var[t,e]of n)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><link rel="preload" as="image" href="/img/logo.svg"><link rel="preload" as="image" href="/img/contributors/francisco-robledo.jpg"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="SAP Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="SAP Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">BTP AI Best Practices</b></a><a class="navbar__item navbar__link" href="/docs/functional-view">Functional View</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/technical-view">Technical View</a><a class="navbar__item navbar__link" href="/about">About</a></div><div class="navbar__items navbar__items--right"><button class="button loginButton_zzNh"></button><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite" aria-pressed="false"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/functional-view">Functional View</a><button aria-label="Expand sidebar category &#x27;Functional View&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" href="/docs/technical-view">Technical View</a><button aria-label="Collapse sidebar category &#x27;Technical View&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/technical-view/generative-ai">Generative AI</a><button aria-label="Expand sidebar category &#x27;Generative AI&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item hidden"><a class="menu__link" tabindex="0" href="/docs/technical-view/page-template">Page Template</a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item hidden"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" tabindex="0" href="/docs/technical-view/agentic-ai">Agentic AI</a><button aria-label="Collapse sidebar category &#x27;Agentic AI&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-3 menu__list-item hidden"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" tabindex="0" href="/docs/technical-view/agentic-ai">Agentic AI Concepts</a><button aria-label="Collapse sidebar category &#x27;Agentic AI Concepts&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-4 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained">Agentic AI Concepts Explained</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-4 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/technical-view/agentic-ai/concepts/joule-agent-builder">Content-based Agents with SAP Joule Studio Agent Builder</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-4 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents">Pro-Code AI Agents</a></li></ul></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/technical-view/agentic-ai/mcp">Model Context Protocol (MCP)</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-3 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/technical-view/agentic-ai/agentic-ai-security-governance">Agentic AI Security &amp; Governance</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/technical-view/narrow-ai">Narrow AI</a><button aria-label="Expand sidebar category &#x27;Narrow AI&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-2 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" tabindex="0" href="/docs/technical-view/ai-services">AI Services</a><button aria-label="Expand sidebar category &#x27;AI Services&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/technologies">Technologies</a><button aria-label="Expand sidebar category &#x27;Technologies&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/glossary">Glossary</a></li></ul></nav><button type="button" title="Collapse sidebar" aria-label="Collapse sidebar" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/technical-view"><span itemprop="name">Technical View</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/technical-view/agentic-ai"><span itemprop="name">Agentic AI</span></a><meta itemprop="position" content="2"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/technical-view/agentic-ai"><span itemprop="name">Agentic AI Concepts</span></a><meta itemprop="position" content="3"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Agentic AI Concepts Explained</span><meta itemprop="position" content="4"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown">
+<div class="hero-header"><h1>Agentic AI Concepts Explained</h1></div>
+<p>Terms are the starting point for understanding a subject area.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-defining-the-ai-agent-the-autonomous-employee">1. Defining the AI Agent: The Autonomous Employee<a href="#1-defining-the-ai-agent-the-autonomous-employee" class="hash-link" aria-label="Direct link to 1. Defining the AI Agent: The Autonomous Employee" title="Direct link to 1. Defining the AI Agent: The Autonomous Employee">​</a></h2>
+<p>At its core, an AI Agent is like a skilled employee inside an organization.</p>
+<p>A good employee:</p>
+<ul>
+<li>Observes their work environment</li>
+<li>Understands the current situation</li>
+<li>Takes action to achieve a defined goal</li>
+</ul>
+<p>Similarly, an AI agent is a software system that observes its environment, reasons about what&#x27;s happening, and takes actions to achieve a goal.</p>
+<p>The key difference from traditional automation is the same difference between a factory machine and a knowledge worker.</p>
+<ul>
+<li>Traditional automation = a checklist worker who follows strict &quot;if-this-then-that&quot; instructions.</li>
+<li>Agentic AI = a goal-driven employee who is told what outcome to achieve, not exactly how to achieve it.</li>
+</ul>
+<p>If you tell an employee:</p>
+<ul>
+<li>&quot;Resolve this customer complaint&quot;</li>
+<li>&quot;Reduce this month&#x27;s cloud costs&quot;</li>
+</ul>
+<p>You don&#x27;t provide every step. You expect them to:</p>
+<ul>
+<li>Assess the situation</li>
+<li>Decide what actions are needed</li>
+<li>Adapt if something unexpected happens</li>
+</ul>
+<p>That&#x27;s what makes it agentic. It&#x27;s not a linear script — it&#x27;s a goal-directed contributor.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-the-reasoning-engine-the-brain-how-the-employee-thinks">2. The Reasoning Engine: The &quot;Brain&quot; (How the Employee Thinks)<a href="#2-the-reasoning-engine-the-brain-how-the-employee-thinks" class="hash-link" aria-label="Direct link to 2. The Reasoning Engine: The &quot;Brain&quot; (How the Employee Thinks)" title="Direct link to 2. The Reasoning Engine: The &quot;Brain&quot; (How the Employee Thinks)">​</a></h2>
+<p>An AI agent&#x27;s reasoning engine is like the cognitive process of a human worker.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="goal-orientation-organizational-objectives-and-key-results">Goal Orientation: Organizational Objectives and Key Results<a href="#goal-orientation-organizational-objectives-and-key-results" class="hash-link" aria-label="Direct link to Goal Orientation: Organizational Objectives and Key Results" title="Direct link to Goal Orientation: Organizational Objectives and Key Results">​</a></h3>
+<p>Every effective employee works toward clear objectives:</p>
+<ul>
+<li>Quarterly OKRs</li>
+<li>Department KPIs</li>
+<li>A project milestone</li>
+</ul>
+<p>Similarly, every agent starts with a defined Goal.
+This goal acts as a &quot;North Star,&quot; guiding decisions and prioritization.</p>
+<p>Without a goal, both a human and an AI system drift into reactive task execution. With a goal, decisions become strategic.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="planning--deconstruction-project-planning">Planning &amp; Deconstruction: Project Planning<a href="#planning--deconstruction-project-planning" class="hash-link" aria-label="Direct link to Planning &amp; Deconstruction: Project Planning" title="Direct link to Planning &amp; Deconstruction: Project Planning">​</a></h3>
+<p>When a manager assigns a complex objective, a strong employee doesn&#x27;t try to complete it in one step. They:</p>
+<ul>
+<li>Break the objective into subtasks</li>
+<li>Identify dependencies</li>
+<li>Sequence the work</li>
+<li>Allocate resources</li>
+</ul>
+<p>An AI agent does the same. It decomposes a high-level objective into smaller, manageable actions — essentially creating its own internal project plan.</p>
+<p>This mirrors:</p>
+<ul>
+<li>Work breakdown structures</li>
+<li>Sprint planning</li>
+<li>Implementation roadmaps</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="dynamic-reasoning-situational-judgment">Dynamic Reasoning: Situational Judgment<a href="#dynamic-reasoning-situational-judgment" class="hash-link" aria-label="Direct link to Dynamic Reasoning: Situational Judgment" title="Direct link to Dynamic Reasoning: Situational Judgment">​</a></h3>
+<p>In the real world, plans rarely unfold perfectly.</p>
+<p>A human worker constantly reassesses:</p>
+<ul>
+<li>Is this approach working?</li>
+<li>Has new information changed the situation?</li>
+<li>Is there a better path?</li>
+</ul>
+<p>AI agents do this through dynamic reasoning. As they execute their plan, they evaluate outcomes and adjust strategy based on new information.</p>
+<p>This is similar to:</p>
+<ul>
+<li>Risk management processes</li>
+<li>Continuous improvement</li>
+<li>Agile iteration</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-interaction-and-execution-the-body-how-the-employee-gets-work-done">3. Interaction and Execution: The &quot;Body&quot; (How the Employee Gets Work Done)<a href="#3-interaction-and-execution-the-body-how-the-employee-gets-work-done" class="hash-link" aria-label="Direct link to 3. Interaction and Execution: The &quot;Body&quot; (How the Employee Gets Work Done)" title="Direct link to 3. Interaction and Execution: The &quot;Body&quot; (How the Employee Gets Work Done)">​</a></h2>
+<p>An employee can&#x27;t just think — they must act within the organization&#x27;s systems.</p>
+<p>An AI agent also needs mechanisms to interact with its environment.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="tool-use-enterprise-systems-access">Tool Use: Enterprise Systems Access<a href="#tool-use-enterprise-systems-access" class="hash-link" aria-label="Direct link to Tool Use: Enterprise Systems Access" title="Direct link to Tool Use: Enterprise Systems Access">​</a></h3>
+<p>A human worker uses tools:</p>
+<ul>
+<li>CRM systems</li>
+<li>Finance dashboards</li>
+<li>Email</li>
+<li>Internal databases</li>
+<li>APIs</li>
+</ul>
+<p>They retrieve information and make updates.</p>
+<p>An AI agent&#x27;s &quot;tool use&quot; is the same concept. It calls APIs, queries databases, and updates external systems.</p>
+<p>Without tool access, both a human and an agent are limited to theory. With tool access, they can create real operational impact.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="the-feedback-loop-performance-monitoring">The Feedback Loop: Performance Monitoring<a href="#the-feedback-loop-performance-monitoring" class="hash-link" aria-label="Direct link to The Feedback Loop: Performance Monitoring" title="Direct link to The Feedback Loop: Performance Monitoring">​</a></h3>
+<p>After taking action, a human employee checks the result:</p>
+<ul>
+<li>Did the customer respond positively?</li>
+<li>Did costs actually decrease?</li>
+<li>Did the deployment succeed?</li>
+</ul>
+<p>If something failed, they adjust.</p>
+<p>This is the feedback loop — a core organizational concept reflected in:</p>
+<ul>
+<li>PDCA (Plan-Do-Check-Act)</li>
+<li>Retrospectives</li>
+<li>Performance dashboards</li>
+</ul>
+<p>An AI agent mirrors this behavior. After each action, it observes the result, updates its internal understanding, and decides the next step.</p>
+<p>This is what allows adaptation instead of rigid execution.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-coordination-and-governance-organizational-structure">4. Coordination and Governance: Organizational Structure<a href="#4-coordination-and-governance-organizational-structure" class="hash-link" aria-label="Direct link to 4. Coordination and Governance: Organizational Structure" title="Direct link to 4. Coordination and Governance: Organizational Structure">​</a></h2>
+<p>As organizations scale, you don&#x27;t rely on one employee to do everything. You introduce structure.</p>
+<p>The same is true for agentic systems.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="orchestration--multi-agent-systems-departments-and-teams">Orchestration &amp; Multi-Agent Systems: Departments and Teams<a href="#orchestration--multi-agent-systems-departments-and-teams" class="hash-link" aria-label="Direct link to Orchestration &amp; Multi-Agent Systems: Departments and Teams" title="Direct link to Orchestration &amp; Multi-Agent Systems: Departments and Teams">​</a></h3>
+<p>In a company:</p>
+<ul>
+<li>A Research team gathers data</li>
+<li>A Marketing team crafts messaging</li>
+<li>A Finance team validates budgets</li>
+<li>A Manager coordinates them</li>
+</ul>
+<p>Each has a specialized role.</p>
+<p>In a Multi-Agent System:</p>
+<ul>
+<li>A &quot;Research Agent&quot; collects data</li>
+<li>A &quot;Writer Agent&quot; synthesizes it</li>
+<li>A &quot;Manager Agent&quot; coordinates workflow</li>
+</ul>
+<p>Orchestration is equivalent to:</p>
+<ul>
+<li>Project management</li>
+<li>Workflow systems</li>
+<li>Cross-functional coordination</li>
+</ul>
+<p>It ensures the right work is done by the right &quot;role&quot; at the right time.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="agent-communication-emails-and-official-knowledge-bases">Agent Communication: Emails and Official Knowledge Bases<a href="#agent-communication-emails-and-official-knowledge-bases" class="hash-link" aria-label="Direct link to Agent Communication: Emails and Official Knowledge Bases" title="Direct link to Agent Communication: Emails and Official Knowledge Bases">​</a></h3>
+<p>One of the most essential components of a successful well working company is communication. Agents are also have the ability to communicate between each other and access external tools and resources.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="a2a-agent-to-agent-internal-emails-slack-and-hand-offs">A2A (Agent-to-Agent): Internal Emails, Slack, and Hand-offs<a href="#a2a-agent-to-agent-internal-emails-slack-and-hand-offs" class="hash-link" aria-label="Direct link to A2A (Agent-to-Agent): Internal Emails, Slack, and Hand-offs" title="Direct link to A2A (Agent-to-Agent): Internal Emails, Slack, and Hand-offs">​</a></h3>
+<p>In a company, employees communicate constantly:</p>
+<ul>
+<li>A researcher sends findings to a strategist</li>
+<li>A support rep escalates a case to engineering</li>
+<li>A project manager assigns tasks to specialists</li>
+</ul>
+<p>This is structured internal communication.</p>
+<p>A2A communication enables the same behavior between agents.</p>
+<p>Instead of working in isolation:</p>
+<ul>
+<li>A &quot;Research Agent&quot; gathers data</li>
+<li>It passes structured output to a &quot;Writer Agent&quot;</li>
+<li>The Writer Agent refines it</li>
+<li>A &quot;Reviewer Agent&quot; validates it</li>
+</ul>
+<p>This is the digital equivalent of:</p>
+<ul>
+<li>Email threads</li>
+<li>Slack channels</li>
+<li>Ticket hand-offs</li>
+<li>Workflow transitions</li>
+</ul>
+<p>The key idea is that communication is <strong>intentional and structured</strong>, not chaotic.</p>
+<p>Just like in organizations:</p>
+<ul>
+<li>Clear formatting reduces misunderstandings</li>
+<li>Defined roles reduce duplication</li>
+<li>Explicit hand-offs prevent dropped work</li>
+</ul>
+<p>A2A allows agents to specialize and collaborate — just like departments inside a company.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="mcp-model-context-protocol-the-official-knowledge-base--policy-handbook">MCP (Model Context Protocol): The Official Knowledge Base &amp; Policy Handbook<a href="#mcp-model-context-protocol-the-official-knowledge-base--policy-handbook" class="hash-link" aria-label="Direct link to MCP (Model Context Protocol): The Official Knowledge Base &amp; Policy Handbook" title="Direct link to MCP (Model Context Protocol): The Official Knowledge Base &amp; Policy Handbook">​</a></h3>
+<p>In any mature organization, there is an official source of truth:</p>
+<ul>
+<li>A company wiki</li>
+<li>SOP documentation</li>
+<li>A policy handbook</li>
+<li>A shared document repository</li>
+</ul>
+<p>This ensures:</p>
+<ul>
+<li>Everyone references the same data</li>
+<li>Decisions are consistent</li>
+<li>Processes are repeatable</li>
+<li>Institutional knowledge is preserved</li>
+</ul>
+<p>Model Context Protocol (MCP) serves a similar role for AI agents.</p>
+<p>MCP standardizes how agents:</p>
+<ul>
+<li>Access shared tools</li>
+<li>Retrieve structured knowledge</li>
+<li>Understand available capabilities</li>
+<li>Connect to approved data sources</li>
+</ul>
+<p>Instead of each agent improvising how to connect to systems, MCP acts like an official integration layer — a formalized knowledge and access protocol.</p>
+<p>Think of it as:</p>
+<ul>
+<li>The company&#x27;s IT-approved software catalog</li>
+<li>The internal wiki that defines procedures</li>
+<li>The API contract that ensures everyone speaks the same language</li>
+</ul>
+<p>It reduces fragmentation and ensures interoperability.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="human-in-the-loop-executive-approval">Human-in-the-Loop: Executive Approval<a href="#human-in-the-loop-executive-approval" class="hash-link" aria-label="Direct link to Human-in-the-Loop: Executive Approval" title="Direct link to Human-in-the-Loop: Executive Approval">​</a></h3>
+<p>Even senior employees escalate high-impact decisions:</p>
+<ul>
+<li>Large financial commitments</li>
+<li>Legal exposure</li>
+<li>Strategic pivots</li>
+</ul>
+<p>This is similar to Human-in-the-Loop (HITL) design.</p>
+<p>In this model:</p>
+<ul>
+<li>The agent handles execution and analysis</li>
+<li>The human retains final decision authority for critical actions</li>
+</ul>
+<p>This creates a hybrid workforce:</p>
+<ul>
+<li>AI handles operational workload</li>
+<li>Humans handle judgment, accountability, and strategy</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="guardrails-policies-and-compliance">Guardrails: Policies and Compliance<a href="#guardrails-policies-and-compliance" class="hash-link" aria-label="Direct link to Guardrails: Policies and Compliance" title="Direct link to Guardrails: Policies and Compliance">​</a></h3>
+<p>Human employees operate within constraints:</p>
+<ul>
+<li>Budget limits</li>
+<li>Legal compliance</li>
+<li>Security policies</li>
+<li>Ethical standards</li>
+</ul>
+<p>These are organizational guardrails.</p>
+<p>AI agents also require explicit boundaries, such as:</p>
+<ul>
+<li>&quot;Do not exceed $50 in API usage.&quot;</li>
+<li>&quot;Do not access restricted systems.&quot;</li>
+<li>&quot;Do not expose sensitive data.&quot;</li>
+</ul>
+<p>Guardrails are the system&#x27;s version of governance policies.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-putting-it-all-together">5. Putting It All Together<a href="#5-putting-it-all-together" class="hash-link" aria-label="Direct link to 5. Putting It All Together" title="Direct link to 5. Putting It All Together">​</a></h2>
+<p>An AI agent is best understood not as &quot;smarter automation,&quot; but as a digital employee embedded within your organizational structure.</p>
+<p>It has:</p>
+<ul>
+<li>A goal (like an OKR)</li>
+<li>A reasoning process (like strategic thinking)</li>
+<li>A plan (like a project roadmap)</li>
+<li>Tools (like enterprise software access)</li>
+<li>Feedback loops (like performance management)</li>
+<li>Coordination layers (like management and departments)</li>
+<li>Guardrails (like compliance policies)</li>
+<li>Escalation paths (like executive approval)</li>
+</ul>
+<p>The difference is not conceptual — it&#x27;s architectural.</p>
+<p>Agentic AI formalizes, in software, the same structures we already use to manage human work:</p>
+<ul>
+<li>Goal setting</li>
+<li>Planning</li>
+<li>Execution</li>
+<li>Monitoring</li>
+<li>Governance</li>
+</ul>
+<p>In that sense, deploying AI agents isn&#x27;t inventing a new organizational paradigm.</p>
+<p>It&#x27;s extending the existing one — by adding digital workers that operate within the same principles that govern human teams.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="glossary">Glossary<a href="#glossary" class="hash-link" aria-label="Direct link to Glossary" title="Direct link to Glossary">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="goal">Goal<a href="#goal" class="hash-link" aria-label="Direct link to Goal" title="Direct link to Goal">​</a></h3>
+<p>A <strong>desired outcome</strong> the agent is trying to achieve (e.g., &quot;resolve a customer issue,&quot; &quot;schedule a meeting,&quot; or &quot;generate a report&quot;). Goals guide how the agent plans and prioritizes actions.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="actions">Actions<a href="#actions" class="hash-link" aria-label="Direct link to Actions" title="Direct link to Actions">​</a></h3>
+<p>The <strong>operations an agent can perform</strong> in its environment, such as sending messages, calling APIs, updating records, generating content, or triggering workflows.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="tools">Tools<a href="#tools" class="hash-link" aria-label="Direct link to Tools" title="Direct link to Tools">​</a></h3>
+<p>A capability or external system an AI agent can use to take action or retrieve information, such as APIs, databases, business applications, calculators, or workflows. Tools allow agents to go beyond conversation and perform real tasks.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="reasoning">Reasoning<a href="#reasoning" class="hash-link" aria-label="Direct link to Reasoning" title="Direct link to Reasoning">​</a></h3>
+<p>The agent&#x27;s ability to <strong>analyze information, make decisions, and choose actions</strong>. Reasoning may involve logic, rules, probabilistic thinking, or large language models (LLMs).</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="planning">Planning<a href="#planning" class="hash-link" aria-label="Direct link to Planning" title="Direct link to Planning">​</a></h3>
+<p>The process of <strong>deciding a sequence of steps</strong> needed to achieve a goal. A plan may change dynamically as new information becomes available.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="feedback-loop">Feedback Loop<a href="#feedback-loop" class="hash-link" aria-label="Direct link to Feedback Loop" title="Direct link to Feedback Loop">​</a></h3>
+<p>A mechanism where an agent <strong>evaluates the outcome of its actions</strong> and adjusts future behavior accordingly. Feedback loops help agents improve performance over time.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="tool-use">Tool Use<a href="#tool-use" class="hash-link" aria-label="Direct link to Tool Use" title="Direct link to Tool Use">​</a></h3>
+<p>The ability of an AI agent to <strong>call external tools or systems</strong>, such as databases, calculators, APIs, or enterprise software, to complete tasks beyond text generation.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="orchestration">Orchestration<a href="#orchestration" class="hash-link" aria-label="Direct link to Orchestration" title="Direct link to Orchestration">​</a></h3>
+<p>The coordination of <strong>multiple agents, tools, or workflows</strong> to accomplish a larger task. Orchestration ensures the right components act in the right order.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="multi-agent-system">Multi-Agent System<a href="#multi-agent-system" class="hash-link" aria-label="Direct link to Multi-Agent System" title="Direct link to Multi-Agent System">​</a></h3>
+<p>A setup where <strong>multiple AI agents work together</strong>, each with specialized roles, to solve complex problems more efficiently than a single agent.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="human-in-the-loop">Human-in-the-Loop<a href="#human-in-the-loop" class="hash-link" aria-label="Direct link to Human-in-the-Loop" title="Direct link to Human-in-the-Loop">​</a></h3>
+<p>A design approach where <strong>humans review, guide, or approve</strong> an agent&#x27;s actions, especially for sensitive or high-impact decisions.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="guardrails">Guardrails<a href="#guardrails" class="hash-link" aria-label="Direct link to Guardrails" title="Direct link to Guardrails">​</a></h3>
+<p>Rules, constraints, or policies that <strong>limit what an AI agent is allowed to do</strong>. Guardrails help ensure safety, compliance, and predictable behavior.</p>
+<!-- -->
+<br>
+<div class="section-with-background blue"><h2 class="anchor anchorWithStickyNavbar_LWe7" id="related-best-practices"><span class="post-article-first-title">Related Best Practices</span><a href="#related-best-practices" class="hash-link" aria-label="Direct link to related-best-practices" title="Direct link to related-best-practices">​</a></h2><ul class="button-grid"><li class="list-button-item"><a class="" href="/docs/technical-view/agentic-ai/concepts/joule-agent-builder"><span>Content-based Agents with SAP Joule Studio Agent Builder</span></a></li><li class="list-button-item"><a class="" href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents"><span>Pro-Code AI Agents</span></a></li><li class="list-button-item"><a class="" href="/docs/technical-view/agentic-ai/mcp"><span>Model Context Protocol (MCP)</span></a></li><li class="list-button-item"><a class="" href="/docs/technical-view/agentic-ai/agentic-ai-security-governance"><span>Agentic AI Security &amp; Governance</span></a></li></ul></div>
+<br>
+<div class="section-with-background purple"><h2 class="anchor anchorWithStickyNavbar_LWe7" id="related-ai-capabilities">Related AI Capabilities<a href="#related-ai-capabilities" class="hash-link" aria-label="Direct link to Related AI Capabilities" title="Direct link to Related AI Capabilities">​</a></h2><h3><a href="/docs/functional-view/agentic-workflows">Agentic Workflows</a></h3><ul class="button-grid"><li class="list-button-item"><a class="" href="/docs/functional-view/agentic-workflows/agentic-workflows"><span>Agentic Workflows</span></a></li></ul></div>
+<br>
+<div class="section-with-background gradient-violet-blue"><h2 class="anchor anchorWithStickyNavbar_LWe7" id="contributors">Contributors<a href="#contributors" class="hash-link" aria-label="Direct link to Contributors" title="Direct link to Contributors">​</a></h2><div class="contributors-grid"><div class="contributor-card"><img src="/img/contributors/francisco-robledo.jpg" alt="Robledo, Francisco" class="contributor-photo"><div class="contributor-photo contributor-photo-placeholder" style="display:none"></div><div class="contributor-name">Robledo, Francisco</div></div></div></div></div></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/technical-view/agentic-ai"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Agentic AI</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/technical-view/agentic-ai/concepts/joule-agent-builder"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Content-based Agents with SAP Joule Studio Agent Builder</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#1-defining-the-ai-agent-the-autonomous-employee" class="table-of-contents__link toc-highlight">1. Defining the AI Agent: The Autonomous Employee</a></li><li><a href="#2-the-reasoning-engine-the-brain-how-the-employee-thinks" class="table-of-contents__link toc-highlight">2. The Reasoning Engine: The &quot;Brain&quot; (How the Employee Thinks)</a><ul><li><a href="#goal-orientation-organizational-objectives-and-key-results" class="table-of-contents__link toc-highlight">Goal Orientation: Organizational Objectives and Key Results</a></li><li><a href="#planning--deconstruction-project-planning" class="table-of-contents__link toc-highlight">Planning &amp; Deconstruction: Project Planning</a></li><li><a href="#dynamic-reasoning-situational-judgment" class="table-of-contents__link toc-highlight">Dynamic Reasoning: Situational Judgment</a></li></ul></li><li><a href="#3-interaction-and-execution-the-body-how-the-employee-gets-work-done" class="table-of-contents__link toc-highlight">3. Interaction and Execution: The &quot;Body&quot; (How the Employee Gets Work Done)</a><ul><li><a href="#tool-use-enterprise-systems-access" class="table-of-contents__link toc-highlight">Tool Use: Enterprise Systems Access</a></li><li><a href="#the-feedback-loop-performance-monitoring" class="table-of-contents__link toc-highlight">The Feedback Loop: Performance Monitoring</a></li></ul></li><li><a href="#4-coordination-and-governance-organizational-structure" class="table-of-contents__link toc-highlight">4. Coordination and Governance: Organizational Structure</a><ul><li><a href="#orchestration--multi-agent-systems-departments-and-teams" class="table-of-contents__link toc-highlight">Orchestration &amp; Multi-Agent Systems: Departments and Teams</a></li><li><a href="#agent-communication-emails-and-official-knowledge-bases" class="table-of-contents__link toc-highlight">Agent Communication: Emails and Official Knowledge Bases</a></li><li><a href="#a2a-agent-to-agent-internal-emails-slack-and-hand-offs" class="table-of-contents__link toc-highlight">A2A (Agent-to-Agent): Internal Emails, Slack, and Hand-offs</a></li><li><a href="#mcp-model-context-protocol-the-official-knowledge-base--policy-handbook" class="table-of-contents__link toc-highlight">MCP (Model Context Protocol): The Official Knowledge Base &amp; Policy Handbook</a></li><li><a href="#human-in-the-loop-executive-approval" class="table-of-contents__link toc-highlight">Human-in-the-Loop: Executive Approval</a></li><li><a href="#guardrails-policies-and-compliance" class="table-of-contents__link toc-highlight">Guardrails: Policies and Compliance</a></li></ul></li><li><a href="#5-putting-it-all-together" class="table-of-contents__link toc-highlight">5. Putting It All Together</a></li><li><a href="#glossary" class="table-of-contents__link toc-highlight">Glossary</a><ul><li><a href="#goal" class="table-of-contents__link toc-highlight">Goal</a></li><li><a href="#actions" class="table-of-contents__link toc-highlight">Actions</a></li><li><a href="#tools" class="table-of-contents__link toc-highlight">Tools</a></li><li><a href="#reasoning" class="table-of-contents__link toc-highlight">Reasoning</a></li><li><a href="#planning" class="table-of-contents__link toc-highlight">Planning</a></li><li><a href="#feedback-loop" class="table-of-contents__link toc-highlight">Feedback Loop</a></li><li><a href="#tool-use" class="table-of-contents__link toc-highlight">Tool Use</a></li><li><a href="#orchestration" class="table-of-contents__link toc-highlight">Orchestration</a></li><li><a href="#multi-agent-system" class="table-of-contents__link toc-highlight">Multi-Agent System</a></li><li><a href="#human-in-the-loop" class="table-of-contents__link toc-highlight">Human-in-the-Loop</a></li><li><a href="#guardrails" class="table-of-contents__link toc-highlight">Guardrails</a></li></ul></li><li><a href="#related-best-practices" class="table-of-contents__link toc-highlight"><span class="post-article-first-title">Related Best Practices</span></a></li><li><a href="#related-ai-capabilities" class="table-of-contents__link toc-highlight">Related AI Capabilities</a></li><li><a href="#contributors" class="table-of-contents__link toc-highlight">Contributors</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">SAP Logo</div><ul class="footer__items clean-list"><li class="footer__item">
+                <a href="/" aria-label="SAP Logo">
+                  <img src="/img/logo.svg" alt="SAP Logo" height="50">
+                </a></li></ul></div><div class="col footer__col"><div class="footer__title">Resources</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/category/technologies">Technologies</a></li><li class="footer__item"><a class="footer__link-item" href="/docs/glossary">Glossary</a></li></ul></div><div class="col footer__col"><div class="footer__title">Legal &amp; Privacy</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/privacy">Privacy Statement</a></li><li class="footer__item"><a class="footer__link-item" href="/cookies">Cookie Statement</a></li><li class="footer__item"><a class="footer__link-item open-cookie-preferences" href="#cookie-preferences">Cookie Preferences</a></li><li class="footer__item"><a href="https://www.sap.com/impressum" target="_blank" rel="noopener noreferrer" class="footer__link-item">Legal Disclosure<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://www.sap.com/terms-of-use" target="_blank" rel="noopener noreferrer" class="footer__link-item">Terms of Use<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://www.sap.com/trademark" target="_blank" rel="noopener noreferrer" class="footer__link-item">Trademark<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Contact Us</div><ul class="footer__items clean-list"><li class="footer__item"><a href="mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Feedback]" target="_blank" rel="noopener noreferrer" class="footer__link-item">Provide Feedback</a></li><li class="footer__item"><a href="https://github.com/SAP-samples/sap-btp-ai-best-practices/issues/new" target="_blank" rel="noopener noreferrer" class="footer__link-item">Report Issue<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Questions]" target="_blank" rel="noopener noreferrer" class="footer__link-item">Questions<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026, SAP SE</div></div></div></footer></div>
+</body>
+</html>
