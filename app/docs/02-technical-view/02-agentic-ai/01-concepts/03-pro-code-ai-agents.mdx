@@ -83,7 +83,7 @@ After following this best practice, developers will be able to:
 
 * Understand how AI agents reason and act through the ReAct paradigm
 * Design and implement single-agent and multi-step agentic workflows using LangGraph
-* Integrate agents with SAP services, external APIs, and enterprise data sources via the SAP Generative AI Hub SDK
+* Integrate agents with SAP services, external APIs, and enterprise data sources via the SAP Cloud SDK for AI
 * Make informed decisions about agent architecture, tool design, and workflow structure
 
 
@@ -98,11 +98,12 @@ After following this best practice, developers will be able to:
 ### Key Concepts
 
 * **ReAct (Reason + Act):** A paradigm where the agent alternates between reasoning ("Thought"), executing a tool ("Action"), and processing the result ("Observation") in an iterative loop until it reaches a final answer.
-* **Tools:** Python functions that extend the agent's capabilities beyond text generation, e.g., calling APIs, querying databases, performing calculations. Tools are described with a name, description, and input schema so the LLM can select and invoke them.
+* **Tools:** Functions or callable components that extend the agent's capabilities beyond text generation, e.g., calling APIs, querying databases, or performing calculations. Tools can be implemented in Python, JavaScript/TypeScript, or other supported runtimes, and are typically described with a name, description, and input schema so the LLM can select and invoke them.
 * **Scratchpad:** The accumulating chain-of-thought record that captures all Thought/Action/Observation steps. This gives the LLM context about what it has already tried and learned.
 * **State Graph (LangGraph):** A directed graph where nodes represent processing steps (LLM calls, tool executions, validations) and edges define the flow, including conditional branches. A shared typed state dictionary passes data between nodes.
 * **Conditional Gating:** Programmatic checks between workflow steps that route execution based on intermediate results (e.g., "if the summary is too long, route to the refinement node").
 * **Orchestration Service:** SAP's orchestration layer within the Generative AI Hub that provides authenticated access to LLMs, prompt templating, and module-based configuration.
+* **Monkey Patching**: A technique that dynamically modifies or extends the behavior of a class, module, or function at runtime without changing its original source code.
 
 ---
 
@@ -197,11 +198,11 @@ Agentic AI introduces unique security risks including prompt injection, memory p
 
 ### Recommendation
 
-**Python with LangGraph** is the recommended stack for building code-based AI agents on SAP BTP. The SAP Generative AI Hub SDK (`sap-ai-sdk-gen`) provides the LLM access layer through LangChain-compatible wrappers, avoiding vendor lock-in while routing all model calls through SAP AI Core for centralized governance. All reference examples below demonstrate this combination.
+**LangGraph for Python, Java and JavaScript/TypeScript** is the recommended stack for building code-based AI agents on SAP BTP. The SAP Cloud SDK for AI (`sap-ai-sdk-gen`) provides the LLM access layer through LangChain-compatible wrappers, avoiding vendor lock-in while routing all model calls through SAP AI Core for centralized governance. All reference examples below demonstrate this combination.
 
 ### SDKs
 
-**SAP Generative AI Hub SDK for Python** (`sap-ai-sdk-gen`) (Recommended)
+**SAP Cloud SDK for AI for Python** (`sap-ai-sdk-gen`) (Recommended)
 Native Python SDK for accessing LLMs via SAP AI Core. Includes LangChain wrappers (ChatOpenAI proxy) so that agents built with LangGraph and LangChain work out of the box with any model deployed in the Generative AI Hub.
 
 **LangGraph + LangChain**
@@ -209,7 +210,7 @@ The recommended agent framework. LangGraph provides state graphs for defining ag
 
 ### Tutorials and Learning Journeys
 
-* [Getting Started with Agents Using SAP Generative AI Hub](https://community.sap.com/t5/devtoberfest/getting-started-with-agents-using-sap-generative-ai-hub/ev-p/13865119) (Devtoberfest session)
+* [Getting Started with Agents Using SAP Cloud SDK for AI](https://community.sap.com/t5/devtoberfest/getting-started-with-agents-using-sap-generative-ai-hub/ev-p/13865119) (Devtoberfest session)
 * [SAP AI Core Agent QuickLaunch Series](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-ai-core-agent-quicklaunch-series-part0-prologue/ba-p/14104823) (SAP Community blog series)
 * [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
 
