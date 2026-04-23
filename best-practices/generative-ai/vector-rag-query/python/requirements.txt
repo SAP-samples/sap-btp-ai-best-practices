@@ -1,12 +1,8 @@
 python-dotenv
 notebook
 jupyterlab
-boto3
-sap-ai-sdk-gen[all]
-aioboto3
-langchain_openai
-langchain-google-genai
-langchain-aws
+hdbcli
 hana_ml
-hdbcli==2.24.24
-aioboto3==14.1.0
+langchain-hana
+langchain-openai
+sap-ai-sdk-gen[all]
