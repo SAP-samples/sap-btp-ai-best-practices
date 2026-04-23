@@ -1,19 +1,25 @@
 ## Project Structure
-
 This project demonstrates best practices for performing Retrieval Augmented Generation (RAG) using LLMs available on SAP GenAI Hub and SAP HANA Vector Store. It provides examples of different ways to implement RAG using Python.
 
 ```
 ├── python
-│   ├── LangChain_RAG_with_History.ipynb
-│   ├── Native_RAG.ipynb
-│   ├── README.md
-│   └── requirements.txt
+│   ├── LangChain_RAG_with_History.ipynb
+│   ├── Native_RAG.ipynb
+│   ├── README.md
+│   └── requirements.txt
 └── README.md
 ```
 
-## Pre-requisites
+## Prerequisites
 
-Source documents are already chunked and stored along with their embedding vectors in a table in HANA Vector Store. Please refer the [project](https://github.com/BhagabatP/sap-btp-ai-best-practices/tree/main/best-practices/vector-rag-embedding) for creating embedding vectors and storing them in SAP HANA Vector Store.
+Source documents must already be chunked and stored along with their embedding vectors in SAP HANA Cloud. Run the corresponding embedding notebook first:
+
+| Query Notebook | Requires Embedding Notebook | Table |
+|---|---|---|
+| `Native_RAG.ipynb` | `Native_HANA_VectorStore_Embeddings.ipynb` | `SCIENCE_DATA` |
+| `LangChain_RAG_with_History.ipynb` | `LangChain_HANA_VectorStore_Embeddings.ipynb` | `SAP_HELP_PUBLIC` |
+
+See the [embedding project](../vector-rag-embedding/python/) for details.
 
 ## Clone the repository
 
@@ -37,11 +43,12 @@ pip install -r requirements.txt
 
 ## Configure environment variables
 
-- Copy the .env-example file to .env
+* Copy the .env-example file to .env
   ```sh
     cp .env-example .env
   ```
-- Populate the .env file with the required values.
+* Populate the .env file with the required values.
+* The embedding model defaults to `text-embedding-3-small`. To use a different model available on SAP GenAI Hub, set the `EMBEDDING_MODEL` variable in your `.env` file.
 
 ## Run the Jupyter Notebook
 
@@ -53,20 +60,20 @@ Open LangChain_RAG_with_History.ipynb or Native_RAG.ipynb notebook in your brows
 
 ## Usage Examples
 
-The notebooks demonstrate various methods to use Embeddings model and SAP HANA Vector Store.
+The notebooks demonstrate various methods to build a RAG pipeline with SAP HANA Vector Store.
 
 - LangChain Implementations (LangChain_RAG_with_History.ipynb):
-  - Create LangChain object for operations on HANA Vector Store
-  - Retrieves top 4 semantically matching documents from vector store.
-  - Optionally processes history messages for follow up queries.
+  - Creates a LangChain object for operations on HANA Vector Store using the [`langchain-hana`](https://github.com/SAP/langchain-integration-for-sap-hana-cloud) package
+  - Retrieves top semantically matching documents from vector store
+  - Optionally processes history messages for follow-up queries
   - Uses OpenAI embedding as well as completion models from GenAI Hub
-  - Demonstrates seemless integration between LangChain and SAP HANA Vector Store for all the operations
+  - Demonstrates seamless integration between LangChain and SAP HANA Vector Store
 - Native Client Integrations (Native_RAG.ipynb):
-  - Initialized connection context and cursor all operations on HANA Vector Store
-  - Uses SQL queries to retieve top semantically matching recrods based on similarity measures
+  - Initializes connection context and cursor for all operations on HANA Vector Store
+  - Uses SQL queries to retrieve top semantically matching records based on similarity measures
   - Uses OpenAI embedding as well as completion models from GenAI Hub
 
-Each section in the notebook provides a detailed example of how to set up and perform embeddings related operations.
+Each section in the notebook provides a detailed example of how to set up and perform RAG operations.
 
 ## Recommended Method
 
