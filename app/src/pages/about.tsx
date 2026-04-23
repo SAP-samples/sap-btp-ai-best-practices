@@ -155,7 +155,7 @@ export default function About(): React.ReactNode {
               <h2 className={styles.roadmapHeading}>See What's Next</h2>
               <p className={styles.roadmapDescription}>Curious about upcoming BTP AI Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
               <div className={styles.roadmapButtonWrapper}>
-                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20260202.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
+                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20260423.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
                   <Icon name="workflow-tasks" className={styles.roadmapButtonIcon} style={{ marginRight: 8, fontSize: 22 }} />
                   Explore the Roadmap
                 </a>
@@ -185,6 +185,10 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/ai-services/custom-joule-skills" text="Custom Joule Skills" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/document-grounding" text="Document Grounding" />
                   <IconLinkButton href="/docs/technical-view/ai-services/sap-translation-hub" text="SAP Translation Hub" />
+                  <IconLinkButton href="/docs/technical-view/agentic-ai/concepts/joule-agent-builder" text="Content-based Agents with SAP Joule Studio Agent Builder" />
+                  <IconLinkButton href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents" text="Pro-Code AI Agents" />
+                  <IconLinkButton href="/docs/technical-view/agentic-ai/mcp" text="Model Context Protocol (MCP)" />
+                  <IconLinkButton href="/docs/technical-view/agentic-ai/agentic-ai-security-governance" text="Agentic AI Security & Governance" />
                 </div>
                 <p>
                   Further SAP BTP AI Best Practices are in preparation. <strong>Stay tuned</strong> to keep your AI development on SAP BTP at the forefront!
