@@ -1,0 +1,32 @@
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Progress tracking
+tqdm>=4.65.0
+
+# Text matching and fuzzy search
+rapidfuzz>=3.0.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Excel file handling
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+hdbcli>=2.20.0
+
+# SAP Gen AI Hub for embeddings and LLM
+sap-ai-sdk-gen>=1.0.0
+langchain>=0.1.0
+
+# PDF processing
+PyMuPDF>=1.24.0,<1.25.0
+tabulate
+requests>=2.31.0
+
+# API server
+fastapi>=0.110.0
+uvicorn[standard]>=0.23.0
+python-multipart>=0.0.7
+typing_extensions>=4.7.1
