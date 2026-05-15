@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic>=2.8.0
+generative-ai-hub-sdk[all]
