@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice · Payment Matcher</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+      #app {
+        opacity: 0;
+        transition: opacity 0s ease-in-out;
+      }
+      #app.ready {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <ui5-navigation-layout id="nl1">
+        <ui5-shellbar slot="header">
+          <ui5-button icon="menu2" slot="startButton" id="startButton"></ui5-button>
+          <ui5-shellbar-branding slot="branding">
+            Invoice · Payment Matcher
+            <img slot="logo" src="/images/SAP_logo.svg" />
+          </ui5-shellbar-branding>
+          <ui5-avatar slot="profile">
+            <img src="/images/avatars/man_avatar_3.png" />
+          </ui5-avatar>
+        </ui5-shellbar>
+
+        <ui5-side-navigation id="sn1" slot="sideContent">
+          <ui5-side-navigation-item text="Home" href="/home" icon="home" selected></ui5-side-navigation-item>
+          <ui5-side-navigation-item text="Invoice Matcher" href="/invoice-matcher" icon="process"></ui5-side-navigation-item>
+        </ui5-side-navigation>
+
+        <div class="content">
+        </div>
+      </ui5-navigation-layout>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
