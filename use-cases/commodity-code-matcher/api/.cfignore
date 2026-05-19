@@ -1,0 +1,5 @@
+data/
+doc_extraction/embedding/*.xlsx
+outputs/
+scripts/
+tests/

@@ -1,0 +1,30 @@
+applications:
+  - name: commodity-code-pipeline-api
+    memory: 512M
+    disk_quota: 1G
+    path: ./api # Points to API folder
+    buildpacks:
+      - python_buildpack
+    command: python -m app.main
+    routes:
+      - route: commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      ALLOWED_ORIGIN: https://commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      LLM_PROVIDER: "openai"
+      LLM_MODEL: "gpt-4.1"
+  - name: commodity-code-pipeline-ui
+    memory: 256M
+    disk_quota: 1G
+    path: ./ui # Points to UI folder
+    buildpacks:
+      - python_buildpack
+    command: python streamlit_app.py
+    routes:
+      - route: commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com
+    env:
+      PYTHONPATH: "."
+      API_BASE_URL: https://commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com
+      API_KEY: ((api_key))
