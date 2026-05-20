@@ -1,0 +1,119 @@
+<div class="products-page">
+  <div class="products-hero">
+    <div>
+      <div class="products-kicker">Section 232 Worklist</div>
+      <ui5-title level="H2">Classify Products</ui5-title>
+      <ui5-text>Filter GCC Tracker rows, optionally assign supporting PDFs, and trigger single or batch prediction.</ui5-text>
+    </div>
+    <div class="products-summary">
+      <ui5-tag design="Information" id="products-total-tag">0 products</ui5-tag>
+      <div class="products-summary-meta" id="products-page-summary">Page 1</div>
+    </div>
+  </div>
+
+  <ui5-card class="products-card">
+    <ui5-card-header slot="header" title-text="Filters"></ui5-card-header>
+    <div class="products-card-body">
+      <div class="products-filter-grid">
+        <div class="products-field">
+          <ui5-label for="filter-priority">Priority</ui5-label>
+          <ui5-select id="filter-priority"></ui5-select>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-business-segment">Business Segment</ui5-label>
+          <ui5-select id="filter-business-segment"></ui5-select>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-product-code">Product Code</ui5-label>
+          <ui5-input id="filter-product-code" placeholder="Search product code"></ui5-input>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-pn">PN Revised/Standardized</ui5-label>
+          <ui5-input id="filter-pn" placeholder="Search PN"></ui5-input>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-new-description">New Part Description</ui5-label>
+          <ui5-input id="filter-new-description" placeholder="Search new part description"></ui5-input>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-part-description">Part Description</ui5-label>
+          <ui5-input id="filter-part-description" placeholder="Search part description"></ui5-input>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-has-documents">Has Documents</ui5-label>
+          <ui5-select id="filter-has-documents">
+            <ui5-option value="" selected>All</ui5-option>
+            <ui5-option value="true">Yes</ui5-option>
+            <ui5-option value="false">No</ui5-option>
+          </ui5-select>
+        </div>
+        <div class="products-field">
+          <ui5-label for="filter-is-classified">Is Classified</ui5-label>
+          <ui5-select id="filter-is-classified">
+            <ui5-option value="" selected>All</ui5-option>
+            <ui5-option value="true">Yes</ui5-option>
+            <ui5-option value="false">No</ui5-option>
+          </ui5-select>
+        </div>
+      </div>
+      <div class="products-filter-actions">
+        <ui5-button id="products-go-button" design="Emphasized">Go</ui5-button>
+        <ui5-button id="products-clear-button" design="Transparent">Clear Filters</ui5-button>
+      </div>
+    </div>
+  </ui5-card>
+
+  <ui5-message-strip id="products-message" hide-close-button style="display: none"></ui5-message-strip>
+
+  <div class="products-toolbar">
+    <div class="products-toolbar-copy">
+      <ui5-title level="H4">Products</ui5-title>
+      <ui5-text id="products-selection-count">0 selected</ui5-text>
+    </div>
+    <div class="products-toolbar-actions">
+      <div class="products-document-mode">
+        <ui5-label for="products-document-mode">Evidence</ui5-label>
+        <ui5-select id="products-document-mode">
+          <ui5-option value="text_only" selected>Text only</ui5-option>
+          <ui5-option value="with_documents">With PDFs</ui5-option>
+        </ui5-select>
+      </div>
+      <ui5-button id="products-prev-button" design="Transparent" icon="navigation-left-arrow"></ui5-button>
+      <ui5-button id="products-next-button" design="Transparent" icon="navigation-right-arrow"></ui5-button>
+      <ui5-button id="products-classify-button" design="Emphasized" icon="play">Predict</ui5-button>
+    </div>
+  </div>
+
+  <div class="products-table-shell">
+    <div class="products-loading" id="products-loading">Loading products…</div>
+    <table class="products-table" id="products-table">
+      <thead>
+        <tr>
+          <th class="products-checkbox-cell">
+            <ui5-checkbox id="products-select-all"></ui5-checkbox>
+          </th>
+          <th>Product Code</th>
+          <th>PN Revised/Standardized</th>
+          <th>New Part Description</th>
+          <th>Part Description</th>
+          <th>Priority</th>
+          <th>Business Segment</th>
+          <th>Docs</th>
+          <th>Classification</th>
+          <th>Last Classified</th>
+        </tr>
+      </thead>
+      <tbody id="products-table-body"></tbody>
+    </table>
+  </div>
+
+  <ui5-dialog id="products-missing-docs-dialog" header-text="Missing documents">
+    <div>
+      PDF evidence mode requires an uploaded PDF for each selected item.
+    </div>
+    <div id="products-missing-docs-list" class="products-missing-docs-list"></div>
+    <div slot="footer" class="products-dialog-footer">
+      <ui5-button id="products-missing-docs-close-button" design="Emphasized">Close</ui5-button>
+    </div>
+  </ui5-dialog>
+</div>

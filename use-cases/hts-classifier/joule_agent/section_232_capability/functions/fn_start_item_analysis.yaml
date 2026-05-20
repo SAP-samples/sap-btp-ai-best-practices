@@ -1,0 +1,51 @@
+parameters:
+  - name: item_id
+    optional: false
+  - name: document_mode
+    optional: true
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: POST
+        path: /api/metal-composition/items/predict
+        timeout: 45
+        body:
+          item_id: "<? item_id ?>"
+          document_mode: "<? document_mode == 'with_documents' ? 'with_documents' : 'text_only' ?>"
+        result_variable: submit_result
+
+      - type: set-variables
+        variables:
+          - name: submitted_item_id
+            value: "<? item_id ?>"
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Prediction Submitted
+
+            | Field | Value |
+            |---|---|
+            | Job ID | {{submit_result.body.job_id}} |
+            | Job type | {{submit_result.body.job_type}} |
+            | Status | {{submit_result.body.status}} |
+            | Submitted | {{submit_result.body.submitted_at}} |
+            | Total items | {{submit_result.body.total_count}} |
+
+  - actions:
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "Next actions"
+            buttons:
+              - title: "Check job"
+                value: "Check job status {{submit_result.body.job_id}}"
+              - title: "Show item"
+                value: "Show details for {{submitted_item_id}}"

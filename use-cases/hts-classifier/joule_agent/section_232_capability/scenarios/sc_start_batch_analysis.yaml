@@ -1,0 +1,21 @@
+description: >
+  Start a backend Section 232 prediction job for multiple GCC tracker item ids.
+  Use this when the user asks to analyze a list, batch, or group of GCC item
+  ids. Examples: "Start batch analysis for gcc:1001, gcc:1002", "classify
+  these items: gcc:2001 and gcc:2002", or "run Section 232 for gcc:1001,
+  gcc:1002, gcc:1003 with PDFs".
+
+slots:
+  - name: item_ids
+    description: >
+      Comma-separated GCC tracker item ids. Capture all ids in order and
+      normalize separators to commas, for example "gcc:1001,gcc:1002,gcc:1003".
+  - name: document_mode
+    description: >
+      Batch-wide evidence mode for the prediction. Default to text_only. Use
+      with_documents only when the user explicitly asks to include PDFs,
+      diagrams, drawings, or uploaded documents.
+
+target:
+  name: fn_start_batch_analysis
+  type: function
