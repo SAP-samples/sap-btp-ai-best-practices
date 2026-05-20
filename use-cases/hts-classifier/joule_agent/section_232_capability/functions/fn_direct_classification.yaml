@@ -1,0 +1,59 @@
+parameters:
+  - name: hts_code
+    optional: false
+  - name: steel_grams
+    optional: false
+  - name: aluminum_grams
+    optional: true
+  - name: copper_grams
+    optional: true
+  - name: total_weight_grams
+    optional: true
+  - name: supporting_hts_candidates
+    optional: true
+  - name: metal_share_certainty
+    optional: true
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: POST
+        path: /api/metal-composition/section-232/classify
+        timeout: 45
+        body:
+          hts_code: "<? hts_code ?>"
+          supporting_hts_candidates: "<? supporting_hts_candidates == null || supporting_hts_candidates == '' ? {} : supporting_hts_candidates.split(',').![#this.trim()] ?>"
+          total_weight_grams: "<? total_weight_grams == null || total_weight_grams == '' ? null : total_weight_grams ?>"
+          top_level_grams:
+            steel: "<? steel_grams ?>"
+            aluminum: "<? aluminum_grams == null || aluminum_grams == '' ? 0 : aluminum_grams ?>"
+            copper: "<? copper_grams == null || copper_grams == '' ? 0 : copper_grams ?>"
+          metal_share_certainty: "<? metal_share_certainty == null || metal_share_certainty == '' ? 'exact' : metal_share_certainty ?>"
+        result_variable: classify_result
+
+      - type: set-variables
+        variables:
+          - name: input_hts_code
+            value: "<? hts_code ?>"
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Direct Section 232 Classification
+
+            | Field | Value |
+            |---|---|
+            | HTS code | {{input_hts_code}} |
+            | Status | {{classify_result.body.section_232_assessment.status}} |
+            | Decision | {{classify_result.body.section_232_assessment.decision}} |
+            | Confidence | {{classify_result.body.section_232_assessment.confidence}} |
+            | Needs review | {{classify_result.body.section_232_assessment.needs_human_review}} |
+            | Weight rule applied | {{classify_result.body.section_232_assessment.weight_rule_applied}} |
+            | Basis | {{classify_result.body.section_232_assessment.basis_summary}} |
+            {{#if classify_result.body.section_232_assessment.chapter_99_candidates.length}}
+            | Chapter 99 candidates | {{#each classify_result.body.section_232_assessment.chapter_99_candidates}}{{this}}{{#unless @last}}, {{/unless}}{{/each}} |
+            {{/if}}
