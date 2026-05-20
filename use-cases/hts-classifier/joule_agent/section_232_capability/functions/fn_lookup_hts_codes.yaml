@@ -1,0 +1,51 @@
+parameters:
+  - name: query
+    optional: true
+  - name: limit
+    optional: true
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: "/api/metal-composition/section-232/eligible-hts-codes/details?query=<? query ?>&limit=<? limit == null || limit == '' ? 20 : limit ?>&offset=0"
+        result_variable: hts_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Section 232 Eligible HTS Codes
+
+            Total matching codes: **{{hts_result.body.total}}**
+
+            {{#if hts_result.body.items.length}}
+            | HTS code | Description | Chapter |
+            |---|---|---|
+            {{#each hts_result.body.items}}
+            | {{this.code}} | {{#if this.description}}{{this.description}}{{else}}-{{/if}} | {{#if this.chapter_number}}{{this.chapter_number}}{{else}}-{{/if}} |
+            {{/each}}
+            {{else}}
+            No eligible HTS codes matched the query.
+            {{/if}}
+
+  - condition: hts_result.body.items != null && hts_result.body.items.size() > 0
+    actions:
+      - type: set-variables
+        variables:
+          - name: first_hts_code
+            value: "<? hts_result.body.items[0].code ?>"
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "Next actions"
+            buttons:
+              - title: "Assess code"
+                value: "Assess HTS {{first_hts_code}} with 0 grams steel"
+              - title: "Source documents"
+                value: "What Section 232 source documents are loaded?"
