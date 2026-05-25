@@ -1,7 +1,7 @@
 // Import all icons because of the dynamic import of the icons for use cases
-import "@ui5/webcomponents-icons/dist/AllIcons.js";
-import "@ui5/webcomponents-icons-tnt/dist/AllIcons.js";
 import "@ui5/webcomponents-icons-business-suite/dist/AllIcons.js";
+import "@ui5/webcomponents-icons-tnt/dist/AllIcons.js";
+import "@ui5/webcomponents-icons/dist/AllIcons.js";
 
 // import "@ui5/webcomponents-icons/dist/decrease-line-height.js";
 // import "@ui5/webcomponents-icons/dist/lateness.js";
@@ -109,6 +109,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/generative-ai/rag/document-grounding": "doc-attachment",
 
   // Agentic AI
+  "/docs/technical-view/agentic-ai": "machine",
   "/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained": "course-program",
   "/docs/technical-view/agentic-ai/concepts/joule-agent-builder": "da",
   "/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents": "syntax",
