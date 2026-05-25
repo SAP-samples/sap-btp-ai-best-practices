@@ -1,16 +1,16 @@
-import React from "react";
-import Layout from "@theme/Layout";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import Heading from "@theme/Heading";
-import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 import Link from "@docusaurus/Link";
-import IconLinkButton from "@site/src/components/IconLinkButton";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Icon from "@site/src/components/Icon";
-import "@ui5/webcomponents-icons/dist/idea-wall.js";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+import Heading from "@theme/Heading";
+import Layout from "@theme/Layout";
 import "@ui5/webcomponents-icons/dist/developer-settings.js";
-import "@ui5/webcomponents-icons/dist/tools-opportunity.js";
+import "@ui5/webcomponents-icons/dist/idea-wall.js";
 import "@ui5/webcomponents-icons/dist/lightbulb.js";
+import "@ui5/webcomponents-icons/dist/tools-opportunity.js";
 import "@ui5/webcomponents-icons/dist/workflow-tasks.js";
+import React from "react";
 
 import styles from "./about.module.css";
 
@@ -155,7 +155,7 @@ export default function About(): React.ReactNode {
               <h2 className={styles.roadmapHeading}>See What's Next</h2>
               <p className={styles.roadmapDescription}>Curious about upcoming BTP AI Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
               <div className={styles.roadmapButtonWrapper}>
-                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20260423.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
+                <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20260525.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
                   <Icon name="workflow-tasks" className={styles.roadmapButtonIcon} style={{ marginRight: 8, fontSize: 22 }} />
                   Explore the Roadmap
                 </a>
