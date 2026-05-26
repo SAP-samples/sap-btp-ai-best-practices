@@ -53,7 +53,8 @@ The backend is a **FastAPI** application that orchestrates a multi-stage pipelin
 PDF Upload
     |
     v
-[1] File Upload & Validation          app/services/extraction_service.py
+[1] Job Submission & Upload Storage   app/routers/extraction.py
+                                        app/services/extraction_jobs.py
     |
     v
 [2] PDF Content Extraction (LLM)      doc_extraction/llm_extraction/extractor.py
@@ -82,7 +83,7 @@ PDF Upload
 [7] Retry Low-Confidence Matches       doc_extraction/embedding/matcher.py
     |
     v
-[8] Excel Export & Download             doc_extraction/embedding/matcher.py
+[8] Excel Export & Job Download          doc_extraction/embedding/matcher.py
                                         app/services/extraction_service.py
 ```
 
@@ -92,12 +93,13 @@ PDF Upload
 
 All endpoints are defined in `app/routers/extraction.py` and mounted under the `/api/extraction` prefix by `app/main.py`.
 
-| Method | Path                       | Purpose                                      |
-|--------|----------------------------|----------------------------------------------|
-| GET    | `/api/health`              | Health probe (returns `{"status": "healthy"}`) |
-| GET    | `/api/extraction/defaults` | Returns default configuration for UI forms   |
-| POST   | `/api/extraction/run`      | Main endpoint: upload PDFs, run full pipeline |
-| GET    | `/api/extraction/download` | Download the generated Excel by relative path |
+| Method | Path                                       | Purpose                                      |
+|--------|--------------------------------------------|----------------------------------------------|
+| GET    | `/api/health`                              | Health probe (returns `{"status": "healthy"}`) |
+| GET    | `/api/extraction/defaults`                 | Returns default configuration for UI forms   |
+| POST   | `/api/extraction/run`                      | Submit PDFs and return a job ID immediately |
+| GET    | `/api/extraction/jobs/{job_id}`            | Poll job status, progress, previews, and result metadata |
+| GET    | `/api/extraction/jobs/{job_id}/download`   | Download the generated Excel workbook for a successful job |
 
 ### POST `/api/extraction/run` -- Key Parameters
 
@@ -119,18 +121,16 @@ Submitted as `multipart/form-data`:
 ## Step 1 -- File Upload and Validation
 
 **Scripts involved:**
-- `app/routers/extraction.py` -- receives the HTTP request
-- `app/services/extraction_service.py` -- `_save_uploads()` and `run_extraction_pipeline()`
+- `app/routers/extraction.py` -- receives the HTTP request and validates PDFs
+- `app/services/extraction_jobs.py` -- persists job state, uploaded PDF BLOBs, and schedules in-process execution
 
 **What happens:**
 
 1. The user sends a `POST /api/extraction/run` request with one or more PDF files and configuration parameters.
 2. The router builds an `ExtractionConfig` dataclass from the form parameters.
-3. `run_extraction_pipeline()` is called, which first invokes `_save_uploads()`:
-   - Validates that every uploaded file has a `.pdf` extension (rejects non-PDFs with HTTP 400).
-   - Creates a temporary directory under `outputs/api/` with the prefix `api_uploads_`.
-   - Writes each PDF to disk and returns the list of resolved file paths.
-4. The heavy pipeline work is dispatched to a thread pool via `asyncio.to_thread()` to avoid blocking the FastAPI event loop.
+3. Uploaded PDFs are read into `JobFilePayload` objects and stored in HANA BLOB columns.
+4. The API creates a queued job row and returns `202 Accepted` with `job_id`, `status_url`, and `download_url`.
+5. The in-process job manager starts the pipeline in a bounded `ThreadPoolExecutor`; the UI polls `GET /api/extraction/jobs/{job_id}` until the job reaches `SUCCEEDED` or `FAILED`.
 
 ---
 
@@ -328,21 +328,21 @@ This catches cases where the supplier's historical material groups were too narr
 
 **Scripts involved:**
 - `doc_extraction/embedding/matcher.py` -- Excel writing at the end of `run_community_code_matching()`
-- `app/services/extraction_service.py` -- `_resolve_output_path()`, `resolve_download_path()`
-- `app/routers/extraction.py` -- `download_output()` endpoint
+- `app/services/extraction_service.py` -- `_resolve_output_path()` and `run_extraction_for_paths()`
+- `app/services/extraction_jobs.py` -- stores the Excel workbook as a HANA BLOB
+- `app/routers/extraction.py` -- `download_job_output()` endpoint
 
 **What happens:**
 
 1. The enriched DataFrame is filtered to the `API_EXPORT_COLUMNS` (a curated subset of all columns).
 2. The DataFrame is written to an Excel file (`.xlsx`) in `outputs/api/`.
    - If a file with the same name already exists, a Unix timestamp is appended.
-3. The API returns an `ExtractionResponse` containing:
-   - `output_path` -- Absolute path to the Excel file.
-   - `download_path` -- Relative path for use with the download endpoint.
+3. The job manager reads the workbook bytes, stores them on the `EXTRACTION_JOBS` row, and removes the transient local workbook.
+4. The polling endpoint returns a job status payload containing:
    - `headers_preview` / `line_items_preview` -- First 20 rows of each DataFrame for UI preview.
    - `runtime_seconds`, `file_count`, `errors`, `warnings` -- Metadata.
-4. The user can download the file via `GET /api/extraction/download?path=<relative_path>`.
-   - Path traversal is prevented by validating the resolved path stays within `outputs/api/`.
+   - `download_url` -- Relative URL for retrieving the completed workbook.
+5. The user can download the file via `GET /api/extraction/jobs/{job_id}/download`.
 
 ### Final Excel Columns
 
@@ -386,10 +386,11 @@ This catches cases where the supplier's historical material groups were too narr
 | File                                          | Purpose                                            |
 |-----------------------------------------------|---------------------------------------------------|
 | `app/main.py`                                 | FastAPI app creation, CORS, health check, router mount |
-| `app/routers/extraction.py`                   | HTTP endpoints: `/run`, `/defaults`, `/download`  |
-| `app/services/extraction_service.py`          | Service layer: upload handling, pipeline orchestration, vendor annotation, output management |
+| `app/routers/extraction.py`                   | HTTP endpoints: `/run`, `/defaults`, job polling, and job download |
+| `app/services/extraction_jobs.py`             | HANA-backed job repository and in-process job manager |
+| `app/services/extraction_service.py`          | Service layer: pipeline orchestration, vendor annotation, output management |
 | `app/models/common.py`                        | `HealthResponse` Pydantic model                   |
-| `app/models/extraction.py`                    | `ExtractionOptions` and `ExtractionResponse` Pydantic models |
+| `app/models/extraction.py`                    | Extraction option, job submission, and job status models |
 
 ### Document Extraction
 
@@ -461,6 +462,8 @@ Configured in `api/.env` (see `api/.env.example` for template):
 | `HANA_COMMODITY_CATALOG_TABLE`   | Optional catalog table override |
 | `HANA_UNSPSC_MAPPING_TABLE`      | Optional UNSPSC table override |
 | `HANA_SUPPLIER_GROUPS_TABLE`     | Optional supplier table override |
+| `HANA_EXTRACTION_JOBS_TABLE`     | Optional extraction job table override |
+| `HANA_EXTRACTION_JOB_FILES_TABLE`| Optional extraction job file table override |
 | `LLM_MAX_TOKENS`  | (unset)                    | Optional max token limit              |
 | `EMBEDDING_MODEL`  | `text-embedding-3-large`   | Model for semantic embeddings         |
 
@@ -470,5 +473,8 @@ Configured in `api/.env` (see `api/.env.example` for template):
 |-------------------|-------------|-----------------------------------------|
 | `APP_ENV`         | (empty)     | Set to `production` for strict CORS     |
 | `ALLOWED_ORIGIN`  | (unset)     | Allowed CORS origin in production       |
+| `API_KEY`         | (unset)     | Enables `X-API-Key` authentication for extraction endpoints; required in production |
+| `EXTRACTION_JOB_WORKERS` | `1` | In-process worker thread count |
+| `EXTRACTION_MAX_QUEUED_JOBS` | `20` | Maximum queued plus running extraction jobs |
 | `PORT`            | `8000`      | Server port                             |
 | `PAGE_IMAGE_DPI`  | `150`       | DPI for PDF page rendering to images    |
