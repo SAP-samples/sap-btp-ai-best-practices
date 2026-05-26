@@ -2,16 +2,13 @@
 
 from __future__ import annotations
 
-import asyncio
 import os
-import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Sequence
+from typing import Sequence
 
 import pandas as pd
-from fastapi import UploadFile
 
 from doc_extraction.embedding.matcher import run_community_code_matching
 from doc_extraction.main import _extract_with_llm
@@ -244,24 +241,17 @@ def _resolve_output_path(pdf_paths: Sequence[Path], desired_name: str | None) ->
     return candidate
 
 
-async def _save_uploads(upload_files: Sequence[UploadFile]) -> list[Path]:
-    if not upload_files:
-        raise ValueError("At least one PDF must be uploaded.")
-
-    temp_dir = Path(tempfile.mkdtemp(prefix="api_uploads_", dir=str(_ensure_outputs_dir())))
-    saved: list[Path] = []
-    for upload in upload_files:
-        filename = upload.filename or "document.pdf"
-        if not filename.lower().endswith(".pdf"):
-            raise ValueError(f"Unsupported file type for '{filename}'. Only PDF is allowed.")
-        destination = temp_dir / filename
-        data = await upload.read()
-        destination.write_bytes(data)
-        saved.append(destination.resolve())
-    return saved
-
-
 def _preview(df: pd.DataFrame, limit: int = 20) -> list[dict[str, object]]:
+    """Return a JSON-serializable preview of a DataFrame.
+
+    Args:
+        df: DataFrame to preview.
+        limit: Maximum number of rows included in the output.
+
+    Returns:
+        A list of row dictionaries with missing values converted to blanks.
+    """
+
     if df is None or df.empty:
         return []
     sample = df.head(limit)
@@ -319,34 +309,30 @@ def _run_embedding_pipeline(
     )
 
 
-def resolve_download_path(relative_path: str) -> Path:
-    base = _ensure_outputs_dir().resolve()
-    candidate = (base / relative_path).resolve()
-    if not str(candidate).startswith(str(base)):
-        raise ValueError("Invalid download path.")
-    if not candidate.exists():
-        raise FileNotFoundError(f"File not found: {relative_path}")
-    return candidate
-
-
-async def run_extraction_pipeline(
-    upload_files: Sequence[UploadFile],
+def run_extraction_for_paths(
+    pdf_paths: Sequence[Path],
     config: ExtractionConfig,
 ) -> dict:
-    pdf_paths = await _save_uploads(upload_files)
+    """Run extraction for already-materialized PDF paths.
 
-    # Heavy lifting runs in a thread to keep the event loop responsive.
+    Args:
+        pdf_paths: Resolved paths to PDF files available on local disk.
+        config: Runtime options controlling LLM verification and matching.
+
+    Returns:
+        A JSON-serializable payload containing output metadata and previews.
+
+    Raises:
+        RuntimeError: If reference data cannot be loaded or extraction fails.
+    """
+
     try:
-        result = await asyncio.to_thread(_run_embedding_pipeline, pdf_paths, config)
+        result = _run_embedding_pipeline(pdf_paths, config)
     except ReferenceDataError as exc:
         raise RuntimeError(str(exc)) from exc
 
-    outputs_dir = _ensure_outputs_dir()
-    download_path = str(result.output_path.relative_to(outputs_dir))
-
     return {
         "output_path": str(result.output_path),
-        "download_path": download_path,
         "output_exists": result.output_path.exists(),
         "file_count": len(pdf_paths),
         "llm_verify": config.llm_verify,

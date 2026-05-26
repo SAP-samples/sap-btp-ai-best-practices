@@ -50,6 +50,13 @@ with st.sidebar:
 
 
 def _render_error(result: dict):
+    """Render an API error payload in Streamlit.
+
+    Args:
+        result: Dictionary returned by the API client containing an ``error``
+            value and optional HTTP ``status``.
+    """
+
     error = result.get("error")
     status = result.get("status")
     if not error:
@@ -60,8 +67,14 @@ def _render_error(result: dict):
 
 
 def _render_result(result: dict):
+    """Render a completed extraction job in Streamlit.
+
+    Args:
+        result: Final job status payload returned by the polling API client.
+    """
+
     if result.get("errors"):
-        st.warning("Some warnings were raised during processing.")
+        st.warning("Some issues were raised during processing.")
         for err in result.get("errors", []):
             st.write(f"- {err}")
 
@@ -96,9 +109,9 @@ def _render_result(result: dict):
             st.subheader("Extracted Field Information")
             st.dataframe(preview_df, use_container_width=True)
 
-    download_path = result.get("download_path")
-    if download_path:
-        excel_bytes = download_output(download_path)
+    job_id = result.get("job_id")
+    if job_id and result.get("status") == "SUCCEEDED":
+        excel_bytes = download_output(job_id)
         if excel_bytes:
             st.success("Reference codes assigned.")
             st.download_button(
@@ -129,15 +142,37 @@ if st.button("Run Classification and Extract Fields", type="primary", use_contai
         status_placeholder = st.empty()
         progress_bar = progress_placeholder.progress(0)
 
-        status_placeholder.info("Running document classification. This may take a moment...")
-        with st.spinner("Processing..."):
-            result = run_extraction(uploaded_files)
+        def _update_job_status(status_payload: dict) -> None:
+            """Update the visible progress indicators from a polling payload.
 
-        progress_bar.progress(100)
+            Args:
+                status_payload: Job status payload from the backend.
+            """
+
+            progress = int(status_payload.get("progress") or 0)
+            progress_bar.progress(min(max(progress, 0), 100))
+            message = status_payload.get("message") or status_payload.get("status") or "Waiting for job status..."
+            if status_payload.get("error"):
+                status_placeholder.error(status_payload["error"])
+            else:
+                status_placeholder.info(message)
+
+        status_placeholder.info("Submitting extraction job...")
+        with st.spinner("Processing..."):
+            result = run_extraction(uploaded_files, on_status=_update_job_status)
+
+        if result.get("status") == "SUCCEEDED":
+            progress_bar.progress(100)
+        elif result.get("progress") is not None:
+            progress_bar.progress(min(max(int(result.get("progress") or 0), 0), 100))
         status_placeholder.empty()
 
         if result.get("error"):
             _render_error(result)
+        elif result.get("status") == "FAILED":
+            st.error("Extraction failed.")
+            for err in result.get("errors", []):
+                st.write(f"- {err}")
         else:
             _render_result(result)
 
