@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-ssr/
+coverage/
+logs/
+tests/
+*.log
+.vite/
+.env
+.env.example

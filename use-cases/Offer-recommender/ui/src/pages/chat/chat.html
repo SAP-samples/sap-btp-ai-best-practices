@@ -1,0 +1,34 @@
+<section class="page-shell">
+  <div class="hero-strip">
+    <div>
+      <h1>Chat Assistant</h1>
+      <p>Agent for account identification, question flow, and offer recommendations.</p>
+    </div>
+    <button id="chat-new-thread" class="action-button">New Thread</button>
+  </div>
+
+  <div class="panel-grid chat-layout">
+    <div class="panel large chat-conversation-panel">
+      <div class="panel-header">
+        <h2>Conversation</h2>
+        <span id="chat-status" class="status-pill">Status: loading</span>
+      </div>
+      <div id="chat-messages" class="chat-log"></div>
+      <div id="chat-options" class="inline-actions"></div>
+      <div class="composer">
+        <textarea id="chat-input" class="text-input" rows="3" placeholder="Type a message or account number..."></textarea>
+        <button id="chat-send" class="action-button">Send</button>
+      </div>
+    </div>
+    <div class="panel chat-summary-panel">
+      <div class="panel-header">
+        <h2>Recommendation Summary</h2>
+      </div>
+      <div id="chat-primary-summary"></div>
+      <div id="chat-explanation"></div>
+      <div id="chat-guidance"></div>
+      <div id="chat-additional-offers"></div>
+      <div id="chat-summary-declines"></div>
+    </div>
+  </div>
+</section>
