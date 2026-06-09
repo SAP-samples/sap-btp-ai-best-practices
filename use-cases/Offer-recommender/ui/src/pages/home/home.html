@@ -1,0 +1,36 @@
+<section class="page-shell">
+  <div class="hero-strip">
+    <div>
+      <h1>Customer Offer Advisor</h1>
+      <p>Clean rebuild of the Customer Offer Advisor application using a split FastAPI + UI frontend architecture.</p>
+    </div>
+  </div>
+
+  <div class="panel-grid three-up">
+    <a href="/chat" class="nav-card">
+      <span class="section-label">Flow 1</span>
+      <h2>Chat Assistant</h2>
+      <p>Persistent thread state, natural account entry, and follow-up question orchestration.</p>
+    </a>
+    <a href="/lookup" class="nav-card">
+      <span class="section-label">Flow 2</span>
+      <h2>Single Account Lookup</h2>
+      <p>Direct deterministic evaluation with visible questions, facts, and recommendation state.</p>
+    </a>
+    <a href="/batch" class="nav-card">
+      <span class="section-label">Flow 3</span>
+      <h2>Batch Analysis</h2>
+      <p>Run the engine across the workbook and export current results to Excel and JSON.</p>
+    </a>
+    <div class="nav-card reset-extra-card">
+      <span class="section-label">Flow 4</span>
+      <h2>Reset Extra Information</h2>
+      <div class="reset-extra-controls">
+        <input id="reset-extra-account-input" class="text-input" placeholder="Billing account" aria-label="Billing account to reset" />
+        <button id="reset-extra-account" class="action-button secondary">Reset Account</button>
+        <button id="reset-extra-all" class="action-button tertiary">Reset All</button>
+      </div>
+      <p id="reset-extra-status" class="muted" role="status"></p>
+    </div>
+  </div>
+</section>

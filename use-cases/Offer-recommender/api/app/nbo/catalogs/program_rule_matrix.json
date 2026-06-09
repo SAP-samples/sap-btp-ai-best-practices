@@ -1,0 +1,46 @@
+[
+  {
+    "program_id": "prepay_advance",
+    "source_documents": [
+      "offer-guidance-notes.docx",
+      "rate-plan-guide.pdf"
+    ],
+    "rule_summary": "Disconnected residential prepay accounts can receive a Prepay Advance when fewer than two offers have already been made this month.",
+    "required_facts": [
+      "current_status",
+      "is_mpower_enrolled",
+      "prepay_advance_offers_this_month"
+    ],
+    "rule_basis": "demo_workbook_backed"
+  },
+  {
+    "program_id": "income_qualified_discount",
+    "source_documents": [
+      "customer-assistance-guide.pdf"
+    ],
+    "rule_summary": "Household Assistance Discount requires a residential price-plan customer, the customer of record on site, and either income qualification or an income-assistance auto qualifier; company-name accounts are excluded.",
+    "required_facts": [
+      "residential_price_plan_customer",
+      "household_income_qualified",
+      "income_assistance_auto_qualifier",
+      "customer_of_record_on_site",
+      "account_name_type"
+    ],
+    "rule_basis": "demo_workbook_backed"
+  },
+  {
+    "program_id": "battery_partner",
+    "source_documents": [
+      "battery-partner-guide.pdf"
+    ],
+    "rule_summary": "Battery Partner requires customer follow-up intent, battery ownership, a supported partner brand, on-time payments, and a bill or usage signal.",
+    "required_facts": [
+      "customer_wants_followup",
+      "battery_ownership",
+      "battery_partner_brand_supported",
+      "payments_on_time",
+      "bill_increase_or_high_usage"
+    ],
+    "rule_basis": "demo_workbook_backed"
+  }
+]

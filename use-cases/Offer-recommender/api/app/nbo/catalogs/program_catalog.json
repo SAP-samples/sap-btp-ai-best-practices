@@ -1,0 +1,169 @@
+[
+  {
+    "program_id": "prepay_advance",
+    "display_name": "Prepay Advance",
+    "customer_type": "RESIDENTIAL",
+    "offer_family": "payment_assistance",
+    "priority_group": 1,
+    "program_rank": 10,
+    "eligibility_logic": {
+      "all_of": [
+        {
+          "fact_id": "current_status",
+          "op": "eq",
+          "value": "DISCONNECTED"
+        },
+        {
+          "fact_id": "is_mpower_enrolled",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact_id": "prepay_advance_offers_this_month",
+          "op": "lt",
+          "value": 2
+        }
+      ]
+    },
+    "routing_logic": {},
+    "exclusion_logic": {},
+    "required_facts": [
+      "current_status",
+      "is_mpower_enrolled",
+      "prepay_advance_offers_this_month"
+    ],
+    "question_templates": [],
+    "program_code_aliases": [],
+    "evidence_references": [
+      "offer-guidance-notes.docx",
+      "rate-plan-guide.pdf"
+    ],
+    "manual_curation_required": false,
+    "rule_basis": "demo_workbook_backed"
+  },
+  {
+    "program_id": "income_qualified_discount",
+    "display_name": "Household Assistance Discount",
+    "customer_type": "RESIDENTIAL",
+    "offer_family": "payment_assistance",
+    "priority_group": 3,
+    "program_rank": 30,
+    "eligibility_logic": {
+      "all_of": [
+        {
+          "fact_id": "residential_price_plan_customer",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "any_of": [
+            {
+              "fact_id": "household_income_qualified",
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact_id": "income_assistance_auto_qualifier",
+              "op": "eq",
+              "value": true
+            }
+          ]
+        },
+        {
+          "fact_id": "customer_of_record_on_site",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "routing_logic": {},
+    "exclusion_logic": {
+      "any_of": [
+        {
+          "fact_id": "account_name_type",
+          "op": "eq",
+          "value": "COMPANY"
+        }
+      ]
+    },
+    "required_facts": [
+      "residential_price_plan_customer",
+      "household_income_qualified",
+      "income_assistance_auto_qualifier",
+      "customer_of_record_on_site",
+      "account_name_type"
+    ],
+    "question_templates": [],
+    "program_code_aliases": [
+      "HAD"
+    ],
+    "evidence_references": [
+      "customer-assistance-guide.pdf"
+    ],
+    "manual_curation_required": false,
+    "rule_basis": "demo_workbook_backed"
+  },
+  {
+    "program_id": "battery_partner",
+    "display_name": "Battery Partner",
+    "customer_type": "RESIDENTIAL",
+    "offer_family": "battery_incentive",
+    "priority_group": 6,
+    "program_rank": 70,
+    "eligibility_logic": {
+      "all_of": [
+        {
+          "fact_id": "customer_wants_followup",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact_id": "battery_ownership",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact_id": "battery_partner_brand_supported",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "routing_logic": {
+      "all_of": [
+        {
+          "fact_id": "customer_wants_followup",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact_id": "payments_on_time",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact_id": "bill_increase_or_high_usage",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "exclusion_logic": {},
+    "required_facts": [
+      "customer_wants_followup",
+      "battery_ownership",
+      "battery_partner_brand_supported",
+      "payments_on_time",
+      "bill_increase_or_high_usage"
+    ],
+    "question_templates": [],
+    "program_code_aliases": [
+      "BATSI"
+    ],
+    "evidence_references": [
+      "battery-partner-guide.pdf"
+    ],
+    "manual_curation_required": false,
+    "rule_basis": "demo_workbook_backed"
+  }
+]
