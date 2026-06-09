@@ -417,7 +417,7 @@ def test_answer_classifier_logs_llm_token_usage_when_logger_is_configured(
         {
             "llm_call": "chat_answer_classifier",
             "provider": "openai",
-            "model": "gpt-4o",
+            "model": "gpt-4.1",
             "input_tokens": 41,
             "output_tokens": 3,
             "total_tokens": 44,

@@ -641,8 +641,8 @@ class ChatWorkflowService:
         try:
             from app.utils.langgraph.common import make_llm
 
-            provider = os.getenv("CHAT_ANSWER_CLASSIFIER_PROVIDER", "openai")
-            model_name = os.getenv("CHAT_ANSWER_CLASSIFIER_MODEL", "gpt-4o")
+            provider = "openai"
+            model_name = "gpt-4.1"
             self._answer_classifier_llm = make_llm(
                 provider=provider,
                 model_name=model_name,
@@ -652,8 +652,8 @@ class ChatWorkflowService:
         except Exception as exc:
             logger.warning(
                 "Chat answer classifier LLM could not be initialized; falling back to strict option matching. provider=%s model=%s error=%s",
-                os.getenv("CHAT_ANSWER_CLASSIFIER_PROVIDER", "openai"),
-                os.getenv("CHAT_ANSWER_CLASSIFIER_MODEL", "gpt-4o"),
+                "openai",
+                "gpt-4.1",
                 exc,
             )
             self._answer_classifier_llm = None
@@ -726,8 +726,8 @@ class ChatWorkflowService:
         if token_logger is None:
             return
 
-        provider = os.getenv("CHAT_ANSWER_CLASSIFIER_PROVIDER", "openai")
-        model_name = os.getenv("CHAT_ANSWER_CLASSIFIER_MODEL", "gpt-4o")
+        provider = "openai"
+        model_name = "gpt-4.1"
         event = {
             "llm_call": "chat_answer_classifier",
             "provider": provider,
