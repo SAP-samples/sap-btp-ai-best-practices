@@ -1,0 +1,33 @@
+.nav-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.4rem;
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8fd 100%);
+  border: 1px solid #d4e1ee;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 12px 30px rgba(17, 48, 91, 0.08);
+}
+
+.nav-card h2,
+.nav-card p {
+  margin: 0;
+}
+
+.reset-extra-controls {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) auto auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.reset-extra-card {
+  align-content: start;
+}
+
+@media (max-width: 760px) {
+  .reset-extra-controls {
+    grid-template-columns: 1fr;
+  }
+}

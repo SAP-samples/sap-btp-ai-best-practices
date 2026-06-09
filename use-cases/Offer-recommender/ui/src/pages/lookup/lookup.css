@@ -1,0 +1,42 @@
+.question-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f7fbff;
+  border: 1px solid #d6e8ff;
+  border-radius: 1rem;
+}
+
+.inline-select {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #bfd4ea;
+  border-radius: 0.8rem;
+}
+
+.explanation-section {
+  margin-top: 1rem;
+}
+
+.explanation-section ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.decision-explanation {
+  margin-top: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d9e3ef;
+  border-radius: 8px;
+  background: #fbfdff;
+}
+
+.decision-explanation summary {
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.offer-explanation-row {
+  margin-top: 0.65rem;
+}

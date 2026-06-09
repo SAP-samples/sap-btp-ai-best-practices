@@ -1,0 +1,28 @@
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+}
+
+.metric-card {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #f3f7fb;
+  border: 1px solid #d7e1ea;
+}
+
+.metric-card strong {
+  font-size: 1.6rem;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #0a6ed1;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
