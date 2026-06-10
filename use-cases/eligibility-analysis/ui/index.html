@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eligibility Analysis</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+      /* Hide entire app until JavaScript loads and UI5 components are ready */
+      #app {
+        opacity: 0;
+        transition: opacity 0s ease-in-out;
+      }
+
+      /* Show app when ready */
+      #app.ready {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <ui5-navigation-layout id="nl1">
+        <ui5-shellbar slot="header" notifications-count="72" show-notifications>
+          <ui5-button icon="menu2" slot="startButton" id="startButton"></ui5-button>
+          <ui5-shellbar-branding slot="branding">
+            Eligibility Analysis
+            <img slot="logo" src="/images/SAP_logo.svg" />
+          </ui5-shellbar-branding>
+          <ui5-shellbar-search slot="searchField" show-clear-icon placeholder="Search Apps, Products"></ui5-shellbar-search>
+
+          <ui5-shellbar-item icon="sys-help" text="Help"></ui5-shellbar-item>
+          <ui5-toggle-button id="assistantBtn" icon="sap-icon://da" tooltip="Assistant" slot="assistant"></ui5-toggle-button>
+          <ui5-avatar slot="profile">
+            <img src="/images/avatars/man_avatar_3.png" />
+          </ui5-avatar>
+        </ui5-shellbar>
+
+        <ui5-side-navigation id="sn1" slot="sideContent">
+          <!-- Items -->
+          <ui5-side-navigation-item text="Home" href="/home" icon="home" selected></ui5-side-navigation-item>
+          <ui5-side-navigation-group text="Eligibility" expanded>
+            <ui5-side-navigation-item text="Offer Analysis" href="/eligibility" icon="documents"></ui5-side-navigation-item>
+          </ui5-side-navigation-group>
+          <ui5-side-navigation-group text="Optimizer" expanded>
+            <ui5-side-navigation-item text="Credit Optimizer" href="/optimizer" icon="batch-payments"></ui5-side-navigation-item>
+          </ui5-side-navigation-group>
+          <!-- <ui5-side-navigation-group text="Group 1" expanded>
+            <ui5-side-navigation-item text="Item 1" href="/item1" icon="locate-me" expanded>
+              <ui5-side-navigation-sub-item text="Sub Item 1" href="/subitem1"></ui5-side-navigation-sub-item>
+              <ui5-side-navigation-sub-item text="Sub Item 2" href="/subitem2"></ui5-side-navigation-sub-item>
+            </ui5-side-navigation-item>
+            <ui5-side-navigation-item text="Item 2" href="/item2" icon="calendar" expanded>
+              <ui5-side-navigation-sub-item text="Sub Item 3" href="/subitem3"></ui5-side-navigation-sub-item>
+              <ui5-side-navigation-sub-item text="Sub Item 4" href="/subitem4"></ui5-side-navigation-sub-item>
+            </ui5-side-navigation-item>
+          </ui5-side-navigation-group> -->
+          <!-- Fixed Items -->
+          <!-- <ui5-side-navigation-item
+            slot="fixedItems"
+            text="Legal"
+            href="https://www.sap.com/about/legal/impressum.html"
+            target="_blank"
+            unselectable
+            icon="compare"
+          ></ui5-side-navigation-item>
+          <ui5-side-navigation-item
+            slot="fixedItems"
+            text="Privacy"
+            href="https://www.sap.com/about/legal/privacy.html"
+            target="_blank"
+            unselectable
+            icon="locked"
+          ></ui5-side-navigation-item>
+          <ui5-side-navigation-item
+            slot="fixedItems"
+            text="Terms of Use"
+            href="https://www.sap.com/terms-of-use"
+            target="_blank"
+            unselectable
+            icon="document-text"
+          ></ui5-side-navigation-item> -->
+        </ui5-side-navigation>
+
+        <div class="content">
+          <!-- Page content will be loaded dynamically here -->
+        </div>
+      </ui5-navigation-layout>
+
+      <div class="chatbot-panel" id="chatbotPanel" aria-hidden="true">
+        <div class="chatbot-header">
+          <h3>
+            <ui5-icon name="da"></ui5-icon>
+            Eligibility Assistant
+          </h3>
+          <div class="chatbot-header-actions">
+            <ui5-button id="clearChatBtn" icon="refresh" design="Transparent" tooltip="Clear chat"></ui5-button>
+            <ui5-button id="closeChatBtn" icon="decline" design="Transparent" tooltip="Close"></ui5-button>
+          </div>
+        </div>
+        <div class="chatbot-messages" id="chatMessages"></div>
+        <div class="chatbot-input">
+          <ui5-input id="chatInput" placeholder="Type your question..."></ui5-input>
+          <ui5-button id="sendChatBtn" icon="paper-plane" design="Emphasized"></ui5-button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

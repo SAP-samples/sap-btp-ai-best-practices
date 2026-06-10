@@ -1,0 +1,501 @@
+/* Credit Optimizer Page Styles */
+
+.optimizer-container {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.optimizer-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.optimizer-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+}
+
+/* Upload Row */
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Process Table */
+#process-table ui5-table-row {
+  cursor: pointer;
+}
+
+#process-table ui5-table-row:hover {
+  background: var(--sapList_Hover_Background);
+}
+
+#process-table ui5-table-row.selected-process {
+  background: var(--sapList_SelectionBackgroundColor);
+}
+
+#process-table .process-file-cell {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.created {
+  background: var(--sapInformationBackground);
+  color: var(--sapInformationColor);
+}
+
+.status-badge.configuring {
+  background: var(--sapInformationBackground);
+  color: var(--sapInformationColor);
+}
+
+.status-badge.running {
+  background: var(--sapWarningBackground);
+  color: var(--sapWarningColor);
+}
+
+.status-badge.completed {
+  background: var(--sapPositiveBackground);
+  color: var(--sapPositiveColor);
+}
+
+.status-badge.failed {
+  background: var(--sapNegativeBackground);
+  color: var(--sapNegativeColor);
+}
+
+/* Results Summary - reuse eligibility patterns */
+.results-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  flex: 1;
+  min-width: 120px;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.stat-box.funded {
+  background: var(--sapPositiveBackground);
+  border: 1px solid var(--sapPositiveBorderColor);
+}
+
+.stat-box.non-funded {
+  background: var(--sapNegativeBackground);
+  border: 1px solid var(--sapNegativeBorderColor);
+}
+
+.stat-box.total {
+  background: var(--sapNeutralBackground);
+  border: 1px solid var(--sapNeutralBorderColor);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+#opt-selected-amount {
+  white-space: nowrap;
+}
+
+#opt-selected-amount.stat-value--amount-medium {
+  font-size: 1.35rem;
+}
+
+#opt-selected-amount.stat-value--amount-small {
+  font-size: 1.2rem;
+}
+
+#opt-selected-amount.stat-value--amount-xsmall {
+  font-size: 1.05rem;
+}
+
+.stat-box.funded .stat-value {
+  color: var(--sapPositiveTextColor);
+}
+
+.stat-box.non-funded .stat-value {
+  color: var(--sapNegativeTextColor);
+}
+
+.stat-box.total .stat-value {
+  color: var(--sapNeutralTextColor);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.stat-label-with-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.charts-grid.charts-grid--stacked {
+  grid-template-columns: 1fr;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  background: var(--sapBackgroundColor);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.chart-container.chart-container--tall {
+  height: 420px;
+}
+
+.chart-help-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.evolution-chart-container {
+  position: relative;
+  height: 300px;
+  background: var(--sapBackgroundColor);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.weekly-exposure-evolution-chart-container {
+  position: relative;
+  height: 380px;
+  background: var(--sapBackgroundColor);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.weekly-exposure-evolution-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.375rem 0.75rem;
+  margin-top: 0.75rem;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--sapList_BorderColor);
+  border-radius: 0.375rem;
+  background: var(--sapField_Background);
+}
+
+.weekly-exposure-evolution-legend-item {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--sapTextColor);
+}
+
+.weekly-exposure-evolution-legend-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 0.125rem;
+  flex: 0 0 auto;
+}
+
+.weekly-exposure-evolution-legend-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Filter Row */
+.filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-row ui5-select {
+  min-width: 160px;
+}
+
+.filter-row ui5-input {
+  flex: 1;
+}
+
+/* Export Row */
+.export-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.weekly-exposure-header {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.weekly-exposure-toggle {
+  max-width: 100%;
+}
+
+/* Pagination */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.page-info {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Sidebar */
+.sidebar-content {
+  padding: 1rem;
+}
+
+.sidebar-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.control-group {
+  margin-bottom: 1rem;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-group ui5-input,
+.control-group ui5-select {
+  width: 100%;
+}
+
+.manual-yaml-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.manual-yaml-upload-row .selected-file {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Help icon and popover */
+.label-with-help {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.25rem;
+}
+
+.help-icon {
+  color: var(--sapTextColor);
+  font-size: 0.875rem;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.help-icon:hover,
+.help-icon:focus,
+.help-icon:active {
+  color: var(--sapTextColor);
+  opacity: 1;
+}
+
+.help-popover-content {
+  padding: 0.75rem;
+  max-width: 280px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--sapTextColor);
+}
+
+.help-popover-content p {
+  margin: 0 0 0.5rem 0;
+}
+
+.help-popover-content p:last-child {
+  margin-bottom: 0;
+}
+
+.help-popover-content code {
+  background: var(--sapBackgroundColor);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.1875rem;
+  font-size: 0.75rem;
+}
+
+/* JSON Textarea for manual limits */
+.json-textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 0.5rem;
+  font-family: monospace;
+  font-size: 0.8125rem;
+  border: 1px solid var(--sapField_BorderColor);
+  border-radius: 0.25rem;
+  background: var(--sapField_Background);
+  color: var(--sapField_TextColor);
+  resize: vertical;
+}
+
+/* Rules list items */
+.rule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--sapList_BorderColor);
+}
+
+.rule-item:last-child {
+  border-bottom: none;
+}
+
+.rule-name {
+  font-size: 0.8125rem;
+  color: var(--sapTextColor);
+}
+
+.rule-type {
+  font-size: 0.75rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Table */
+.compact-table {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Allow long values (process IDs, exclusion reasons) to wrap instead of clipping. */
+#process-table ui5-table-cell::part(content),
+#excluded-invoices-table ui5-table-cell::part(content) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#excluded-invoices-table .excluded-reason-text {
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.table-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.selected-file {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.875rem;
+}
+
+/* Data Status */
+.data-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .optimizer-container {
+    flex-direction: column;
+  }
+
+  .optimizer-sidebar {
+    width: 100%;
+    order: -1;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .results-summary {
+    flex-wrap: wrap;
+  }
+
+  .evolution-chart-container {
+    height: 260px;
+  }
+
+  .weekly-exposure-evolution-chart-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .optimizer-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .upload-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-row {
+    flex-direction: column;
+  }
+
+  .export-row {
+    flex-direction: column;
+  }
+
+  .manual-yaml-upload-row {
+    align-items: stretch;
+  }
+}
