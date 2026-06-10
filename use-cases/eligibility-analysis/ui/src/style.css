@@ -1,0 +1,153 @@
+/* Optional: include SAP 72 Light (300). Place the font at ui/public/fonts/72-Light.woff2 */
+@font-face {
+  font-family: "72";
+  src: url("/fonts/72-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+}
+
+.content {
+  min-height: 400px;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}
+
+/* Chatbot panel */
+.chatbot-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 400px;
+  height: 70vh;
+  max-height: calc(100vh - 96px);
+  background: #ffffff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  transform: translateY(calc(100% + 24px));
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+}
+
+.chatbot-panel.open {
+  transform: translateY(0);
+}
+
+.chatbot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  background: #0a6ed1;
+  border-radius: 12px 12px 0 0;
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+}
+
+.chatbot-header ui5-icon,
+.chatbot-header ui5-button {
+  color: #ffffff;
+}
+
+.chatbot-header-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-message {
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #0a6ed1;
+  color: #ffffff;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  background: #e5e5e5;
+  color: #32363a;
+}
+
+.chat-message.error {
+  border-left: 3px solid #bb0000;
+}
+
+.chat-message.loading .message-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chatbot-input {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border-top: 1px solid #e5e5e5;
+  background: #f5f6f7;
+}
+
+.chatbot-input ui5-input {
+  flex: 1;
+}
+
+.loading-text {
+  font-size: 0.85rem;
+  color: #6a6d70;
+}
+
+@media (max-width: 900px) {
+  .chatbot-panel {
+    width: calc(100% - 32px);
+  }
+}
+
+@media (max-width: 600px) {
+  .chatbot-panel {
+    right: 8px;
+    left: 8px;
+    bottom: 8px;
+    width: auto;
+    height: 80vh;
+  }
+}

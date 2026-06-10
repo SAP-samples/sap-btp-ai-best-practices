@@ -1,0 +1,107 @@
+# =============================================================================
+# Rule Engine Configuration for the Invoice Optimizer
+# =============================================================================
+#
+# Rules are applied top-to-bottom in a funnel pattern: each rule receives the
+# output of the previous rule. Rule order matters.
+#
+# Each rule must have:
+#   name:  unique identifier (used in exclusion reports)
+#   type:  one of the supported rule types (see below)
+#
+# Optional fields:
+#   enabled:              static enable/disable (default: true)
+#   enabled_from_context: name of a runtime context key that controls enablement
+#
+# SUPPORTED RULE TYPES:
+#
+#   not_null:
+#     Exclude rows where a column is NA.
+#     Fields: column
+#
+#   equals:
+#     Keep only rows where a column matches a target value.
+#     Fields: column, value (or value_from_context)
+#     For datetime columns, use match_granularity: "date" or "exact"
+#     (or match_granularity_from_context)
+#
+#   in:
+#     Keep only rows where a column value is in a set of targets.
+#     Fields: column, values (list, or values_from_context)
+#
+#   regex_not_contains:
+#     Exclude rows where a column matches a regex pattern.
+#     Fields: column, pattern, ignore_case (optional, default: false)
+#
+#   numeric_min:
+#     Keep rows where a numeric column is above a minimum threshold.
+#     Fields: column, min_value (or min_value_from_context),
+#             include_equal (optional, default: true)
+#
+#   date_after:
+#     Keep rows where a date column >= another column or a fixed date.
+#     Fields: column, other_column (or min_value / min_value_from_context)
+#
+#   deduplicate_by:
+#     Keep the first row per deduplication key.
+#     Fields: columns (list of primary key columns)
+#             fallback_columns (optional, used when primary key columns are NA)
+#     NOTE: When fallback_columns is provided, the key is built by coalescing
+#     primary and fallback columns (left-to-right, first non-NA wins).
+#
+# CONTEXT VALUES:
+#   Rules can reference runtime values using the *_from_context suffix:
+#     value_from_context: cohort_ts        -> reads context["cohort_ts"]
+#     enabled_from_context: exclude_payment_block -> reads context["exclude_payment_block"]
+#   Context is populated by the runner (run_single_week.py).
+#
+# HOW TO ADD A NEW RULE:
+#   1. Add a new entry to the 'rules' list below, following the format above.
+#   2. If your rule needs a new type, implement it in rule_engine.py:_apply_single_rule().
+#   3. If your rule needs a runtime value, add it to the context dict in run_single_week.py.
+# =============================================================================
+
+rules:
+  # Rule 1: Select only invoices from the target cohort date.
+  # Uses the cohort timestamp and granularity from the CLI/params config.
+  - name: cohort_target_offer_file_date
+    type: equals
+    column: Offer File Date (UTC)
+    value_from_context: cohort_ts
+    match_granularity_from_context: cohort_match_granularity
+    enabled: true
+
+  # Rule 2: Exclude invoices with "Not Eligible" status (Tier-1 failures).
+  - name: exclude_status_not_eligible
+    type: regex_not_contains
+    column: Status
+    pattern: "^Not Eligible$"
+    ignore_case: true
+    enabled: true
+
+  # Rule 3: Exclude invoices with negative purchase price values.
+  - name: exclude_negative_purchase_price
+    type: numeric_min
+    column: Purchase Price
+    min_value: 0
+    include_equal: true
+    enabled: true
+
+  # Rule 4: Exclude invoices with any Payment Block value.
+  # Disabled by default; enable via exclude_payment_block in optimizer_params.yaml.
+  - name: exclude_payment_block
+    type: regex_not_contains
+    column: Payment Block
+    pattern: ".+"
+    enabled_from_context: exclude_payment_block
+    enabled: false
+
+  # Rule 5: Deduplicate by Invoice Reference (with Document Number as fallback).
+  # Keeps the first occurrence; duplicates are excluded.
+  - name: deduplicate_invoice_or_document
+    type: deduplicate_by
+    columns:
+      - Invoice Reference
+    fallback_columns:
+      - Document Number
+    enabled: true

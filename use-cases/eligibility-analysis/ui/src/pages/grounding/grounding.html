@@ -1,0 +1,123 @@
+<div class="grounding-container">
+  <!-- Main Content Area -->
+  <div class="grounding-main">
+    <!-- Data Loading Status -->
+    <div id="data-status" class="data-status">
+      <ui5-busy-indicator active id="main-loading" delay="0" text="Connecting to document collections..."></ui5-busy-indicator>
+      <ui5-message-strip id="auth-status" design="Negative" hide-close-button style="display: none"></ui5-message-strip>
+    </div>
+
+    <!-- Available Pipelines and Collections -->
+    <div id="pipelines-section" style="display: none">
+      <ui5-panel id="pipelines-panel" header-text="Document Collections" collapsed accessible-role="Region">
+        <ui5-table id="pipelines-table" growing="true" class="compact-table">
+          <ui5-table-row slot="headerRow">
+            <ui5-table-cell>Data Source Path</ui5-table-cell>
+            <ui5-table-cell>Document Collection</ui5-table-cell>
+            <ui5-table-cell>Collection ID</ui5-table-cell>
+          </ui5-table-row>
+        </ui5-table>
+      </ui5-panel>
+    </div>
+
+    <!-- Collection Selection -->
+    <ui5-card id="selection-section" style="display: none">
+      <ui5-card-header slot="header" title-text="Document Source Selection">
+        <ui5-icon name="document-text" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <div class="selection-controls">
+          <ui5-label for="collection-select">Select Document Collection:</ui5-label>
+          <ui5-select id="collection-select" style="width: 100%; margin-top: 0.5rem">
+            <ui5-option>All Document Collections</ui5-option>
+          </ui5-select>
+        </div>
+
+        <!-- Files in Selected Collection -->
+        <div id="files-section" style="display: none; margin-top: 1rem">
+          <ui5-panel id="files-panel" header-text="Documents in Collection" collapsed accessible-role="Region">
+            <ui5-table id="files-table" growing="true" class="compact-table">
+              <ui5-table-row slot="headerRow">
+                <ui5-table-cell>Document Name</ui5-table-cell>
+                <ui5-table-cell>Last Indexed</ui5-table-cell>
+                <ui5-table-cell>Document ID</ui5-table-cell>
+              </ui5-table-row>
+            </ui5-table>
+          </ui5-panel>
+        </div>
+      </div>
+    </ui5-card>
+
+    <!-- Grounding Query & Execution -->
+    <ui5-card id="query-section" style="display: none">
+      <ui5-card-header slot="header" title-text="AI-Powered Document Analysis">
+        <ui5-icon name="ai" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <!-- Grounding Request -->
+        <div class="query-controls">
+          <ui5-label for="grounding-request">Business Question:</ui5-label>
+          <ui5-input id="grounding-request" placeholder="e.g., What are the key features of SAP AI Core?" style="width: 100%; margin-top: 0.5rem"></ui5-input>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="submit-controls">
+          <ui5-button id="submit-btn" design="Emphasized" icon="ai">Analyze Documents</ui5-button>
+
+          <!-- Loading Indicator -->
+          <div id="loading-indicator" style="display: none">
+            <ui5-busy-indicator active delay="0" text="Processing documents and generating AI insights..."></ui5-busy-indicator>
+          </div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <!-- Grounding Results -->
+    <ui5-card id="results-section" style="display: none">
+      <ui5-card-header slot="header" title-text="Analysis Results">
+        <ui5-icon name="activity-2" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <!-- LLM Response -->
+        <div class="result-item">
+          <ui5-title level="H4">AI-Generated Insights</ui5-title>
+          <div id="llm-response" class="markdown-content"></div>
+        </div>
+
+        <!-- Grounding Result -->
+        <div class="result-item">
+          <ui5-title level="H4">Document Context</ui5-title>
+          <ui5-panel id="grounding-panel" header-text="View Source Document Excerpts" collapsed accessible-role="Region">
+            <ui5-textarea id="grounding-result" readonly growing rows="10" style="width: 100%"></ui5-textarea>
+          </ui5-panel>
+        </div>
+      </div>
+    </ui5-card>
+  </div>
+
+  <!-- Sidebar Controls -->
+  <div class="grounding-sidebar">
+    <ui5-panel header-text="Configuration" accessible-role="Region">
+      <div class="sidebar-content">
+        <!-- Chunk Count -->
+        <div class="control-group">
+          <ui5-label for="chunk-count">Document Segments to Analyze:</ui5-label>
+          <ui5-input id="chunk-count" type="Number" value="50" min="1" max="300" step="1"></ui5-input>
+          <ui5-text class="help-text">Maximum number of document segments to include in the analysis (1-300).</ui5-text>
+        </div>
+
+        <!-- Custom Prompt -->
+        <div class="control-group">
+          <ui5-label for="custom-prompt">AI Analysis Instructions:</ui5-label>
+          <ui5-textarea
+            id="custom-prompt"
+            rows="6"
+            growing
+            style="width: 100%; margin-top: 0.5rem"
+            placeholder="Customize how the AI analyzes documents. Use {{ ?groundingRequest }} for your question and {{ ?groundingOutput }} for document content."
+          ></ui5-textarea>
+        </div>
+      </div>
+    </ui5-panel>
+  </div>
+</div>

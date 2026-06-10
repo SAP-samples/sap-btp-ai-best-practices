@@ -1,0 +1,466 @@
+/* Eligibility Analysis Page Styles */
+
+.eligibility-container {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.eligibility-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.eligibility-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+/* Upload Section */
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upload-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selected-file {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.875rem;
+}
+
+/* Results Summary */
+.results-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.stat-box.funded {
+  background: var(--sapPositiveBackground);
+  border: 1px solid var(--sapPositiveBorderColor);
+}
+
+.stat-box.non-funded {
+  background: var(--sapNegativeBackground);
+  border: 1px solid var(--sapNegativeBorderColor);
+}
+
+.stat-box.total {
+  background: var(--sapNeutralBackground);
+  border: 1px solid var(--sapNeutralBorderColor);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.stat-box.funded .stat-value {
+  color: var(--sapPositiveTextColor);
+}
+
+.stat-box.non-funded .stat-value {
+  color: var(--sapNegativeTextColor);
+}
+
+.stat-box.total .stat-value {
+  color: var(--sapNeutralTextColor);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Download Section */
+.download-section {
+  margin-bottom: 1rem;
+}
+
+/* Invoice Tables */
+.invoice-tables {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Sidebar Controls */
+.sidebar-content {
+  padding: 1rem;
+}
+
+.sidebar-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.control-group {
+  margin-bottom: 1.5rem;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.help-text {
+  font-size: 0.875rem;
+  color: var(--sapContent_LabelColor);
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Loading States */
+#upload-loading,
+#analysis-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#analysis-loading:not(.active) {
+  display: none;
+}
+
+/* Data Status */
+.data-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Table Styling */
+ui5-table {
+  width: 100%;
+}
+
+.compact-table {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.non-funded-row {
+  cursor: pointer;
+}
+
+.non-funded-row.expanded {
+  background: var(--sapList_SelectionBackgroundColor);
+}
+
+.details-row {
+  height: auto;
+  --row-height: auto;
+}
+
+.details-row ui5-table-cell {
+  white-space: normal;
+  grid-column: 1 / -1;
+}
+
+.details-row ui5-table-cell::part(content) {
+  white-space: normal;
+}
+
+.details-row .diagnostic-content {
+  padding: 0.25rem 0.5rem;
+  white-space: normal;
+  width: 100%;
+}
+
+.diagnostic-section {
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--sapList_BorderColor);
+}
+
+.diagnostic-title {
+  font-weight: 600;
+  color: var(--sapTextColor);
+}
+
+.diagnostic-list {
+  margin: 0.25rem 0 0 1.25rem;
+}
+
+.diagnostic-empty {
+  padding: 0.5rem 0.75rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.table-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--sapContent_LabelColor);
+}
+
+/* Seller Statistics Section */
+.seller-search {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.seller-search ui5-input {
+  flex: 1;
+}
+
+.seller-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-item {
+  padding: 0.75rem;
+  background: var(--sapObjectHeader_Background);
+  border-radius: 0.25rem;
+  text-align: center;
+}
+
+.summary-item .value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--sapTextColor);
+}
+
+.summary-item .label {
+  font-size: 0.75rem;
+  color: var(--sapContent_LabelColor);
+  margin-top: 0.25rem;
+}
+
+/* Pagination */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Form Controls */
+ui5-input,
+ui5-date-picker,
+ui5-select {
+  width: 100%;
+}
+
+/* Button States */
+ui5-button[disabled] {
+  opacity: 0.6;
+}
+
+/* Insights Section */
+.insights-controls {
+  margin-bottom: 1rem;
+}
+
+.insights-controls-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.insights-controls-row ui5-input {
+  width: auto;
+  min-width: 160px;
+}
+
+.insights-controls-row ui5-select {
+  width: auto;
+  min-width: 150px;
+  flex: 1 1 150px;
+  max-width: 250px;
+}
+
+.insights-controls-row ui5-segmented-button {
+  flex-shrink: 0;
+}
+
+.insights-controls-row + .insights-controls-row {
+  margin-top: 0.75rem;
+}
+
+.stat-box.insights-total {
+  background: var(--sapInformationBackground, #e8f0fe);
+  border: 1px solid var(--sapInformationBorderColor, #5b9bd5);
+}
+
+.stat-box.insights-total .stat-value {
+  color: var(--sapInformativeTextColor, #1a73e8);
+}
+
+/* Pattern Alert Cards */
+.alerts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.alert-card {
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  border-left: 4px solid var(--sapNeutralBorderColor);
+}
+
+.alert-card.severity-high {
+  background: var(--sapNegativeBackground, #fff2f2);
+  border-left-color: var(--sapNegativeBorderColor, #dc3545);
+}
+
+.alert-card.severity-medium {
+  background: var(--sapCriticalBackground, #fff8e6);
+  border-left-color: var(--sapCriticalBorderColor, #e9730c);
+}
+
+.alert-card.severity-low {
+  background: var(--sapNeutralBackground, #f5f6f7);
+  border-left-color: var(--sapNeutralBorderColor, #6c757d);
+}
+
+.alert-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.alert-severity-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+}
+
+.severity-high .alert-severity-badge {
+  background: var(--sapNegativeColor, #dc3545);
+  color: #fff;
+}
+
+.severity-medium .alert-severity-badge {
+  background: var(--sapCriticalColor, #e9730c);
+  color: #fff;
+}
+
+.severity-low .alert-severity-badge {
+  background: var(--sapNeutralColor, #6c757d);
+  color: #fff;
+}
+
+.alert-title {
+  font-weight: 600;
+  color: var(--sapTextColor);
+  font-size: 0.875rem;
+}
+
+.alert-description {
+  font-size: 0.8125rem;
+  color: var(--sapContent_LabelColor);
+  margin-bottom: 0.25rem;
+}
+
+.alert-recommendation {
+  font-size: 0.8125rem;
+  color: var(--sapPositiveTextColor, #256f3a);
+  font-style: italic;
+}
+
+/* Debtor Profile Rate Colors */
+.rate-high {
+  color: var(--sapNegativeTextColor, #dc3545);
+  font-weight: 600;
+}
+
+.rate-medium {
+  color: var(--sapCriticalTextColor, #e9730c);
+  font-weight: 600;
+}
+
+.rate-low {
+  color: var(--sapPositiveTextColor, #256f3a);
+}
+
+/* Chart Containers */
+.insights-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .eligibility-container {
+    flex-direction: column;
+  }
+
+  .eligibility-sidebar {
+    width: 100%;
+    order: -1;
+  }
+
+  .results-summary {
+    flex-direction: column;
+  }
+
+  .insights-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .eligibility-container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+
+  .sidebar-content {
+    padding: 0.75rem;
+  }
+
+  .upload-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .seller-search {
+    flex-direction: column;
+  }
+
+  .insights-controls-row ui5-select {
+    max-width: none;
+    flex-basis: 100%;
+  }
+}

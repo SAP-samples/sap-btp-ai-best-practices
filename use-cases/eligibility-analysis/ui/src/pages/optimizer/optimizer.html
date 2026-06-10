@@ -1,0 +1,552 @@
+<div class="optimizer-container">
+  <!-- Main Content Area -->
+  <div class="optimizer-main">
+    <!-- Status Messages -->
+    <div id="opt-status" class="data-status" style="display: none">
+      <ui5-message-strip id="opt-error" design="Negative" hide-close-button style="display: none"></ui5-message-strip>
+      <ui5-message-strip id="opt-success" design="Positive" hide-close-button style="display: none"></ui5-message-strip>
+    </div>
+
+    <!-- Section 1: Process Management -->
+    <ui5-card id="process-section">
+      <ui5-card-header slot="header" title-text="Credit Optimizer">
+        <ui5-icon name="batch-payments" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <!-- Upload & Create -->
+        <div class="upload-row">
+          <ui5-file-uploader id="opt-file-uploader" accept=".xlsx,.xls" hide-input>
+            <ui5-button icon="upload">Choose Extraction or Summary File</ui5-button>
+          </ui5-file-uploader>
+          <span id="opt-selected-filename" class="selected-file">No file selected</span>
+          <ui5-date-picker
+            id="opt-cohort-input"
+            format-pattern="yyyy-MM-dd"
+            placeholder="Select cohort date"
+            style="min-width: 220px"
+          ></ui5-date-picker>
+          <ui5-button id="opt-create-btn" design="Emphasized" icon="add" disabled>
+            Create Process
+          </ui5-button>
+        </div>
+
+        <!-- Process List -->
+        <div id="process-list-section" style="margin-top: 1rem">
+          <ui5-title level="H5">Recent Processes</ui5-title>
+          <ui5-table id="process-table" class="compact-table" style="margin-top: 0.5rem">
+            <ui5-table-row slot="headerRow">
+              <ui5-table-cell>Process ID</ui5-table-cell>
+              <ui5-table-cell>Status</ui5-table-cell>
+              <ui5-table-cell>File</ui5-table-cell>
+              <ui5-table-cell>Cohort</ui5-table-cell>
+              <ui5-table-cell>Selected / Candidates</ui5-table-cell>
+              <ui5-table-cell>Amount</ui5-table-cell>
+              <ui5-table-cell></ui5-table-cell>
+            </ui5-table-row>
+          </ui5-table>
+        </div>
+      </div>
+    </ui5-card>
+
+    <!-- Section 3: Progress (shown while running) -->
+    <div id="opt-progress-section" style="display: none; text-align: center; padding: 2rem">
+      <ui5-busy-indicator active delay="0" text="Running optimization..."></ui5-busy-indicator>
+      <div id="opt-progress-step" style="margin-top: 1rem; font-weight: 600; color: var(--sapTextColor)">
+        Step 0/10: Starting optimizer process
+      </div>
+      <div id="opt-progress-details" style="margin-top: 0.4rem; color: var(--sapContent_LabelColor)">
+        Preparing run...
+      </div>
+      <div id="opt-progress-text" style="margin-top: 0.4rem; color: var(--sapContent_LabelColor)">
+        Elapsed: 0s
+      </div>
+    </div>
+
+    <!-- Section 4: Dashboard (shown after completion) -->
+    <div id="opt-dashboard" style="display: none">
+      <!-- Summary Stats -->
+      <ui5-card>
+        <ui5-card-header slot="header" title-text="Optimization Results">
+          <ui5-icon name="bar-chart" slot="avatar"></ui5-icon>
+        </ui5-card-header>
+        <div style="padding: 1rem">
+          <div class="results-summary">
+            <div class="stat-box funded">
+              <div class="stat-value" id="opt-candidates-count">0</div>
+              <div class="stat-label">Candidates</div>
+            </div>
+            <div class="stat-box funded">
+              <div class="stat-value" id="opt-selected-count">0</div>
+              <div class="stat-label">Selected</div>
+            </div>
+            <div class="stat-box non-funded">
+              <div class="stat-value" id="opt-excluded-count">0</div>
+              <div class="stat-label">Excluded</div>
+            </div>
+            <div class="stat-box total">
+              <div class="stat-value" id="opt-selected-amount">0</div>
+              <div class="stat-label">Selected Amount</div>
+            </div>
+            <div class="stat-box total">
+              <div class="stat-value" id="opt-amount-ratio">0%</div>
+              <div class="stat-label">Amount Ratio</div>
+            </div>
+            <div class="stat-box total">
+              <div class="stat-value" id="opt-solver-status">-</div>
+              <div class="stat-label-with-help">
+                <span class="stat-label">Solver Status</span>
+                <ui5-icon name="hint" interactive class="help-icon" id="help-solver-status"></ui5-icon>
+              </div>
+              <ui5-popover id="popover-solver-status" placement="Top">
+                <div class="help-popover-content">
+                  <p><strong>OPTIMAL:</strong> The solver proved the best possible solution under all constraints.</p>
+                  <p><strong>FEASIBLE:</strong> A valid solution was found, but optimality was not proven (typically due to time limits).</p>
+                  <p><strong>INFEASIBLE:</strong> No solution satisfies all configured constraints.</p>
+                  <p><strong>UNKNOWN:</strong> The solver stopped before proving feasibility or infeasibility.</p>
+                  <p><strong>MODEL_INVALID:</strong> Input/model configuration is invalid for the solver.</p>
+                </div>
+              </ui5-popover>
+            </div>
+          </div>
+        </div>
+      </ui5-card>
+
+      <!-- Charts -->
+      <ui5-card style="margin-top: 1rem">
+        <ui5-card-header id="insight-charts-header" slot="header" title-text="Utilization Charts">
+          <ui5-icon name="horizontal-bar-chart" slot="avatar"></ui5-icon>
+        </ui5-card-header>
+        <div style="padding: 1rem">
+          <div class="chart-help-row">
+            <div class="label-with-help">
+              <span>Credit Bottleneck Timeline</span>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-credit-bottleneck"></ui5-icon>
+            </div>
+            <div class="label-with-help">
+              <span>Deferral Drivers by Planning Week</span>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-deferral-drivers"></ui5-icon>
+            </div>
+          </div>
+          <ui5-popover id="popover-credit-bottleneck" placement="Top">
+            <div class="help-popover-content">
+              <p><strong>Combined bottleneck headroom (€)</strong> is the minimum remaining headroom across all active facility, customer, and group limits for each week.</p>
+              <p>Formula per week: <code>min(limit - used_total)</code> over all entities with a configured limit.</p>
+              <p>It is <strong>not</strong> a sum. Lower values mean the plan is close to at least one credit constraint.</p>
+              <p>The utilization lines show the maximum utilization reached by facility, customer, and group limits in that same week.</p>
+            </div>
+          </ui5-popover>
+          <ui5-popover id="popover-deferral-drivers" placement="Top">
+            <div class="help-popover-content">
+              <p>Stacked bars show deferred invoice counts by driver (facility/customer/group/other) per planning week.</p>
+              <p>When a deferred row references multiple drivers in its detail, it is split proportionally across those drivers.</p>
+              <p><strong>Other</strong> means no explicit facility/customer/group driver was detected in the exclusion detail or reason text (fallback bucket).</p>
+              <p>The green line shows total deferred amount in euro for each week.</p>
+            </div>
+          </ui5-popover>
+          <div id="insight-charts-grid" class="charts-grid">
+            <div id="chart-container-facility" class="chart-container">
+              <canvas id="facility-chart"></canvas>
+            </div>
+            <div id="chart-container-customer" class="chart-container">
+              <canvas id="customer-chart"></canvas>
+            </div>
+            <div id="chart-container-exclusion" class="chart-container">
+              <canvas id="exclusion-chart"></canvas>
+            </div>
+            <div id="chart-container-funnel" class="chart-container">
+              <canvas id="rule-funnel-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </ui5-card>
+
+      <!-- Invoice Evolution -->
+      <ui5-card id="invoice-evolution-section" style="margin-top: 1rem; display: none">
+        <ui5-card-header slot="header" title-text="Invoice Evolution">
+          <ui5-icon name="line-chart" slot="avatar"></ui5-icon>
+          <ui5-icon name="hint" interactive class="help-icon" slot="action" id="help-invoice-evolution"></ui5-icon>
+        </ui5-card-header>
+        <ui5-popover id="popover-invoice-evolution" placement="Top">
+          <div class="help-popover-content">
+            <p>Shows how scheduled invoice exposure builds up and decays over the planning horizon.</p>
+            <p><strong style="color:rgba(220,53,69,1)">Cumulative outstanding exposure</strong> (red): total value of all invoices that have been scheduled and have not yet matured. Once an invoice is scheduled it remains outstanding until its expected lifetime expires.</p>
+            <p><strong style="color:rgba(40,167,69,1)">Active invoices in lifetime</strong> (green): value of invoices whose processing window includes that week -- from their scheduled date until their lifetime ends.</p>
+            <p>When the green line drops below the red, earlier-scheduled invoices are still outstanding even though fewer invoices are actively being processed. The gap represents maturing exposure: money that is committed but winding down.</p>
+          </div>
+        </ui5-popover>
+        <div style="padding: 1rem">
+          <ui5-message-strip
+            id="invoice-evolution-note"
+            design="Information"
+            hide-close-button
+            style="display: none; margin-bottom: 0.75rem"
+          ></ui5-message-strip>
+          <div class="evolution-chart-container">
+            <canvas id="invoice-evolution-chart"></canvas>
+          </div>
+        </div>
+      </ui5-card>
+
+      <!-- Selected Invoices -->
+      <ui5-card style="margin-top: 1rem">
+        <ui5-card-header slot="header" title-text="Selected Invoices" id="selected-panel-header"></ui5-card-header>
+        <div style="padding: 1rem">
+          <ui5-table id="selected-invoices-table" class="compact-table">
+            <ui5-table-row slot="headerRow">
+              <ui5-table-cell>Invoice Ref</ui5-table-cell>
+              <ui5-table-cell>Company Code</ui5-table-cell>
+              <ui5-table-cell>Customer</ui5-table-cell>
+              <ui5-table-cell>Purchase Price</ui5-table-cell>
+              <ui5-table-cell>Due Date</ui5-table-cell>
+              <ui5-table-cell>Status</ui5-table-cell>
+            </ui5-table-row>
+          </ui5-table>
+          <div class="pagination-controls">
+            <ui5-button id="selected-prev-btn" design="Transparent" disabled>Previous</ui5-button>
+            <span id="selected-page-info" class="page-info">Page 1</span>
+            <ui5-button id="selected-next-btn" design="Transparent">Next</ui5-button>
+          </div>
+        </div>
+      </ui5-card>
+
+      <!-- Excluded Invoices -->
+      <ui5-card style="margin-top: 1rem">
+        <ui5-card-header slot="header" title-text="Excluded Invoices" id="excluded-panel-header"></ui5-card-header>
+        <div style="padding: 1rem">
+          <div class="filter-row">
+            <ui5-select id="excluded-stage-filter">
+              <ui5-option value="">All Stages</ui5-option>
+              <ui5-option value="rule">Rule</ui5-option>
+              <ui5-option value="optimizer">Optimizer</ui5-option>
+            </ui5-select>
+            <ui5-input id="excluded-reason-filter" placeholder="Filter by reason..."></ui5-input>
+          </div>
+          <ui5-table id="excluded-invoices-table" class="compact-table" style="margin-top: 0.5rem">
+            <ui5-table-row slot="headerRow">
+              <ui5-table-cell>Invoice Ref</ui5-table-cell>
+              <ui5-table-cell>Company Code</ui5-table-cell>
+              <ui5-table-cell>Customer</ui5-table-cell>
+              <ui5-table-cell>Purchase Price</ui5-table-cell>
+              <ui5-table-cell>Stage</ui5-table-cell>
+              <ui5-table-cell>Reason</ui5-table-cell>
+            </ui5-table-row>
+          </ui5-table>
+          <div class="pagination-controls">
+            <ui5-button id="excluded-prev-btn" design="Transparent" disabled>Previous</ui5-button>
+            <span id="excluded-page-info" class="page-info">Page 1</span>
+            <ui5-button id="excluded-next-btn" design="Transparent">Next</ui5-button>
+          </div>
+        </div>
+      </ui5-card>
+
+      <!-- Export Buttons -->
+      <div class="export-row">
+        <ui5-button id="download-selected-btn" design="Positive" icon="download">Selected XLSX</ui5-button>
+        <ui5-button id="download-excluded-btn" design="Positive" icon="download">Excluded XLSX</ui5-button>
+        <ui5-button id="download-weekly-plan-btn" design="Positive" icon="download">Weekly Plan XLSX</ui5-button>
+        <ui5-button id="download-weekly-exposure-btn" design="Positive" icon="download">Weekly Exposure XLSX</ui5-button>
+        <ui5-button id="download-pdf-btn" design="Positive" icon="download">Summary PDF</ui5-button>
+        <ui5-button id="download-report-btn" design="Emphasized" icon="download">Full Report ZIP</ui5-button>
+      </div>
+
+      <!-- Multi-week Detail -->
+      <ui5-card id="opt-weekly-section" style="margin-top: 1rem; display: none">
+        <ui5-card-header slot="header" title-text="Multi-week Plan"></ui5-card-header>
+        <div style="padding: 1rem">
+          <ui5-title level="H6">Weekly Plan Rows</ui5-title>
+          <ui5-message-strip
+            id="weekly-lifetime-status"
+            design="Information"
+            hide-close-button
+            style="display: none; margin-top: 0.5rem"
+          ></ui5-message-strip>
+          <ui5-table id="weekly-plan-table" class="compact-table" style="margin-top: 0.5rem">
+            <ui5-table-row slot="headerRow">
+              <ui5-table-cell>Invoice Ref</ui5-table-cell>
+              <ui5-table-cell>Customer</ui5-table-cell>
+              <ui5-table-cell>Company</ui5-table-cell>
+              <ui5-table-cell>Amount</ui5-table-cell>
+              <ui5-table-cell>Week</ui5-table-cell>
+              <ui5-table-cell>Lifetime (weeks)</ui5-table-cell>
+              <ui5-table-cell>Lifetime Source</ui5-table-cell>
+            </ui5-table-row>
+          </ui5-table>
+
+          <div class="weekly-exposure-header">
+            <div class="label-with-help">
+              <ui5-title level="H6">Weekly Exposure</ui5-title>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-weekly-exposure"></ui5-icon>
+            </div>
+            <ui5-segmented-button id="weekly-exposure-entity-type-toggle" class="weekly-exposure-toggle">
+              <ui5-segmented-button-item data-entity-type="all" pressed>All</ui5-segmented-button-item>
+              <ui5-segmented-button-item data-entity-type="facility">Facility</ui5-segmented-button-item>
+              <ui5-segmented-button-item data-entity-type="customer">Customer</ui5-segmented-button-item>
+              <ui5-segmented-button-item data-entity-type="group">Group</ui5-segmented-button-item>
+            </ui5-segmented-button>
+          </div>
+          <ui5-popover id="popover-weekly-exposure" placement="Top">
+            <div class="help-popover-content">
+              <p>Weekly Exposure shows per-entity usage after scheduling.</p>
+              <p><strong>Used</strong> is total exposure in that week (base exposure plus newly scheduled invoices still active).</p>
+              <p><strong>Util%</strong> is calculated as <code>used_total / limit * 100</code> when limit is configured.</p>
+            </div>
+          </ui5-popover>
+          <ui5-table id="weekly-exposure-table" class="compact-table" style="margin-top: 0.5rem">
+            <ui5-table-row slot="headerRow">
+              <ui5-table-cell>Week</ui5-table-cell>
+              <ui5-table-cell>Entity Type</ui5-table-cell>
+              <ui5-table-cell>Entity</ui5-table-cell>
+              <ui5-table-cell>Used</ui5-table-cell>
+              <ui5-table-cell>Limit</ui5-table-cell>
+              <ui5-table-cell>Util%</ui5-table-cell>
+            </ui5-table-row>
+          </ui5-table>
+
+          <div id="weekly-exposure-evolution-section" style="display: none">
+            <div class="label-with-help" style="margin-top: 1rem">
+              <ui5-title id="weekly-exposure-evolution-title" level="H6">Exposure Utilization Evolution</ui5-title>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-weekly-exposure-evolution"></ui5-icon>
+            </div>
+            <ui5-popover id="popover-weekly-exposure-evolution" placement="Top">
+              <div class="help-popover-content">
+                <p>This chart appears when a specific entity type is selected (facility/customer/group).</p>
+                <p>Each line is one entity and shows weekly utilization percentage over the planning horizon.</p>
+                <p>Use it to identify persistent limit pressure, spikes, and entities that repeatedly hit high utilization.</p>
+              </div>
+            </ui5-popover>
+            <ui5-message-strip
+              id="weekly-exposure-evolution-note"
+              design="Information"
+              hide-close-button
+              style="margin-top: 0.5rem"
+            >
+              Lines show exposure utilization percentage by entity and week.
+            </ui5-message-strip>
+            <div class="weekly-exposure-evolution-chart-container" style="margin-top: 0.5rem">
+              <canvas id="weekly-exposure-evolution-chart"></canvas>
+            </div>
+            <div id="weekly-exposure-evolution-legend" class="weekly-exposure-evolution-legend"></div>
+          </div>
+        </div>
+      </ui5-card>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="optimizer-sidebar">
+    <!-- Configuration Panel -->
+    <ui5-panel header-text="Configuration" accessible-role="Region" id="opt-config-panel">
+      <div class="sidebar-content">
+        <ui5-title level="H6">Planning Mode</ui5-title>
+        <div class="control-group">
+          <ui5-segmented-button id="planning-mode-toggle">
+            <ui5-segmented-button-item data-mode="single_week" pressed>Single Week</ui5-segmented-button-item>
+            <ui5-segmented-button-item data-mode="multi_week">Multi Week</ui5-segmented-button-item>
+          </ui5-segmented-button>
+        </div>
+        <div id="multi-week-controls" style="display: none">
+          <div class="control-group">
+            <ui5-label for="opt-horizon-weeks">Horizon weeks</ui5-label>
+            <ui5-input id="opt-horizon-weeks" type="Number" value="8"></ui5-input>
+          </div>
+          <div class="control-group">
+            <ui5-label for="opt-attempt-cap">Attempt cap</ui5-label>
+            <ui5-input id="opt-attempt-cap" type="Number" value="1"></ui5-input>
+          </div>
+        </div>
+
+        <!-- Credit Limits -->
+        <div class="label-with-help">
+          <ui5-title level="H6">Credit Limits</ui5-title>
+          <ui5-icon name="hint" interactive class="help-icon" id="help-limits-mode"></ui5-icon>
+        </div>
+        <ui5-popover id="popover-limits-mode" placement="Start">
+          <div class="help-popover-content">
+            <p><strong>Automatic:</strong> Limits are calculated from the current cohort candidates after rules are applied (before optimization).</p>
+            <ul>
+              <li>Facility limit: total candidate amount per company code, multiplied by the facility percentage.</li>
+              <li>Customer limit: company facility limit, multiplied by the customer percentage.</li>
+              <li>Group limit: mapped company facility limit, multiplied by the group percentage (only when group mapping exists).</li>
+            </ul>
+            <p><strong>Example:</strong> If Company Code 2 has 99,861.30 candidate amount, a facility percentage of 0.85 gives 84,882.10. Then a customer percentage of 0.15 gives 12,732.32 as the default customer limit in that company.</p>
+            <p><strong>Manual:</strong> You provide exact limits directly; explicit values override automatic defaults.</p>
+          </div>
+        </ui5-popover>
+
+        <div class="control-group">
+          <ui5-segmented-button id="limits-mode-toggle">
+            <ui5-segmented-button-item pressed>Automatic</ui5-segmented-button-item>
+            <ui5-segmented-button-item>Manual</ui5-segmented-button-item>
+          </ui5-segmented-button>
+        </div>
+
+        <!-- Automatic Limits -->
+        <div id="automatic-limits-panel">
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label for="opt-alpha">Facility credit ceiling:</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-facility-ceiling"></ui5-icon>
+            </div>
+            <ui5-input id="opt-alpha" type="Number" value="0.85"></ui5-input>
+            <ui5-popover id="popover-facility-ceiling" placement="Start">
+              <div class="help-popover-content">
+                Sets the facility percentage used in automatic mode. For each company code, the system takes the total candidate amount in the selected cohort and applies this percentage to derive the facility limit. Lower values create tighter company-level capacity.
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label for="opt-beta">Customer concentration limit:</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-customer-concentration"></ui5-icon>
+            </div>
+            <ui5-input id="opt-beta" type="Number" value="0.15"></ui5-input>
+            <ui5-popover id="popover-customer-concentration" placement="Start">
+              <div class="help-popover-content">
+                Sets the customer concentration percentage used when a customer does not have an explicit limit. The default customer limit is calculated as this percentage of that customer's company facility limit. If an invoice is larger than the resulting customer limit, it cannot be selected.
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label for="opt-gamma">Group concentration limit:</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-group-concentration"></ui5-icon>
+            </div>
+            <ui5-input id="opt-gamma" type="Number" value="0.30"></ui5-input>
+            <ui5-popover id="popover-group-concentration" placement="Start">
+              <div class="help-popover-content">
+                Sets the group concentration percentage used for customer groups when group mapping is available. The default group limit is calculated from the mapped company facility limit. If no group mapping is provided, this constraint is inactive.
+              </div>
+            </ui5-popover>
+          </div>
+        </div>
+
+        <!-- Manual Limits (hidden by default) -->
+        <div id="manual-limits-panel" style="display: none">
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label for="opt-manual-yaml-upload-btn">Manual Limits File (YAML or Excel):</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-manual-yaml-upload"></ui5-icon>
+            </div>
+            <div class="manual-yaml-upload-row">
+              <ui5-button id="opt-manual-yaml-upload-btn" icon="upload" design="Default">Upload Limits File</ui5-button>
+              <input
+                id="opt-manual-yaml-upload-input"
+                type="file"
+                accept=".yaml,.yml,.json,.xlsx,.xls,text/yaml,application/yaml,application/x-yaml,application/json,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                style="display: none"
+              />
+              <span id="opt-manual-yaml-upload-filename" class="selected-file"></span>
+            </div>
+            <ui5-popover id="popover-manual-yaml-upload" placement="Start">
+              <div class="help-popover-content">
+                Upload a YAML/JSON file with manual limits payload, or the standard limits Excel template (for example
+                <code>data/2026/new set with limits/Limit_template BTP.xlsx</code>).
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label>Facility Limits (JSON):</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-manual-facility"></ui5-icon>
+            </div>
+            <textarea id="opt-facility-limits" class="json-textarea" placeholder='"CC1": 15000000,
+"CC2": 9000000'></textarea>
+            <ui5-popover id="popover-manual-facility" placement="Start">
+              <div class="help-popover-content">
+                Enter exact credit limits for each company code. You can paste full JSON or only the object content (no outer braces). Example: <code>"1000": 15000000</code> sets a 15M limit for company code 1000.
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label>Customer Limits (JSON):</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-manual-customer"></ui5-icon>
+            </div>
+            <textarea id="opt-customer-limits" class="json-textarea" placeholder='"100821711": 75000.00,
+"101249905": 50000.00'></textarea>
+            <ui5-popover id="popover-manual-customer" placement="Start">
+              <div class="help-popover-content">
+                Enter exact credit limits for specific customers. Full JSON and brace-free object content are both accepted. Customers not listed here use the default calculated from the facility limit.
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label>Group Limits (JSON):</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-manual-group"></ui5-icon>
+            </div>
+            <textarea id="opt-group-limits" class="json-textarea" placeholder='"GROUP_A": 3000000'></textarea>
+            <ui5-popover id="popover-manual-group" placement="Start">
+              <div class="help-popover-content">
+                Enter exact credit limits for related customer groups. You can provide full JSON or only key/value entries without outer braces.
+              </div>
+            </ui5-popover>
+          </div>
+          <div class="control-group">
+            <div class="label-with-help">
+              <ui5-label>Customer to Group Mapping (JSON):</ui5-label>
+              <ui5-icon name="hint" interactive class="help-icon" id="help-manual-customer-group-map"></ui5-icon>
+            </div>
+            <textarea id="opt-customer-group-map" class="json-textarea" placeholder='"CUSTAI02": "GRP_2410",
+"CUSTAI01": "GRP_2410"'></textarea>
+            <ui5-popover id="popover-manual-customer-group-map" placement="Start">
+              <div class="help-popover-content">
+                Map each customer to a group ID. This mapping is required for group limits and group base exposure to take effect.
+              </div>
+            </ui5-popover>
+          </div>
+        </div>
+
+        <!-- Base Exposure -->
+        <ui5-title level="H6" style="margin-top: 1rem; margin-bottom: 0.5rem">Base Exposure</ui5-title>
+        <div class="control-group">
+          <div class="label-with-help">
+            <ui5-label>Facility Base Exposure (JSON):</ui5-label>
+            <ui5-icon name="hint" interactive class="help-icon" id="help-base-facility"></ui5-icon>
+          </div>
+          <textarea id="opt-base-facility" class="json-textarea" placeholder='"2410": 72500.0'></textarea>
+          <ui5-popover id="popover-base-facility" placement="Start">
+            <div class="help-popover-content">
+              Pre-used exposure at planning start per company code. This value reduces available facility headroom before selecting new invoices.
+            </div>
+          </ui5-popover>
+        </div>
+        <div class="control-group">
+          <div class="label-with-help">
+            <ui5-label>Customer Base Exposure (JSON):</ui5-label>
+            <ui5-icon name="hint" interactive class="help-icon" id="help-base-customer"></ui5-icon>
+          </div>
+          <textarea id="opt-base-customer" class="json-textarea" placeholder='"CUSTAI02": 49500.0,
+"CUSTAI01": 23000.0'></textarea>
+          <ui5-popover id="popover-base-customer" placement="Start">
+            <div class="help-popover-content">
+              Pre-used exposure per customer at planning start. If this is close to the customer limit, only small additional invoices can be selected.
+            </div>
+          </ui5-popover>
+        </div>
+        <div class="control-group">
+          <div class="label-with-help">
+            <ui5-label>Group Base Exposure (JSON):</ui5-label>
+            <ui5-icon name="hint" interactive class="help-icon" id="help-base-group"></ui5-icon>
+          </div>
+          <textarea id="opt-base-group" class="json-textarea" placeholder='"GRP_2410": 72500.0'></textarea>
+          <ui5-popover id="popover-base-group" placement="Start">
+            <div class="help-popover-content">
+              Pre-used exposure per group at planning start. Group usage is applied only when customer-to-group mapping exists.
+            </div>
+          </ui5-popover>
+        </div>
+
+        <!-- Rules -->
+        <ui5-title level="H6" style="margin-top: 1rem; margin-bottom: 0.5rem">Rules</ui5-title>
+        <div id="rules-list"></div>
+
+        <!-- Actions -->
+        <div class="sidebar-actions" style="margin-top: 1rem">
+          <ui5-button id="save-config-btn" design="Default" icon="save">Save Config</ui5-button>
+          <ui5-button id="run-optimization-btn" design="Emphasized" icon="process" disabled>Optimize</ui5-button>
+        </div>
+      </div>
+    </ui5-panel>
+  </div>
+</div>
