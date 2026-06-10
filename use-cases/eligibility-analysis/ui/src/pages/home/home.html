@@ -1,0 +1,61 @@
+<div class="home-container">
+  <ui5-title>Home</ui5-title>
+  <div class="home-overview-grid">
+    <ui5-card class="home-card">
+      <ui5-card-header slot="header" title-text="Offer Analysis">
+        <ui5-icon name="activity-assigned-to-goal" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div class="card-content">
+        <ui5-text>
+          Offer Analysis evaluates invoice eligibility against a fixed ruleset and classifies each invoice as
+          <strong>Eligible</strong> only when all active rules pass.
+        </ui5-text>
+        <ui5-title level="H6" class="section-label">Rules considered</ui5-title>
+        <ul class="home-list">
+          <li><strong>R1 - Days to Due Date (NDDT):</strong> Due date minus purchase date must be at least NDDT days.</li>
+          <li><strong>R2 - Duplicate Invoice:</strong> Doc number + fiscal year + reference number must be unique in the batch.</li>
+          <li><strong>R11 - Eligible Currency:</strong> Invoice currency must be in the configured eligible currency list.</li>
+          <li><strong>R13 - Not Overdue:</strong> Due date must be strictly after the purchase date.</li>
+          <li><strong>R16 - Tenor Check (TEIH):</strong> Due date minus issuance date must be less than TEIH days.</li>
+          <li><strong>R17 - Issuance Age (ISSPUR):</strong> Purchase date minus issuance date must be at least ISSPUR days.</li>
+        </ul>
+        <ui5-button design="Emphasized" onclick="pageRouter.navigate('/eligibility')">Open Offer Analysis</ui5-button>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="home-card">
+      <ui5-card-header slot="header" title-text="Credit Optimizer">
+        <ui5-icon name="batch-payments" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div class="card-content">
+        <ui5-text>
+          Credit Optimizer selects the best subset of eligible invoices to maximize funded amount while respecting
+          facility, customer, and group limits.
+        </ui5-text>
+        <ui5-title level="H6" class="section-label">How it works</ui5-title>
+        <ol class="home-list ordered">
+          <li>Upload extraction data and select a cohort date.</li>
+          <li>Apply rules to build candidates and record rule-based exclusions.</li>
+          <li>Set limits in automatic (alpha/beta/gamma) or manual mode.</li>
+          <li>Run the solver and review selected vs excluded results with reasons.</li>
+        </ol>
+        <ui5-button design="Emphasized" onclick="pageRouter.navigate('/optimizer')">Open Credit Optimizer</ui5-button>
+      </div>
+    </ui5-card>
+  </div>
+
+  <ui5-card style="margin-top: 1rem">
+    <ui5-card-header slot="header" title-text="API Health Check">
+      <ui5-icon name="activity-assigned-to-goal" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+    <div style="padding: 1rem">
+      <ui5-text>Click the button to check the health of the backend API.</ui5-text>
+      <div style="margin-top: 1rem">
+        <ui5-button id="health-check-button">Check Health</ui5-button>
+      </div>
+      <ui5-panel id="health-response-panel" header-text="API Response" collapsed style="margin-top: 1rem">
+        <div id="health-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+</div>

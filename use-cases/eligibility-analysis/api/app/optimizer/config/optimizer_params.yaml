@@ -1,0 +1,43 @@
+# =============================================================================
+# Optimizer Runtime Parameters
+# =============================================================================
+#
+# This file provides default values for the optimizer pipeline. CLI arguments
+# override these values when provided.
+# =============================================================================
+
+# Path to the extraction Excel file (relative to project root).
+default_input: data/2026/EXTRACTION BTP.xlsx
+
+# Sheet name within the extraction workbook.
+default_sheet: SAPUI5 Export
+
+# Default cohort to optimize. Format:
+#   "YYYY-MM-DD"           -> matches all invoices on that calendar date
+#   "YYYY-MM-DDTHH:MM:SS"  -> matches only that exact timestamp
+default_cohort: "2026-02-03T12:19:25"
+
+# Credit release event for lifecycle profiling / exposure reconstruction.
+#   reconciliation_file_date -> operational release trigger (default)
+#   paid_on                  -> legacy comparison
+#   reconciliation           -> legacy comparison
+#   min_paid_or_repurchase   -> legacy sensitivity mode
+default_release_event: reconciliation_file_date
+
+# Path to rules config (relative to optimizer/ directory).
+rules_config: rules/rules_config.yaml
+
+# Whether to enable the "exclude_payment_block" rule (disabled by default).
+exclude_payment_block: false
+
+# CP-SAT solver parameters.
+solver:
+  # Maximum wall-clock time for each solve pass (seconds).
+  max_time_seconds: 60
+  # Fixed random seed for deterministic behavior.
+  random_seed: 0
+  # Number of parallel search workers. Keep at 1 for full determinism.
+  num_search_workers: 1
+
+# Root directory for output artifacts (relative to project root).
+output_root: optimizer/outputs
