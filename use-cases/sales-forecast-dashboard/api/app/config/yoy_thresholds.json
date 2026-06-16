@@ -1,0 +1,10 @@
+{
+  "description": "Thresholds for store traffic light color system based on YoY sales change",
+  "red_threshold": -5,
+  "green_threshold": 5,
+  "colors": {
+    "red": "#e74c3c",
+    "yellow": "#f39c12",
+    "green": "#27ae60"
+  }
+}

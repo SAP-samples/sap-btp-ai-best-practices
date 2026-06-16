@@ -1,0 +1,43 @@
+{
+  "feature_names": [
+    "is_outlet",
+    "is_comp_store",
+    "is_new_store",
+    "is_xmas_window",
+    "is_black_friday_window",
+    "weeks_since_open",
+    "weeks_since_open_capped_13",
+    "weeks_since_open_capped_52",
+    "merchandising_sf",
+    "brand_awareness_dma_roll_mean_4",
+    "brand_consideration_dma_roll_mean_4",
+    "cannibalization_pressure",
+    "min_dist_new_store_km",
+    "num_new_stores_within_10mi_last_52wk",
+    "num_new_stores_within_20mi_last_52wk",
+    "dma_seasonal_weight",
+    "sin_woy",
+    "cos_woy",
+    "is_holiday",
+    "staffing_unique_associates_roll_mean_4",
+    "staffing_hours_roll_mean_4",
+    "pct_omni_channel_roll_mean_4",
+    "pct_value_product_roll_mean_4",
+    "pct_premium_product_roll_mean_4",
+    "pct_white_glove_roll_mean_4",
+    "pct_primary_financing_roll_mean_4",
+    "pct_secondary_financing_roll_mean_4",
+    "pct_tertiary_financing_roll_mean_4",
+    "horizon"
+  ],
+  "r2_score": 0.9998802426509701,
+  "cat_cols": [
+    "is_outlet",
+    "is_comp_store",
+    "is_new_store",
+    "is_holiday",
+    "is_xmas_window",
+    "is_black_friday_window"
+  ],
+  "channel": "B&M"
+}

@@ -1,0 +1,148 @@
+<div class="dashboard-container">
+  <!-- Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Left: Map Section -->
+    <section class="map-section">
+      <div id="map"></div>
+
+      <!-- Map Legend -->
+      <ui5-card class="map-legend">
+        <ui5-card-header slot="header" title-text="Legend"></ui5-card-header>
+        <div class="legend-content">
+          <div class="legend-item">
+            <span class="legend-marker dma"></span>
+            <ui5-text>DMA (# stores)</ui5-text>
+          </div>
+          <div class="legend-item">
+            <span class="legend-marker yoy-increase"></span>
+            <ui5-text>Growth (>+5%)</ui5-text>
+          </div>
+          <div class="legend-item">
+            <span class="legend-marker yoy-stable"></span>
+            <ui5-text>Stable (-5% to +5%)</ui5-text>
+          </div>
+          <div class="legend-item">
+            <span class="legend-marker yoy-decrease"></span>
+            <ui5-text>Decline (<-5%)</ui5-text>
+          </div>
+        </div>
+      </ui5-card>
+    </section>
+
+    <!-- Right: Detail Panel -->
+    <aside class="detail-panel">
+      <!-- Forecast Summary Panel -->
+      <ui5-card id="welcome-card">
+        <ui5-card-header slot="header" title-text="Forecast Summary"></ui5-card-header>
+        <div class="card-content summary-panel">
+          <!-- Channel Toggle -->
+          <div class="channel-toggle">
+            <ui5-label>Channel:</ui5-label>
+            <ui5-segmented-button id="channel-filter">
+              <ui5-segmented-button-item pressed>All</ui5-segmented-button-item>
+              <ui5-segmented-button-item>B&M</ui5-segmented-button-item>
+              <ui5-segmented-button-item>WEB</ui5-segmented-button-item>
+            </ui5-segmented-button>
+          </div>
+
+          <!-- Overall Summary -->
+          <div class="summary-headline">
+            <ui5-text id="overall-summary-text">Loading...</ui5-text>
+          </div>
+
+          <!-- TOP 10 DMAs Table -->
+          <ui5-title level="H6" class="top-dma-title">Top 10 DMAs by AUV</ui5-title>
+          <ui5-table id="top-dma-table" no-data-text="Loading...">
+            <ui5-table-header-row slot="headerRow">
+              <ui5-table-header-cell>DMA</ui5-table-header-cell>
+              <ui5-table-header-cell>Avg AUV</ui5-table-header-cell>
+              <ui5-table-header-cell>YoY Change</ui5-table-header-cell>
+              <ui5-table-header-cell>Total AUV</ui5-table-header-cell>
+            </ui5-table-header-row>
+          </ui5-table>
+        </div>
+      </ui5-card>
+
+      <!-- DMA Info Card -->
+      <ui5-card id="dma-card" class="hidden">
+        <ui5-card-header slot="header" id="dma-header" title-text="DMA Name" interactive>
+          <ui5-button icon="decline" design="Transparent" slot="action" id="clear-selection-btn"></ui5-button>
+        </ui5-card-header>
+        <div class="card-content">
+          <div class="dma-summary-row">
+            <ui5-text id="dma-store-count-text">-- stores</ui5-text>
+          </div>
+          <ui5-table id="dma-store-table" no-data-text="No stores">
+            <ui5-table-header-row slot="headerRow">
+              <ui5-table-header-cell>Store</ui5-table-header-cell>
+              <ui5-table-header-cell>AUV</ui5-table-header-cell>
+              <ui5-table-header-cell>YoY Change</ui5-table-header-cell>
+            </ui5-table-header-row>
+          </ui5-table>
+        </div>
+      </ui5-card>
+    </aside>
+  </div>
+
+  <!-- Store Popup (positioned absolutely) -->
+  <div id="store-popup" class="store-popup hidden">
+    <div class="popup-header">
+      <ui5-title level="H5" id="popup-store-name">Store Name</ui5-title>
+      <ui5-button icon="decline" design="Transparent" id="popup-close-btn"></ui5-button>
+    </div>
+    <ui5-text id="popup-location" class="popup-location"></ui5-text>
+    <div class="popup-details">
+      <div class="popup-row">
+        <ui5-label>Store ID:</ui5-label>
+        <ui5-text id="popup-store-id"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>DMA:</ui5-label>
+        <ui5-text id="popup-store-dma"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>Channel:</ui5-label>
+        <ui5-text id="popup-store-channel"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>Outlet:</ui5-label>
+        <ui5-text id="popup-store-outlet"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>Design SF:</ui5-label>
+        <ui5-text id="popup-design-sf"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>Merch SF:</ui5-label>
+        <ui5-text id="popup-merch-sf"></ui5-text>
+      </div>
+      <div class="popup-row highlight">
+        <ui5-label>AUV:</ui5-label>
+        <ui5-text id="popup-auv"></ui5-text>
+      </div>
+      <div class="popup-row">
+        <ui5-label>YoY Change:</ui5-label>
+        <ui5-text id="popup-yoy-change"></ui5-text>
+      </div>
+    </div>
+    <ui5-button id="ai-agent-btn" design="Emphasized" class="ai-agent-btn">
+      AI Agent
+    </ui5-button>
+  </div>
+
+  <!-- Bottom: Charts Section -->
+  <section class="charts-section">
+    <ui5-card class="chart-card">
+      <ui5-card-header slot="header" title-text="Predictions Time Series"></ui5-card-header>
+      <div id="timeseries-chart" class="chart-container">
+        <ui5-text class="chart-placeholder">Select a store to view predictions</ui5-text>
+      </div>
+    </ui5-card>
+    <ui5-card class="chart-card explanation-panel">
+      <ui5-card-header slot="header" id="explanation-header" title-text="Sales Change Explanation" subtitle-text="Click a week to see details"></ui5-card-header>
+      <div id="explanation-content" class="explanation-content">
+        <p class="explanation-placeholder">Select a point on the chart to see why sales changed.</p>
+      </div>
+    </ui5-card>
+  </section>
+</div>
