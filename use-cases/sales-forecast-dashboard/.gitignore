@@ -1,0 +1,17 @@
+# Local environment files
+.env
+api/.env
+api/app/.env
+ui/.env
+
+# Python and Node local artifacts
+.venv/
+venv/
+node_modules/
+dist/
+
+# Generated dashboard data. Regenerate from HANA with:
+# cd api && python -m app.scripts.regenerate_dashboard_data --verbose
+api/app/data/stores.json
+api/app/data/dma_summary.json
+api/app/data/timeseries/*.json
