@@ -60,6 +60,8 @@ for accurate model-based analysis.
 
 from __future__ import annotations
 
+from app.services.memory_monitor import instrument_langchain_tool
+
 # Context & Setup (3 tools)
 from .context import (
     lookup_store_metadata,
@@ -134,7 +136,8 @@ from .diagnostics import (
 )
 
 
-# Master list of all 29 tools for the agent
+# Master list of all 29 tools for the agent. Each tool object is instrumented
+# in place so direct category references share the same memory-logged callable.
 ALL_TOOLS = [
     # Context & Setup (3)
     lookup_store_metadata,
@@ -176,6 +179,9 @@ ALL_TOOLS = [
     get_store_diagnostic,
     get_performance_ranking,
 ]
+
+for _tool in ALL_TOOLS:
+    instrument_langchain_tool(_tool)
 
 
 # Tool categories for documentation and selective loading

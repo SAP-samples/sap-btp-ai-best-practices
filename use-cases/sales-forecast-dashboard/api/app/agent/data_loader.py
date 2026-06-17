@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from functools import lru_cache
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, List, Optional, Any, TYPE_CHECKING
 
 import numpy as np
@@ -645,56 +644,39 @@ def get_stores_within_radius(
 # INFERENCE PIPELINE INTEGRATION
 # =============================================================================
 
-_inference_pipeline = None
 _surrogates: Dict[str, Optional[Any]] = {}
 
 
-def get_inference_pipeline():
-    """Get or create the singleton InferencePipeline instance.
+def get_inference_pipeline(channels: Optional[List[str]] = None):
+    """Return the process-level cached InferencePipeline instance.
 
-    Uses lazy loading to avoid import overhead when inference is not needed.
-    The pipeline is configured with the default checkpoint directory.
+    This compatibility wrapper delegates model ownership to
+    app.services.inference_cache so the API has one model-loading path.
+
+    Parameters
+    ----------
+    channels : List[str], optional
+        Channels to request from the global cache. Defaults to
+        INFERENCE_PRELOAD_CHANNELS through the cache service.
 
     Returns
     -------
     InferencePipeline or None
         Configured pipeline, or None if models not available.
     """
-    global _inference_pipeline
-
-    if _inference_pipeline is not None:
-        return _inference_pipeline
-
     try:
-        from app.regressor.pipelines import InferencePipeline
-        from app.regressor.configs import InferenceConfig, BiasCorrection
+        from app.services.inference_cache import get_cached_inference_pipeline
 
-        # Default checkpoint location
-        checkpoint_dir = CHECKPOINT_DIR
-        output_dir = Path('output_agent_inference')
-
-        # Check if checkpoints exist
-        if not checkpoint_dir.exists():
-            print(f"Warning: Checkpoint directory not found at {checkpoint_dir}")
-            return None
-
-        config = InferenceConfig(
-            name="agent_inference",
-            checkpoint_dir=checkpoint_dir,
-            output_dir=output_dir,
-            channels=["B&M", "WEB"],
-            bias_correction=BiasCorrection(correct_bm=False, correct_web=False),
+        return get_cached_inference_pipeline(
+            checkpoint_dir=CHECKPOINT_DIR,
+            channels=channels,
             run_explainability=False,
         )
-
-        _inference_pipeline = InferencePipeline(config)
-        return _inference_pipeline
-
     except ImportError as e:
-        print(f"Warning: Could not import InferencePipeline: {e}")
+        print(f"Warning: Could not import inference cache: {e}")
         return None
     except Exception as e:
-        print(f"Warning: Failed to initialize InferencePipeline: {e}")
+        print(f"Warning: Failed to initialize cached InferencePipeline: {e}")
         return None
 
 
@@ -734,13 +716,30 @@ def run_inference(
     - pred_aov_p50, pred_aov_p90: AOV quantiles
     - pred_traffic_p50, pred_traffic_p90: Traffic quantiles (B&M only)
     """
-    pipeline = get_inference_pipeline()
+    requested_channels = channels
+    if requested_channels is None and "channel" in model_b_features.columns:
+        requested_channels = [
+            str(channel)
+            for channel in model_b_features["channel"].dropna().unique().tolist()
+        ]
+
+    pipeline = get_inference_pipeline(requested_channels)
 
     if pipeline is None:
         return None
 
     try:
-        result = pipeline.run(model_b_features, channels=channels)
+        from app.services.inference_cache import run_cached_inference
+
+        result = run_cached_inference(
+            model_b_data=model_b_features,
+            channels=requested_channels,
+            checkpoint_dir=CHECKPOINT_DIR,
+            pipeline=pipeline,
+            save_outputs=False,
+            estimate_traffic=True,
+            label="agent.data_loader.run_inference",
+        )
 
         # Combine B&M and WEB predictions
         dfs = []

@@ -29,6 +29,7 @@ load_dotenv()
 
 # HANA imports
 from hana_ml import ConnectionContext
+from app.services.memory_monitor import collect_dataframe_with_memory_logging
 
 
 # =============================================================================
@@ -247,7 +248,8 @@ def query_to_dataframe(query: str) -> pd.DataFrame:
     """
     cc = get_hana_connection()
     hdf = cc.sql(query)
-    return hdf.collect()
+    label = f"query:{query[:80].replace(chr(10), ' ')}"
+    return collect_dataframe_with_memory_logging(label, hdf.collect)
 
 
 def load_table(
@@ -278,7 +280,7 @@ def load_table(
         query += f" WHERE {where_clause}"
 
     hdf = cc.sql(query)
-    return hdf.collect()
+    return collect_dataframe_with_memory_logging(table_name, hdf.collect)
 
 
 # =============================================================================
@@ -685,7 +687,7 @@ def get_unique_store_ids(
     query = f'SELECT DISTINCT PROFIT_CENTER_NBR FROM "{schema}"."{table_name}"{where_clause} ORDER BY PROFIT_CENTER_NBR'
 
     hdf = cc.sql(query)
-    df = hdf.collect()
+    df = collect_dataframe_with_memory_logging(f"{table_name}:unique_store_ids", hdf.collect)
 
     return df['PROFIT_CENTER_NBR'].tolist()
 

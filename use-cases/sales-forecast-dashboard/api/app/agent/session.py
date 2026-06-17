@@ -362,36 +362,34 @@ class SessionManager:
 
     def get_inference_pipeline(self):
         """
-        Get or create the InferencePipeline.
+        Get the process-level cached InferencePipeline.
 
-        Lazily loads models from checkpoints on first access.
+        The forecasting session keeps conversational state only. Model
+        ownership is delegated to app.services.inference_cache so sensitivity
+        and forecast tools share one loaded model per API process.
 
         Returns
         -------
         InferencePipeline
-            Configured inference pipeline
+            Cached configured inference pipeline.
         """
-        if self._inference_pipeline is None:
-            from app.regressor.pipelines import InferencePipeline
-            from app.regressor.configs import InferenceConfig
+        from app.services.inference_cache import get_cached_inference_pipeline
 
-            checkpoint_dir = self.get_checkpoint_dir()
-            if not checkpoint_dir.exists():
-                raise FileNotFoundError(
-                    f"Checkpoint directory not found: {checkpoint_dir}. "
-                    "Please ensure model checkpoints are available."
-                )
-
-            config = InferenceConfig(
-                checkpoint_dir=checkpoint_dir,
-                output_dir=checkpoint_dir.parent / "infer",
-                channels=[self.get_channel()],
-                run_explainability=False,  # We handle explainability separately
+        checkpoint_dir = self.get_checkpoint_dir()
+        if not checkpoint_dir.exists():
+            raise FileNotFoundError(
+                f"Checkpoint directory not found: {checkpoint_dir}. "
+                "Please ensure model checkpoints are available."
             )
-            self._inference_pipeline = InferencePipeline(config)
-            self._models_loaded = True
 
-        return self._inference_pipeline
+        pipeline = get_cached_inference_pipeline(
+            checkpoint_dir=checkpoint_dir,
+            channels=[self.get_channel()],
+            run_explainability=False,
+        )
+        self._models_loaded = True
+
+        return pipeline
 
     def get_store_master(self) -> pd.DataFrame:
         """
