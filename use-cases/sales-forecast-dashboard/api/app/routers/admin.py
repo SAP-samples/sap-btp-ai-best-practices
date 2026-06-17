@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from pydantic import BaseModel
 
 from ..security import get_api_key
+from ..services.memory_monitor import build_memory_snapshot
 
 logger = logging.getLogger(__name__)
 
@@ -133,3 +134,19 @@ async def get_regeneration_status():
         last_run=_regeneration_state["last_run"],
         last_result=_regeneration_state["last_result"]
     )
+
+
+@router.get("/memory")
+async def get_memory_snapshot() -> dict:
+    """
+    Return current API memory diagnostics.
+
+    The snapshot includes process RSS/USS metrics, active chatbot session
+    counts, retained scenario/prediction DataFrame sizes, stored report JSON
+    sizes, and garbage collector counters. Use this before and after local or
+    Cloud Foundry reproduction steps to locate memory growth.
+
+    Returns:
+        dict: JSON-safe memory diagnostics for the running API process.
+    """
+    return build_memory_snapshot()

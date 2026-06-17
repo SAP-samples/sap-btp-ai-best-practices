@@ -37,6 +37,10 @@ from app.agent.feature_mapping import (
 )
 from app.agent.hana_loader import load_model_b_filtered
 from app.agent.tools.utils import sanitize_for_json
+from app.services.inference_cache import (
+    get_cached_inference_pipeline,
+    run_cached_inference,
+)
 
 # Treat features as unchanged unless delta exceeds this tolerance
 FEATURE_CHANGE_TOLERANCE = 1e-5
@@ -245,27 +249,12 @@ def _run_predictions_for_df(
     label: str,
 ) -> Optional[PredictionResult]:
     """
-    Run Model B inference for an arbitrary DataFrame to obtain predictions.
+    Run cached Model B inference for an arbitrary DataFrame to obtain predictions.
     """
-    from app.regressor.pipelines import InferencePipeline
-    from app.regressor.configs import InferenceConfig
-
     checkpoint_dir = session.get_checkpoint_dir()
     channel = session.get_channel()
 
     if not checkpoint_dir.exists():
-        return None
-
-    config = InferenceConfig(
-        checkpoint_dir=checkpoint_dir,
-        output_dir=checkpoint_dir.parent / "infer",
-        channels=[channel],
-        run_explainability=False,
-    )
-
-    try:
-        pipeline = InferencePipeline(config)
-    except Exception:
         return None
 
     df_in = df.copy()
@@ -273,7 +262,14 @@ def _run_predictions_for_df(
         df_in["channel"] = channel
 
     try:
-        inference_result = pipeline.run(df_in, channels=[channel])
+        inference_result = run_cached_inference(
+            model_b_data=df_in,
+            channels=[channel],
+            checkpoint_dir=checkpoint_dir,
+            save_outputs=False,
+            estimate_traffic=True,
+            label=f"_run_predictions_for_df:{label}",
+        )
     except Exception:
         return None
     pred_df = inference_result.bm_predictions if channel == "B&M" else inference_result.web_predictions
@@ -446,19 +442,6 @@ def run_forecast_model(
     all_predictions = {}
 
     try:
-        # Import and configure inference pipeline
-        from app.regressor.pipelines import InferencePipeline
-        from app.regressor.configs import InferenceConfig
-
-        config = InferenceConfig(
-            checkpoint_dir=checkpoint_dir,
-            output_dir=checkpoint_dir.parent / "infer",
-            channels=[channel],
-            run_explainability=False,  # Handle separately
-        )
-
-        pipeline = InferencePipeline(config)
-
         for scenario_name in scenario_names:
             scenario = session.get_scenario(scenario_name)
 
@@ -472,14 +455,21 @@ def run_forecast_model(
                 }
                 continue
 
-            df = scenario.df
+            df = scenario.df.copy()
 
             # Ensure required columns
             if "channel" not in df.columns:
                 df["channel"] = channel
 
             # Run inference
-            inference_result = pipeline.run(df, channels=[channel])
+            inference_result = run_cached_inference(
+                model_b_data=df,
+                channels=[channel],
+                checkpoint_dir=checkpoint_dir,
+                save_outputs=False,
+                estimate_traffic=True,
+                label=f"run_forecast_model:{scenario_name}",
+            )
 
             # Extract predictions based on channel
             if channel == "B&M":
@@ -1542,6 +1532,7 @@ def analyze_sensitivity(
     store_id: Optional[int] = None,
     feature_category: Optional[str] = None,
     perturbation_pct: float = 20.0,
+    include_traffic: bool = False,
 ) -> Dict[str, Any]:
     """
     Analyze sensitivity of sales to changes in business levers.
@@ -1565,6 +1556,8 @@ def analyze_sensitivity(
             - "awareness": Brand awareness, consideration
             Default: all operational levers
         perturbation_pct: Percentage to perturb each lever (default 20%).
+        include_traffic: Whether B&M traffic Monte Carlo estimates should run
+            during sensitivity. Defaults to False to reduce memory pressure.
 
     Returns:
         Dictionary containing:
@@ -1630,6 +1623,16 @@ def analyze_sensitivity(
     if baseline_sales == 0:
         return {"error": "Baseline sales is zero. Cannot compute elasticity."}
 
+    # Resolve the process-level model once before perturbing many features.
+    try:
+        pipeline = get_cached_inference_pipeline(
+            checkpoint_dir=session.get_checkpoint_dir(),
+            channels=[channel],
+            run_explainability=False,
+        )
+    except Exception as e:
+        return {"error": f"Could not load cached inference pipeline: {str(e)}"}
+
     # Analyze each feature by running actual model perturbations
     elasticities = []
 
@@ -1642,7 +1645,13 @@ def analyze_sensitivity(
 
         # Compute REAL elasticity via perturbation
         elasticity_result = _compute_real_elasticity(
-            session, feature, perturbation_pct, baseline_sales, df
+            session,
+            feature,
+            perturbation_pct,
+            baseline_sales,
+            df,
+            pipeline=pipeline,
+            include_traffic=include_traffic,
         )
 
         elasticities.append({
@@ -1673,6 +1682,7 @@ def analyze_sensitivity(
         "status": "analyzed",
         "channel": channel,
         "perturbation_pct": perturbation_pct,
+        "include_traffic": include_traffic,
         "features_analyzed": len(elasticities),
         "elasticities": elasticities[:15],  # Top 15
         "most_sensitive": most_sensitive,
@@ -1697,6 +1707,8 @@ def _compute_real_elasticity(
     perturbation_pct: float,
     baseline_sales: float,
     baseline_df: pd.DataFrame,
+    pipeline: Any,
+    include_traffic: bool = False,
 ) -> Dict[str, float]:
     """
     Compute real elasticity by running +/- perturbation scenarios through the model.
@@ -1711,6 +1723,8 @@ def _compute_real_elasticity(
         perturbation_pct: Percentage to perturb (e.g., 20.0 for +/-20%).
         baseline_sales: Total p50 sales from baseline prediction.
         baseline_df: DataFrame with baseline feature values.
+        pipeline: Process-level cached inference pipeline.
+        include_traffic: Whether to compute B&M traffic estimates.
 
     Returns:
         Dictionary containing:
@@ -1719,9 +1733,6 @@ def _compute_real_elasticity(
         - elasticity_avg: Average of both (symmetric assumption)
         - is_asymmetric: True if up/down differ significantly (>0.1)
     """
-    from app.regressor.pipelines import InferencePipeline
-    from app.regressor.configs import InferenceConfig
-
     # Get metadata for bounds checking
     metadata = get_feature_metadata(feature)
     current_mean = baseline_df[feature].mean()
@@ -1734,17 +1745,7 @@ def _compute_real_elasticity(
             "is_asymmetric": False,
         }
 
-    checkpoint_dir = session.get_checkpoint_dir()
     channel = session.get_channel()
-
-    config = InferenceConfig(
-        checkpoint_dir=checkpoint_dir,
-        output_dir=checkpoint_dir.parent / "infer",
-        channels=[channel],
-        run_explainability=False,
-    )
-
-    pipeline = InferencePipeline(config)
 
     results = {}
 
@@ -1765,7 +1766,14 @@ def _compute_real_elasticity(
 
         # Run inference
         try:
-            inference_result = pipeline.run(perturbed_df, channels=[channel])
+            inference_result = run_cached_inference(
+                model_b_data=perturbed_df,
+                channels=[channel],
+                pipeline=pipeline,
+                save_outputs=False,
+                estimate_traffic=include_traffic,
+                label=f"analyze_sensitivity:{feature}:{direction}",
+            )
 
             if channel == "B&M":
                 pred_df = inference_result.bm_predictions

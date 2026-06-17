@@ -286,12 +286,12 @@ class SessionStore:
         ----------
         max_sessions : int, optional
             Maximum number of concurrent sessions.
-            Defaults to MAX_SESSIONS env var or 100.
+            Defaults to MAX_SESSIONS env var or 5.
         session_ttl_hours : int, optional
             Session time-to-live in hours.
             Defaults to SESSION_TTL_HOURS env var or 24.
         """
-        self.max_sessions = max_sessions or int(os.getenv("MAX_SESSIONS", "100"))
+        self.max_sessions = max_sessions or int(os.getenv("MAX_SESSIONS", "5"))
         self.session_ttl_hours = session_ttl_hours or int(
             os.getenv("SESSION_TTL_HOURS", "24")
         )
