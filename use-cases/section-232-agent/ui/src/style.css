@@ -1,0 +1,39 @@
+:root {
+  --app-font-family: var(--sapFontFamily, "72", "72full", "Segoe UI", Arial, sans-serif);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: var(--app-font-family);
+  color: var(--sapTextColor, #152935);
+}
+
+#app,
+button,
+input,
+select,
+textarea,
+table,
+th,
+td {
+  font-family: inherit;
+}
+
+.content {
+  min-height: 400px;
+  font-family: inherit;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}

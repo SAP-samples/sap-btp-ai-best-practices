@@ -1,0 +1,76 @@
+<div class="section-232-review-page">
+  <div class="section-232-review-hero">
+    <div>
+      <div class="section-232-review-kicker">Section 232 Workspace</div>
+      <ui5-title level="H2" id="section-232-review-title">Review workspace</ui5-title>
+      <ui5-text id="section-232-review-subtitle">Load a draft batch or published ruleset to inspect Section 232 review rows.</ui5-text>
+    </div>
+    <div class="section-232-review-hero-actions">
+      <ui5-tag id="section-232-review-mode-tag" design="Information">Workspace</ui5-tag>
+      <div class="section-232-review-publish-controls" id="section-232-review-publish-controls">
+        <ui5-label for="section-232-review-published-by-input">Published by</ui5-label>
+        <ui5-input
+          id="section-232-review-published-by-input"
+          placeholder="Enter a name or app id"
+        ></ui5-input>
+      </div>
+      <ui5-button id="section-232-review-publish-button" design="Emphasized">Publish accepted</ui5-button>
+      <ui5-button id="section-232-review-back-button" design="Transparent" icon="nav-back">Back to settings</ui5-button>
+      <ui5-button id="section-232-review-refresh-button" design="Emphasized" icon="refresh">Refresh</ui5-button>
+    </div>
+  </div>
+
+  <div id="section-232-review-diagnostics" style="display: none"></div>
+  <ui5-message-strip id="section-232-review-message" hide-close-button style="display: none"></ui5-message-strip>
+
+  <div class="section-232-review-shell">
+    <section class="section-232-review-pane section-232-review-pane-table">
+      <div class="section-232-review-pane-header">
+        <div>
+          <div class="section-232-review-pane-title">Rows</div>
+          <div class="section-232-review-pane-copy" id="section-232-review-selection-summary">Select one row to review details.</div>
+        </div>
+        <div class="section-232-review-pane-actions">
+          <div class="section-232-review-search">
+            <ui5-label for="section-232-review-hts-search">Search HTS</ui5-label>
+            <div class="section-232-review-search-controls">
+              <ui5-input
+                id="section-232-review-hts-search"
+                placeholder="3403, 3403.99, or 340399"
+              ></ui5-input>
+              <ui5-button id="section-232-review-submit-search" design="Emphasized" icon="search" disabled>Search</ui5-button>
+              <ui5-button id="section-232-review-clear-search" design="Transparent" icon="decline" disabled></ui5-button>
+            </div>
+          </div>
+          <div class="section-232-review-pagination">
+            <div class="section-232-review-pane-copy" id="section-232-review-page-copy">No rows</div>
+            <ui5-button id="section-232-review-page-previous" design="Transparent" icon="navigation-left-arrow" disabled>Previous</ui5-button>
+            <ui5-button id="section-232-review-page-next" design="Transparent" icon="navigation-right-arrow" disabled>Next</ui5-button>
+          </div>
+          <div class="section-232-review-toolbar">
+          <ui5-button id="section-232-review-select-all" design="Transparent" disabled>Select all</ui5-button>
+          <ui5-button id="section-232-review-accept-selected" design="Transparent" disabled>Accept selected</ui5-button>
+          <ui5-button id="section-232-review-reject-selected" design="Transparent" disabled>Reject selected</ui5-button>
+          <ui5-button id="section-232-review-clear-selection" design="Transparent" disabled>Clear selection</ui5-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-232-review-table-wrap">
+        <div id="section-232-review-loading" class="section-232-review-empty" style="display: none;">Loading workspace…</div>
+        <div id="section-232-review-table"></div>
+      </div>
+    </section>
+
+    <aside class="section-232-review-pane section-232-review-pane-detail">
+      <div class="section-232-review-pane-header">
+        <div>
+          <div class="section-232-review-pane-title">Detail</div>
+          <div class="section-232-review-pane-copy" id="section-232-review-detail-summary">Select exactly one row to activate the detail pane.</div>
+        </div>
+      </div>
+
+      <div id="section-232-review-detail"></div>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+description: >
+  Explain what the Section 232 eligibility assistant can do and verify that the
+  backend API is reachable. Use this for greetings, help requests, capability
+  questions, and operational status questions such as "what can you do?",
+  "help me with Section 232", "is the Section 232 API available?", or "show the
+  ruleset summary".
+
+target:
+  name: fn_overview
+  type: function
