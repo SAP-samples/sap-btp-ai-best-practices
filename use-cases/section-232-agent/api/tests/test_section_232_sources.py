@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def _sample_settings(**overrides) -> MetalCompositionSettings:
     return MetalCompositionSettings(
-        workbook_path=ROOT / "data" / "GCC Tracker.xlsb",
+        workbook_path=ROOT / "data" / "Material Master.xlsb",
         api_env_path=ROOT / "api" / ".env",
         **overrides,
     )

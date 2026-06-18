@@ -41,12 +41,12 @@ class PersistedClassificationSnapshot:
 
 @dataclass(frozen=True)
 class PersistedAppSettings:
-    use_gcc_tracker_metal_composition: bool = True
+    use_material_master_metal_composition: bool = True
     updated_at: Optional[str] = None
 
     def to_model(self) -> MetalCompositionAppSettings:
         return MetalCompositionAppSettings(
-            use_gcc_tracker_metal_composition=bool(self.use_gcc_tracker_metal_composition),
+            use_material_master_metal_composition=bool(self.use_material_master_metal_composition),
             updated_at=self.updated_at,
         )
 
@@ -180,10 +180,10 @@ class InMemoryMetalCompositionUIStateStore:
     def update_app_settings(
         self,
         *,
-        use_gcc_tracker_metal_composition: bool,
+        use_material_master_metal_composition: bool,
     ) -> PersistedAppSettings:
         self._app_settings = PersistedAppSettings(
-            use_gcc_tracker_metal_composition=bool(use_gcc_tracker_metal_composition),
+            use_material_master_metal_composition=bool(use_material_master_metal_composition),
             updated_at=utc_now_iso(),
         )
         return self._app_settings
@@ -234,7 +234,7 @@ class MetalCompositionUIStateStore:
                 f"""
                 CREATE COLUMN TABLE {_qualified_table(self.app_settings_table, self.schema)} (
                     "SETTINGS_ID" NVARCHAR(64) PRIMARY KEY,
-                    "USE_GCC_TRACKER_METAL_COMPOSITION" SMALLINT NOT NULL,
+                    "USE_MATERIAL_MASTER_METAL_COMPOSITION" SMALLINT NOT NULL,
                     "UPDATED_AT" NVARCHAR(64) NOT NULL
                 )
                 """
@@ -400,7 +400,7 @@ class MetalCompositionUIStateStore:
     def get_app_settings(self) -> PersistedAppSettings:
         rows = self._fetch_rows(
             f"""
-            SELECT "USE_GCC_TRACKER_METAL_COMPOSITION", "UPDATED_AT"
+            SELECT "USE_MATERIAL_MASTER_METAL_COMPOSITION", "UPDATED_AT"
             FROM {_qualified_table(self.app_settings_table, self.schema)}
             WHERE "SETTINGS_ID" = ?
             """,
@@ -413,23 +413,23 @@ class MetalCompositionUIStateStore:
     def update_app_settings(
         self,
         *,
-        use_gcc_tracker_metal_composition: bool,
+        use_material_master_metal_composition: bool,
     ) -> PersistedAppSettings:
         now = utc_now_iso()
         self.connection.execute(
             f"""
             UPSERT {_qualified_table(self.app_settings_table, self.schema)} (
-                "SETTINGS_ID", "USE_GCC_TRACKER_METAL_COMPOSITION", "UPDATED_AT"
+                "SETTINGS_ID", "USE_MATERIAL_MASTER_METAL_COMPOSITION", "UPDATED_AT"
             ) VALUES (?, ?, ?) WITH PRIMARY KEY
             """,
             [
                 "global",
-                1 if use_gcc_tracker_metal_composition else 0,
+                1 if use_material_master_metal_composition else 0,
                 now,
             ],
         )
         return PersistedAppSettings(
-            use_gcc_tracker_metal_composition=bool(use_gcc_tracker_metal_composition),
+            use_material_master_metal_composition=bool(use_material_master_metal_composition),
             updated_at=now,
         )
 
@@ -582,7 +582,7 @@ class MetalCompositionUIStateStore:
     @staticmethod
     def _row_to_app_settings(row: Dict[str, object]) -> PersistedAppSettings:
         return PersistedAppSettings(
-            use_gcc_tracker_metal_composition=bool(int(row.get("use_gcc_tracker_metal_composition") or 0)),
+            use_material_master_metal_composition=bool(int(row.get("use_material_master_metal_composition") or 0)),
             updated_at=(None if row.get("updated_at") is None else str(row["updated_at"])),
         )
 

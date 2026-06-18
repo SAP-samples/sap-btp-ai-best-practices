@@ -72,13 +72,13 @@ class MetalCompositionWorkflowRunner:
     def _diagram_output(self, state: MetalCompositionState) -> Dict[str, Any]:
         diagram_payloads = state.get("diagram_payloads", [])
         composition_mode = str(state.get("composition_mode") or "diagram_manual").strip().lower()
-        if composition_mode == "gcc_tracker":
+        if composition_mode == "material_master":
             return {
                 "diagram_output": analyze_diagrams_for_hts_clues(
                     diagram_payloads,
                     self.settings,
                     self.llm,
-                    gcc_material_profile=dict(state.get("gcc_tracker_composition") or {}),
+                    material_master_material_profile=dict(state.get("material_master_composition") or {}),
                     product_code=state.get("product_code"),
                     source_summary=state.get("source_summary"),
                     source_row=state.get("source_row"),
@@ -200,8 +200,8 @@ class MetalCompositionWorkflowRunner:
         # produced directly by the diagram LLM instead of a separate combine_final step).
         diagram_output = phase_outputs.get("diagram_output", {}) or {}
         composition_mode = str(state.get("composition_mode") or "diagram_manual").strip().lower()
-        if composition_mode == "gcc_tracker":
-            composition_raw = dict(state.get("gcc_tracker_composition") or {})
+        if composition_mode == "material_master":
+            composition_raw = dict(state.get("material_master_composition") or {})
         else:
             composition_raw = diagram_output.pop("composition", None) or {}
         if composition_raw.get("top_level_grams"):
@@ -347,7 +347,7 @@ class MetalCompositionWorkflowRunner:
         composition_mode: str = "diagram_manual",
         document_mode: str = "text_only",
         diagram_payloads: Optional[List[DiagramPayload]] = None,
-        gcc_tracker_composition: Optional[Dict[str, Any]] = None,
+        material_master_composition: Optional[Dict[str, Any]] = None,
         include_token_usage: bool = False,
     ) -> Dict[str, Any]:
         started_perf = perf_counter()
@@ -361,7 +361,7 @@ class MetalCompositionWorkflowRunner:
             "composition_mode": composition_mode,
             "document_mode": document_mode,
             "diagram_payloads": diagram_payloads or [],
-            "gcc_tracker_composition": gcc_tracker_composition,
+            "material_master_composition": material_master_composition,
             "include_token_usage": include_token_usage,
             "token_usage_recorder": token_usage_recorder,
         }

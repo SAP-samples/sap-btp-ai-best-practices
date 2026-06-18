@@ -61,7 +61,7 @@ def _format_label(value: str) -> str:
 def _format_item_type(value: str | None) -> str:
     if not value:
         return "Unknown"
-    return {"gcc": "GCC"}.get(value.lower(), _format_label(value))
+    return {"mm": "Material Master"}.get(value.lower(), _format_label(value))
 
 
 def _format_bool(value: object) -> str:

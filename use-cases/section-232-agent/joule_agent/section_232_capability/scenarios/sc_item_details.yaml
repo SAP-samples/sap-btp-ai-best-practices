@@ -2,13 +2,13 @@ description: >
   Retrieve details and stored Section 232 analysis for one item. Use this when
   the user gives an item id and asks for eligibility details, stored HTS
   classification, metal composition, document status, or analysis reasoning.
-  Examples: "Show details for gcc:1001", "review item gcc:2002", or "why was
-  gcc:1001 classified this way?".
+  Examples: "Show details for mm:1001", "review item mm:2002", or "why was
+  mm:1001 classified this way?".
 
 slots:
   - name: item_id
     description: >
-      Backend GCC tracker item id, in the form gcc:1001. Capture the complete
+      Backend Material Master item id, in the form mm:1001. Capture the complete
       value including the prefix and colon.
 
 target:

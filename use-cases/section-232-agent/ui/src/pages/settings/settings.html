@@ -17,13 +17,13 @@
         <div class="settings-helper-panel">
           <div class="settings-mode-bar settings-composition-mode-bar">
             <div class="settings-field settings-switch-field">
-              <ui5-label for="settings-gcc-composition-toggle">Use GCC tracker metal composition</ui5-label>
-              <ui5-switch id="settings-gcc-composition-toggle"></ui5-switch>
+              <ui5-label for="settings-mm-composition-toggle">Use Material Master metal composition</ui5-label>
+              <ui5-switch id="settings-mm-composition-toggle"></ui5-switch>
             </div>
             <div class="settings-mode-copy">
               <div id="settings-composition-mode-summary" class="settings-mode-summary"></div>
               <div class="settings-copy">
-                When enabled, GCC-backed items use GCC tracker prepared metal grams as the authoritative composition source.
+                When enabled, Material Master-backed items use Material Master prepared metal grams as the authoritative composition source.
                 PDFs are optional extra evidence for HTS-facing clues such as extracted codes, context of use, and uncertainty notes.
               </div>
               <div class="settings-copy">
@@ -119,32 +119,32 @@
     </ui5-card>
 
     <ui5-card class="settings-card settings-card-wide">
-      <ui5-card-header slot="header" title-text="Upload GCC Tracker File"></ui5-card-header>
+      <ui5-card-header slot="header" title-text="Upload Material Master File"></ui5-card-header>
       <div class="settings-card-body">
         <div class="settings-helper-panel">
           <div class="settings-copy">
-            Upload the current GCC Tracker Excel workbook to rebuild the HANA serving table used by GCC-backed items.
-            A successful refresh replaces the previous tracker dataset, clears saved classification snapshots, and cancels active
-            classification jobs so row-indexed results do not survive a tracker replacement.
+            Upload the current Material Master Excel workbook to rebuild the HANA serving table used by Material Master-backed items.
+            A successful refresh replaces the previous Material Master dataset, clears saved classification snapshots, and cancels active
+            classification jobs so row-indexed results do not survive a Material Master replacement.
           </div>
         </div>
 
         <div class="settings-source-actions">
           <input
-            id="settings-gcc-tracker-upload-input"
+            id="settings-material-master-upload-input"
             type="file"
             accept=".xlsb,.xlsx,application/vnd.ms-excel.sheet.binary.macroEnabled.12,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             hidden
           />
-          <ui5-button id="settings-gcc-tracker-select-button" design="Transparent" icon="upload">Choose workbook</ui5-button>
-          <ui5-button id="settings-gcc-tracker-refresh-button" design="Emphasized" icon="upload-to-cloud">Upload &amp; refresh HANA</ui5-button>
+          <ui5-button id="settings-material-master-select-button" design="Transparent" icon="upload">Choose workbook</ui5-button>
+          <ui5-button id="settings-material-master-refresh-button" design="Emphasized" icon="upload-to-cloud">Upload &amp; refresh HANA</ui5-button>
         </div>
 
-        <div id="settings-gcc-tracker-selection" class="settings-selection-copy">No GCC Tracker .xlsb or .xlsx file selected.</div>
+        <div id="settings-material-master-selection" class="settings-selection-copy">No Material Master .xlsb or .xlsx file selected.</div>
 
         <div class="settings-section">
           <div class="settings-section-title">Latest Settings-page refresh</div>
-          <div class="settings-stat-grid settings-stat-grid-wide" id="settings-gcc-tracker-refresh-result"></div>
+          <div class="settings-stat-grid settings-stat-grid-wide" id="settings-material-master-refresh-result"></div>
         </div>
       </div>
     </ui5-card>

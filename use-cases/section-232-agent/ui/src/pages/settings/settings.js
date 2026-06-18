@@ -27,9 +27,9 @@ import {
   readPersistedDraftBatch
 } from "./settings_persistence.js";
 import {
-  buildGCCTrackerRefreshSuccessMessage,
-  isGCCTrackerWorkbookFile
-} from "./gcc_tracker_upload_state.js";
+  buildMaterialMasterRefreshSuccessMessage,
+  isMaterialMasterWorkbookFile
+} from "./material_master_upload_state.js";
 import { renderSettingsView } from "./settings_view.js";
 
 const DEFAULT_RULESET_SUMMARY = {
@@ -45,7 +45,7 @@ const DEFAULT_CLASSIFICATION_STATS = {
 };
 
 const DEFAULT_APP_SETTINGS = {
-  use_gcc_tracker_metal_composition: false,
+  use_material_master_metal_composition: false,
   updated_at: null
 };
 
@@ -77,8 +77,8 @@ function createInitialState() {
     appSettingsDraft: false,
     selectedSourceFiles: [],
     selectedCatalogFiles: [],
-    selectedGCCTrackerFile: null,
-    lastGCCTrackerRefresh: null,
+    selectedMaterialMasterFile: null,
+    lastMaterialMasterRefresh: null,
     currentDraftBatch: null,
     htsCatalog: {
       items: [],
@@ -91,7 +91,7 @@ function createInitialState() {
     messageDesign: "Information",
     sourceProcessBusy: false,
     htsCatalogUploadBusy: false,
-    gccTrackerRefreshBusy: false,
+    materialMasterRefreshBusy: false,
     compositionModeSaveBusy: false,
     classificationResetBusy: false,
     section232ResetBusy: false,
@@ -268,7 +268,7 @@ async function refreshPageState() {
   state.appSettings = appSettingsResponse || {
     ...DEFAULT_APP_SETTINGS
   };
-  state.appSettingsDraft = Boolean(state.appSettings.use_gcc_tracker_metal_composition);
+  state.appSettingsDraft = Boolean(state.appSettings.use_material_master_metal_composition);
   state.sources = sourceResponse.items || [];
   state.rulesetSummary = rulesetSummaryResponse || {
     ...DEFAULT_RULESET_SUMMARY
@@ -352,45 +352,45 @@ async function uploadHTSCatalogSources() {
 }
 
 /**
- * Upload the selected GCC Tracker workbook and refresh the HANA serving table.
+ * Upload the selected Material Master workbook and refresh the HANA serving table.
  *
  * @returns {Promise<void>} Resolves after the refresh attempt updates Settings state.
  */
-async function uploadGCCTrackerFile() {
-  if (!state.selectedGCCTrackerFile) {
-    showMessage("Choose a GCC Tracker .xlsb or .xlsx file before refreshing HANA.", "Critical");
+async function uploadMaterialMasterFile() {
+  if (!state.selectedMaterialMasterFile) {
+    showMessage("Choose a Material Master .xlsb or .xlsx file before refreshing HANA.", "Critical");
     return;
   }
-  if (!isGCCTrackerWorkbookFile(state.selectedGCCTrackerFile)) {
-    showMessage("The GCC Tracker upload must be a .xlsb or .xlsx workbook.", "Critical");
+  if (!isMaterialMasterWorkbookFile(state.selectedMaterialMasterFile)) {
+    showMessage("The Material Master upload must be a .xlsb or .xlsx workbook.", "Critical");
     return;
   }
 
   const formData = new FormData();
-  formData.append("file", state.selectedGCCTrackerFile);
+  formData.append("file", state.selectedMaterialMasterFile);
 
-  state.gccTrackerRefreshBusy = true;
+  state.materialMasterRefreshBusy = true;
   render();
   try {
-    const response = await request("/api/metal-composition/admin/gcc-tracker/refresh-hana", "POST", formData);
-    state.selectedGCCTrackerFile = null;
-    state.lastGCCTrackerRefresh = response;
-    clearInputValue("settings-gcc-tracker-upload-input");
+    const response = await request("/api/metal-composition/admin/material-master/refresh-hana", "POST", formData);
+    state.selectedMaterialMasterFile = null;
+    state.lastMaterialMasterRefresh = response;
+    clearInputValue("settings-material-master-upload-input");
     await refreshPageState();
-    applyMessage(buildGCCTrackerRefreshSuccessMessage(response), "Positive");
+    applyMessage(buildMaterialMasterRefreshSuccessMessage(response), "Positive");
     render();
   } catch (error) {
     applyMessage(error.message, "Negative");
     render();
   } finally {
-    state.gccTrackerRefreshBusy = false;
+    state.materialMasterRefreshBusy = false;
     render();
   }
 }
 
 async function saveCompositionMode() {
   const nextValue = Boolean(state.appSettingsDraft);
-  if (nextValue === Boolean(state.appSettings.use_gcc_tracker_metal_composition)) {
+  if (nextValue === Boolean(state.appSettings.use_material_master_metal_composition)) {
     showMessage("No composition-mode change to save.", "Information");
     return;
   }
@@ -399,19 +399,19 @@ async function saveCompositionMode() {
   render();
   try {
     const response = await request("/api/metal-composition/app-settings", "PUT", {
-      use_gcc_tracker_metal_composition: nextValue
+      use_material_master_metal_composition: nextValue
     });
     state.appSettings = response || state.appSettings;
-    state.appSettingsDraft = Boolean(state.appSettings.use_gcc_tracker_metal_composition);
+    state.appSettingsDraft = Boolean(state.appSettings.use_material_master_metal_composition);
     applyMessage(
       nextValue
-        ? "Saved GCC tracker metal composition mode."
+        ? "Saved Material Master metal composition mode."
         : "Saved legacy PDF-derived metal composition mode.",
       "Positive"
     );
     render();
   } catch (error) {
-    state.appSettingsDraft = Boolean(state.appSettings.use_gcc_tracker_metal_composition);
+    state.appSettingsDraft = Boolean(state.appSettings.use_material_master_metal_composition);
     applyMessage(error.message, "Negative");
     render();
   } finally {
@@ -657,7 +657,7 @@ function handleHTSCatalogAction(event) {
 
 function bindEvents() {
   document.getElementById("settings-summary-cards")?.addEventListener("click", handleSummaryClick);
-  document.getElementById("settings-gcc-composition-toggle")?.addEventListener("change", (event) => {
+  document.getElementById("settings-mm-composition-toggle")?.addEventListener("change", (event) => {
     state.appSettingsDraft = Boolean(event.target?.checked);
     render();
   });
@@ -684,14 +684,14 @@ function bindEvents() {
   document.getElementById("settings-hts-catalog-upload-button")?.addEventListener("click", uploadHTSCatalogSources);
   document.getElementById("settings-hts-catalog-list")?.addEventListener("click", handleHTSCatalogAction);
 
-  document.getElementById("settings-gcc-tracker-select-button")?.addEventListener("click", () => {
-    document.getElementById("settings-gcc-tracker-upload-input")?.click();
+  document.getElementById("settings-material-master-select-button")?.addEventListener("click", () => {
+    document.getElementById("settings-material-master-upload-input")?.click();
   });
-  document.getElementById("settings-gcc-tracker-upload-input")?.addEventListener("change", (event) => {
-    state.selectedGCCTrackerFile = Array.from(event.target.files || [])[0] || null;
+  document.getElementById("settings-material-master-upload-input")?.addEventListener("change", (event) => {
+    state.selectedMaterialMasterFile = Array.from(event.target.files || [])[0] || null;
     render();
   });
-  document.getElementById("settings-gcc-tracker-refresh-button")?.addEventListener("click", uploadGCCTrackerFile);
+  document.getElementById("settings-material-master-refresh-button")?.addEventListener("click", uploadMaterialMasterFile);
 
   document.getElementById("settings-code-review-button")?.addEventListener("click", openPublishedReviewWorkspace);
 

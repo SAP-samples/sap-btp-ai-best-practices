@@ -363,7 +363,7 @@ class MetalCompositionPredictInput:
 @dataclass(frozen=True)
 class ResolvedItemContext:
     item_id: str
-    item_type: Literal["gcc"]
+    item_type: Literal["mm"]
     dataset_scope: str
     product_code: str
     source_row_id: Optional[int] = None
@@ -408,7 +408,7 @@ class ItemSearchMatch:
 class PredictResolutionResult:
     record: Optional[ResolvedMaterialRecord]
     candidates: List[MetalCompositionCandidate] = field(default_factory=list)
-    record_origin: Optional[Literal["gcc"]] = None
+    record_origin: Optional[Literal["mm"]] = None
     error: Optional[str] = None
 
 
@@ -558,7 +558,7 @@ class MetalCompositionService:
 
     def _compute_dataset_signature(self) -> str:
         # Only hash the stable source rows. Runtime load metadata can change across
-        # restarts (for example HANA vs snapshot fallback) even when the GCC data is
+        # restarts (for example HANA vs snapshot fallback) even when the Material Master data is
         # identical, and should not invalidate saved classifications.
         source_df = self.serving_store.source_df.reindex(columns=SIGNATURE_COLUMNS).copy()
         source_df = source_df.sort_values(by=["source_row_id"], kind="stable").reset_index(drop=True)
@@ -600,46 +600,46 @@ class MetalCompositionService:
     def update_app_settings(
         self,
         *,
-        use_gcc_tracker_metal_composition: bool,
+        use_material_master_metal_composition: bool,
     ) -> MetalCompositionAppSettings:
         return self.item_service.update_app_settings(
-            use_gcc_tracker_metal_composition=use_gcc_tracker_metal_composition,
+            use_material_master_metal_composition=use_material_master_metal_composition,
         )
 
     def _resolve_effective_composition_mode(
         self,
         request: MetalCompositionPredictInput,
         *,
-        record_origin: Optional[Literal["gcc"]],
+        record_origin: Optional[Literal["mm"]],
         source_row_id: Optional[int],
     ) -> CompositionMode:
-        if record_origin != "gcc" or source_row_id is None or int(source_row_id) < 0:
+        if record_origin != "mm" or source_row_id is None or int(source_row_id) < 0:
             return "diagram_manual"
         requested_mode = request.composition_mode
-        if requested_mode in {"diagram_manual", "gcc_tracker"}:
+        if requested_mode in {"diagram_manual", "material_master"}:
             return requested_mode
         return (
-            "gcc_tracker"
-            if self.get_app_settings().use_gcc_tracker_metal_composition
+            "material_master"
+            if self.get_app_settings().use_material_master_metal_composition
             else "diagram_manual"
         )
 
     def _composition_mode_for_context(self, context: ResolvedItemContext) -> CompositionMode:
-        if context.item_type != "gcc" or context.source_row_id is None:
+        if context.item_type != "mm" or context.source_row_id is None:
             return "diagram_manual"
         return (
-            "gcc_tracker"
-            if self.get_app_settings().use_gcc_tracker_metal_composition
+            "material_master"
+            if self.get_app_settings().use_material_master_metal_composition
             else "diagram_manual"
         )
 
-    def _build_gcc_tracker_composition(
+    def _build_material_master_composition(
         self,
         *,
         source_row_id: int,
         total_weight_grams: Optional[float],
     ) -> Dict[str, Any]:
-        metal_profile = self.serving_store.get_gcc_metal_profile(int(source_row_id))
+        metal_profile = self.serving_store.get_material_master_metal_profile(int(source_row_id))
         top_level_grams = {
             metal: float(value or 0.0)
             for metal, value in metal_profile.top_level_grams.items()
@@ -650,8 +650,8 @@ class MetalCompositionService:
         }
         estimated_total_metal_grams = float(sum(top_level_grams.values()))
         provenance_notes = [
-            "GCC tracker composition mode was used.",
-            "Missing prepared GCC gram values were normalized to zero.",
+            "Material Master composition mode was used.",
+            "Missing prepared Material Master gram values were normalized to zero.",
         ]
         return {
             "is_metal_item": estimated_total_metal_grams > 0.0,
@@ -661,17 +661,17 @@ class MetalCompositionService:
             "steel_subtype_grams": steel_subtype_grams,
             "confidence": 1.0,
             "reasoning": (
-                "Metal composition was sourced directly from GCC tracker prepared gram columns. "
-                "Blank or missing GCC gram fields were normalized to 0 g."
+                "Metal composition was sourced directly from Material Master prepared gram columns. "
+                "Blank or missing Material Master gram fields were normalized to 0 g."
             ),
             "provenance": {
-                "dominant_source": "gcc_tracker",
+                "dominant_source": "material_master",
                 "top_level_sources": {
-                    metal: ("gcc_tracker" if float(weight_grams or 0.0) > 0.0 else "none")
+                    metal: ("material_master" if float(weight_grams or 0.0) > 0.0 else "none")
                     for metal, weight_grams in top_level_grams.items()
                 },
                 "steel_subtype_sources": {
-                    subtype: ("gcc_tracker" if float(weight_grams or 0.0) > 0.0 else "none")
+                    subtype: ("material_master" if float(weight_grams or 0.0) > 0.0 else "none")
                     for subtype, weight_grams in steel_subtype_grams.items()
                 },
                 "needs_human_review": False,
@@ -786,7 +786,7 @@ class MetalCompositionService:
                 record_started_perf,
                 record_started_at,
             )
-            return PredictResolutionResult(record=record, candidates=candidates, record_origin="gcc")
+            return PredictResolutionResult(record=record, candidates=candidates, record_origin="mm")
 
         if (
             request.selected_source_row_id is not None
@@ -802,7 +802,7 @@ class MetalCompositionService:
                 record_started_perf,
                 record_started_at,
             )
-            return PredictResolutionResult(record=record, candidates=candidates, record_origin="gcc")
+            return PredictResolutionResult(record=record, candidates=candidates, record_origin="mm")
 
         if not candidates:
             return PredictResolutionResult(record=None, candidates=[])
@@ -1847,10 +1847,10 @@ class MetalCompositionService:
         include_token_usage: bool = False,
         job_type: ClassificationJobType = "single",
     ) -> ClassificationJobSubmissionResponse:
-        """Submit one GCC tracker item for background prediction.
+        """Submit one Material Master item for background prediction.
 
         Inputs:
-            item_id: GCC item id in the form ``gcc:<source_row_id>``.
+            item_id: Material Master item id in the form ``mm:<source_row_id>``.
             document_mode: Whether assigned PDFs should be ignored or used as extra evidence.
             include_token_usage: API-only diagnostic flag for recording model token metadata.
             job_type: Classification job type recorded for the async worker.
@@ -1887,10 +1887,10 @@ class MetalCompositionService:
         include_token_usage: bool = False,
         job_type: ClassificationJobType = "batch",
     ) -> ClassificationJobSubmissionResponse:
-        """Submit multiple GCC tracker items for background prediction.
+        """Submit multiple Material Master items for background prediction.
 
         Inputs:
-            item_ids: GCC item ids in request order.
+            item_ids: Material Master item ids in request order.
             document_mode: Batch-wide document evidence mode.
             include_token_usage: API-only diagnostic flag for recording model token metadata.
             job_type: Classification job type recorded for the async worker.
@@ -1956,8 +1956,8 @@ class MetalCompositionService:
             source_row_id = int(row["source_row_id"])
             items.append(
                 {
-                    "item_id": f"gcc:{source_row_id}",
-                    "item_type": "gcc",
+                    "item_id": f"mm:{source_row_id}",
+                    "item_type": "mm",
                     "dataset_scope": self.dataset_signature,
                     "source_row_id": source_row_id,
                     "product_code": _optional_text(row.get(PRODUCT_CODE_COLUMN)),
@@ -2094,30 +2094,30 @@ class MetalCompositionService:
         """Return whether the selected classification path must load assigned PDFs.
 
         Inputs:
-            context: Resolved GCC item context.
+            context: Resolved Material Master item context.
             document_mode: Requested document evidence mode for this run.
 
         Expected output:
             True when missing PDFs should block job submission or execution.
         """
 
-        if self._composition_mode_for_context(context) != "gcc_tracker":
+        if self._composition_mode_for_context(context) != "material_master":
             return True
         return document_mode == "with_documents"
 
     def _resolve_item_context(self, item_id: str) -> ResolvedItemContext:
-        if item_id.startswith("gcc:"):
+        if item_id.startswith("mm:"):
             _, _, raw_id = item_id.partition(":")
             try:
                 source_row_id = int(raw_id)
             except ValueError as exc:
-                raise KeyError(f"Invalid GCC item id: {item_id}") from exc
+                raise KeyError(f"Invalid Material Master item id: {item_id}") from exc
             if source_row_id not in self.serving_store._source_by_row_id.index:  # noqa: SLF001
-                raise KeyError(f"GCC item {item_id} was not found in the current serving dataset")
+                raise KeyError(f"Material Master item {item_id} was not found in the current serving dataset")
             row = self.serving_store._source_by_row_id.loc[source_row_id]  # noqa: SLF001
             return ResolvedItemContext(
                 item_id=item_id,
-                item_type="gcc",
+                item_type="mm",
                 dataset_scope=self.dataset_signature,
                 source_row_id=source_row_id,
                 product_code=_optional_text(row.get(PRODUCT_CODE_COLUMN)) or "",
@@ -2135,13 +2135,13 @@ class MetalCompositionService:
                 date_completed=_optional_text(row.get(DATE_COMPLETED_COLUMN)),
             )
 
-        raise KeyError(f"GCC item {item_id} was not found in the current serving dataset")
+        raise KeyError(f"Material Master item {item_id} was not found in the current serving dataset")
 
     def _selected_source_row_id_for_context(self, context: ResolvedItemContext) -> Optional[int]:
-        if context.item_type != "gcc":
+        if context.item_type != "mm":
             return None
         if context.source_row_id is None:
-            raise ValueError(f"GCC item {context.item_id} is missing source_row_id")
+            raise ValueError(f"Material Master item {context.item_id} is missing source_row_id")
         return int(context.source_row_id)
 
     @staticmethod

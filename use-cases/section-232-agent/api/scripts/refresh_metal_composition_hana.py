@@ -2,8 +2,8 @@
 
 Examples:
     ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py
-    ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py --workbook-path "data/new_data/GCC Tracker.xlsb"
-    ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py --workbook-path "outputs/anonymized_gcc_tracker_sample.xlsx"
+    ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py --workbook-path "data/new_data/Material Master.xlsb"
+    ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py --workbook-path "outputs/anonymized_material_master_sample.xlsx"
     ./.venv/bin/python api/scripts/refresh_metal_composition_hana.py --hana-table METAL_COMPOSITION_SERVING
 """
 
@@ -25,7 +25,7 @@ from app.services.metal_composition.hana_refresh import refresh_metal_compositio
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse CLI arguments for a GCC Tracker HANA refresh.
+    """Parse CLI arguments for a Material Master HANA refresh.
 
     Returns:
         Parsed namespace containing optional workbook, sheet, schema, and table overrides.
@@ -61,7 +61,7 @@ def build_settings(args: argparse.Namespace) -> MetalCompositionSettings:
 
 
 def main() -> None:
-    """Run the GCC Tracker HANA refresh command and print the JSON result.
+    """Run the Material Master HANA refresh command and print the JSON result.
 
     Returns:
         None. The refresh result is written to standard output.

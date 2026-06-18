@@ -121,7 +121,7 @@ function formatSourceStatus(value) {
   if (normalized === "documented") return "PDF";
   if (normalized === "estimated") return "Estimated";
   if (normalized === "needs_review") return "Needs review";
-  if (normalized === "gcc_tracker") return "GCC tracker";
+  if (normalized === "material_master") return "Material Master";
   return normalized.replaceAll("_", " ");
 }
 
@@ -580,7 +580,7 @@ function updateHeader() {
   const clearButton = document.getElementById("detail-doc-clear-button");
 
   const detail = state.detail;
-  kicker.textContent = "GCC Tracker Item";
+  kicker.textContent = "Material Master Item";
   title.textContent = detail?.product_code || "Product detail";
   subtitle.textContent = detail?.last_classified_at
     ? `Last classified ${dayjs(detail.last_classified_at).format("DD MMM YYYY HH:mm")}`
@@ -614,7 +614,7 @@ async function loadDetail() {
 
 async function saveDocuments() {
   if (!state.itemId) {
-    showMessage("Load a GCC tracker item before persisting document assignments.", "Critical");
+    showMessage("Load a Material Master item before persisting document assignments.", "Critical");
     return;
   }
 
@@ -639,7 +639,7 @@ async function saveDocuments() {
 
 async function uploadDocument(file) {
   if (!state.itemId) {
-    showMessage("Load a GCC tracker item before uploading PDFs.", "Critical");
+    showMessage("Load a Material Master item before uploading PDFs.", "Critical");
     return;
   }
   if (!file) return;

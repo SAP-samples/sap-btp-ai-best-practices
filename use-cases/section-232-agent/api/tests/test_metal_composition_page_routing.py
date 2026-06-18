@@ -37,7 +37,7 @@ def _sample_settings(**overrides) -> MetalCompositionSettings:
     )
     defaults.update(overrides)
     return MetalCompositionSettings(
-        workbook_path=ROOT / "data" / "GCC Tracker.xlsb",
+        workbook_path=ROOT / "data" / "Material Master.xlsb",
         api_env_path=ROOT / "api" / ".env",
         **defaults,
     )

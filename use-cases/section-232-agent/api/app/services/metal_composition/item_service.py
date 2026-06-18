@@ -108,7 +108,7 @@ def _apply_percentage_confidence(payload: MetalCompositionResponse | Dict[str, A
 
 
 class MetalCompositionItemService:
-    """Own GCC item listing and detail resolution."""
+    """Own Material Master item listing and detail resolution."""
 
     def __init__(self, service: MetalCompositionService) -> None:
         self.service = service
@@ -119,10 +119,10 @@ class MetalCompositionItemService:
     def update_app_settings(
         self,
         *,
-        use_gcc_tracker_metal_composition: bool,
+        use_material_master_metal_composition: bool,
     ) -> MetalCompositionAppSettings:
         return self.service.ui_state_store.update_app_settings(
-            use_gcc_tracker_metal_composition=use_gcc_tracker_metal_composition,
+            use_material_master_metal_composition=use_material_master_metal_composition,
         ).to_model()
 
     def list_items(
@@ -320,7 +320,7 @@ class MetalCompositionItemService:
             item_id=context.item_id,
             item_type=context.item_type,
             source_row_id=context.source_row_id,
-            dataset_signature=service.dataset_signature if context.item_type == "gcc" else None,
+            dataset_signature=service.dataset_signature if context.item_type == "mm" else None,
             product_code=context.product_code,
             priority=context.priority,
             priority_detail=context.priority_detail,
