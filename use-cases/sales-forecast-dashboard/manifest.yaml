@@ -28,8 +28,11 @@ applications:
       AGENT_MODEL: gemini-2.5-flash
       AGENT_TEMPERATURE: "0.2"
       # Session management
-      MAX_SESSIONS: "100"
+      MAX_SESSIONS: "5"
       SESSION_TTL_HOURS: "24"
+      # Forecast inference cache
+      PRELOAD_FORECAST_MODELS: "true"
+      INFERENCE_PRELOAD_CHANNELS: "B&M"
       # Memory optimization for 1.5GB limit
       # Monte Carlo traffic estimation settings
       TRAFFIC_N_SIMULATIONS: "2000"

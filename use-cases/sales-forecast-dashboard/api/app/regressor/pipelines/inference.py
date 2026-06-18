@@ -156,6 +156,8 @@ class InferencePipeline:
         model_b_data: pd.DataFrame,
         model_a_data: Optional[pd.DataFrame] = None,
         channels: Optional[List[str]] = None,
+        save_outputs: bool = True,
+        estimate_traffic: bool = True,
     ) -> InferenceResult:
         """
         Execute the inference pipeline.
@@ -168,6 +170,10 @@ class InferencePipeline:
             Model A features (business levers) for explainability.
         channels : List[str], optional
             Channels to process. Defaults to config channels.
+        save_outputs : bool, default True
+            Whether prediction CSV files should be written to output_dir.
+        estimate_traffic : bool, default True
+            Whether B&M traffic estimates should be computed by the predictor.
 
         Returns
         -------
@@ -176,7 +182,11 @@ class InferencePipeline:
         """
         channels = channels or self.config.channels
         output_dir = self.config.output_dir
-        output_dir.mkdir(parents=True, exist_ok=True)
+        needs_output_dir = save_outputs or (
+            model_a_data is not None and self.config.run_explainability
+        )
+        if needs_output_dir:
+            output_dir.mkdir(parents=True, exist_ok=True)
 
         # Load models if not already loaded
         if self.bm_predictor is None and self.web_predictor is None:
@@ -197,7 +207,7 @@ class InferencePipeline:
         if "B&M" in channels and self.bm_predictor is not None:
             print("\n=== Inference: B&M Channel ===")
             result.bm_predictions = self._infer_bm_channel(
-                model_b_data, model_a_data, output_dir
+                model_b_data, model_a_data, output_dir, estimate_traffic
             )
 
         # Process WEB channel
@@ -207,8 +217,9 @@ class InferencePipeline:
                 model_b_data, model_a_data, output_dir
             )
 
-        # Save results
-        result.save()
+        # Save results for CLI/batch callers; API tools keep outputs request-local.
+        if save_outputs:
+            result.save()
 
         print("\nInference complete.")
         return result
@@ -218,8 +229,9 @@ class InferencePipeline:
         model_b_data: pd.DataFrame,
         model_a_data: Optional[pd.DataFrame],
         output_dir: Path,
+        estimate_traffic: bool = True,
     ) -> pd.DataFrame:
-        """Generate B&M predictions."""
+        """Generate B&M predictions with optional traffic estimation."""
         # Filter to B&M data
         bm_mask = model_b_data["channel"] == "B&M"
         df_b_bm = model_b_data[bm_mask].copy()
@@ -227,7 +239,7 @@ class InferencePipeline:
         print(f"Scoring {len(df_b_bm)} B&M samples...")
 
         # Generate predictions
-        preds = self.bm_predictor.predict(df_b_bm, estimate_traffic=True)
+        preds = self.bm_predictor.predict(df_b_bm, estimate_traffic=estimate_traffic)
 
         # Build result DataFrame
         res_df = df_b_bm.copy()

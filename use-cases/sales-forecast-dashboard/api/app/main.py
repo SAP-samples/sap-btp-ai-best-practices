@@ -63,6 +63,43 @@ app.add_middleware(
 )
 
 
+def _env_flag(name: str, default: bool = False) -> bool:
+    """Return a boolean environment flag from common truthy string values."""
+    raw_value = os.getenv(name)
+    if raw_value is None:
+        return default
+    return raw_value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _preload_channels_from_env() -> list[str]:
+    """Return configured forecast model channels for startup preload logging."""
+    return [
+        channel.strip()
+        for channel in os.getenv("INFERENCE_PRELOAD_CHANNELS", "B&M").split(",")
+        if channel.strip()
+    ]
+
+
+@app.on_event("startup")
+async def preload_forecast_models() -> None:
+    """Preload forecast models at API startup when configured to do so.
+
+    Cloud Foundry sets PRELOAD_FORECAST_MODELS=true so model checkpoint issues
+    fail the app fast instead of surfacing later during an agent workflow.
+    Local developers can set PRELOAD_FORECAST_MODELS=false to defer loading.
+    """
+    if not _env_flag("PRELOAD_FORECAST_MODELS", default=False):
+        logger.info("Forecast model preload skipped")
+        return
+
+    from app.services.inference_cache import warm_inference_cache
+
+    channels = _preload_channels_from_env()
+    logger.info("Preloading forecast inference cache for channels=%s", channels)
+    warm_inference_cache(channels=channels, run_explainability=False)
+    logger.info("Forecast inference cache preload complete")
+
+
 @app.get("/api/health")
 async def health() -> HealthResponse:
     """Health check endpoint for monitoring service availability.

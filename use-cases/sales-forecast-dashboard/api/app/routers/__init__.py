@@ -1,3 +1,7 @@
-from . import dma, stores, timeseries, chatbot, regressor
+"""Router package exports.
 
-__all__ = ["dma", "stores", "timeseries", "chatbot", "regressor"]
+Routers are intentionally not imported eagerly here because several of them
+load optional production dependencies such as HANA connectors.
+"""
+
+__all__ = ["dma", "stores", "timeseries", "chatbot", "regressor", "admin"]
