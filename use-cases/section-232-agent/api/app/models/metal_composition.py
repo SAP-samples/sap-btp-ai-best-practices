@@ -8,18 +8,18 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 ResolutionMode = Literal["auto"]
-SourceKind = Literal["gcc"]
+SourceKind = Literal["mm"]
 ClassificationJobType = Literal["single", "batch", "chat"]
 ClassificationJobStatus = Literal["queued", "running", "completed", "failed", "partial_failed"]
-CompositionMode = Literal["diagram_manual", "gcc_tracker"]
+CompositionMode = Literal["diagram_manual", "material_master"]
 DocumentMode = Literal["text_only", "with_documents"]
 
 
 class MetalCompositionCandidate(BaseModel):
-    """Candidate GCC row returned when product code lookup is ambiguous."""
+    """Candidate Material Master row returned when product code lookup is ambiguous."""
 
     source_row_id: int
-    source_kind: SourceKind = "gcc"
+    source_kind: SourceKind = "mm"
     pn_revised_standardized: Optional[str] = None
     part_description: Optional[str] = None
     new_part_description: Optional[str] = None
@@ -211,10 +211,10 @@ class MetalCompositionResponse(BaseModel):
 
 
 class ItemPredictRequest(BaseModel):
-    """Background prediction request for one GCC tracker item.
+    """Background prediction request for one Material Master item.
 
     Inputs:
-        item_id: GCC tracker item identifier in the form ``gcc:<source_row_id>``.
+        item_id: Material Master item identifier in the form ``mm:<source_row_id>``.
         document_mode: ``text_only`` ignores assigned PDFs; ``with_documents`` uses them as extra HTS evidence.
         include_token_usage: API-only diagnostic flag that records provider token metadata in the saved result.
 
@@ -230,10 +230,10 @@ class ItemPredictRequest(BaseModel):
 
 
 class ItemPredictBatchRequest(BaseModel):
-    """Background prediction request for multiple GCC tracker items.
+    """Background prediction request for multiple Material Master items.
 
     Inputs:
-        item_ids: GCC tracker item identifiers in request order.
+        item_ids: Material Master item identifiers in request order.
         document_mode: Batch-wide document evidence mode.
         include_token_usage: API-only diagnostic flag that records provider token metadata in saved results.
 
@@ -251,11 +251,11 @@ class ItemPredictBatchRequest(BaseModel):
 class MetalCompositionAppSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    use_gcc_tracker_metal_composition: bool = True
+    use_material_master_metal_composition: bool = True
     updated_at: Optional[str] = None
 
 
-class GCCTrackerHanaRefreshResponse(BaseModel):
+class MaterialMasterHanaRefreshResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     status: Literal["completed"]
@@ -277,7 +277,7 @@ class GCCTrackerHanaRefreshResponse(BaseModel):
 class MetalCompositionAppSettingsUpdateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    use_gcc_tracker_metal_composition: bool = True
+    use_material_master_metal_composition: bool = True
 
 
 class MetalCompositionFacetOption(BaseModel):
@@ -287,7 +287,7 @@ class MetalCompositionFacetOption(BaseModel):
 
 class MetalCompositionItemSummary(BaseModel):
     item_id: str
-    item_type: Literal["gcc"]
+    item_type: Literal["mm"]
     source_row_id: Optional[int] = None
     product_code: str
     priority: Optional[str] = None
@@ -653,7 +653,7 @@ class HTSCatalogSourceDeleteResponse(BaseModel):
 
 class MetalCompositionItemDetail(BaseModel):
     item_id: str
-    item_type: Literal["gcc"]
+    item_type: Literal["mm"]
     source_row_id: Optional[int] = None
     dataset_signature: Optional[str] = None
     product_code: str

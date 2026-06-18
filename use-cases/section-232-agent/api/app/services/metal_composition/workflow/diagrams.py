@@ -808,16 +808,16 @@ def _build_refinement_diagram_prompt(
     )
 
 
-def _build_gcc_focused_diagram_prompt(
+def _build_material_master_focused_diagram_prompt(
     *,
     item_context: Dict[str, Any],
-    gcc_material_profile: Dict[str, Any],
+    material_master_material_profile: Dict[str, Any],
 ) -> str:
     return (
         "You are analyzing one or more engineering documents for HTS-supporting clues only.\n\n"
         f"Current item context JSON:\n{json.dumps(item_context, default=str)}\n\n"
-        f"Authoritative GCC material profile JSON:\n{json.dumps(gcc_material_profile, default=str)}\n\n"
-        "The GCC material profile is the authoritative metal composition source for this item. "
+        f"Authoritative Material Master material profile JSON:\n{json.dumps(material_master_material_profile, default=str)}\n\n"
+        "The Material Master material profile is the authoritative metal composition source for this item. "
         "Do not infer, estimate, or return any composition breakdown from the diagrams. "
         "Use the PDFs only to identify standards/codes, article identity, context of use, and soft HTS chapter hints.\n\n"
         "Each source is preceded by a source label that includes a stable page_ref token plus the original "
@@ -880,7 +880,7 @@ def _merge_focused_diagram_batch_results(batch_results: List[Dict[str, Any]]) ->
     return merged
 
 
-def _build_gcc_material_cues(gcc_material_profile: Dict[str, Any]) -> List[str]:
+def _build_material_master_material_cues(material_master_material_profile: Dict[str, Any]) -> List[str]:
     top_level_labels = {
         "steel": "steel",
         "aluminum": "aluminum",
@@ -899,11 +899,11 @@ def _build_gcc_material_cues(gcc_material_profile: Dict[str, Any]) -> List[str]:
     }
     cues: List[str] = []
     for metal, label in top_level_labels.items():
-        grams = _normalize_float((gcc_material_profile.get("top_level_grams") or {}).get(metal, 0.0))
+        grams = _normalize_float((material_master_material_profile.get("top_level_grams") or {}).get(metal, 0.0))
         if grams > 0.0:
             cues.append(f"{label} ({round(grams, 3):g} g)")
     for subtype, label in steel_subtype_labels.items():
-        grams = _normalize_float((gcc_material_profile.get("steel_subtype_grams") or {}).get(subtype, 0.0))
+        grams = _normalize_float((material_master_material_profile.get("steel_subtype_grams") or {}).get(subtype, 0.0))
         if grams > 0.0:
             cues.append(f"{label} ({round(grams, 3):g} g)")
     return cues
@@ -1338,14 +1338,14 @@ def _run_focused_diagram_analysis(
     image_pages: List[RenderedDiagramPage],
     text_pages: List[RenderedDiagramTextPage],
     item_context: Dict[str, Any],
-    gcc_material_profile: Dict[str, Any],
+    material_master_material_profile: Dict[str, Any],
     llm: LLMClient,
     settings: MetalCompositionSettings,
     usage_recorder: Optional[TokenUsageRecorder] = None,
 ) -> Dict[str, Any]:
-    prompt = _build_gcc_focused_diagram_prompt(
+    prompt = _build_material_master_focused_diagram_prompt(
         item_context=item_context,
-        gcc_material_profile=gcc_material_profile,
+        material_master_material_profile=material_master_material_profile,
     )
     batches = build_mixed_diagram_batches(
         image_pages=image_pages,
@@ -1365,7 +1365,7 @@ def _run_focused_diagram_analysis(
             sources=batch,
             llm=llm,
             settings=settings,
-            task="gcc_focused_clues",
+            task="material_master_focused_clues",
             usage_recorder=usage_recorder,
         )
 
@@ -1804,7 +1804,7 @@ def analyze_diagrams_for_hts_clues(
     settings: MetalCompositionSettings,
     llm: LLMClient,
     *,
-    gcc_material_profile: Dict[str, Any],
+    material_master_material_profile: Dict[str, Any],
     product_code: Optional[str] = None,
     source_summary: Optional[Dict[str, Any]] = None,
     source_row: Optional[Dict[str, Any]] = None,
@@ -1870,14 +1870,14 @@ def analyze_diagrams_for_hts_clues(
     estimated_total_metal_grams = float(
         sum(
             _normalize_float(value)
-            for value in (gcc_material_profile.get("top_level_grams") or {}).values()
+            for value in (material_master_material_profile.get("top_level_grams") or {}).values()
         )
     )
     if total_weight_grams and total_weight_grams > 0.0:
         estimated_metal_share = max(0.0, min(1.0, estimated_total_metal_grams / total_weight_grams))
     else:
         estimated_metal_share = 1.0 if estimated_total_metal_grams > 0.0 else 0.0
-    material_cues = _build_gcc_material_cues(gcc_material_profile)
+    material_cues = _build_material_master_material_cues(material_master_material_profile)
 
     merged = _diagram_output_defaults()
     merged.update(
@@ -1894,7 +1894,7 @@ def analyze_diagrams_for_hts_clues(
                 else "unknown"
             ),
             "metal_share_reasoning": (
-                "Metal share was computed directly from GCC tracker prepared gram columns and the item total weight."
+                "Metal share was computed directly from Material Master prepared gram columns and the item total weight."
             ),
             "material_cues": material_cues,
             "weight_evidence": [],
@@ -1902,7 +1902,7 @@ def analyze_diagrams_for_hts_clues(
             "material_properties": [],
             "matched_identifiers": [],
             "non_metal_evidence": [],
-            "provenance_flags": ["gcc_tracker_composition_mode"],
+            "provenance_flags": ["material_master_composition_mode"],
         }
     )
 
@@ -1911,7 +1911,7 @@ def analyze_diagrams_for_hts_clues(
             image_pages=rendered_pages,
             text_pages=text_pages,
             item_context=item_context,
-            gcc_material_profile=gcc_material_profile,
+            material_master_material_profile=material_master_material_profile,
             llm=llm,
             settings=settings,
             usage_recorder=usage_recorder,
@@ -1943,7 +1943,7 @@ def analyze_diagrams_for_hts_clues(
         started_at,
         details={
             "model": settings.diagram_model_name,
-            "analysis_mode": "gcc_focused_clues",
+            "analysis_mode": "material_master_focused_clues",
             "total_images": len(rendered_pages),
             "total_text_pages": len(text_pages),
             "total_batches": len(
@@ -1955,7 +1955,7 @@ def analyze_diagrams_for_hts_clues(
             ),
             "source_filenames": [p.filename for p in diagram_payloads],
             "item_context": item_context,
-            "gcc_material_profile": gcc_material_profile,
+            "material_master_material_profile": material_master_material_profile,
             "preprocessing": preprocess_details_list,
             "routing": {
                 **materialized.routing_summary,

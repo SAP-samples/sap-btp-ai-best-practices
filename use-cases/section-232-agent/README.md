@@ -1,26 +1,26 @@
-# Section 232 Trade Classification Assistant
+# Section 232 Agent
 
 Trade compliance application for SAP BTP that helps teams determine the metal composition of industrial products, classify them under the U.S. Harmonized Tariff Schedule (HTS), and assess their eligibility under Section 232 steel and aluminum tariffs.
 
-The system combines PDF-grounded document analysis, GCC Tracker material data, and official HTS catalog data into an orchestrated classification pipeline. Users manage a product worklist backed by GCC Tracker data, assign supporting product PDFs (technical drawings, spec sheets, certificates), and run single or batch classifications that produce metal composition breakdowns, HTS code recommendations, and Section 232 assessments.
+The system combines PDF-grounded document analysis, Material Master material data, and official HTS catalog data into an orchestrated classification pipeline. Users manage a product worklist backed by Material Master data, assign supporting product PDFs (technical drawings, spec sheets, certificates), and run single or batch classifications that produce metal composition breakdowns, HTS code recommendations, and Section 232 assessments.
 
 ## What the Application Does
 
 ### Products Worklist
 
-The main screen lists read-only products sourced from the GCC Tracker workbook. Users can filter by priority, business segment, product code, document status, and classification status. Selected GCC items can be classified individually or in batch.
+The main screen lists read-only products sourced from the Material Master workbook. Users can filter by priority, business segment, product code, document status, and classification status. Selected Material Master items can be classified individually or in batch.
 
 ### Product Detail and Classification
 
 Each product has a detail view showing its master data, uploaded PDF documents, and the latest classification result. From this screen users can:
 
 - Upload and assign product PDFs (technical drawings, material certificates).
-- Run text-only or document-assisted GCC item-id classification to produce metal composition, HTS code, and Section 232 results.
+- Run text-only or document-assisted Material Master item-id classification to produce metal composition, HTS code, and Section 232 results.
 - Review the full reasoning behind each classification step.
 
 Classification supports two document modes:
 
-- `text_only` uses GCC item data and prepared gram columns without requiring PDFs.
+- `text_only` uses Material Master item data and prepared gram columns without requiring PDFs.
 - `with_documents` requires uploaded PDF assignments and uses those PDFs as additional HTS and evidence context.
 - Product-code multipart prediction and user-created product APIs have been removed from the active runtime.
 
@@ -47,7 +47,7 @@ The active document signal step is:
 
 ### Phase 2 -- HTS Fact Profile
 
-The system synthesizes a structured fact sheet from the GCC item context, PDF-backed composition result, and diagram material cues. This includes an article summary, function summary, material profile, and a set of HTS heading hypotheses that guide the next phase.
+The system synthesizes a structured fact sheet from the Material Master item context, PDF-backed composition result, and diagram material cues. This includes an article summary, function summary, material profile, and a set of HTS heading hypotheses that guide the next phase.
 
 ### Phase 3 -- Legal Evidence
 
@@ -71,7 +71,7 @@ The application persists six datasets in SAP HANA Cloud. Three are reference dat
 
 | HANA Table | Content | Source |
 | --- | --- | --- |
-| `METAL_COMPOSITION_SERVING` | Denormalized GCC workbook data used for legacy GCC item lookup, GCC-only disambiguation, and source context. The runtime consumes business fields directly and tolerates legacy `prepared__*` columns for backward compatibility. | `data/GCC Tracker.xlsb`, sheet `Material Master` |
+| `METAL_COMPOSITION_SERVING` | Denormalized Material Master workbook data used for Material Master item lookup, Material Master-only disambiguation, and source context. The runtime consumes business fields directly and tolerates legacy `prepared__*` columns for backward compatibility. | `data/Material Master.xlsb`, sheet `Material Master` |
 | `HTS_2026_CATALOG` | Structured HTS hierarchy: codes, chapters, headings, families, descriptions, duty rates, and search text. Used by the HANA tree search agent during classification. | `data/hts_chapters/chapter*.csv` |
 | `HTS_2026_CODE_MAP` | Legacy-to-current HTS code mappings. Used to validate and normalize historical codes during tree search. | `data/hts_chapters/hts_code_map.csv` |
 
@@ -93,7 +93,7 @@ After API startup, most request paths use the in-memory serving store loaded fro
 
 - `app/main.py`: FastAPI entrypoint, CORS setup, API key auth wiring, startup/shutdown behavior, and background classification worker configuration.
 - `app/routers/metal_composition.py`: Main application API under `/api/metal-composition` (items, document upload/assignment, predictions/classification, job status, reports, Section 232 workflow, settings, and HTS catalog source management).
-- `app/routers/metal_composition_admin.py`: Admin setup endpoint under `/api/metal-composition/admin` used to refresh GCC Tracker data in HANA (`/gcc-tracker/refresh-hana`).
+- `app/routers/metal_composition_admin.py`: Admin setup endpoint under `/api/metal-composition/admin` used to refresh Material Master data in HANA (`/material-master/refresh-hana`).
 - `app/services/metal_composition/`: Service layer, orchestration, workflow nodes, HANA integration, item/job management, settings, reporting, and persistence helpers.
 - `app/models/`: Pydantic request/response models for all major endpoints.
 - `app/utils/`: Shared utility modules (HANA helpers, shared LangGraph utilities).
@@ -108,7 +108,7 @@ After API startup, most request paths use the in-memory serving store loaded fro
 - `src/pages/`: Active pages:
   - `products/` (worklist + filtering + bulk actions)
   - `product-detail/` (item details, document assignment, per-item results)
-  - `settings/` (GCC refresh, HTS catalog upload/reset, source corpus upload workflow)
+  - `settings/` (Material Master refresh, HTS catalog upload/reset, source corpus upload workflow)
   - `section-232-review/` (Section 232 draft and published ruleset review)
 - `src/routes.js`: Route map used by the SPA.
 - `vite.config.js`: Preview host allowance (`VITE_APP_HOST`).
@@ -125,7 +125,7 @@ api/         FastAPI backend
         service.py     Business logic (item management, classification dispatch)
         workflow/       LangGraph pipeline (orchestrator + step modules)
         config.py      Frozen-dataclass settings from env vars
-        serving_store.py   GCC data loading and in-memory store
+        serving_store.py   Material Master data loading and in-memory store
         hts_catalog.py     HTS catalog loading and resolver
         section_232_sources.py   Section 232 corpus management
         ui_state.py    HANA-backed UI state (assignments, jobs, ownership, history)
@@ -133,7 +133,7 @@ api/         FastAPI backend
     utils/             HANA connection, security, shared helpers
   scripts/             Data refresh scripts for HANA tables
   tests/               pytest test suite
-data/        Source files (GCC workbook, HTS chapter CSVs)
+data/        Source files (Material Master workbook, HTS chapter CSVs)
 docs/        Documentation
 ```
 
@@ -193,7 +193,7 @@ Useful local endpoints:
 1. Start the API and keep API_KEY aligned between `api/.env` and `ui/.env`.
 2. Open the UI at `http://127.0.0.1:5173`.
 3. On **Settings**, upload/refresh:
-   - GCC Tracker source via HANA refresh.
+   - Material Master source via HANA refresh.
    - HTS CSV source files.
    - Section 232 source PDFs.
 4. Open **Products**, filter and select items to classify.
@@ -219,7 +219,7 @@ curl -s "$API_BASE/items?limit=20" \
 curl -s -X POST "$API_BASE/items/predict" \
   -H "X-API-Key: $API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"item_id":"gcc:1001","document_mode":"text_only"}'
+  -d '{"item_id":"mm:1001","document_mode":"text_only"}'
 
 curl -s "$API_BASE/classification-jobs/<job_id>" \
   -H "X-API-Key: $API_KEY"

@@ -88,7 +88,7 @@ class FakeWorkflowRunner:
                 "duration_ms": 98.0,
             },
         }
-        final_composition = kwargs.get("gcc_tracker_composition") or {
+        final_composition = kwargs.get("material_master_composition") or {
             "is_metal_item": True,
             "total_weight_grams": total_weight,
             "estimated_total_metal_grams": 9.0,
@@ -2920,11 +2920,11 @@ def _make_duplicate_ui_service(tmp_path: Path) -> MetalCompositionService:
 def test_items_endpoint_supports_boolean_filters(tmp_path):
     service = _make_ui_service(tmp_path)
     service.upload_item_document(
-        "gcc:1001",
-        filename="uploaded-gcc.pdf",
-        content=b"%PDF-1.4 uploaded gcc",
+        "mm:1001",
+        filename="uploaded-mm.pdf",
+        content=b"%PDF-1.4 uploaded mm",
     )
-    service.classify_item("gcc:1001")
+    service.classify_item("mm:1001")
     client = _client_with_service(service)
     try:
         response = client.get(
@@ -2936,7 +2936,7 @@ def test_items_endpoint_supports_boolean_filters(tmp_path):
         assert response.status_code == 200
         body = response.json()
         assert body["total"] == 1
-        assert body["items"][0]["item_id"] == "gcc:1001"
+        assert body["items"][0]["item_id"] == "mm:1001"
         assert body["items"][0]["has_documents"] is True
         assert body["items"][0]["is_classified"] is True
     finally:
@@ -2957,12 +2957,12 @@ def test_document_upload_endpoint_returns_not_found_for_unknown_item(tmp_path):
 
 def test_item_classification_endpoints_persist_results(tmp_path):
     service = _make_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:1001", "persist-gcc-1001.pdf")
-    _upload_fake_pdf(service, "gcc:1002", "persist-gcc-1002.pdf")
+    _upload_fake_pdf(service, "mm:1001", "persist-mm-1001.pdf")
+    _upload_fake_pdf(service, "mm:1002", "persist-mm-1002.pdf")
     client = _client_with_service(service)
     try:
         classify_response = client.post(
-            "/api/metal-composition/items/gcc:1001/classify",
+            "/api/metal-composition/items/mm:1001/classify",
             headers={"X-API-Key": "test-api-key"},
         )
         assert classify_response.status_code == 202
@@ -2975,7 +2975,7 @@ def test_item_classification_endpoints_persist_results(tmp_path):
         assert job_status["failed_count"] == 0
 
         detail_response = client.get(
-            "/api/metal-composition/items/gcc:1001",
+            "/api/metal-composition/items/mm:1001",
             headers={"X-API-Key": "test-api-key"},
         )
         assert detail_response.status_code == 200
@@ -2985,7 +2985,7 @@ def test_item_classification_endpoints_persist_results(tmp_path):
 
         batch_response = client.post(
             "/api/metal-composition/items/classify-batch",
-            json={"item_ids": ["gcc:1001", "gcc:1002"]},
+            json={"item_ids": ["mm:1001", "mm:1002"]},
             headers={"X-API-Key": "test-api-key"},
         )
         assert batch_response.status_code == 202
@@ -3005,7 +3005,7 @@ def test_item_predict_endpoint_text_only_submits_without_pdfs(tmp_path):
     try:
         response = client.post(
             "/api/metal-composition/items/predict",
-            json={"item_id": "gcc:1002"},
+            json={"item_id": "mm:1002"},
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3014,7 +3014,7 @@ def test_item_predict_endpoint_text_only_submits_without_pdfs(tmp_path):
         assert body["job_type"] == "single"
         _drain_job(client, service, body["job_id"])
         detail_response = client.get(
-            "/api/metal-composition/items/gcc:1002",
+            "/api/metal-composition/items/mm:1002",
             headers={"X-API-Key": "test-api-key"},
         )
         assert detail_response.status_code == 200
@@ -3029,7 +3029,7 @@ def test_item_predict_endpoint_accepts_token_usage_diagnostic_flag(tmp_path):
         response = client.post(
             "/api/metal-composition/items/predict",
             json={
-                "item_id": "gcc:1002",
+                "item_id": "mm:1002",
                 "document_mode": "text_only",
                 "include_token_usage": True,
             },
@@ -3042,7 +3042,7 @@ def test_item_predict_endpoint_accepts_token_usage_diagnostic_flag(tmp_path):
         assert job_items[0].include_token_usage is True
         _drain_job(client, service, body["job_id"])
         detail_response = client.get(
-            "/api/metal-composition/items/gcc:1002",
+            "/api/metal-composition/items/mm:1002",
             headers={"X-API-Key": "test-api-key"},
         )
         assert detail_response.status_code == 200
@@ -3054,13 +3054,13 @@ def test_item_predict_endpoint_accepts_token_usage_diagnostic_flag(tmp_path):
 
 def test_item_predict_batch_endpoint_persists_document_mode(tmp_path):
     service = _make_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:1001", "predict-batch-evidence.pdf")
+    _upload_fake_pdf(service, "mm:1001", "predict-batch-evidence.pdf")
     client = _client_with_service(service)
     try:
         response = client.post(
             "/api/metal-composition/items/predict-batch",
             json={
-                "item_ids": ["gcc:1001"],
+                "item_ids": ["mm:1001"],
                 "document_mode": "with_documents",
                 "include_token_usage": True,
             },
@@ -3074,7 +3074,7 @@ def test_item_predict_batch_endpoint_persists_document_mode(tmp_path):
         assert job_items[0].include_token_usage is True
         _drain_job(client, service, body["job_id"])
         detail_response = client.get(
-            "/api/metal-composition/items/gcc:1001",
+            "/api/metal-composition/items/mm:1001",
             headers={"X-API-Key": "test-api-key"},
         )
         assert detail_response.json()["latest_classification"]["document_mode"] == "with_documents"
@@ -3101,15 +3101,15 @@ def test_deprecated_product_code_predict_routes_are_removed(tmp_path):
 
 def test_item_classification_endpoint_reruns_overlapping_job(tmp_path):
     service = _make_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:1001", "rerun-gcc.pdf")
+    _upload_fake_pdf(service, "mm:1001", "rerun-mm.pdf")
     client = _client_with_service(service)
     try:
         first_response = client.post(
-            "/api/metal-composition/items/gcc:1001/classify",
+            "/api/metal-composition/items/mm:1001/classify",
             headers={"X-API-Key": "test-api-key"},
         )
         second_response = client.post(
-            "/api/metal-composition/items/gcc:1001/classify",
+            "/api/metal-composition/items/mm:1001/classify",
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3129,17 +3129,17 @@ def test_item_classification_endpoint_reruns_overlapping_job(tmp_path):
 
 def test_batch_classification_endpoint_reruns_overlapping_job(tmp_path):
     service = _make_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:1001", "batch-rerun-gcc.pdf")
+    _upload_fake_pdf(service, "mm:1001", "batch-rerun-mm.pdf")
     client = _client_with_service(service)
     try:
         first_response = client.post(
             "/api/metal-composition/items/classify-batch",
-            json={"item_ids": ["gcc:1001"]},
+            json={"item_ids": ["mm:1001"]},
             headers={"X-API-Key": "test-api-key"},
         )
         second_response = client.post(
             "/api/metal-composition/items/classify-batch",
-            json={"item_ids": ["gcc:1001"]},
+            json={"item_ids": ["mm:1001"]},
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3161,7 +3161,7 @@ def test_export_report_endpoint_rejects_missing_snapshot(tmp_path):
     client = _client_with_service(_make_ui_service(tmp_path))
     try:
         response = client.get(
-            "/api/metal-composition/items/gcc:1001/export-report",
+            "/api/metal-composition/items/mm:1001/export-report",
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3173,7 +3173,7 @@ def test_export_report_endpoint_rejects_missing_snapshot(tmp_path):
 def test_export_report_endpoint_rejects_failed_snapshot(tmp_path):
     service = _make_ui_service(tmp_path)
     service.ui_state_store.save_classification_snapshot(
-        "gcc:1001",
+        "mm:1001",
         dataset_scope=service.dataset_signature,
         result=MetalCompositionResponse(status="failed", product_code="WI-100", error="workflow exploded"),
         last_classified_at="2026-04-12T00:20:00Z",
@@ -3181,7 +3181,7 @@ def test_export_report_endpoint_rejects_failed_snapshot(tmp_path):
     client = _client_with_service(service)
     try:
         response = client.get(
-            "/api/metal-composition/items/gcc:1001/export-report",
+            "/api/metal-composition/items/mm:1001/export-report",
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3192,16 +3192,16 @@ def test_export_report_endpoint_rejects_failed_snapshot(tmp_path):
 
 def test_item_classification_uses_source_row_id_for_duplicate_product_codes(tmp_path):
     service = _make_duplicate_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:2001", "duplicate-2001.pdf")
-    _upload_fake_pdf(service, "gcc:2002", "duplicate-2002.pdf")
+    _upload_fake_pdf(service, "mm:2001", "duplicate-2001.pdf")
+    _upload_fake_pdf(service, "mm:2002", "duplicate-2002.pdf")
     client = _client_with_service(service)
     try:
         first_response = client.post(
-            "/api/metal-composition/items/gcc:2001/classify",
+            "/api/metal-composition/items/mm:2001/classify",
             headers={"X-API-Key": "test-api-key"},
         )
         second_response = client.post(
-            "/api/metal-composition/items/gcc:2002/classify",
+            "/api/metal-composition/items/mm:2002/classify",
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3213,31 +3213,31 @@ def test_item_classification_uses_source_row_id_for_duplicate_product_codes(tmp_
         _drain_job(client, service, second_body["job_id"])
 
         first_detail = client.get(
-            "/api/metal-composition/items/gcc:2001",
+            "/api/metal-composition/items/mm:2001",
             headers={"X-API-Key": "test-api-key"},
         )
         second_detail = client.get(
-            "/api/metal-composition/items/gcc:2002",
+            "/api/metal-composition/items/mm:2002",
             headers={"X-API-Key": "test-api-key"},
         )
         assert first_detail.status_code == 200
         assert second_detail.status_code == 200
         assert first_detail.json()["latest_classification"]["selected_source"]["source_row_id"] == 2001
         assert second_detail.json()["latest_classification"]["selected_source"]["source_row_id"] == 2002
-        assert first_detail.json()["latest_classification"]["selected_source"]["source_kind"] == "gcc"
-        assert second_detail.json()["latest_classification"]["selected_source"]["source_kind"] == "gcc"
+        assert first_detail.json()["latest_classification"]["selected_source"]["source_kind"] == "mm"
+        assert second_detail.json()["latest_classification"]["selected_source"]["source_kind"] == "mm"
     finally:
         app.dependency_overrides.clear()
 
 def test_batch_item_classification_uses_source_row_id_for_duplicate_product_codes(tmp_path):
     service = _make_duplicate_ui_service(tmp_path)
-    _upload_fake_pdf(service, "gcc:2001", "batch-duplicate-2001.pdf")
-    _upload_fake_pdf(service, "gcc:2002", "batch-duplicate-2002.pdf")
+    _upload_fake_pdf(service, "mm:2001", "batch-duplicate-2001.pdf")
+    _upload_fake_pdf(service, "mm:2002", "batch-duplicate-2002.pdf")
     client = _client_with_service(service)
     try:
         response = client.post(
             "/api/metal-composition/items/classify-batch",
-            json={"item_ids": ["gcc:2001", "gcc:2002"]},
+            json={"item_ids": ["mm:2001", "mm:2002"]},
             headers={"X-API-Key": "test-api-key"},
         )
 
@@ -3246,8 +3246,8 @@ def test_batch_item_classification_uses_source_row_id_for_duplicate_product_code
         assert body["total_count"] == 2
         job_status = _drain_job(client, service, body["job_id"])
         assert job_status["status"] == "completed"
-        detail_one = client.get("/api/metal-composition/items/gcc:2001", headers={"X-API-Key": "test-api-key"})
-        detail_two = client.get("/api/metal-composition/items/gcc:2002", headers={"X-API-Key": "test-api-key"})
+        detail_one = client.get("/api/metal-composition/items/mm:2001", headers={"X-API-Key": "test-api-key"})
+        detail_two = client.get("/api/metal-composition/items/mm:2002", headers={"X-API-Key": "test-api-key"})
         assert detail_one.json()["latest_classification"]["selected_source"]["source_row_id"] == 2001
         assert detail_two.json()["latest_classification"]["selected_source"]["source_row_id"] == 2002
     finally:

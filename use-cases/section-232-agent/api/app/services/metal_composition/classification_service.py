@@ -31,8 +31,8 @@ class MetalCompositionBatchRequestItem:
     """Internal item payload used by the batch classification executor.
 
     Inputs:
-        product_code: GCC product code from the resolved item context.
-        selected_source_row_id: GCC source row id selected for this item.
+        product_code: Material Master product code from the resolved item context.
+        selected_source_row_id: Material Master source row id selected for this item.
         resolution_mode: Current source-resolution mode; only ``auto`` is supported.
         document_mode: Whether PDFs should be included as classification evidence.
         include_token_usage: Whether provider token usage should be captured.
@@ -88,7 +88,7 @@ class MetalCompositionClassificationService:
                         "status": "not_found",
                         "product_code": request.product_code,
                         "document_mode": request.document_mode,
-                        "error": "No completed GCC record matched the provided product code.",
+                        "error": "No completed Material Master record matched the provided product code.",
                     },
                     existing_timing=None,
                     phases=phases,
@@ -119,7 +119,7 @@ class MetalCompositionClassificationService:
             )
             document_mode = request.document_mode
             documents_required = (
-                effective_composition_mode != "gcc_tracker"
+                effective_composition_mode != "material_master"
                 or document_mode == "with_documents"
             )
             if documents_required and not request.diagram_payloads:
@@ -136,12 +136,12 @@ class MetalCompositionClassificationService:
                     request_started_at=request_started_at,
                     cold_start=cold_start,
                 )
-            gcc_tracker_composition = (
-                service._build_gcc_tracker_composition(
+            material_master_composition = (
+                service._build_material_master_composition(
                     source_row_id=record.source_row_id,
                     total_weight_grams=record.summary.total_weight_gram,
                 )
-                if effective_composition_mode == "gcc_tracker"
+                if effective_composition_mode == "material_master"
                 else None
             )
 
@@ -156,7 +156,7 @@ class MetalCompositionClassificationService:
                 composition_mode=effective_composition_mode,
                 document_mode=document_mode,
                 diagram_payloads=request.diagram_payloads,
-                gcc_tracker_composition=gcc_tracker_composition,
+                material_master_composition=material_master_composition,
                 include_token_usage=bool(request.include_token_usage),
             )
             phases["workflow_call"] = finish_timing(workflow_started_perf, workflow_started_at)

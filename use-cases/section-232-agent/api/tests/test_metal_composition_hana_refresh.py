@@ -8,7 +8,7 @@ import pytest
 from app.services.metal_composition import hana_refresh as refresh_module
 from app.services.metal_composition.config import MetalCompositionSettings
 from app.services.metal_composition.hana_refresh import (
-    GCCTrackerWorkbookLoadError,
+    MaterialMasterWorkbookLoadError,
     refresh_metal_composition_hana,
 )
 
@@ -72,9 +72,9 @@ def test_refresh_wraps_workbook_load_errors(monkeypatch: pytest.MonkeyPatch, tmp
     class FailingWorkbookStore:
         @classmethod
         def from_settings(cls, refresh_settings: MetalCompositionSettings) -> "FailingWorkbookStore":
-            raise ValueError("No completed GCC rows found in workbook")
+            raise ValueError("No completed Material Master rows found in workbook")
 
     monkeypatch.setattr(refresh_module, "WorkbookStore", FailingWorkbookStore)
 
-    with pytest.raises(GCCTrackerWorkbookLoadError, match="No completed GCC rows"):
+    with pytest.raises(MaterialMasterWorkbookLoadError, match="No completed Material Master rows"):
         refresh_metal_composition_hana(workbook_path, settings=_settings(tmp_path))

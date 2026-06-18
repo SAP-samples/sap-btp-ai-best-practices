@@ -111,7 +111,7 @@ class UIStateStoreProtocol(Protocol):
     def update_app_settings(
         self,
         *,
-        use_gcc_tracker_metal_composition: bool,
+        use_material_master_metal_composition: bool,
     ) -> PersistedAppSettings:
         ...
 

@@ -73,8 +73,8 @@ joule launch "section_232_agent_assistant"
 Representative utterances:
 
 - `Find item 5778800`
-- `Show details for gcc:1001`
-- `Start analysis for gcc:1001`
+- `Show details for mm:1001`
+- `Start analysis for mm:1001`
 - `Check job status <job_id>`
 - `Assess HTS 8481.80.30.90 with 1200 grams steel`
 - `What Section 232 source documents are loaded?`

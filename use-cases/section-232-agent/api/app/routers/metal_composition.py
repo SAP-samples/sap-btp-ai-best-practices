@@ -104,7 +104,7 @@ async def update_app_settings(
     service: MetalCompositionService = Depends(get_metal_composition_service),
 ) -> MetalCompositionAppSettings:
     return service.update_app_settings(
-        use_gcc_tracker_metal_composition=payload.use_gcc_tracker_metal_composition,
+        use_material_master_metal_composition=payload.use_material_master_metal_composition,
     )
 
 

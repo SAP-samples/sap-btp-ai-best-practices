@@ -16,7 +16,7 @@ from app.utils.hana import HANAConnection
 
 from .config import MetalCompositionSettings, get_settings
 from .timing import finish_timing, utc_now_iso
-from .workbook_format import pandas_engine_for_gcc_tracker_workbook
+from .workbook_format import pandas_engine_for_material_master_workbook
 
 logger = logging.getLogger(__name__)
 
@@ -56,18 +56,18 @@ SNAPSHOT_SOURCE_PICKLE_FILENAME = "source_lookup.pkl"
 SNAPSHOT_PREPARED_PICKLE_FILENAME = "prepared_features.pkl"
 SOURCE_PREFIX = "source__"
 PREPARED_PREFIX = "prepared__"
-TOP_LEVEL_GCC_GRAM_COLUMNS = {
+TOP_LEVEL_MATERIAL_MASTER_GRAM_COLUMNS = {
     "steel": "Steel_grams",
     "aluminum": "Aluminum_grams",
     "copper": "Copper_grams",
     "cast_iron": "Cast_Iron_grams",
 }
-TOP_LEVEL_GCC_WORKBOOK_GRAM_COLUMNS = {
+TOP_LEVEL_MATERIAL_MASTER_WORKBOOK_GRAM_COLUMNS = {
     "Aluminum_grams": "Aluminum  - Gram",
     "Copper_grams": "Copper - Gram",
     "Cast_Iron_grams": "Cast Iron - Gram",
 }
-STEEL_SUBTYPE_GCC_GRAM_COLUMNS = {
+STEEL_SUBTYPE_MATERIAL_MASTER_GRAM_COLUMNS = {
     "electrical_steel": "Electrical_Steel_grams",
     "cold_rolled_coil_steel": "Cold_Rolled_Coil_Steel_grams",
     "hot_rolled_coil_steel": "Hot_Rolled_Coil_Steel_grams",
@@ -77,7 +77,7 @@ STEEL_SUBTYPE_GCC_GRAM_COLUMNS = {
     "duplex_steel": "Duplex_Steel_grams",
     "cast_steel": "Cast_Steel_grams",
 }
-STEEL_SUBTYPE_GCC_WORKBOOK_GRAM_COLUMNS = {
+STEEL_SUBTYPE_MATERIAL_MASTER_WORKBOOK_GRAM_COLUMNS = {
     "Electrical_Steel_grams": "Electrical Steel - Grams",
     "Cold_Rolled_Coil_Steel_grams": "Cold-Rolled Coil Steel -Grams",
     "Hot_Rolled_Coil_Steel_grams": "Hot-Rolled Coil Steel - Grams",
@@ -198,13 +198,13 @@ def _build_prepared_frame_from_complete_df(complete_df: pd.DataFrame) -> pd.Data
 
     steel_total = pd.Series(0.0, index=complete_df.index, dtype=float)
     steel_subtype_values: Dict[str, pd.Series] = {}
-    for prepared_column, workbook_column in STEEL_SUBTYPE_GCC_WORKBOOK_GRAM_COLUMNS.items():
+    for prepared_column, workbook_column in STEEL_SUBTYPE_MATERIAL_MASTER_WORKBOOK_GRAM_COLUMNS.items():
         grams = _parse_numeric_series_or_default(complete_df, workbook_column)
         steel_subtype_values[prepared_column] = grams
         steel_total = steel_total.add(grams, fill_value=0.0)
 
     prepared["Steel_grams"] = steel_total.astype(float)
-    for prepared_column, workbook_column in TOP_LEVEL_GCC_WORKBOOK_GRAM_COLUMNS.items():
+    for prepared_column, workbook_column in TOP_LEVEL_MATERIAL_MASTER_WORKBOOK_GRAM_COLUMNS.items():
         prepared[prepared_column] = _parse_numeric_series_or_default(complete_df, workbook_column)
     for prepared_column, grams in steel_subtype_values.items():
         prepared[prepared_column] = grams.astype(float)
@@ -215,7 +215,7 @@ def _build_prepared_frame_from_complete_df(complete_df: pd.DataFrame) -> pd.Data
 def build_serving_frames_from_raw_df(raw_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     complete_df = _filter_complete_rows(raw_df)
     if complete_df.empty:
-        raise ValueError("No completed GCC rows found in workbook")
+        raise ValueError("No completed Material Master rows found in workbook")
     source_df = _build_source_frame_from_complete_df(complete_df)
     prepared_df = _build_prepared_frame_from_complete_df(complete_df)
     return source_df, prepared_df
@@ -289,7 +289,7 @@ class ResolvedMaterialRecord:
 
 
 @dataclass(frozen=True)
-class GCCMetalProfile:
+class MaterialMasterMetalProfile:
     source_row_id: int
     top_level_grams: Dict[str, float]
     steel_subtype_grams: Dict[str, float]
@@ -333,19 +333,19 @@ class ServingStore:
     def metadata(self) -> Dict[str, Any]:
         return dict(self._metadata)
 
-    def get_gcc_metal_profile(self, source_row_id: int) -> GCCMetalProfile:
+    def get_material_master_metal_profile(self, source_row_id: int) -> MaterialMasterMetalProfile:
         if int(source_row_id) not in self._prepared_by_row_id.index:
-            raise KeyError(f"prepared GCC profile for source_row_id {source_row_id} not found")
+            raise KeyError(f"prepared Material Master profile for source_row_id {source_row_id} not found")
         row = self._prepared_by_row_id.loc[int(source_row_id)]
-        return GCCMetalProfile(
+        return MaterialMasterMetalProfile(
             source_row_id=int(source_row_id),
             top_level_grams={
                 metal: float(_parse_numeric_scalar(row.get(column)) or 0.0)
-                for metal, column in TOP_LEVEL_GCC_GRAM_COLUMNS.items()
+                for metal, column in TOP_LEVEL_MATERIAL_MASTER_GRAM_COLUMNS.items()
             },
             steel_subtype_grams={
                 subtype: float(_parse_numeric_scalar(row.get(column)) or 0.0)
-                for subtype, column in STEEL_SUBTYPE_GCC_GRAM_COLUMNS.items()
+                for subtype, column in STEEL_SUBTYPE_MATERIAL_MASTER_GRAM_COLUMNS.items()
             },
         )
 
@@ -396,7 +396,7 @@ class ServingStore:
         row = self._source_by_row_id.loc[int(source_row_id)]
         return MetalCompositionCandidate(
             source_row_id=int(source_row_id),
-            source_kind="gcc",
+            source_kind="mm",
             pn_revised_standardized=_clean_text_value(row.get(PN_COLUMN)),
             part_description=_clean_text_value(row.get(PART_DESCRIPTION_COLUMN)),
             new_part_description=_clean_text_value(row.get(NEW_PART_DESCRIPTION_COLUMN)),
@@ -426,7 +426,7 @@ class WorkbookStore(ServingStore):
 
     @classmethod
     def from_settings(cls, settings: MetalCompositionSettings) -> "WorkbookStore":
-        """Build a workbook-backed serving store from the configured tracker file.
+        """Build a workbook-backed serving store from the configured Material Master file.
 
         Args:
             settings: Metal composition settings containing the workbook path
@@ -439,7 +439,7 @@ class WorkbookStore(ServingStore):
         raw_df = pd.read_excel(
             settings.workbook_path,
             sheet_name=settings.sheet_name,
-            engine=pandas_engine_for_gcc_tracker_workbook(settings.workbook_path),
+            engine=pandas_engine_for_material_master_workbook(settings.workbook_path),
         )
         source_df, prepared_df = build_serving_frames_from_raw_df(raw_df)
         metadata = {

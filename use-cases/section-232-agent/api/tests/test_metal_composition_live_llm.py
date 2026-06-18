@@ -32,7 +32,7 @@ def test_live_hts_profile_and_hana_tree_handle_expanded_catalog_context() -> Non
         "product_code": "4006107",
         "source_summary": {
             "source_row_id": 310,
-            "source_kind": "gcc",
+            "source_kind": "mm",
             "pn_revised_standardized": "4006107",
             "part_description": "DIFFUSER COAT.",
             "new_part_description": None,
@@ -69,7 +69,7 @@ def test_live_hts_profile_and_hana_tree_handle_expanded_catalog_context() -> Non
                 "cast_steel": 0.0,
             },
             "confidence": 1.0,
-            "reasoning": "GCC tracker reports a predominantly cast iron article.",
+            "reasoning": "Material Master reports a predominantly cast iron article.",
         },
         "diagram_output": {
             "status": "omitted",
