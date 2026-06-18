@@ -25,6 +25,32 @@ ClassificationJobStatus = Literal["queued", "running", "completed", "failed", "p
 ClassificationJobItemStatus = Literal["queued", "running", "completed", "failed"]
 DocumentMode = Literal["text_only", "with_documents"]
 SUPERSEDED_ERROR_MESSAGE = "Superseded by newer classification request"
+PUBLIC_QUEUED_STATUS = "queued"
+MM_QUEUED_DB_STATUS = "queued_mm"
+ACTIVE_DB_STATUSES = (MM_QUEUED_DB_STATUS, PUBLIC_QUEUED_STATUS, "running")
+ACTIVE_DB_STATUS_SQL = "'queued_mm', 'queued', 'running'"
+QUEUED_DB_STATUS_SQL = "'queued_mm', 'queued'"
+
+
+def _is_queued_db_status(status: object) -> bool:
+    """Return whether a persisted status represents pending queue work."""
+
+    return str(status) in {MM_QUEUED_DB_STATUS, PUBLIC_QUEUED_STATUS}
+
+
+def _is_active_db_status(status: object) -> bool:
+    """Return whether a persisted status represents non-terminal queue work."""
+
+    return str(status) in set(ACTIVE_DB_STATUSES)
+
+
+def _public_status(status: object) -> str:
+    """Map internal durable queue statuses to public API statuses."""
+
+    status_text = str(status)
+    if _is_queued_db_status(status_text):
+        return PUBLIC_QUEUED_STATUS
+    return status_text
 
 @dataclass(frozen=True)
 class ClassificationJobItemSeed:
@@ -96,7 +122,7 @@ class InMemoryClassificationJobStore:
             submitted_at = utc_now_iso()
             job_id = str(uuid.uuid4())
             total_count = len(items)
-            status: ClassificationJobStatus = "queued" if total_count > 0 else "completed"
+            status = MM_QUEUED_DB_STATUS if total_count > 0 else "completed"
             finished_at = None if total_count > 0 else submitted_at
             self._jobs[job_id] = {
                 "job_id": job_id,
@@ -121,7 +147,7 @@ class InMemoryClassificationJobStore:
                     "position": int(item.position),
                     "document_mode": item.document_mode,
                     "include_token_usage": bool(item.include_token_usage),
-                    "status": "queued",
+                    "status": MM_QUEUED_DB_STATUS,
                     "started_at": None,
                     "finished_at": None,
                     "error_message": None,
@@ -149,11 +175,11 @@ class InMemoryClassificationJobStore:
         active_item_ids: List[str] = []
         with self._lock:
             for job_id, job_row in self._jobs.items():
-                if job_row["status"] not in {"queued", "running"}:
+                if not _is_active_db_status(job_row["status"]):
                     continue
                 for item_row in self._job_items.get(job_id, []):
                     key = (str(item_row["item_id"]), str(item_row["dataset_scope"]))
-                    if item_row["status"] not in {"queued", "running"}:
+                    if not _is_active_db_status(item_row["status"]):
                         continue
                     if key in requested and str(item_row["item_id"]) not in active_item_ids:
                         active_item_ids.append(str(item_row["item_id"]))
@@ -175,7 +201,7 @@ class InMemoryClassificationJobStore:
             for job_id, item_rows in self._job_items.items():
                 for item_row in item_rows:
                     key = (str(item_row["item_id"]), str(item_row["dataset_scope"]))
-                    if key not in requested or item_row["status"] not in {"queued", "running"}:
+                    if key not in requested or not _is_active_db_status(item_row["status"]):
                         continue
                     item_row["status"] = "failed"
                     item_row["started_at"] = item_row.get("started_at") or now
@@ -196,7 +222,7 @@ class InMemoryClassificationJobStore:
     def claim_next_queued_job(self, *, worker_id: str) -> Optional[PersistedClassificationJob]:
         with self._lock:
             queued_rows = [
-                row for row in self._jobs.values() if row["status"] == "queued"
+                row for row in self._jobs.values() if row["status"] == MM_QUEUED_DB_STATUS
             ]
             if not queued_rows:
                 return None
@@ -213,7 +239,7 @@ class InMemoryClassificationJobStore:
         with self._lock:
             now = utc_now_iso()
             for item_row in self._job_items.get(job_id, []):
-                if item_row["status"] != "queued":
+                if not _is_queued_db_status(item_row["status"]):
                     continue
                 item_row["status"] = "running"
                 item_row["started_at"] = item_row.get("started_at") or now
@@ -260,7 +286,7 @@ class InMemoryClassificationJobStore:
             cancelled = 0
             cleared_keys: Set[Tuple[str, str]] = set()
             for job_id, job_row in self._jobs.items():
-                if job_row["status"] not in {"queued", "running"}:
+                if not _is_active_db_status(job_row["status"]):
                     continue
                 cancelled += 1
                 for item_row in self._job_items.get(job_id, []):
@@ -283,7 +309,7 @@ class InMemoryClassificationJobStore:
         total_count = len(item_rows)
         completed_count = sum(1 for item_row in item_rows if item_row["status"] == "completed")
         failed_count = sum(1 for item_row in item_rows if item_row["status"] == "failed")
-        queued_count = sum(1 for item_row in item_rows if item_row["status"] == "queued")
+        queued_count = sum(1 for item_row in item_rows if _is_queued_db_status(item_row["status"]))
         running_count = sum(1 for item_row in item_rows if item_row["status"] == "running")
         terminal_count = sum(1 for item_row in item_rows if item_row["status"] in {"completed", "failed"})
         row["total_count"] = total_count
@@ -296,7 +322,7 @@ class InMemoryClassificationJobStore:
             row["finished_at"] = row.get("finished_at") or utc_now_iso()
             return
         if terminal_count < total_count:
-            row["status"] = "running" if running_count > 0 else "queued"
+            row["status"] = "running" if running_count > 0 else MM_QUEUED_DB_STATUS
             row["finished_at"] = None
             if queued_count > 0 and running_count <= 0 and error_message is None:
                 row["error_message"] = None
@@ -327,7 +353,7 @@ class InMemoryClassificationJobStore:
         return PersistedClassificationJob(
             job_id=str(row["job_id"]),
             job_type=str(row["job_type"]),  # type: ignore[arg-type]
-            status=str(row["status"]),  # type: ignore[arg-type]
+            status=_public_status(row["status"]),  # type: ignore[arg-type]
             submitted_at=str(row["submitted_at"]),
             started_at=(None if row.get("started_at") is None else str(row["started_at"])),
             finished_at=(None if row.get("finished_at") is None else str(row["finished_at"])),
@@ -349,7 +375,7 @@ class InMemoryClassificationJobStore:
             position=int(row["position"]),
             document_mode=str(row.get("document_mode") or "text_only"),  # type: ignore[arg-type]
             include_token_usage=row.get("include_token_usage") in {True, 1, "1", "true", "True"},
-            status=str(row["status"]),  # type: ignore[arg-type]
+            status=_public_status(row["status"]),  # type: ignore[arg-type]
             started_at=(None if row.get("started_at") is None else str(row["started_at"])),
             finished_at=(None if row.get("finished_at") is None else str(row["finished_at"])),
             error_message=(None if row.get("error_message") is None else str(row["error_message"])),
@@ -473,7 +499,7 @@ class ClassificationJobStore:
         submitted_at = utc_now_iso()
         job_id = str(uuid.uuid4())
         total_count = len(items)
-        status: ClassificationJobStatus = "queued" if total_count > 0 else "completed"
+        status = MM_QUEUED_DB_STATUS if total_count > 0 else "completed"
         finished_at = None if total_count > 0 else submitted_at
         logger.info(
             "submit_job: inserting job %s (type=%s, items=%d, status=%s)",
@@ -519,7 +545,7 @@ class ClassificationJobStore:
                         int(item.position),
                         item.document_mode,
                         1 if item.include_token_usage else 0,
-                        "queued",
+                        MM_QUEUED_DB_STATUS,
                         None,
                         None,
                         None,
@@ -588,8 +614,8 @@ class ClassificationJobStore:
             FROM {_qualified_table(self.job_items_table, self.schema)} AS "I"
             INNER JOIN {_qualified_table(self.jobs_table, self.schema)} AS "J"
                 ON "J"."JOB_ID" = "I"."JOB_ID"
-            WHERE "J"."STATUS" IN ('queued', 'running')
-              AND "I"."STATUS" IN ('queued', 'running')
+            WHERE "J"."STATUS" IN ({ACTIVE_DB_STATUS_SQL})
+              AND "I"."STATUS" IN ({ACTIVE_DB_STATUS_SQL})
               AND ({clauses})
             ORDER BY "I"."ITEM_ID" ASC
             """,
@@ -625,7 +651,7 @@ class ClassificationJobStore:
             f"""
             SELECT "JOB_ID", COUNT(*) AS "ITEM_COUNT"
             FROM {_qualified_table(self.job_items_table, self.schema)}
-            WHERE "STATUS" IN ('queued', 'running') AND ({clauses})
+            WHERE "STATUS" IN ({ACTIVE_DB_STATUS_SQL}) AND ({clauses})
             GROUP BY "JOB_ID"
             """,
             params[3:],
@@ -640,7 +666,7 @@ class ClassificationJobStore:
                 "STARTED_AT" = CASE WHEN "STARTED_AT" IS NULL THEN ? ELSE "STARTED_AT" END,
                 "FINISHED_AT" = CASE WHEN "FINISHED_AT" IS NULL THEN ? ELSE "FINISHED_AT" END,
                 "ERROR_MESSAGE" = ?
-            WHERE "STATUS" IN ('queued', 'running') AND ({clauses})
+            WHERE "STATUS" IN ({ACTIVE_DB_STATUS_SQL}) AND ({clauses})
             """,
             params,
         )
@@ -674,7 +700,7 @@ class ClassificationJobStore:
             f"""
             SELECT "JOB_ID"
             FROM {_qualified_table(self.jobs_table, self.schema)}
-            WHERE "STATUS" = 'queued'
+            WHERE "STATUS" = {repr(MM_QUEUED_DB_STATUS)}
             ORDER BY "SUBMITTED_AT" ASC, "JOB_ID" ASC
             LIMIT 1
             """
@@ -692,7 +718,7 @@ class ClassificationJobStore:
                     "CLAIMED_BY" = ?,
                     "CLAIMED_AT" = ?,
                     "STARTED_AT" = CASE WHEN "STARTED_AT" IS NULL THEN ? ELSE "STARTED_AT" END
-                WHERE "JOB_ID" = ? AND "STATUS" = 'queued'
+                WHERE "JOB_ID" = ? AND "STATUS" = {repr(MM_QUEUED_DB_STATUS)}
                 """,
                 [worker_id, claimed_at, claimed_at, job_id],
             )
@@ -709,7 +735,7 @@ class ClassificationJobStore:
             UPDATE {_qualified_table(self.job_items_table, self.schema)}
             SET "STATUS" = 'running',
                 "STARTED_AT" = CASE WHEN "STARTED_AT" IS NULL THEN ? ELSE "STARTED_AT" END
-            WHERE "JOB_ID" = ? AND "STATUS" = 'queued'
+            WHERE "JOB_ID" = ? AND "STATUS" = {repr(MM_QUEUED_DB_STATUS)}
             """,
             [now, job_id],
         )
@@ -762,7 +788,7 @@ class ClassificationJobStore:
             f"""
             SELECT "JOB_ID"
             FROM {_qualified_table(self.jobs_table, self.schema)}
-            WHERE "STATUS" IN ('queued', 'running')
+            WHERE "STATUS" IN ({ACTIVE_DB_STATUS_SQL})
             """
         )
         if not active_rows:
@@ -771,7 +797,7 @@ class ClassificationJobStore:
             f"""
             SELECT DISTINCT "ITEM_ID", "DATASET_SCOPE"
             FROM {_qualified_table(self.job_items_table, self.schema)}
-            WHERE "STATUS" IN ('queued', 'running')
+            WHERE "STATUS" IN ({ACTIVE_DB_STATUS_SQL})
             """
         )
         for row in active_rows:
@@ -805,7 +831,7 @@ class ClassificationJobStore:
             SELECT COUNT(*) AS "total_count",
                    SUM(CASE WHEN "STATUS" = 'completed' THEN 1 ELSE 0 END) AS "completed_count",
                    SUM(CASE WHEN "STATUS" = 'failed' THEN 1 ELSE 0 END) AS "failed_count",
-                   SUM(CASE WHEN "STATUS" = 'queued' THEN 1 ELSE 0 END) AS "queued_count",
+                   SUM(CASE WHEN "STATUS" IN ({QUEUED_DB_STATUS_SQL}) THEN 1 ELSE 0 END) AS "queued_count",
                    SUM(CASE WHEN "STATUS" = 'running' THEN 1 ELSE 0 END) AS "running_count",
                    SUM(CASE WHEN "STATUS" IN ('completed', 'failed') THEN 1 ELSE 0 END) AS "terminal_count"
             FROM {_qualified_table(self.job_items_table, self.schema)}
@@ -828,7 +854,7 @@ class ClassificationJobStore:
         running_count = int(row["running_count"] or 0)
         terminal_count = int(row["terminal_count"] or 0)
         finished_at = None
-        status: ClassificationJobStatus = "queued"
+        status: str = MM_QUEUED_DB_STATUS
         final_error = error_message
         if total_count <= 0:
             status = "completed"
@@ -864,7 +890,7 @@ class ClassificationJobStore:
         return PersistedClassificationJob(
             job_id=str(row["job_id"]),
             job_type=str(row["job_type"]),  # type: ignore[arg-type]
-            status=str(row["status"]),  # type: ignore[arg-type]
+            status=_public_status(row["status"]),  # type: ignore[arg-type]
             submitted_at=str(row["submitted_at"]),
             started_at=(None if row["started_at"] is None else str(row["started_at"])),
             finished_at=(None if row["finished_at"] is None else str(row["finished_at"])),
@@ -886,7 +912,7 @@ class ClassificationJobStore:
             position=int(row["position"]),
             document_mode=str(row.get("document_mode") or "text_only"),  # type: ignore[arg-type]
             include_token_usage=row.get("include_token_usage") in {True, 1, "1", "true", "True"},
-            status=str(row["status"]),  # type: ignore[arg-type]
+            status=_public_status(row["status"]),  # type: ignore[arg-type]
             started_at=(None if row["started_at"] is None else str(row["started_at"])),
             finished_at=(None if row["finished_at"] is None else str(row["finished_at"])),
             error_message=(None if row["error_message"] is None else str(row["error_message"])),

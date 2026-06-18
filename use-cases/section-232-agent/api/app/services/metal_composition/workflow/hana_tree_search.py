@@ -147,11 +147,11 @@ def _tree_extra_item_context(
     source_summary: Dict[str, Any],
     source_row: Dict[str, Any],
 ) -> str:
-    """Return extra GCC item context for HANA tree retrieval prompts.
+    """Return extra Material Master item context for HANA tree retrieval prompts.
 
     Inputs:
         source_summary: Normalized selected-source summary.
-        source_row: Original GCC source row context.
+        source_row: Original Material Master source row context.
 
     Expected output:
         The BY Priority duplicate value exposed under a neutral label, or an

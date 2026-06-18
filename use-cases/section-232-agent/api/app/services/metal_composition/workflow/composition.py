@@ -62,8 +62,8 @@ def _normalize_source_status(source: str, *, weight_grams: float) -> str:
     if weight_grams <= 0.0:
         return "none"
     normalized = str(source or "").strip().lower()
-    if normalized == "gcc_tracker":
-        return "gcc_tracker"
+    if normalized == "material_master":
+        return "material_master"
     if normalized == "manual":
         return "manual"
     if normalized in {"human_review_pending", "pdf_only_human_review"}:

@@ -14,7 +14,7 @@ class MetalCompositionState(TypedDict, total=False):
     composition_mode: str
     document_mode: str
     diagram_payloads: List["DiagramPayload"]
-    gcc_tracker_composition: Optional[Dict[str, Any]]
+    material_master_composition: Optional[Dict[str, Any]]
     include_token_usage: bool
     token_usage: Dict[str, Any]
     token_usage_recorder: Any

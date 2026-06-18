@@ -108,10 +108,10 @@ class MetalCompositionJobService:
         include_token_usage: bool = False,
         job_type: ClassificationJobType = "single",
     ) -> ClassificationJobSubmissionResponse:
-        """Submit one GCC tracker item for background prediction.
+        """Submit one Material Master item for background prediction.
 
         Inputs:
-            item_id: GCC item id to classify.
+            item_id: Material Master item id to classify.
             document_mode: Whether PDFs are ignored or required as additional evidence.
             include_token_usage: API-only diagnostic flag for recording model token metadata.
             job_type: Persisted job type.
@@ -158,10 +158,10 @@ class MetalCompositionJobService:
         include_token_usage: bool = False,
         job_type: ClassificationJobType = "batch",
     ) -> ClassificationJobSubmissionResponse:
-        """Submit multiple GCC tracker items for background prediction.
+        """Submit multiple Material Master items for background prediction.
 
         Inputs:
-            item_ids: GCC item ids to classify.
+            item_ids: Material Master item ids to classify.
             document_mode: Batch-wide document evidence mode.
             include_token_usage: API-only diagnostic flag for recording model token metadata.
             job_type: Persisted job type.

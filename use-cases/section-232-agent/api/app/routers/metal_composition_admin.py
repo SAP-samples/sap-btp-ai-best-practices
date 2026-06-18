@@ -12,18 +12,18 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
-from ..models.metal_composition import ClassificationResetResponse, GCCTrackerHanaRefreshResponse
+from ..models.metal_composition import ClassificationResetResponse, MaterialMasterHanaRefreshResponse
 from ..security import get_api_key
 from ..services.metal_composition.config import MetalCompositionSettings, get_settings
 from ..services.metal_composition.hana_refresh import (
-    GCCTrackerHanaRefreshError,
-    GCCTrackerWorkbookLoadError,
+    MaterialMasterHanaRefreshError,
+    MaterialMasterWorkbookLoadError,
     refresh_metal_composition_hana,
 )
 from ..services.metal_composition.service import get_metal_composition_service
 from ..services.metal_composition.workbook_format import (
-    is_supported_gcc_tracker_workbook,
-    supported_gcc_tracker_workbook_description,
+    is_supported_material_master_workbook,
+    supported_material_master_workbook_description,
 )
 
 
@@ -34,9 +34,9 @@ _REFRESH_LOCK = Lock()
 
 
 def _safe_upload_filename(filename: str) -> str:
-    basename = Path(filename or "gcc-tracker.xlsb").name
+    basename = Path(filename or "material-master.xlsb").name
     cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", basename).strip("._")
-    return cleaned or "gcc-tracker.xlsb"
+    return cleaned or "material-master.xlsb"
 
 
 def _store_uploaded_workbook(
@@ -45,7 +45,7 @@ def _store_uploaded_workbook(
     filename: str,
     content: bytes,
 ) -> Path:
-    upload_dir = settings.cache_dir / "gcc_tracker_uploads"
+    upload_dir = settings.cache_dir / "material_master_uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
     stored_path = upload_dir / f"{uuid.uuid4().hex}_{_safe_upload_filename(filename)}"
     stored_path.write_bytes(content)
@@ -60,8 +60,8 @@ def invalidate_metal_composition_service_cache() -> None:
         cache_clear()
 
 
-def reset_classification_state_after_tracker_refresh() -> ClassificationResetResponse:
-    """Clear classification state that is indexed by the previous GCC tracker dataset.
+def reset_classification_state_after_material_master_refresh() -> ClassificationResetResponse:
+    """Clear classification state that is indexed by the previous Material Master dataset.
 
     Returns:
         ClassificationResetResponse: Counts for saved snapshots cleared and active
@@ -71,27 +71,27 @@ def reset_classification_state_after_tracker_refresh() -> ClassificationResetRes
     return get_metal_composition_service().reset_classifications()
 
 
-@router.post("/gcc-tracker/refresh-hana", response_model=GCCTrackerHanaRefreshResponse)
-async def refresh_gcc_tracker_hana(
+@router.post("/material-master/refresh-hana", response_model=MaterialMasterHanaRefreshResponse)
+async def refresh_material_master_hana(
     file: UploadFile = File(...),
     source_path: Optional[str] = Form(None),
-) -> GCCTrackerHanaRefreshResponse:
-    """Upload a GCC Tracker workbook and refresh the configured HANA serving table."""
+) -> MaterialMasterHanaRefreshResponse:
+    """Upload a Material Master workbook and refresh the configured HANA serving table."""
 
-    filename = file.filename or "gcc-tracker.xlsb"
-    if not is_supported_gcc_tracker_workbook(filename):
+    filename = file.filename or "material-master.xlsb"
+    if not is_supported_material_master_workbook(filename):
         detail = (
-            "Uploaded GCC Tracker file must be a "
-            f"{supported_gcc_tracker_workbook_description()} workbook."
+            "Uploaded Material Master file must be a "
+            f"{supported_material_master_workbook_description()} workbook."
         )
         raise HTTPException(status_code=422, detail=detail)
     if not _REFRESH_LOCK.acquire(blocking=False):
-        raise HTTPException(status_code=409, detail="A GCC Tracker HANA refresh is already running.")
+        raise HTTPException(status_code=409, detail="A Material Master HANA refresh is already running.")
 
     try:
         content = await file.read()
         if not content:
-            raise HTTPException(status_code=422, detail="Uploaded GCC Tracker file is empty.")
+            raise HTTPException(status_code=422, detail="Uploaded Material Master file is empty.")
 
         settings = get_settings()
         try:
@@ -106,20 +106,20 @@ async def refresh_gcc_tracker_hana(
                 stored_path,
                 settings=settings,
             )
-            reset_payload = await asyncio.to_thread(reset_classification_state_after_tracker_refresh)
-        except (FileNotFoundError, GCCTrackerWorkbookLoadError) as exc:
+            reset_payload = await asyncio.to_thread(reset_classification_state_after_material_master_refresh)
+        except (FileNotFoundError, MaterialMasterWorkbookLoadError) as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
-        except GCCTrackerHanaRefreshError as exc:
+        except MaterialMasterHanaRefreshError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
         except OSError as exc:
-            logger.exception("Failed to store uploaded GCC Tracker workbook")
-            raise HTTPException(status_code=500, detail=f"Failed to store uploaded GCC Tracker workbook: {exc}") from exc
+            logger.exception("Failed to store uploaded Material Master workbook")
+            raise HTTPException(status_code=500, detail=f"Failed to store uploaded Material Master workbook: {exc}") from exc
         except Exception as exc:  # noqa: BLE001 - keep admin API errors bounded
-            logger.exception("Unexpected GCC Tracker HANA refresh failure")
-            raise HTTPException(status_code=500, detail="Failed to refresh GCC Tracker HANA table.") from exc
+            logger.exception("Unexpected Material Master HANA refresh failure")
+            raise HTTPException(status_code=500, detail="Failed to refresh Material Master HANA table.") from exc
 
         invalidate_metal_composition_service_cache()
-        return GCCTrackerHanaRefreshResponse(
+        return MaterialMasterHanaRefreshResponse(
             status="completed",
             uploaded_filename=filename,
             uploaded_size_bytes=len(content),

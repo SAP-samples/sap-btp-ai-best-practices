@@ -129,7 +129,7 @@ def get_settings() -> MetalCompositionSettings:
     workbook_path = _resolve_path(
         os.getenv(
             "METAL_COMPOSITION_WORKBOOK_PATH",
-            str(PROJECT_ROOT / "data" / "GCC Tracker.xlsb"),
+            str(PROJECT_ROOT / "data" / "Material Master.xlsb"),
         ),
         base_dir=env_base_dir,
     )

@@ -26,7 +26,7 @@ SOURCE_ROW_PROMPT_KEYS = (
 
 
 def _extra_item_context(source: Dict[str, Any]) -> Any:
-    """Return neutral item-context text without exposing GCC priority labels.
+    """Return neutral item-context text without exposing Material Master priority labels.
 
     Inputs:
         source: Source summary or source row dictionary.
@@ -43,11 +43,11 @@ def prompt_safe_source_summary(source_summary: Dict[str, Any] | None) -> Dict[st
     """Return only original source-summary fields that help identify/classify the item.
 
     Inputs:
-        source_summary: API-facing source summary derived from the GCC tracker.
+        source_summary: API-facing source summary derived from the Material Master.
 
     Expected output:
         A dictionary excluding operational fields such as priority, business segment, site, and dates.
-        The GCC BY Priority duplicate is included only under ``extra_item_context``.
+        The Material Master BY Priority duplicate is included only under ``extra_item_context``.
     """
 
     source = dict(source_summary or {})
@@ -66,11 +66,11 @@ def prompt_safe_source_row(source_row: Dict[str, Any] | None) -> Dict[str, Any]:
     """Return only original source-row fields that should be included in LLM prompts.
 
     Inputs:
-        source_row: Business-safe source row from GCC tracker resolution.
+        source_row: Business-safe source row from Material Master resolution.
 
     Expected output:
         A dictionary limited to item identity, description, material labels, and total weight.
-        The GCC BY Priority duplicate is included only under ``extra_item_context``.
+        The Material Master BY Priority duplicate is included only under ``extra_item_context``.
     """
 
     source = dict(source_row or {})

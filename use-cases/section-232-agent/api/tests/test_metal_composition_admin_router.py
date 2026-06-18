@@ -11,8 +11,8 @@ from app.routers.metal_composition_admin import router as admin_router
 from app.models.metal_composition import ClassificationResetResponse
 from app.services.metal_composition.config import MetalCompositionSettings
 from app.services.metal_composition.hana_refresh import (
-    GCCTrackerHanaRefreshError,
-    GCCTrackerWorkbookLoadError,
+    MaterialMasterHanaRefreshError,
+    MaterialMasterWorkbookLoadError,
 )
 
 
@@ -47,10 +47,10 @@ def test_refresh_hana_upload_saves_workbook_refreshes_and_invalidates_cache(
     reset_calls = []
 
     class FakeMetalCompositionService:
-        """Test double that records GCC refresh cleanup calls."""
+        """Test double that records Material Master refresh cleanup calls."""
 
         def reset_classifications(self) -> ClassificationResetResponse:
-            """Clear saved classification state after a tracker refresh."""
+            """Clear saved classification state after a Material Master refresh."""
 
             reset_calls.append(True)
             return ClassificationResetResponse(cleared_classification_count=7, cancelled_job_count=2)
@@ -75,24 +75,24 @@ def test_refresh_hana_upload_saves_workbook_refreshes_and_invalidates_cache(
     monkeypatch.setattr(admin_module, "invalidate_metal_composition_service_cache", lambda: cache_invalidations.append(True))
 
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        data={"source_path": "/client/data/new_data/GCC Tracker.xlsb"},
-        files={"file": ("GCC Tracker.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
+        data={"source_path": "/client/data/new_data/Material Master.xlsb"},
+        files={"file": ("Material Master.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
     )
 
     assert response.status_code == 200
     payload = response.json()
     stored_path = refresh_calls["workbook_path"]
     assert stored_path.is_file()
-    assert stored_path.parent == settings.cache_dir / "gcc_tracker_uploads"
+    assert stored_path.parent == settings.cache_dir / "material_master_uploads"
     assert refresh_calls["settings"] is settings
     assert reset_calls == [True]
     assert cache_invalidations == [True]
     assert payload["status"] == "completed"
-    assert payload["uploaded_filename"] == "GCC Tracker.xlsb"
+    assert payload["uploaded_filename"] == "Material Master.xlsb"
     assert payload["uploaded_size_bytes"] == len(b"workbook bytes")
-    assert payload["source_path"] == "/client/data/new_data/GCC Tracker.xlsb"
+    assert payload["source_path"] == "/client/data/new_data/Material Master.xlsb"
     assert payload["stored_workbook_path"] == str(stored_path)
     assert payload["hana_schema"] == "APP_SCHEMA"
     assert payload["hana_table"] == "METAL_COMPOSITION_SERVING"
@@ -114,7 +114,7 @@ def test_refresh_hana_accepts_xlsx_upload(monkeypatch: pytest.MonkeyPatch, tmp_p
         """Test double that records classification cleanup for XLSX uploads."""
 
         def reset_classifications(self) -> ClassificationResetResponse:
-            """Return an empty cleanup result after a tracker refresh."""
+            """Return an empty cleanup result after a Material Master refresh."""
 
             return ClassificationResetResponse(cleared_classification_count=0, cancelled_job_count=0)
 
@@ -140,12 +140,12 @@ def test_refresh_hana_accepts_xlsx_upload(monkeypatch: pytest.MonkeyPatch, tmp_p
     monkeypatch.setattr(admin_module, "invalidate_metal_composition_service_cache", lambda: cache_invalidations.append(True))
 
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        data={"source_path": "/client/outputs/anonymized_gcc_tracker_sample.xlsx"},
+        data={"source_path": "/client/outputs/anonymized_material_master_sample.xlsx"},
         files={
             "file": (
-                "anonymized_gcc_tracker_sample.xlsx",
+                "anonymized_material_master_sample.xlsx",
                 b"workbook bytes",
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             )
@@ -157,8 +157,8 @@ def test_refresh_hana_accepts_xlsx_upload(monkeypatch: pytest.MonkeyPatch, tmp_p
     stored_path = refresh_calls["workbook_path"]
     assert stored_path.is_file()
     assert stored_path.suffix == ".xlsx"
-    assert payload["uploaded_filename"] == "anonymized_gcc_tracker_sample.xlsx"
-    assert payload["source_path"] == "/client/outputs/anonymized_gcc_tracker_sample.xlsx"
+    assert payload["uploaded_filename"] == "anonymized_material_master_sample.xlsx"
+    assert payload["source_path"] == "/client/outputs/anonymized_material_master_sample.xlsx"
     assert payload["source_row_count"] == 2
     assert cache_invalidations == [True]
 
@@ -167,9 +167,9 @@ def test_refresh_hana_rejects_non_excel_upload() -> None:
     """Verify the admin refresh endpoint rejects unsupported non-Excel files."""
 
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        files={"file": ("GCC Tracker.csv", b"workbook bytes", "text/csv")},
+        files={"file": ("Material Master.csv", b"workbook bytes", "text/csv")},
     )
 
     assert response.status_code == 422
@@ -178,9 +178,9 @@ def test_refresh_hana_rejects_non_excel_upload() -> None:
 
 def test_refresh_hana_rejects_empty_upload() -> None:
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        files={"file": ("GCC Tracker.xlsb", b"", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
+        files={"file": ("Material Master.xlsb", b"", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
     )
 
     assert response.status_code == 422
@@ -192,17 +192,17 @@ def test_refresh_hana_maps_workbook_errors_to_422(monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(
         admin_module,
         "refresh_metal_composition_hana",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(GCCTrackerWorkbookLoadError("No completed GCC rows found")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(MaterialMasterWorkbookLoadError("No completed Material Master rows found")),
     )
 
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        files={"file": ("GCC Tracker.xlsb", b"bad workbook", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
+        files={"file": ("Material Master.xlsb", b"bad workbook", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
     )
 
     assert response.status_code == 422
-    assert "No completed GCC rows" in response.json()["detail"]
+    assert "No completed Material Master rows" in response.json()["detail"]
 
 
 def test_refresh_hana_maps_hana_errors_to_503(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -210,13 +210,13 @@ def test_refresh_hana_maps_hana_errors_to_503(monkeypatch: pytest.MonkeyPatch, t
     monkeypatch.setattr(
         admin_module,
         "refresh_metal_composition_hana",
-        lambda *_args, **_kwargs: (_ for _ in ()).throw(GCCTrackerHanaRefreshError("hana unavailable")),
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(MaterialMasterHanaRefreshError("hana unavailable")),
     )
 
     response = _client().post(
-        "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+        "/api/metal-composition/admin/material-master/refresh-hana",
         headers=_headers(),
-        files={"file": ("GCC Tracker.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
+        files={"file": ("Material Master.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
     )
 
     assert response.status_code == 503
@@ -227,9 +227,9 @@ def test_refresh_hana_returns_409_when_refresh_is_already_running() -> None:
     assert admin_module._REFRESH_LOCK.acquire(blocking=False)
     try:
         response = _client().post(
-            "/api/metal-composition/admin/gcc-tracker/refresh-hana",
+            "/api/metal-composition/admin/material-master/refresh-hana",
             headers=_headers(),
-            files={"file": ("GCC Tracker.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
+            files={"file": ("Material Master.xlsb", b"workbook bytes", "application/vnd.ms-excel.sheet.binary.macroEnabled.12")},
         )
     finally:
         admin_module._REFRESH_LOCK.release()

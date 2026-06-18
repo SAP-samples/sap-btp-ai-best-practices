@@ -1,13 +1,13 @@
 description: >
-  Start a backend Section 232 prediction job for a single GCC tracker item.
+  Start a backend Section 232 prediction job for a single Material Master item.
   Use this when the user asks to analyze, classify, rerun, or start analysis
-  for one item id. Examples: "Start analysis for gcc:1001", "classify item
-  gcc:1001", or "rerun Section 232 analysis for gcc:2002 with PDFs".
+  for one item id. Examples: "Start analysis for mm:1001", "classify item
+  mm:1001", or "rerun Section 232 analysis for mm:2002 with PDFs".
 
 slots:
   - name: item_id
     description: >
-      Backend GCC tracker item id to classify, in the form gcc:1001. Capture
+      Backend Material Master item id to classify, in the form mm:1001. Capture
       the complete value including the prefix and colon.
   - name: document_mode
     description: >

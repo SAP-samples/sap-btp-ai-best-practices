@@ -82,7 +82,7 @@ class _ServiceTestWorkflowRunner:
         diagram_payloads = list(kwargs.get("diagram_payloads") or [])
         total_weight = float(kwargs.get("source_summary", {}).get("total_weight_gram", 0.0) or 0.0)
         final_composition = (
-            kwargs.get("gcc_tracker_composition")
+            kwargs.get("material_master_composition")
             or {
             "is_metal_item": True,
             "total_weight_grams": total_weight,
@@ -227,7 +227,7 @@ def _sample_serving_frames() -> tuple[pd.DataFrame, pd.DataFrame]:
 
 def _sample_settings(**overrides) -> MetalCompositionSettings:
     return MetalCompositionSettings(
-        workbook_path=ROOT / "data" / "GCC Tracker.xlsb",
+        workbook_path=ROOT / "data" / "Material Master.xlsb",
         api_env_path=ROOT / "api" / ".env",
         diagram_page_routing_enabled=False,
         **overrides,
@@ -693,7 +693,7 @@ def _duplicate_product_service(tmp_path: Path) -> MetalCompositionService:
 
 def test_batch_settings_defaults():
     settings = MetalCompositionSettings(
-        workbook_path=ROOT / "data" / "GCC Tracker.xlsb",
+        workbook_path=ROOT / "data" / "Material Master.xlsb",
         api_env_path=ROOT / "api" / ".env",
     )
 
@@ -702,26 +702,34 @@ def test_batch_settings_defaults():
     assert settings.classification_job_worker_max_concurrency == 10
     assert settings.hts_k_candidates == 5
 
-def test_build_predict_input_uses_gcc_tracker_mode_for_gcc_items_when_enabled(tmp_path):
+def test_build_predict_input_uses_material_master_mode_for_mm_items_when_enabled(tmp_path):
     service = _duplicate_product_service(tmp_path)
-    service.update_app_settings(use_gcc_tracker_metal_composition=True)
+    service.update_app_settings(use_material_master_metal_composition=True)
 
-    context = service._resolve_item_context("gcc:2")  # noqa: SLF001
+    context = service._resolve_item_context("mm:2")  # noqa: SLF001
     predict_input = service._build_predict_input_for_context(context)  # noqa: SLF001
 
-    assert predict_input.composition_mode == "gcc_tracker"
+    assert predict_input.composition_mode == "material_master"
     assert predict_input.document_mode == "text_only"
 
+
+def test_resolve_item_context_rejects_legacy_item_prefix(tmp_path):
+    service = _duplicate_product_service(tmp_path)
+    legacy_item_id = "".join(("g", "cc", ":2"))
+
+    with pytest.raises(KeyError):
+        service._resolve_item_context(legacy_item_id)  # noqa: SLF001
+
 def test_priority_detail_is_preserved_in_selected_source_payload(tmp_path):
-    """Selected GCC source payloads should retain BY Priority as priority_detail."""
+    """Selected Material Master source payloads should retain BY Priority as priority_detail."""
 
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
 
-    submission = service.submit_predict_item_job("gcc:1", document_mode="text_only")
+    submission = service.submit_predict_item_job("mm:1", document_mode="text_only")
     service.drain_classification_jobs()
-    detail = service.get_item_detail("gcc:1")
+    detail = service.get_item_detail("mm:1")
 
     assert detail.priority_detail == "Pump spares"
     assert detail.latest_classification is not None
@@ -733,7 +741,7 @@ def test_priority_detail_is_exposed_to_llm_prompts_as_extra_item_context():
 
     source_summary = {
         "source_row_id": 310,
-        "source_kind": "gcc",
+        "source_kind": "mm",
         "part_description": "DIFFUSER COAT.",
         "priority_detail": "PUMP SPARES",
     }
@@ -779,21 +787,21 @@ def test_priority_detail_is_exposed_to_llm_prompts_as_extra_item_context():
     assert "pump" in hana_context["tokens"]
     assert "spares" in hana_context["tokens"]
 
-def test_gcc_tracker_mode_defaults_on_for_text_only_predict(tmp_path):
+def test_material_master_mode_defaults_on_for_text_only_predict(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
 
-    assert service.get_app_settings().use_gcc_tracker_metal_composition is True
+    assert service.get_app_settings().use_material_master_metal_composition is True
 
 def test_submit_predict_item_job_text_only_skips_pdf_requirement(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
 
-    submission = service.submit_predict_item_job("gcc:1", document_mode="text_only")
+    submission = service.submit_predict_item_job("mm:1", document_mode="text_only")
     processed_count = service.drain_classification_jobs()
-    detail = service.get_item_detail("gcc:1")
+    detail = service.get_item_detail("mm:1")
     job_items = service.classification_job_store.get_job_items(submission.job_id)
 
     assert processed_count == 1
@@ -801,7 +809,7 @@ def test_submit_predict_item_job_text_only_skips_pdf_requirement(tmp_path):
     assert detail.latest_classification is not None
     assert detail.latest_classification.status == "completed"
     assert detail.latest_classification.document_mode == "text_only"
-    assert service.workflow_runner.calls[-1]["composition_mode"] == "gcc_tracker"
+    assert service.workflow_runner.calls[-1]["composition_mode"] == "material_master"
     assert service.workflow_runner.calls[-1]["document_mode"] == "text_only"
     assert service.workflow_runner.calls[-1]["diagram_payloads"] == []
 
@@ -811,12 +819,12 @@ def test_submit_predict_item_job_text_only_can_include_token_usage(tmp_path):
     )
 
     submission = service.submit_predict_item_job(
-        "gcc:1",
+        "mm:1",
         document_mode="text_only",
         include_token_usage=True,
     )
     processed_count = service.drain_classification_jobs()
-    detail = service.get_item_detail("gcc:1")
+    detail = service.get_item_detail("mm:1")
     job_items = service.classification_job_store.get_job_items(submission.job_id)
 
     assert processed_count == 1
@@ -831,11 +839,11 @@ def test_submit_predict_item_job_with_documents_uses_assigned_pdf(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
-    _upload_fake_pdf(service, "gcc:1", "gcc-extra-evidence.pdf")
+    _upload_fake_pdf(service, "mm:1", "mm-extra-evidence.pdf")
 
-    submission = service.submit_predict_item_job("gcc:1", document_mode="with_documents")
+    submission = service.submit_predict_item_job("mm:1", document_mode="with_documents")
     processed_count = service.drain_classification_jobs()
-    detail = service.get_item_detail("gcc:1")
+    detail = service.get_item_detail("mm:1")
     job_items = service.classification_job_store.get_job_items(submission.job_id)
 
     assert processed_count == 1
@@ -844,18 +852,18 @@ def test_submit_predict_item_job_with_documents_uses_assigned_pdf(tmp_path):
     assert detail.latest_classification.status == "completed"
     assert detail.latest_classification.document_mode == "with_documents"
     assert len(service.workflow_runner.calls[-1]["diagram_payloads"]) == 1
-    assert service.workflow_runner.calls[-1]["gcc_tracker_composition"]["top_level_grams"]["steel"] == 12.0
+    assert service.workflow_runner.calls[-1]["material_master_composition"]["top_level_grams"]["steel"] == 12.0
 
 def test_submit_predict_item_job_legacy_switch_off_still_requires_pdf(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
-    service.update_app_settings(use_gcc_tracker_metal_composition=False)
+    service.update_app_settings(use_material_master_metal_composition=False)
 
     with pytest.raises(MissingDocumentsConfirmationRequiredError) as exc_info:
-        service.submit_predict_item_job("gcc:1", document_mode="text_only")
+        service.submit_predict_item_job("mm:1", document_mode="text_only")
 
-    assert exc_info.value.detail.items[0].item_id == "gcc:1"
+    assert exc_info.value.detail.items[0].item_id == "mm:1"
     assert exc_info.value.detail.items[0].docs_status == "No PDFs assigned"
 
 def test_predict_returns_token_usage_when_requested():
@@ -1113,7 +1121,7 @@ def test_workbook_store_uses_openpyxl_for_xlsx_workbooks(monkeypatch, tmp_path: 
         lambda _raw_df: (source_df, prepared_df),
     )
 
-    workbook_path = tmp_path / "uploaded_tracker.xlsx"
+    workbook_path = tmp_path / "uploaded_material_master.xlsx"
     settings = MetalCompositionSettings(
         workbook_path=workbook_path,
         api_env_path=ROOT / "api" / ".env",
@@ -1129,7 +1137,7 @@ def test_workbook_store_uses_openpyxl_for_xlsx_workbooks(monkeypatch, tmp_path: 
     assert len(store.source_df) == 1
 
 
-def test_workbook_store_maps_gcc_tracker_gram_columns(monkeypatch):
+def test_workbook_store_maps_material_master_gram_columns(monkeypatch):
     raw_df = pd.DataFrame(
         [
             {
@@ -1166,7 +1174,7 @@ def test_workbook_store_maps_gcc_tracker_gram_columns(monkeypatch):
 
     settings = _sample_settings()
     store = WorkbookStore.from_settings(settings)
-    profile = store.get_gcc_metal_profile(0)
+    profile = store.get_material_master_metal_profile(0)
 
     assert profile.top_level_grams == {
         "steel": 115.0,
@@ -1329,7 +1337,7 @@ def test_serving_table_round_trip_preserves_source_and_prepared_rows():
     assert bool(restored_prepared.iloc[0]["Steel_present"]) is True
     assert float(restored_prepared.iloc[0]["Steel_grams"]) == 90.0
 
-def test_serving_table_round_trip_preserves_minimal_gcc_gram_columns():
+def test_serving_table_round_trip_preserves_minimal_material_master_gram_columns():
     source_df = pd.DataFrame(
         [
             {
@@ -2623,7 +2631,7 @@ def test_synthesize_hts_fact_profile_normalizes_tree_search_directives(monkeypat
                                     "top_level_grams": {"cast_iron": 7520.0},
                                     "steel_subtype_grams": {},
                                     "confidence": 0.95,
-                                    "reasoning": "GCC tracker reports cast iron.",
+                                    "reasoning": "Material Master reports cast iron.",
                                 },
                                 "diagram_clues": [],
                                 "heading_hypotheses": ["8413", "not-a-heading"],
@@ -3688,7 +3696,7 @@ def test_hana_tree_search_includes_all_families_for_small_heading(monkeypatch):
 
     result = run_hana_tree_search(
         {
-            "product_code": "gcc:2253",
+            "product_code": "mm:2253",
             "source_summary": {
                 "part_description": "Broker Report Additions (CHR)",
                 "new_part_description": "IMPELLER ECEU 00000",
@@ -3833,7 +3841,7 @@ def test_hana_tree_search_directive_keeps_pump_parts_residual_child(monkeypatch)
 
     result = run_hana_tree_search(
         {
-            "product_code": "gcc:2253",
+            "product_code": "mm:2253",
             "source_summary": {"new_part_description": "IMPELLER ECEU 00000", "priority_detail": "CSTG IMPLR 14DX"},
             "source_row": {"New Part Description": "IMPELLER ECEU 00000", "Priority.1": "CSTG IMPLR 14DX"},
             "hts_fact_profile": {
@@ -3933,7 +3941,7 @@ def test_hana_tree_search_router_failure_falls_back_to_recall_order(monkeypatch)
 
     result = run_hana_tree_search(
         {
-            "product_code": "gcc:2253",
+            "product_code": "mm:2253",
             "source_summary": {"new_part_description": "IMPELLER ECEU 00000", "priority_detail": "CSTG IMPLR 14DX"},
             "source_row": {"New Part Description": "IMPELLER ECEU 00000", "Priority.1": "CSTG IMPLR 14DX"},
             "hts_fact_profile": {
@@ -3962,7 +3970,7 @@ def test_hana_tree_search_router_failure_falls_back_to_recall_order(monkeypatch)
     assert result["candidate_suggestions"][0]["hts_code"] != "7203.90"
     assert all(item["confidence"] <= 0.4 for item in result["candidate_suggestions"])
 
-def test_hana_tree_search_gcc_2253_like_sparse_fields_recalls_8413919096(monkeypatch):
+def test_hana_tree_search_mm_2253_like_sparse_fields_recalls_8413919096(monkeypatch):
     """Sparse impeller fields should make 8413.91.9096 available for selection."""
 
     class _ImpellerResolver:
@@ -4075,7 +4083,7 @@ def test_hana_tree_search_gcc_2253_like_sparse_fields_recalls_8413919096(monkeyp
 
     result = run_hana_tree_search(
         {
-            "product_code": "gcc:2253",
+            "product_code": "mm:2253",
             "source_summary": {
                 "part_description": "Broker Report Additions (CHR)",
                 "new_part_description": "IMPELLER ECEU 00000",
@@ -4878,7 +4886,7 @@ def test_trade_decision_weight_rule_estimated_subject_above_threshold_appends_es
     assert trade_result["section_232_assessment"]["decision"] == "subject"
     assert trade_result["section_232_assessment"]["needs_human_review"] is False
     assert trade_result["section_232_assessment"]["weight_rule_applied"] is False
-    assert "estimated from the assigned PDFs" in trade_result["section_232_assessment"]["basis_summary"]
+    assert "estimated from the assigned documents" in trade_result["section_232_assessment"]["basis_summary"]
     assert trade_result["section_232_reasoner_output"]["metal_weight_override"]["reason"] == "threshold_not_met"
 
 def test_trade_decision_weight_rule_estimated_below_threshold_marks_not_subject_with_review(monkeypatch):
@@ -4969,7 +4977,7 @@ def test_merge_candidate_entries_dedupes_repeated_reasoning():
 
     assert merged["reasoning"] == "Retaining rings of steel are classified under 7318.29.0000."
 
-def test_classify_item_gcc_tracker_mode_normalizes_missing_grams_to_zero(tmp_path):
+def test_classify_item_material_master_mode_normalizes_missing_grams_to_zero(tmp_path):
     source_df, _prepared_df = _sample_serving_frames()
     prepared_df = pd.DataFrame([{"source_row_id": 1}])
     service = MetalCompositionService(
@@ -4981,10 +4989,10 @@ def test_classify_item_gcc_tracker_mode_normalizes_missing_grams_to_zero(tmp_pat
         ui_state_store=InMemoryMetalCompositionUIStateStore(),
         section_232_source_store=InMemorySection232SourceStore(),
     )
-    service.update_app_settings(use_gcc_tracker_metal_composition=True)
-    _upload_fake_pdf(service, "gcc:1", "gcc-tracker-zero.pdf")
+    service.update_app_settings(use_material_master_metal_composition=True)
+    _upload_fake_pdf(service, "mm:1", "material-master-zero.pdf")
 
-    result = service.classify_item("gcc:1")
+    result = service.classify_item("mm:1")
 
     assert result.result.status == "completed"
     assert result.result.final_composition is not None
@@ -4997,10 +5005,10 @@ def test_submit_classify_item_job_supersedes_existing_active_job(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
-    _upload_fake_pdf(service, "gcc:1", "job-gcc.pdf")
+    _upload_fake_pdf(service, "mm:1", "job-mm.pdf")
 
-    first = service.submit_classify_item_job("gcc:1")
-    second = service.submit_classify_item_job("gcc:1")
+    first = service.submit_classify_item_job("mm:1")
+    second = service.submit_classify_item_job("mm:1")
 
     first_job = service.get_classification_job(first.job_id)
     first_items = service.classification_job_store.get_job_items(first.job_id)
@@ -5011,7 +5019,7 @@ def test_submit_classify_item_job_supersedes_existing_active_job(tmp_path):
     assert first_items[0].status == "failed"
     assert first_items[0].error_message == SUPERSEDED_ERROR_MESSAGE
     assert second_job.status == "queued"
-    assert service.classification_job_store.get_active_item_ids({("gcc:1", service.dataset_signature)}) == ["gcc:1"]
+    assert service.classification_job_store.get_active_item_ids({("mm:1", service.dataset_signature)}) == ["mm:1"]
 
 def test_hana_supersede_active_items_does_not_compare_nclob_error_message():
     store = object.__new__(ClassificationJobStore)
@@ -5027,7 +5035,7 @@ def test_hana_supersede_active_items_does_not_compare_nclob_error_message():
         sql_text = str(sql)
         assert 'WHERE "ERROR_MESSAGE" = ?' not in sql_text
         fetched_sql.append(sql_text)
-        assert params == ["gcc:1", "scope-a"]
+        assert params == ["mm:1", "scope-a"]
         return [{"job_id": "job-1", "item_count": 1}]
 
     def fake_execute(sql, params=None):
@@ -5040,7 +5048,7 @@ def test_hana_supersede_active_items_does_not_compare_nclob_error_message():
     store.connection = types.SimpleNamespace(execute=fake_execute)
     store._refresh_job_counts = refreshed_jobs.append
 
-    superseded = store.supersede_active_items({("gcc:1", "scope-a")})
+    superseded = store.supersede_active_items({("mm:1", "scope-a")})
 
     assert superseded == 1
     assert len(fetched_sql) == 1
@@ -5052,39 +5060,39 @@ def test_superseded_running_item_cannot_overwrite_newer_snapshot(tmp_path):
     service = _sample_service(
         ui_state_db_path=tmp_path / "ui_state.sqlite3",
     )
-    _upload_fake_pdf(service, "gcc:1", "superseded-gcc.pdf")
+    _upload_fake_pdf(service, "mm:1", "superseded-mm.pdf")
 
-    first_job = service.submit_classify_item_job("gcc:1")
+    first_job = service.submit_classify_item_job("mm:1")
     claimed_first = service.claim_next_classification_job("worker-1")
     assert claimed_first is not None
     assert claimed_first.job_id == first_job.job_id
     service.classification_job_store.mark_job_items_running(first_job.job_id)
 
-    second_job = service.submit_classify_item_job("gcc:1")
+    second_job = service.submit_classify_item_job("mm:1")
 
-    stale_result = service.classify_item("gcc:1", owner_job_id=first_job.job_id)
+    stale_result = service.classify_item("mm:1", owner_job_id=first_job.job_id)
     assert stale_result.last_classified_at is None
-    assert service.get_item_detail("gcc:1").latest_classification is None
+    assert service.get_item_detail("mm:1").latest_classification is None
 
     claimed_second = service.claim_next_classification_job("worker-2")
     assert claimed_second is not None
     assert claimed_second.job_id == second_job.job_id
     service.process_claimed_classification_job(second_job.job_id)
-    fresh_detail = service.get_item_detail("gcc:1")
+    fresh_detail = service.get_item_detail("mm:1")
     assert fresh_detail.latest_classification is not None
     assert fresh_detail.latest_classification.status == "completed"
 
     service.process_claimed_classification_job(first_job.job_id)
     first_status = service.get_classification_job(first_job.job_id)
     first_items = service.classification_job_store.get_job_items(first_job.job_id)
-    final_detail = service.get_item_detail("gcc:1")
+    final_detail = service.get_item_detail("mm:1")
 
     assert first_status.status == "failed"
     assert first_items[0].error_message == SUPERSEDED_ERROR_MESSAGE
     assert final_detail.latest_classification is not None
     assert final_detail.latest_classification.status == "completed"
 
-def test_dataset_signature_invalidates_saved_gcc_snapshot(tmp_path):
+def test_dataset_signature_invalidates_saved_mm_snapshot(tmp_path):
     db_path = tmp_path / "ui_state.sqlite3"
     ui_state_store = InMemoryMetalCompositionUIStateStore()
 
@@ -5092,10 +5100,10 @@ def test_dataset_signature_invalidates_saved_gcc_snapshot(tmp_path):
         ui_state_store=ui_state_store,
         ui_state_db_path=db_path,
     )
-    _upload_fake_pdf(service_one, "gcc:1", "signature-gcc.pdf")
-    classify_result = service_one.classify_item("gcc:1")
+    _upload_fake_pdf(service_one, "mm:1", "signature-mm.pdf")
+    classify_result = service_one.classify_item("mm:1")
     assert classify_result.result.status == "completed"
-    assert service_one.get_item_detail("gcc:1").latest_classification is not None
+    assert service_one.get_item_detail("mm:1").latest_classification is not None
 
     source_df, prepared_df = _sample_serving_frames()
     source_df.loc[0, "Part description"] = "Pump housing updated"
@@ -5109,7 +5117,7 @@ def test_dataset_signature_invalidates_saved_gcc_snapshot(tmp_path):
         section_232_source_store=InMemorySection232SourceStore(),
     )
 
-    detail = service_two.get_item_detail("gcc:1")
+    detail = service_two.get_item_detail("mm:1")
 
     assert detail.latest_classification is None
 
@@ -5137,10 +5145,10 @@ def test_dataset_signature_stays_stable_across_runtime_metadata_changes(tmp_path
         cache_source="hana",
     )
 
-    _upload_fake_pdf(service_one, "gcc:1", "stable-signature-gcc.pdf")
-    classify_result = service_one.classify_item("gcc:1")
+    _upload_fake_pdf(service_one, "mm:1", "stable-signature-mm.pdf")
+    classify_result = service_one.classify_item("mm:1")
     assert classify_result.result.status == "completed"
-    assert service_one.get_item_detail("gcc:1").latest_classification is not None
+    assert service_one.get_item_detail("mm:1").latest_classification is not None
 
     service_two = MetalCompositionService(
         serving_store=WorkbookStore(
@@ -5162,6 +5170,6 @@ def test_dataset_signature_stays_stable_across_runtime_metadata_changes(tmp_path
         cache_source="local_snapshot",
     )
 
-    detail = service_two.get_item_detail("gcc:1")
+    detail = service_two.get_item_detail("mm:1")
 
     assert detail.latest_classification is not None

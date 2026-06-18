@@ -22,7 +22,7 @@ HTS_CODE_MAP = HTS_CSV_DIR / "hts_code_map.csv"
 
 def _sample_settings(**overrides) -> MetalCompositionSettings:
     return MetalCompositionSettings(
-        workbook_path=ROOT / "data" / "GCC Tracker.xlsb",
+        workbook_path=ROOT / "data" / "Material Master.xlsb",
         api_env_path=ROOT / "api" / ".env",
         hts_catalog_dir=HTS_CSV_DIR,
         hts_code_map_path=HTS_CODE_MAP,

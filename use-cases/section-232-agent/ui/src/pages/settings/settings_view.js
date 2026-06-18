@@ -8,7 +8,7 @@ import {
   buildSettingsLaunchState,
   isSection232ResetConfirmationValid
 } from "./settings_review_state.js";
-import { buildGCCTrackerSelectionText, isGCCTrackerWorkbookFile } from "./gcc_tracker_upload_state.js";
+import { buildMaterialMasterSelectionText, isMaterialMasterWorkbookFile } from "./material_master_upload_state.js";
 
 const MAX_CODE_PREVIEW = 16;
 
@@ -134,22 +134,22 @@ function renderCompositionModeSettings({
   appSettingsDraft = false,
   compositionModeSaveBusy = false
 } = {}) {
-  const toggle = document.getElementById("settings-gcc-composition-toggle");
+  const toggle = document.getElementById("settings-mm-composition-toggle");
   const summary = document.getElementById("settings-composition-mode-summary");
   const status = document.getElementById("settings-composition-mode-status");
   if (!toggle || !summary || !status) return;
 
   toggle.checked = Boolean(appSettingsDraft);
   summary.textContent = appSettingsDraft
-    ? "GCC tracker mode is active for GCC-backed items."
+    ? "Material Master mode is active for Material Master-backed items."
     : "Legacy PDF-derived composition mode is active for all items.";
 
-  if (appSettingsDraft !== Boolean(appSettings.use_gcc_tracker_metal_composition)) {
+  if (appSettingsDraft !== Boolean(appSettings.use_material_master_metal_composition)) {
     status.textContent = "Unsaved change.";
   } else {
     status.textContent = appSettings.updated_at
       ? `Last updated ${formatTimestamp(appSettings.updated_at)}`
-      : "Current default uses GCC tracker composition with optional PDF evidence.";
+      : "Current default uses Material Master composition with optional PDF evidence.";
   }
 
   setButtonState("settings-composition-mode-save-button", {
@@ -329,45 +329,45 @@ function renderHTSCatalogSummary({ htsCatalog = {} } = {}) {
 }
 
 /**
- * Render GCC Tracker workbook upload state and the latest refresh counts.
+ * Render Material Master workbook upload state and the latest refresh counts.
  *
  * @param {object} context Settings page render context.
  * @returns {void}
  */
-function renderGCCTrackerUpload({
-  selectedGCCTrackerFile = null,
-  lastGCCTrackerRefresh = null,
-  gccTrackerRefreshBusy = false
+function renderMaterialMasterUpload({
+  selectedMaterialMasterFile = null,
+  lastMaterialMasterRefresh = null,
+  materialMasterRefreshBusy = false
 } = {}) {
-  const selectionContainer = document.getElementById("settings-gcc-tracker-selection");
-  const resultContainer = document.getElementById("settings-gcc-tracker-refresh-result");
+  const selectionContainer = document.getElementById("settings-material-master-selection");
+  const resultContainer = document.getElementById("settings-material-master-refresh-result");
   if (selectionContainer) {
-    selectionContainer.textContent = buildGCCTrackerSelectionText(selectedGCCTrackerFile);
+    selectionContainer.textContent = buildMaterialMasterSelectionText(selectedMaterialMasterFile);
   }
   if (resultContainer) {
-    if (!lastGCCTrackerRefresh) {
-      resultContainer.innerHTML = `<div class="settings-empty">No GCC Tracker refresh has been run from Settings yet.</div>`;
+    if (!lastMaterialMasterRefresh) {
+      resultContainer.innerHTML = `<div class="settings-empty">No Material Master refresh has been run from Settings yet.</div>`;
     } else {
       renderStatCards(resultContainer, [
-        { label: "Uploaded file", value: lastGCCTrackerRefresh.uploaded_filename || "GCC Tracker workbook" },
-        { label: "GCC source rows", value: String(lastGCCTrackerRefresh.source_row_count || 0) },
-        { label: "Prepared rows", value: String(lastGCCTrackerRefresh.prepared_row_count || 0) },
-        { label: "Classifications cleared", value: String(lastGCCTrackerRefresh.cleared_classification_count || 0) },
-        { label: "Jobs cancelled", value: String(lastGCCTrackerRefresh.cancelled_job_count || 0) },
+        { label: "Uploaded file", value: lastMaterialMasterRefresh.uploaded_filename || "Material Master workbook" },
+        { label: "Material Master source rows", value: String(lastMaterialMasterRefresh.source_row_count || 0) },
+        { label: "Prepared rows", value: String(lastMaterialMasterRefresh.prepared_row_count || 0) },
+        { label: "Classifications cleared", value: String(lastMaterialMasterRefresh.cleared_classification_count || 0) },
+        { label: "Jobs cancelled", value: String(lastMaterialMasterRefresh.cancelled_job_count || 0) },
         {
           label: "HANA target",
-          value: [lastGCCTrackerRefresh.hana_schema, lastGCCTrackerRefresh.hana_table].filter(Boolean).join(".") || "Configured table"
+          value: [lastMaterialMasterRefresh.hana_schema, lastMaterialMasterRefresh.hana_table].filter(Boolean).join(".") || "Configured table"
         }
       ]);
     }
   }
 
-  setButtonState("settings-gcc-tracker-select-button", {
-    disabled: Boolean(gccTrackerRefreshBusy)
+  setButtonState("settings-material-master-select-button", {
+    disabled: Boolean(materialMasterRefreshBusy)
   });
-  setButtonState("settings-gcc-tracker-refresh-button", {
-    busy: Boolean(gccTrackerRefreshBusy),
-    disabled: Boolean(gccTrackerRefreshBusy) || !isGCCTrackerWorkbookFile(selectedGCCTrackerFile)
+  setButtonState("settings-material-master-refresh-button", {
+    busy: Boolean(materialMasterRefreshBusy),
+    disabled: Boolean(materialMasterRefreshBusy) || !isMaterialMasterWorkbookFile(selectedMaterialMasterFile)
   });
 }
 
@@ -468,7 +468,7 @@ export function renderSettingsView(context = {}) {
   renderSources(context);
   renderCodePreview(context);
   renderDraftBatchState(context);
-  renderGCCTrackerUpload(context);
+  renderMaterialMasterUpload(context);
   renderHTSCatalogSummary(context);
   renderHTSCatalogSources(context);
   renderDialogs(context);
