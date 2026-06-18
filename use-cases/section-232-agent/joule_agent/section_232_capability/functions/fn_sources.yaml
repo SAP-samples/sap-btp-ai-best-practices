@@ -1,0 +1,30 @@
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: /api/metal-composition/section-232/sources
+        result_variable: sources_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Section 232 Source Documents
+
+            | Metric | Value |
+            |---|---:|
+            | Source documents | {{sources_result.body.total}} |
+            | Eligible HTS codes derived | {{sources_result.body.eligible_hts_code_count}} |
+
+            {{#if sources_result.body.items.length}}
+            | File | Pages | HTS mentions | Status |
+            |---|---:|---:|---|
+            {{#each sources_result.body.items}}
+            | {{this.filename}} | {{this.page_count}} | {{this.hts_mention_count}} | {{this.extraction_status}} |
+            {{/each}}
+            {{else}}
+            No Section 232 source documents are currently loaded.
+            {{/if}}

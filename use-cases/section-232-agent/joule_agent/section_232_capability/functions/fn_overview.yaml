@@ -1,0 +1,49 @@
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: /api/health
+        result_variable: health_result
+
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: /api/metal-composition/section-232/ruleset-summary
+        result_variable: ruleset_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Section 232 Eligibility Assistant
+
+            API status: **{{health_result.body.status}}**
+
+            | Ruleset metric | Value |
+            |---|---:|
+            | Active ruleset version | {{#if ruleset_result.body.active_ruleset_version}}{{ruleset_result.body.active_ruleset_version}}{{else}}Not published{{/if}} |
+            | Eligible HTS codes | {{ruleset_result.body.eligible_hts_code_count}} |
+            | Pending draft batches | {{ruleset_result.body.pending_draft_batch_count}} |
+
+            I can search items, show stored eligibility details, start single
+            or batch analysis jobs, check job status, look up eligible HTS
+            codes, run direct HTS and metal-weight checks, and list Section
+            232 source documents.
+
+  - actions:
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "What would you like to do next?"
+            buttons:
+              - title: "Search item"
+                value: "Find item 5778800"
+              - title: "Eligible HTS codes"
+                value: "What HTS codes are eligible for Section 232?"
+              - title: "Source documents"
+                value: "What Section 232 source documents are loaded?"
