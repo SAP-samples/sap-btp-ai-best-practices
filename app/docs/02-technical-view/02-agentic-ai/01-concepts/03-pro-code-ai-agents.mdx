@@ -7,6 +7,9 @@ hide_title: true
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import IconLinkButton from "@site/src/components/IconLinkButton";
+import Icon from "@site/src/components/Icon";
+import "@ui5/webcomponents-icons/dist/video.js";
+import "@ui5/webcomponents-icons/dist/pdf-attachment.js";
 import LoginWall from "@site/src/components/LoginWall";
 import PageContributors from "@site/src/components/PageContributors";
 import RelatedProjects from "@site/src/components/RelatedProjects";
@@ -40,7 +43,35 @@ import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
     </div>
     <div className="col col--4">
       <ul className="resource-links">
-      {/* TODO: Add teaser video, webinar, and PDF resource links */}
+        <li>
+          <a
+            target="_blank"
+            href={useBaseUrl("agentic-ai/pro-code-ai-agents/videos/BTP%20AI%20Best%20Practices%20-%20Pro-Code%20Agents%20(intro)_external.mp4")}
+          >
+            <Icon name="video" />
+            <span>Teaser</span>
+          </a>
+        </li>
+        <LoginWall renderOnlyWhenLoggedIn={true}>
+          <li>
+            <a
+              target="_blank"
+              href={useBaseUrl("agentic-ai/pro-code-ai-agents/videos/BTP%20AI%20Best%20Practices%20-%20Pro-Code%20Agents-compressed.mp4")}
+            >
+              <Icon name="video" />
+              <span>Webinar</span>
+            </a>
+          </li>
+          <li>
+            <a
+              target="_blank"
+              href={useBaseUrl("agentic-ai/pro-code-ai-agents/pdfs/BTP%20AI%20Best%20Practices%20-%20Pro-Code%20Agents.pdf")}
+            >
+              <Icon name="pdf-attachment" />
+              <span>Webinar (PDF Presentation)</span>
+            </a>
+          </li>
+        </LoginWall>
       </ul>
     </div>
   </div>
