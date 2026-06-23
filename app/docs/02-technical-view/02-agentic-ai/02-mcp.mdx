@@ -51,17 +51,17 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
 
 ### Description
 
-This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
+This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. It also covers the SAP Integration Suite MCP Gateway as the governed path for exposing SAP and non-SAP APIs as MCP-compliant tools for external agent ecosystems. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
 
 The **Model Context Protocol (MCP)** is an open standard that enables AI agents to connect with tools, external resources, and data sources through a single, standardized interface. Rather than building unique integrations for each service, each with its own authentication methods, data formats, and API patterns, MCP provides a universal protocol through which agents can discover, invoke, and orchestrate any compliant tool.
 
 The core problem MCP solves is the **M-times-N integration challenge**: without a standard, connecting M agents to N tools requires M × N custom integrations. MCP reduces this to M + N by introducing a shared protocol layer. In practice, this means a developer builds one MCP server for their tool, and any MCP-compliant agent can use it immediately.
 
-For SAP, MCP is particularly relevant because enterprise AI agents need to interact with a wide range of backend systems: SAP S/4HANA, Concur, Ariba, SuccessFactors, HANA databases, and third-party services. MCP provides the protocol layer that makes these integrations standardized, maintainable, and secure, enabling the transition from isolated LLM calls to fully functional enterprise agents.
+For SAP, MCP is particularly relevant because enterprise AI agents need to interact with a wide range of backend systems: SAP S/4HANA, Concur, Ariba, SuccessFactors, HANA databases, and third-party services. MCP provides the protocol layer that makes these integrations standardized, maintainable, and secure, enabling the transition from isolated LLM calls to fully functional enterprise agents. For external agents that need governed access to enterprise APIs, SAP Integration Suite MCP Gateway provides the API-to-MCP layer for creating, managing, securing, and monitoring MCP-compliant tool exposure.
 
 ### Expected Outcome
 
-After following this best practice, developers will be able to understand MCP's architecture and interaction flow, evaluate the available SAP deployment models (including the MCP Hub and custom SDK-based servers), implement MCP servers using the official SDKs, test them with the MCP Inspector, integrate with [Joule via Joule Studio](https://help.sap.com/docs/Joule_Studio), and connect AI agents to SAP enterprise systems through standardized MCP interfaces.
+After following this best practice, developers will be able to understand MCP's architecture and interaction flow, evaluate the available SAP deployment models (including the MCP Hub, SAP Integration Suite MCP Gateway, and custom SDK-based servers), implement MCP servers using the official SDKs, test them with the MCP Inspector, integrate with [Joule via Joule Studio](https://help.sap.com/docs/Joule_Studio), and connect AI agents to SAP enterprise systems through standardized MCP interfaces.
 
 <LoginWall>
 
@@ -94,6 +94,7 @@ After following this best practice, developers will be able to understand MCP's 
 * SAP AI Launchpad (optional but recommended for model management and monitoring)
 * For MCP Adapter for CDS: a CAP (Cloud Application Programming Model) project on SAP BTP
 * For MCP Hub: planned for general availability in H1 2026 (not yet commercially available)
+* For SAP Integration Suite MCP Gateway: SAP Integration Suite entitlement with the API Management, Cloud Integration, and Edge Integration Cell capabilities required for API artifact creation and runtime exposure
 
 You can find pricing details for AI Core "Extended" in the [Discovery Center – AI Core](https://discovery-center.cloud.sap/serviceCatalog/sap-ai-core?tab=service_plan&region=all&service_plan=extended&commercialModel=btpea).
 
@@ -101,6 +102,7 @@ You can find pricing details for AI Core "Extended" in the [Discovery Center –
 
 * Set up an SAP Business Technology Platform (SAP BTP) subaccount
 * Node.js or Python development environment (for building custom MCP servers and clients)
+* For SAP Integration Suite MCP Gateway: activate API Management, Cloud Integration, and Edge Integration Cell, then create or reuse an API artifact with a configured target URL or API specification, service type, API base path, version, runtime profile, and virtual host URL. See [Create an API Artifact](https://help.sap.com/docs/integration-suite/sap-integration-suite/add-api-artifact) and [Create an API Artifact Using a Target URL](https://help.sap.com/docs/integration-suite/sap-integration-suite/create-api-artifact-using-url).
 * SAP AI Core
 * (Optional) MCP Inspector for testing: `npx @modelcontextprotocol/inspector`
 * (Optional) Python environment with [**SAP Cloud SDK**](https://help.sap.com/doc/generative-ai-hub-sdk/CLOUD/en-US/index.html#) for building code-based MCP clients
@@ -127,15 +129,22 @@ The **MCP Sequence Flow** describes the 10-step interaction pattern that every M
 
 ### 3.2 Choose a Deployment Model
 
-There are three primary deployment models for MCP servers. Choose based on your maturity level, control requirements, and whether you need a code-based or no-code approach.
+There are four primary deployment models for MCP servers. Choose based on your maturity level, control requirements, and whether you need a code-based, no-code, or governed API gateway approach.
 
 | Model | Description | When to Use | SAP Status |
 | :--- | :--- | :--- | :--- |
 | **Client-Hosted** | Developer downloads, compiles, and runs the MCP server locally | Learning, demos, rapid prototyping | Available |
 | **Vendor-Managed Hub (MCP Hub)** | SAP-managed centralized hub for creating and managing MCP servers for multiple tools | Enterprise-scale, no-code server creation, teams without MCP expertise | Planned for H1 2026 |
-| **Customer-Managed Hub** | Customer-managed hub, often extending an existing API Gateway | Full customer control over security, integration, and management | Reference architecture |
+| **SAP Integration Suite MCP Gateway** | Customer-managed Integration Suite capability for exposing existing SAP and non-SAP APIs as governed MCP-compliant tools | External agent ecosystems that need governed API access through MCP | Scheduled for general availability first week July 2026 |
+| **Custom / Self-Managed MCP Server** | Customer or partner builds and operates an MCP server directly, hosted externally or on SAP BTP | Full code control when the team owns security, lifecycle, and operations | Available |
 
-**Recommendation:** For MCP server development today, use the official MCP SDKs (see Section 4.4) to build custom servers, or adopt the MCP Hub when it reaches general availability. SAP is also developing an MCP Adapter for CDS that will allow CAP developers to expose services as MCP tools using annotations; this capability is expected to be publicly available in a future release.
+**Recommendation:** For governed MCP access to SAP and non-SAP APIs from external agents, use SAP Integration Suite MCP Gateway. For SAP-centric Joule agents, use Joule Studio and SAP-provided MCP servers where available. For multi-agent interoperability, prefer A2A through SAP Agent Gateway. Use custom or self-managed MCP servers only when full code control is required and the team can own authentication, authorization, observability, lifecycle management, and MCP specification upgrades. SAP is also developing an MCP Adapter for CDS that will allow CAP developers to expose services as MCP tools using annotations; this capability is expected to be publicly available in a future release.
+
+**Decision guide:**
+* Use **SAP Integration Suite MCP Gateway** for governed MCP access to SAP and non-SAP APIs from external agents.
+* Use **Joule Studio-generated MCP servers** for SAP-centric Joule agents that need SAP-managed semantic enrichment and lifecycle management.
+* Use **A2A through SAP Agent Gateway** for multi-agent interoperability and delegation between agent ecosystems.
+* Use **custom or self-managed MCP servers** only when full code control is needed and the operating team owns security, lifecycle, compatibility, and observability.
 
 ### 3.3 MCP Client Selection: Pre-built vs. Code-Based
 
@@ -199,7 +208,7 @@ This positions Joule as the orchestrator for agentic workflows consuming MCP too
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
-This section covers the available SAP-provided deployment options for MCP servers (including the MCP Hub), the available SDKs for building custom MCP servers and clients, SAP-specific MCP servers for development, and the A2A protocol as a complementary standard. For hands-on tutorials, step-by-step setup instructions, and detailed workflow walkthroughs, refer to the [SAP Learning Course on MCP](https://sap.plateau.com/learning/user/deeplink.do?linkId=ITEM_DETAILS&componentID=DEV_00012797_WBT&componentTypeID=COURSE&revisionDate=1768567829000#/DBD0E817362EA6A2190018FAF5DCAE9F).
+This section covers the available SAP-provided deployment options for MCP servers (including the MCP Hub and SAP Integration Suite MCP Gateway), the available SDKs for building custom MCP servers and clients, SAP-specific MCP servers for development, and the A2A protocol as a complementary standard. For hands-on tutorials, step-by-step setup instructions, and detailed workflow walkthroughs, refer to the [SAP Learning Course on MCP](https://sap.plateau.com/learning/user/deeplink.do?linkId=ITEM_DETAILS&componentID=DEV_00012797_WBT&componentTypeID=COURSE&revisionDate=1768567829000#/DBD0E817362EA6A2190018FAF5DCAE9F).
 
 ### SAP MCP Adapter for CDS (CAP Plugin) - Coming Soon
 
@@ -211,7 +220,7 @@ For a complete step-by-step tutorial on the MCP adapter concept (architecture, a
 
 ### SAP MCP Hub (Centralized No-Code Solution)
 
-> The MCP Hub is currently under development and its planned for general availability in H1 2026. The information below reflects its announced capabilities as for Q4 2025
+> **Note:** The MCP Hub is currently under development and is planned for general availability in H1 2026. The information below reflects its announced capabilities as of Q4 2025.
 
 The MCP Hub is a centralized, UI-driven solution that eliminates the need for individual lines of business to maintain their own MCP servers. It handles cross-cutting concerns including security and authorization, observability and scalability, and protocol version management.
 
@@ -226,6 +235,21 @@ The MCP Hub is a centralized, UI-driven solution that eliminates the need for in
 
 **Tutorials and Learning Journeys:**
 * [Model Context Protocol (MCP) from Fundamentals to Practice](https://sap.plateau.com/learning/user/common/viewItemDetails.do?componentID=DEV_00012797_WBT&componentTypeID=COURSE&fromSF=Y&revisionDate=1768567829000&menuGroup=Learning&menuItem=Cur&fromDeepLink=true&hideItemDetailsBackLink=true#/DBD0E817362EA6A2190018FAF5DCAE9F)
+
+### SAP Integration Suite MCP Gateway (Governed API-to-MCP Exposure)
+
+SAP Integration Suite MCP Gateway is the governed API-to-MCP layer for exposing SAP and non-SAP APIs as MCP-compliant tools to external AI agents. It is not a replacement for MCP Hub or Joule Studio. Instead, it addresses integration scenarios where customers want to bring existing APIs, integration flows, and external MCP servers under a single governed Integration Suite entry point for agent consumption.
+
+The MCP Gateway addresses cross-cutting enterprise concerns such as OIDC/OAuth 2.0 enforcement, rate limiting, payload protection, traffic management, monitoring, distributed tracing, analytics, lifecycle management, versioning, deprecation, and SAP-managed protocol compatibility. This makes it the recommended path when external agents need MCP-based access to enterprise APIs and the organization requires centralized governance.
+
+**High-level implementation flow:**
+1. Create or select an API artifact in SAP Integration Suite.
+2. Configure the target URL or API specification, service type, API base path, API version, runtime profile, and virtual host URL.
+3. Enable **Expose as MCP Server** so AI agents can access the API through MCP.
+4. Configure API policies for authentication, authorization, rate limiting, payload protection, and traffic management.
+5. Deploy the API artifact and test the generated MCP endpoint with an MCP client or the MCP Inspector.
+
+For the reference architecture, see [Third-Party MCP Access to SAP Solutions](https://architecture.learning.sap.com/docs/ref-arch/ca1d2a3e/10) and [A2A and MCP for Interoperability](https://architecture.learning.sap.com/docs/ref-arch/ca1d2a3e/1). For the Integration Suite configuration flow, see [Create an API Artifact Using a Target URL](https://help.sap.com/docs/integration-suite/sap-integration-suite/create-api-artifact-using-url).
 
 ### SAP MCP Servers for Development
 
