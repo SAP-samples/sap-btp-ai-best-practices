@@ -1,0 +1,158 @@
+/* SPA Summary View Styles */
+
+.spa-summary-view-container {
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* KPI Cards Grid */
+.summary-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-kpi-item {
+  text-align: center;
+  padding: 1rem;
+}
+
+.summary-kpi-value {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.summary-kpi-label {
+  font-size: 0.875rem;
+  color: var(--sapNeutralTextColor);
+}
+
+/* Filters Section */
+.summary-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.summary-actions-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.summary-actions-row > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Table Styles */
+.summary-table-container {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+#summary-table {
+  min-width: 1200px;
+}
+
+/* Clickable Customer ID */
+.customer-id-link {
+  color: var(--sapLinkColor);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.customer-id-link:hover {
+  text-decoration: underline;
+}
+
+/* Tag Colors by RFM */
+ui5-tag[rfm-segment="Champions"] {
+  --_ui5_tag_color_scheme: 8;
+}
+
+ui5-tag[rfm-segment="Loyal"] {
+  --_ui5_tag_color_scheme: 7;
+}
+
+ui5-tag[rfm-segment="At Risk"] {
+  --_ui5_tag_color_scheme: 1;
+}
+
+/* Confidence Colors */
+.confidence-high {
+  color: var(--sapPositiveColor);
+}
+
+.confidence-medium {
+  color: var(--sapCriticalColor);
+}
+
+.confidence-low {
+  color: var(--sapNegativeColor);
+}
+
+/* Loading Indicator */
+.summary-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .summary-filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions-row {
+    flex-direction: column;
+  }
+
+  .summary-actions-row > div {
+    width: 100%;
+  }
+
+  #summary-table {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
+
+  .summary-kpi-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Empty State */
+.summary-empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--sapNeutralTextColor);
+}
+
+.summary-empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Error Panel */
+.summary-error-panel {
+  margin-top: 1.5rem;
+}
+
+.summary-error-message {
+  padding: 1rem;
+  color: var(--sapNegativeTextColor);
+  background-color: var(--sapErrorBackground);
+  border-radius: 0.25rem;
+}

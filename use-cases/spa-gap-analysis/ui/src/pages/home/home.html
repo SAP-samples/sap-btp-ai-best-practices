@@ -1,0 +1,38 @@
+<div class="home-container">
+  <ui5-title>SPA Gap Analysis</ui5-title>
+  <br />
+  <ui5-text>Find missing Special Pricing Agreements for your customers based on similar customer analysis.</ui5-text>
+
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Quick Start">
+      <ui5-icon name="lightbulb" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+    <div style="padding: 1rem">
+      <ui5-text style="display: block; margin-bottom: 1rem">
+        <strong>Quick Lookup:</strong> Search for a specific customer by ID and see missing SPAs based on similar customers.
+      </ui5-text>
+      <ui5-text style="display: block; margin-bottom: 1rem">
+        <strong>Agent Chat:</strong> Ask questions about customers, RFM segments, and SPA recommendations in natural language.
+      </ui5-text>
+      <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem">
+        <ui5-button design="Emphasized" icon="customer-and-contacts" onclick="window.location.href='/spa-quick-lookup'">Quick Lookup</ui5-button>
+        <ui5-button design="Transparent" icon="discussion" onclick="window.location.href='/spa-agent-chat'">Agent Chat</ui5-button>
+      </div>
+    </div>
+  </ui5-card>
+
+  <ui5-card style="margin-top: 1rem">
+    <ui5-card-header slot="header" title-text="API Health Check">
+      <ui5-icon name="activity-assigned-to-goal" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+    <div style="padding: 1rem">
+      <ui5-text>Check the health status of the backend API.</ui5-text>
+      <div style="margin-top: 1rem">
+        <ui5-button id="health-check-button">Check Health</ui5-button>
+      </div>
+      <ui5-panel id="health-response-panel" header-text="API Response" collapsed style="margin-top: 1rem">
+        <div id="health-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+</div>

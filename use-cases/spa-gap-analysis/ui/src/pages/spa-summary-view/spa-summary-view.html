@@ -1,0 +1,178 @@
+<div class="spa-summary-view-container">
+  <ui5-title>Customer Summary - SPA Gap Overview</ui5-title>
+  <br />
+  <ui5-text>High-level view of current SPA savings, current coverage, and conservative estimated potential across customers.</ui5-text>
+
+  <!-- KPIs Card -->
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Key Metrics">
+      <ui5-icon name="Chart-Tree-Map" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+
+    <div style="padding: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem">
+      <div style="text-align: center">
+        <div style="font-size: 2rem; font-weight: bold; color: var(--sapHighlightColor)" id="kpi-filtered-customers">0</div>
+        <div style="font-size: 0.875rem; color: var(--sapNeutralTextColor)">Customers (Filtered)</div>
+      </div>
+      <div style="text-align: center">
+        <div style="font-size: 2rem; font-weight: bold; color: var(--sapCriticalColor)" id="kpi-total-missing-spas">$0M</div>
+        <div style="font-size: 0.875rem; color: var(--sapNeutralTextColor)">Current Savings</div>
+      </div>
+      <div style="text-align: center">
+        <div style="font-size: 2rem; font-weight: bold; color: var(--sapPositiveColor)" id="kpi-high-confidence">0</div>
+        <div style="font-size: 0.875rem; color: var(--sapNeutralTextColor)">Champions</div>
+      </div>
+      <div style="text-align: center">
+        <div style="font-size: 2rem; font-weight: bold; color: var(--sapInformativeColor)" id="kpi-potential-value">$0M</div>
+        <div style="font-size: 0.875rem; color: var(--sapNeutralTextColor)">Total COGS (Filtered)</div>
+      </div>
+      <div style="text-align: center">
+        <div style="font-size: 1.25rem; color: var(--sapNeutralTextColor)" id="kpi-total-customers">0</div>
+        <div style="font-size: 0.875rem; color: var(--sapNeutralTextColor)">Total Customers</div>
+      </div>
+    </div>
+  </ui5-card>
+
+  <!-- Filters and Controls Card -->
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Filters & Sort">
+      <ui5-icon name="filter" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+
+    <div style="padding: 1.5rem">
+      <!-- Filters Row 1 -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem">
+        <div>
+          <ui5-label>Core Market:</ui5-label>
+          <ui5-select id="filter-niels-id" style="width: 100%">
+            <ui5-option value="">All Markets</ui5-option>
+            <ui5-option value="10">Industrial</ui5-option>
+            <ui5-option value="20">Construction</ui5-option>
+            <ui5-option value="30">Utility</ui5-option>
+          </ui5-select>
+        </div>
+
+        <div>
+          <ui5-label>RFM Segment:</ui5-label>
+          <ui5-select id="filter-rfm-segment" style="width: 100%">
+            <ui5-option value="">All Segments</ui5-option>
+            <ui5-option value="Champions">Champions</ui5-option>
+            <ui5-option value="Loyal">Loyal</ui5-option>
+            <ui5-option value="Potential Loyalist">Potential Loyalist</ui5-option>
+            <ui5-option value="Promising">Promising</ui5-option>
+            <ui5-option value="At Risk">At Risk</ui5-option>
+            <ui5-option value="Need Attention">Need Attention</ui5-option>
+          </ui5-select>
+        </div>
+
+        <div>
+          <ui5-label>Customer Group:</ui5-label>
+          <ui5-input id="filter-customer-group" placeholder="e.g., AC, ME, CB" style="width: 100%"></ui5-input>
+        </div>
+
+        <div>
+          <ui5-label>Sales Office:</ui5-label>
+          <ui5-input id="filter-sales-office" placeholder="e.g., 402" style="width: 100%"></ui5-input>
+        </div>
+
+        <div>
+          <ui5-label>Min COGS ($):</ui5-label>
+          <ui5-input id="filter-min-cogs" type="Number" placeholder="e.g., 10000" style="width: 100%"></ui5-input>
+        </div>
+      </div>
+
+      <!-- Filters Row 2: Search and Customer Names Filter -->
+      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap">
+        <div style="flex: 1; min-width: 250px">
+          <ui5-label>Search Customer ID:</ui5-label>
+          <ui5-input id="search-customer-id" placeholder="e.g., 12626" style="width: 100%"></ui5-input>
+        </div>
+        <ui5-checkbox id="filter-has-names" checked text="Only customers with names"></ui5-checkbox>
+      </div>
+
+      <!-- Sort and Actions Row -->
+      <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap">
+        <div style="flex: 1; min-width: 200px">
+          <ui5-label>Sort By:</ui5-label>
+          <ui5-select id="sort-by-select" style="width: 100%">
+            <ui5-option value="total_savings" selected>Current Savings</ui5-option>
+            <ui5-option value="savings_percent">Savings %</ui5-option>
+            <ui5-option value="coverage_percent">Coverage %</ui5-option>
+            <ui5-option value="potential_value_estimate">Estimated Potential*</ui5-option>
+            <ui5-option value="total_cogs">Total COGS</ui5-option>
+            <ui5-option value="rfm_segment">RFM Segment</ui5-option>
+          </ui5-select>
+        </div>
+
+        <ui5-button id="sort-order-button" design="Transparent">↓ Desc</ui5-button>
+        <ui5-button id="load-summary-button" design="Emphasized">Apply Filters</ui5-button>
+        <ui5-button id="refresh-summary-button" design="Default">Reset</ui5-button>
+        <ui5-button id="export-summary-button" design="Default" icon="excel-attachment">Export CSV</ui5-button>
+      </div>
+      <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--sapNeutralTextColor);">
+        Area, Plant, Vendor, and eligibility metadata are exposed in Quick Lookup SPA details where source data is available. Plant-only current associations remain limited until a reliable customer-to-plant mapping is provided.
+      </div>
+    </div>
+  </ui5-card>
+
+  <!-- Loading Indicator -->
+  <div id="summary-loading" style="display: none; margin-top: 1.5rem; text-align: center">
+    <ui5-busy-indicator active style="width: 3rem; height: 3rem"></ui5-busy-indicator>
+    <ui5-text>Loading customer summary... (this may take 10-30 seconds)</ui5-text>
+  </div>
+
+  <!-- Results Table -->
+  <div id="summary-results" style="display: none; margin-top: 1.5rem">
+    <ui5-card>
+      <ui5-card-header slot="header" title-text="Customer Summary">
+        <ui5-icon name="table-view" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+
+      <div style="padding: 1.5rem; overflow-x: auto">
+        <table id="summary-table" style="width: 100%; border-collapse: collapse; border: 1px solid #d9d9d9">
+          <thead>
+            <tr style="background-color: #f5f5f5; border-bottom: 2px solid #0854a0">
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="customer_id">
+                Customer ID <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; border: 1px solid #d9d9d9">Name</th>
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; border: 1px solid #d9d9d9">Core Market</th>
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; border: 1px solid #d9d9d9">Cust Group</th>
+              <th style="padding: 0.75rem; text-align: left; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="rfm_segment">
+                RFM <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: right; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="total_cogs">
+                COGS <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: right; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="total_savings">
+                Current Savings <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: right; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="savings_percent">
+                Savings % <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: right; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="coverage_percent">
+                Coverage % <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: right; font-weight: 600; border: 1px solid #d9d9d9; cursor: pointer;" data-sort="potential_value_estimate" title="Rough estimate based on top 10 opportunity materials by spend, capped at 50% of COGS when needed.">
+                Potential Savings* <span class="sort-indicator"></span>
+              </th>
+              <th style="padding: 0.75rem; text-align: center; font-weight: 600; border: 1px solid #d9d9d9">PL Type</th>
+            </tr>
+          </thead>
+          <tbody id="summary-table-body">
+            <!-- Table body populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div style="padding: 0 1.5rem 1.25rem 1.5rem; font-size: 0.85rem; color: #6b7280;">
+        Current Savings and Coverage use currently assigned SPAs only. Potential Savings* is a rough estimate based on the top 10 opportunity materials by spend, prioritizing uncovered materials. Values may be capped at 50% of customer COGS.
+      </div>
+    </ui5-card>
+  </div>
+
+  <!-- Error Panel -->
+  <ui5-panel id="summary-error" header-text="Error" collapsed style="margin-top: 1.5rem; display: none">
+    <div id="summary-error-message" style="padding: 1rem; color: red"></div>
+  </ui5-panel>
+
+</div>
