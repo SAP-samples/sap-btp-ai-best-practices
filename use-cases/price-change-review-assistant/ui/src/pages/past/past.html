@@ -1,0 +1,68 @@
+<div class="price-change-page">
+  <div class="price-change-hero">
+    <div>
+      <ui5-title level="H2">Past Requests</ui5-title>
+      <ui5-text class="price-change-subtitle">
+        Approved and rejected supplier price-change requests with the final reviewed values.
+      </ui5-text>
+    </div>
+  </div>
+
+  <div id="summary-grid" class="summary-grid"></div>
+
+  <section class="review-worklist">
+    <div class="review-toolbar">
+      <div>
+        <ui5-title level="H4">Historical Requests</ui5-title>
+        <ui5-text id="review-toolbar-text"></ui5-text>
+      </div>
+      <div class="review-toolbar-actions">
+        <ui5-button id="history-reset-button" icon="delete" design="Negative">Reset history</ui5-button>
+      </div>
+    </div>
+
+    <div id="review-error" class="review-state" hidden></div>
+
+    <div id="review-loading" class="review-state">
+      <ui5-busy-indicator active size="M"></ui5-busy-indicator>
+      <ui5-text>Loading past supplier requests...</ui5-text>
+    </div>
+
+    <div id="review-table-container" hidden>
+      <div class="review-table-shell">
+        <table class="review-table">
+          <thead>
+            <tr>
+              <th>Supplier</th>
+              <th>Subject</th>
+              <th>Material</th>
+              <th>Original price</th>
+              <th>Approved price</th>
+              <th>Currency</th>
+              <th>Effective from</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="review-table-body"></tbody>
+        </table>
+      </div>
+      <div class="history-pagination">
+        <ui5-button id="history-previous-button" icon="navigation-left-arrow">Previous</ui5-button>
+        <span id="history-page-indicator" class="history-page-indicator">Page 1 of 1</span>
+        <ui5-button id="history-next-button" icon-end icon="navigation-right-arrow">Next</ui5-button>
+      </div>
+    </div>
+  </section>
+
+  <ui5-dialog id="history-reset-dialog" header-text="Reset history">
+    <div class="history-reset-dialog-body">
+      <ui5-text>
+        Delete all historical approved and rejected requests, including related email and audit records?
+      </ui5-text>
+    </div>
+    <div slot="footer" class="history-reset-dialog-footer">
+      <ui5-button id="history-reset-no-button">No</ui5-button>
+      <ui5-button id="history-reset-yes-button" design="Negative">Yes, reset</ui5-button>
+    </div>
+  </ui5-dialog>
+</div>
