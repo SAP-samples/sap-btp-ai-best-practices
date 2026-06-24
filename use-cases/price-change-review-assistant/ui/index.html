@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Price Classifier</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+      /* Hide entire app until JavaScript loads and UI5 components are ready */
+      #app {
+        opacity: 0;
+        transition: opacity 0s ease-in-out;
+      }
+
+      /* Show app when ready */
+      #app.ready {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="app-shell">
+        <aside class="side-nav" aria-label="Main navigation">
+          <a class="side-nav-link" href="/home" data-route="home">Incoming Requests</a>
+          <a class="side-nav-link" href="/past" data-route="past">Past Requests</a>
+        </aside>
+        <main class="content">
+          <!-- Page content will be loaded dynamically here -->
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
