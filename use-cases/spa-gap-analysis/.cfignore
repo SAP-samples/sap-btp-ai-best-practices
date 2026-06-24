@@ -1,0 +1,61 @@
+# Python virtual environments
+.venv/
+venv/
+api/.venv/
+ui/.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node modules (will be installed on server)
+node_modules/
+ui/node_modules/
+ui/dist/
+
+# Development files
+.git/
+.gitignore
+*.md
+README*
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test files
+test/
+tests/
+api/tests/
+*.test.js
+*.spec.js
+
+# Local pytest temp folders
+pytest-cache-files-*/
+.pytest_cache/
+
+# Raw source files are not needed at runtime
+api/app/data/raw/
+
+# Large ETL comparison snapshots are not needed at runtime
+api/app/data/processed/baselines/
+
+# Local backups and temporary artifacts
+api/app/data/processed/*.backup_*
+api/app/data/processed/*.bak
+api/app/data/processed/*.tmp
+
+# Local helper scripts not needed in CF runtime
+api/check_*.py
+api/verify_*.py
+api/snapshot_etl_baseline.py
+api/compare_etl_baselines.py
+
+# NOTE: .env is NOT in this list - it WILL be deployed to server

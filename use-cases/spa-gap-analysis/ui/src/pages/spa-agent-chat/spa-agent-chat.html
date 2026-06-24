@@ -1,0 +1,62 @@
+<div class="spa-agent-chat-container">
+  <ui5-title>🤖 SPA Analysis Assistant</ui5-title>
+  <br />
+  <ui5-text>I'll help you analyze SPA opportunities for your customers</ui5-text>
+
+  <!-- Quick Actions Card -->
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Quick Actions" subtitle-text="Common tasks you can ask me about"></ui5-card-header>
+
+    <div style="padding: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap">
+      <ui5-button id="quick-action-1" icon="customer">Analyze Customer</ui5-button>
+      <ui5-button id="quick-action-2" icon="customer-view">RFM Distribution</ui5-button>
+      <ui5-button id="quick-action-3" icon="group">Similar Customers</ui5-button>
+      <ui5-button id="quick-action-onboarding" icon="add-employee" design="Positive">Onboard New Customer</ui5-button>
+      <ui5-button id="quick-action-4" icon="syshelp">Help</ui5-button>
+    </div>
+  </ui5-card>
+
+  <!-- Filter Options -->
+  <div style="margin-top: 1.5rem; padding: 0.5rem 0">
+    <ui5-checkbox id="filter-has-names-agent" checked text="Only show customers with names"></ui5-checkbox>
+  </div>
+
+  <!-- Chat Messages Card -->
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Conversation">
+      <ui5-icon name="discussion-2" slot="avatar"></ui5-icon>
+      <ui5-button id="clear-conversation-button" slot="action" icon="delete" design="Transparent">Clear</ui5-button>
+    </ui5-card-header>
+
+    <div style="padding: 0">
+      <!-- Chat Timeline - message container with UI5 styling -->
+      <div id="chat-timeline" style="
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: var(--sapGroup_ContentBackground);
+      ">
+        <!-- Messages will be dynamically added here -->
+      </div>
+
+      <!-- Message Input Area -->
+      <div style="padding: 1rem; border-top: 1px solid var(--sapGroup_BorderColor)">
+        <ui5-textarea
+          id="message-input"
+          placeholder="Type your question... (Enter to send, Shift+Enter for new line)"
+          rows="3"
+          growing
+          growing-max-lines="6"
+          style="width: 100%"
+        ></ui5-textarea>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem">
+          <ui5-text style="font-size: 0.75rem; color: var(--sapContent_LabelColor)">
+            Try: "Analyze customer 1104" or "Show RFM distribution"
+          </ui5-text>
+          <ui5-button id="send-button" design="Emphasized" icon="paper-plane">Send</ui5-button>
+        </div>
+      </div>
+    </div>
+  </ui5-card>
+</div>
