@@ -1,7 +1,6 @@
 """Encode local Gmail OAuth JSON files for api/.env or Cloud Foundry vars.
 
 Examples:
-    cd /Users/I760054/Documents/programs/Decathlon-Price-Change
     python api/scripts/encode_google_oauth.py \
       --credentials google_tmp/credentials.json \
       --token google_tmp/token.json

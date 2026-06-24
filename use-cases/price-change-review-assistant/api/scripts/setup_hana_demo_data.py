@@ -1,10 +1,8 @@
 """Create and load HANA demo tables for the Gmail price-change PoC.
 
 Examples:
-    cd /Users/I760054/Documents/programs/Decathlon-Price-Change/api
     python scripts/setup_hana_demo_data.py --seed-dir seed_data
 
-    cd /Users/I760054/Documents/programs/Decathlon-Price-Change/api
     python scripts/setup_hana_demo_data.py --seed-dir ../data --drop-existing
 """
 
