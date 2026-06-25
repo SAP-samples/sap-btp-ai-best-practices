@@ -1,0 +1,20 @@
+﻿<div class="joule-page">
+  <ui5-title level="H2">Joule</ui5-title>
+  <ui5-text>Pro-code FastAPI view for a Joule capability endpoint.</ui5-text>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="Joule Capability Check"></ui5-card-header>
+    <div style="padding: 1rem; display: grid; gap: 1rem;">
+      <ui5-text>Call the backend capability endpoint used by your Joule assistant.</ui5-text>
+
+      <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+        <ui5-button id="joule-summary-button" design="Emphasized">Load Joule Summary</ui5-button>
+        <ui5-button id="joule-goto-api-button" design="Transparent" tooltip="Open API docs">Open API Docs</ui5-button>
+      </div>
+
+      <ui5-panel id="joule-summary-panel" header-text="Joule Summary" collapsed>
+        <div id="joule-summary" style="padding: 1rem; white-space: pre-wrap; min-height: 80px"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+</div>

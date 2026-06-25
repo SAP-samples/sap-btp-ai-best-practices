@@ -1,0 +1,62 @@
+<div class="pharma-order-page">
+  <section class="order-hero">
+    <div>
+      <ui5-title level="H2">Pharma Procurement Sales Order Agent</ui5-title>
+      <ui5-text>Test UI for the Pharma Procurement Sales Order Agent backend agent. Target channel is Joule / Pro-Code; this page validates LangGraph orchestration and tools.</ui5-text>
+    </div>
+    <ui5-label class="order-badge">LangGraph + MCP-compatible tools</ui5-label>
+  </section>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="Capabilities" subtitle-text="Loaded from /api/pharma-order/capabilities"></ui5-card-header>
+    <div class="order-card-body">
+      <ui5-message-strip id="pharma-order-capabilities-note" design="Information" hide-close-button hidden></ui5-message-strip>
+      <div id="pharma-order-capabilities" class="order-capability-grid">
+        <div class="order-muted">Loading capabilities...</div>
+      </div>
+    </div>
+  </ui5-card>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="service representative Question" subtitle-text="Synthetic SAP-like data, no live S/4HANA integration yet"></ui5-card-header>
+    <div class="order-card-body">
+      <ui5-label for="pharma-order-question" show-colon>Question</ui5-label>
+      <ui5-textarea
+        id="pharma-order-question"
+        placeholder="Example: What is the price for Northstar for Glycemor 10 mg?"
+        rows="4"
+        style="width: 100%"
+      ></ui5-textarea>
+
+      <div class="order-options">
+        <ui5-label for="pharma-order-max-tokens" show-colon>Max tokens</ui5-label>
+        <ui5-input id="pharma-order-max-tokens" type="Number" value="900" min="128" max="4000"></ui5-input>
+        <ui5-checkbox id="pharma-order-include-trace" text="Show tool trace" checked></ui5-checkbox>
+      </div>
+
+      <ui5-button id="pharma-order-submit-button" design="Emphasized">Ask Pharma Procurement Sales Order Agent</ui5-button>
+
+      <ui5-message-strip id="pharma-order-status" design="Information" hide-close-button hidden>
+        Ready.
+      </ui5-message-strip>
+    </div>
+  </ui5-card>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="Agent Answer"></ui5-card-header>
+    <div class="order-card-body">
+      <ui5-panel id="pharma-order-response-panel" header-text="Answer" collapsed>
+        <div id="pharma-order-response" class="order-output"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="Tool Execution Trace"></ui5-card-header>
+    <div class="order-card-body">
+      <ui5-panel id="pharma-order-trace-panel" header-text="Readable trace" collapsed>
+        <div id="pharma-order-trace" class="order-readable-trace"></div>
+      </ui5-panel>
+    </div>
+  </ui5-card>
+</div>

@@ -1,0 +1,93 @@
+{
+  "source": "synthetic_material_master_with_pharma_attributes",
+  "materials": [
+    {
+      "material_id": "GLYCE10MG",
+      "material_number": "200000045",
+      "description": "Glycemor 10 mg tablets, bottle of 30",
+      "brand_name": "Glycemor",
+      "generic_name": "canagliflozin demo compound",
+      "aliases": ["Glycemor 10 mg", "Glycemor 10MG", "GLYCEMOR 10 mg"],
+      "ndc": "90000-0100-30",
+      "gtin": "00350458014030",
+      "package_size": "30 tablets",
+      "dosage_form": "Tablet",
+      "strength": "10 mg",
+      "unit_of_measure": "EA",
+      "therapeutic_area": "Metabolic",
+      "rx_only": true,
+      "controlled_substance": false,
+      "cold_chain": false,
+      "storage_condition": "Store at 20C to 25C; excursions permitted 15C to 30C.",
+      "temperature_range_celsius": {
+        "min": 15,
+        "max": 30
+      },
+      "lot_controlled": true,
+      "serialization_required": true,
+      "dsCSA_serialization": true,
+      "shelf_life_days": 730,
+      "hazmat": false,
+      "return_restriction": "Returnable if sealed and within policy window."
+    },
+    {
+      "material_id": "IMMEX45PFS",
+      "material_number": "200000102",
+      "description": "Immunexa 45 mg prefilled syringe",
+      "brand_name": "Immunexa",
+      "generic_name": "ustekinumab demo biologic",
+      "aliases": ["Immunexa 45 mg", "Immunexa syringe"],
+      "ndc": "57894-0060-03",
+      "gtin": "00357894006003",
+      "package_size": "1 prefilled syringe",
+      "dosage_form": "Prefilled syringe",
+      "strength": "45 mg",
+      "unit_of_measure": "EA",
+      "therapeutic_area": "Immunology",
+      "rx_only": true,
+      "controlled_substance": false,
+      "cold_chain": true,
+      "storage_condition": "Refrigerate at 2C to 8C. Do not freeze. Protect from light.",
+      "temperature_range_celsius": {
+        "min": 2,
+        "max": 8
+      },
+      "lot_controlled": true,
+      "serialization_required": true,
+      "dsCSA_serialization": true,
+      "shelf_life_days": 540,
+      "hazmat": false,
+      "return_restriction": "Cold-chain return requires temperature excursion evidence."
+    },
+    {
+      "material_id": "TYLEN500",
+      "material_number": "200000210",
+      "description": "Tylenol 500 mg caplets, bottle of 100",
+      "brand_name": "Tylenol",
+      "generic_name": "acetaminophen demo product",
+      "aliases": ["Tylenol 500", "Tylenol 500 mg"],
+      "ndc": "50580-0488-10",
+      "gtin": "00350580048810",
+      "package_size": "100 caplets",
+      "dosage_form": "Caplet",
+      "strength": "500 mg",
+      "unit_of_measure": "EA",
+      "therapeutic_area": "Consumer Health",
+      "rx_only": false,
+      "controlled_substance": false,
+      "cold_chain": false,
+      "storage_condition": "Store at controlled room temperature.",
+      "temperature_range_celsius": {
+        "min": 15,
+        "max": 30
+      },
+      "lot_controlled": true,
+      "serialization_required": false,
+      "dsCSA_serialization": false,
+      "shelf_life_days": 1095,
+      "hazmat": false,
+      "return_restriction": "Standard consumer health return policy."
+    }
+  ]
+}
+

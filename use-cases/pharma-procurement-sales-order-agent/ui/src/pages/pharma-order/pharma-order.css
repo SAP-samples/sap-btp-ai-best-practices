@@ -1,0 +1,195 @@
+.pharma-order-page {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.order-hero {
+  align-items: start;
+  background: linear-gradient(135deg, #eef7ff 0%, #f7fbff 48%, #f3f8f2 100%);
+  border: 1px solid #d5e7f7;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.order-badge {
+  background: #e8f3ff;
+  border: 1px solid #9dccff;
+  border-radius: 999px;
+  color: #0a4f8f;
+  padding: 0.35rem 0.75rem;
+  white-space: nowrap;
+}
+
+.order-card-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.order-capability-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.order-capability-card {
+  background: #ffffff;
+  border: 1px solid #d8e3ee;
+  border-radius: 0.85rem;
+  box-shadow: 0 2px 8px rgba(25, 53, 79, 0.06);
+  color: #1d2d3e;
+  cursor: pointer;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem;
+  text-align: left;
+}
+
+.order-capability-card:hover {
+  border-color: #0a6ed1;
+  box-shadow: 0 6px 18px rgba(10, 110, 209, 0.14);
+}
+
+.order-capability-title {
+  color: #0b2f57;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.order-capability-description {
+  color: #40566f;
+  line-height: 1.35;
+}
+
+.order-capability-label {
+  color: #5b7087;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+}
+
+.order-source-list {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+}
+
+.order-capability-card ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.order-options {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.order-options ui5-input {
+  max-width: 120px;
+}
+
+.order-output {
+  min-height: 80px;
+  padding: 1rem;
+  white-space: pre-wrap;
+}
+
+.order-readable-trace {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.order-trace-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.order-trace-summary div {
+  background: #f5f8fb;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.order-trace-summary strong {
+  color: #5b7087;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.order-trace-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.order-trace-card {
+  border: 1px solid #d8e3ee;
+  border-radius: 0.85rem;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem;
+}
+
+.order-trace-card-title {
+  color: #0b2f57;
+  font-weight: 700;
+}
+
+.order-trace-purpose,
+.order-evidence-line {
+  color: #40566f;
+  line-height: 1.35;
+}
+
+.order-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.order-chip {
+  background: #edf6ff;
+  border: 1px solid #b8daf8;
+  border-radius: 999px;
+  color: #0a4f8f;
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.order-trace-section {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.order-trace-section strong {
+  color: #5b7087;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.order-muted {
+  color: #5b7087;
+  padding: 0.75rem;
+}
+
+@media (max-width: 700px) {
+  .order-hero {
+    display: grid;
+  }
+
+  .order-badge {
+    width: fit-content;
+  }
+}
