@@ -1,0 +1,25 @@
+---
+applications:
+  - name: pharma-order-agent-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 2G
+    routes:
+      - route: pharma-order-agent-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://pharma-order-agent.cfapps.eu10-005.hana.ondemand.com
+      API_BASE_URL: https://pharma-order-agent-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+  - name: pharma-order-agent-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: pharma-order-agent.cfapps.eu10-005.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://pharma-order-agent-api.cfapps.eu10-005.hana.ondemand.com
+      VITE_APP_HOST: pharma-order-agent.cfapps.eu10-005.hana.ondemand.com
+

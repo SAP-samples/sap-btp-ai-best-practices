@@ -1,0 +1,66 @@
+{
+  "source": "synthetic_API_BATCH_SRV",
+  "batches": [
+    {
+      "batch_id": "B-INV-2604A",
+      "material_id": "GLYCE10MG",
+      "material_number": "200000045",
+      "manufacturing_date": "2026-04-03",
+      "expiry_date": "2028-04-02",
+      "remaining_shelf_life_days": 655,
+      "plant": "US10",
+      "storage_location": "PHRM",
+      "quantity": 700,
+      "unit": "EA",
+      "quality_status": "RELEASED",
+      "recall_status": "NONE",
+      "quarantine": false,
+      "temperature_excursion": false,
+      "serialization_range": {
+        "from": "SN-INV-2604A-000001",
+        "to": "SN-INV-2604A-000700"
+      }
+    },
+    {
+      "batch_id": "B-INV-2605B",
+      "material_id": "GLYCE10MG",
+      "material_number": "200000045",
+      "manufacturing_date": "2026-05-12",
+      "expiry_date": "2028-05-11",
+      "remaining_shelf_life_days": 694,
+      "plant": "US10",
+      "storage_location": "PHRM",
+      "quantity": 550,
+      "unit": "EA",
+      "quality_status": "RELEASED",
+      "recall_status": "NONE",
+      "quarantine": false,
+      "temperature_excursion": false,
+      "serialization_range": {
+        "from": "SN-INV-2605B-000001",
+        "to": "SN-INV-2605B-000550"
+      }
+    },
+    {
+      "batch_id": "B-STL-2602C",
+      "material_id": "IMMEX45PFS",
+      "material_number": "200000102",
+      "manufacturing_date": "2026-02-18",
+      "expiry_date": "2027-08-17",
+      "remaining_shelf_life_days": 426,
+      "plant": "US20",
+      "storage_location": "COLD",
+      "quantity": 120,
+      "unit": "EA",
+      "quality_status": "RELEASED",
+      "recall_status": "NONE",
+      "quarantine": false,
+      "temperature_excursion": false,
+      "serialization_range": {
+        "from": "SN-STL-2602C-000001",
+        "to": "SN-STL-2602C-000120"
+      }
+    }
+  ]
+}
+
