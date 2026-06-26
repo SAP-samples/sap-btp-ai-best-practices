@@ -1224,8 +1224,8 @@ details.alert summary a:hover {
 
 div[class*='announcementBar'] {
   height: auto !important;
-  padding: 1rem 1rem !important;
-  font-size: 0.95rem !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.9rem !important;
   border-bottom: none;
 }
 
