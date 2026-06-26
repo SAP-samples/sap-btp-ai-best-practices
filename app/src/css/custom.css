@@ -1219,3 +1219,31 @@ details.alert summary a {
 details.alert summary a:hover {
   text-decoration: underline;
 }
+
+/* ===== Announcement Bar ===== */
+
+div[class*='announcementBar'] {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+div[class*='announcementBar'] a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+div[class*='announcementBar'] a:hover {
+  color: #d4e8ff;
+}
+
+div[class*='announcementBar'] button[class*='close'] {
+  color: #ffffff;
+}
+
+/* ===== Navbar AI4U Link ===== */
+
+/* Hide the default Docusaurus external-link icon */
+.navbar__item--ai4u svg {
+  display: none;
+}

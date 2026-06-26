@@ -95,5 +95,8 @@ export const TRACKING_EVENTS = {
     DOWNLOAD_TRANSLATION_HUB: "btn-download-translation-hub",
     DOWNLOAD_PRO_CODE_AI_AGENTS: "btn-download-pro-code-ai-agents",
     DOWNLOAD_RPT1: "btn-download-rpt-1"
+    // AI4U promotion links tracked dynamically in Root.tsx as:
+    // btn-announcement-bar:{url}
+    // btn-navbar:{url}
   }
 } as const;
