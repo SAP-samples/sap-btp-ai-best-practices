@@ -103,6 +103,17 @@ const config: Config = {
 
   plugins: [
     registerDownloadRoute,
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            from: "/docs/technical-view/narrow-ai/sap-rpt",
+            to: "/docs/technical-view/ai-services/sap-rpt"
+          }
+        ]
+      }
+    ],
     () => ({
       name: "google-site-verification",
       injectHtmlTags() {
