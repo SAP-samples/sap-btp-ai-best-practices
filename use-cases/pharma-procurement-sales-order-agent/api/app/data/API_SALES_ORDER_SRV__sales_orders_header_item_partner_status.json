@@ -1,0 +1,308 @@
+{
+  "source": "synthetic_API_SALES_ORDER_SRV",
+  "entity_shape": [
+    "A_SalesOrder",
+    "A_SalesOrderItem",
+    "A_SalesOrderPartner",
+    "A_SalesOrderPrcgElmnt",
+    "A_SalesOrderScheduleLine",
+    "A_SalesOrderText",
+    "A_SalesOrderHdrBillPlan"
+  ],
+  "sales_orders": [
+    {
+      "A_SalesOrder": {
+        "SalesOrder": "50214567",
+        "SalesOrderType": "OR",
+        "SalesOrganization": "1710",
+        "DistributionChannel": "10",
+        "OrganizationDivision": "00",
+        "SoldToParty": "17100001",
+        "PurchaseOrderByCustomer": "CARD-PO-88001",
+        "CustomerPurchaseOrderDate": "2026-06-14",
+        "RequestedDeliveryDate": "2026-06-24",
+        "OverallSDProcessStatus": "B",
+        "OverallDeliveryStatus": "B",
+        "OverallBillingStatus": "A",
+        "DeliveryBlockReason": "",
+        "BillingBlockReason": "",
+        "TotalNetAmount": 33375.00,
+        "TransactionCurrency": "USD"
+      },
+      "to_Item": [
+        {
+          "SalesOrderItem": "10",
+          "Material": "200000045",
+          "MaterialID": "GLYCE10MG",
+          "SalesOrderItemText": "Glycemor 10 mg tablets, bottle of 30",
+          "RequestedQuantity": 25,
+          "RequestedQuantityUnit": "EA",
+          "Plant": "US10",
+          "StorageLocation": "PHRM",
+          "NetAmount": 33375.00,
+          "TransactionCurrency": "USD",
+          "Batch": "B-INV-2604A",
+          "ItemDeliveryBlockReason": "",
+          "ItemBillingBlockReason": "",
+          "SDProcessStatus": "B"
+        }
+      ],
+      "to_Partner": [
+        {"PartnerFunction": "AG", "Customer": "17100001", "Name": "Northstar Pharmacy Distribution"},
+        {"PartnerFunction": "WE", "Customer": "17100011", "Name": "Northstar Pharmacy Distribution - Central DC"},
+        {"PartnerFunction": "RE", "Customer": "17100021", "Name": "Northstar Billing"}
+      ],
+      "to_PricingElement": [
+        {"SalesOrderItem": "10", "ConditionType": "PR00", "ConditionAmount": 37500.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCON", "ConditionAmount": -3000.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZDSC", "ConditionAmount": -1500.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZFEE", "ConditionAmount": 375.00, "ConditionCurrency": "USD"}
+      ],
+      "to_ScheduleLine": [
+        {
+          "SalesOrderItem": "10",
+          "ScheduleLine": "1",
+          "RequestedDeliveryDate": "2026-06-24",
+          "ConfirmedDeliveryDate": "2026-06-24",
+          "OrderQuantity": 25,
+          "ConfirmedQuantity": 25,
+          "Unit": "EA"
+        }
+      ],
+      "to_Text": [
+        {
+          "TextID": "ZORD",
+          "Language": "EN",
+          "LongText": "service representative note: customer asked for price confirmation before shipment release."
+        }
+      ],
+      "logistics_status": {
+        "delivery_number": "80014567",
+        "shipment_status": "PICKING_IN_PROGRESS",
+        "tracking_number": null,
+        "estimated_ship_date": "2026-06-22",
+        "estimated_delivery_date": "2026-06-24"
+      },
+      "invoice_reference": null
+    },
+    {
+      "A_SalesOrder": {
+        "SalesOrder": "50214568",
+        "SalesOrderType": "OR",
+        "SalesOrganization": "1710",
+        "DistributionChannel": "10",
+        "OrganizationDivision": "00",
+        "SoldToParty": "17100001",
+        "PurchaseOrderByCustomer": "CARD-PO-87970",
+        "CustomerPurchaseOrderDate": "2026-06-02",
+        "RequestedDeliveryDate": "2026-06-07",
+        "OverallSDProcessStatus": "C",
+        "OverallDeliveryStatus": "C",
+        "OverallBillingStatus": "C",
+        "DeliveryBlockReason": "",
+        "BillingBlockReason": "",
+        "TotalNetAmount": 6675.00,
+        "TransactionCurrency": "USD"
+      },
+      "to_Item": [
+        {
+          "SalesOrderItem": "10",
+          "Material": "200000045",
+          "MaterialID": "GLYCE10MG",
+          "RequestedQuantity": 5,
+          "RequestedQuantityUnit": "EA",
+          "Plant": "US10",
+          "StorageLocation": "PHRM",
+          "NetAmount": 6675.00,
+          "TransactionCurrency": "USD",
+          "Batch": "B-INV-2604A",
+          "SDProcessStatus": "C"
+        }
+      ],
+      "to_Partner": [
+        {"PartnerFunction": "AG", "Customer": "17100001", "Name": "Northstar Pharmacy Distribution"},
+        {"PartnerFunction": "WE", "Customer": "17100011", "Name": "Northstar Pharmacy Distribution - Central DC"}
+      ],
+      "to_PricingElement": [
+        {"SalesOrderItem": "10", "ConditionType": "PR00", "ConditionAmount": 7500.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCON", "ConditionAmount": -600.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZDSC", "ConditionAmount": -300.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZFEE", "ConditionAmount": 75.00, "ConditionCurrency": "USD"}
+      ],
+      "to_ScheduleLine": [
+        {
+          "SalesOrderItem": "10",
+          "ScheduleLine": "1",
+          "RequestedDeliveryDate": "2026-06-07",
+          "ConfirmedDeliveryDate": "2026-06-07",
+          "OrderQuantity": 5,
+          "ConfirmedQuantity": 5,
+          "Unit": "EA"
+        }
+      ],
+      "to_Text": [
+        {
+          "TextID": "ZACK",
+          "Language": "EN",
+          "LongText": "Order acknowledgement sent to customer service distribution list."
+        }
+      ],
+      "logistics_status": {
+        "delivery_number": "80014568",
+        "shipment_status": "SHIPPED",
+        "carrier": "UPS Healthcare",
+        "tracking_number": "1Z999CARD14568",
+        "estimated_ship_date": "2026-06-05",
+        "actual_ship_date": "2026-06-05",
+        "estimated_delivery_date": "2026-06-07"
+      },
+      "invoice_reference": "90004568"
+    },
+    {
+      "A_SalesOrder": {
+        "SalesOrder": "50220012",
+        "SalesOrderType": "OR",
+        "SalesOrganization": "1710",
+        "DistributionChannel": "10",
+        "OrganizationDivision": "00",
+        "SoldToParty": "17100002",
+        "PurchaseOrderByCustomer": "MCK-PO-77112",
+        "CustomerPurchaseOrderDate": "2026-06-15",
+        "RequestedDeliveryDate": "2026-06-25",
+        "OverallSDProcessStatus": "A",
+        "OverallDeliveryStatus": "A",
+        "OverallBillingStatus": "A",
+        "DeliveryBlockReason": "Z12",
+        "BillingBlockReason": "",
+        "TotalNetAmount": 86916.00,
+        "TransactionCurrency": "USD"
+      },
+      "to_Item": [
+        {
+          "SalesOrderItem": "10",
+          "Material": "200000102",
+          "MaterialID": "IMMEX45PFS",
+          "RequestedQuantity": 12,
+          "RequestedQuantityUnit": "EA",
+          "Plant": "US20",
+          "StorageLocation": "COLD",
+          "NetAmount": 86916.00,
+          "TransactionCurrency": "USD",
+          "Batch": "B-STL-2602C",
+          "ItemDeliveryBlockReason": "Z12",
+          "ItemBillingBlockReason": "",
+          "SDProcessStatus": "A"
+        }
+      ],
+      "to_Partner": [
+        {"PartnerFunction": "AG", "Customer": "17100002", "Name": "MetroMed Wholesale Corporation"},
+        {"PartnerFunction": "WE", "Customer": "17100012", "Name": "MetroMed Wholesale DC - Memphis"}
+      ],
+      "to_PricingElement": [
+        {"SalesOrderItem": "10", "ConditionType": "PR00", "ConditionAmount": 89100.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCON", "ConditionAmount": -2760.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCOLD", "ConditionAmount": 576.00, "ConditionCurrency": "USD"}
+      ],
+      "to_ScheduleLine": [
+        {
+          "SalesOrderItem": "10",
+          "ScheduleLine": "1",
+          "RequestedDeliveryDate": "2026-06-25",
+          "ConfirmedDeliveryDate": "2026-06-26",
+          "OrderQuantity": 12,
+          "ConfirmedQuantity": 12,
+          "Unit": "EA"
+        }
+      ],
+      "to_Text": [
+        {
+          "TextID": "ZBLK",
+          "Language": "EN",
+          "LongText": "Z12 block: cold-chain validation required before release."
+        }
+      ],
+      "to_HeaderBillingPlan": [],
+      "logistics_status": {
+        "delivery_number": null,
+        "shipment_status": "BLOCKED",
+        "tracking_number": null,
+        "estimated_ship_date": null,
+        "estimated_delivery_date": "2026-06-26"
+      },
+      "invoice_reference": null
+    },
+    {
+      "A_SalesOrder": {
+        "SalesOrder": "50220013",
+        "SalesOrderType": "OR",
+        "SalesOrganization": "1710",
+        "DistributionChannel": "10",
+        "OrganizationDivision": "00",
+        "SoldToParty": "17100002",
+        "PurchaseOrderByCustomer": "MCK-PO-77113",
+        "CustomerPurchaseOrderDate": "2026-06-15",
+        "RequestedDeliveryDate": "2026-06-25",
+        "OverallSDProcessStatus": "A",
+        "OverallDeliveryStatus": "A",
+        "OverallBillingStatus": "A",
+        "DeliveryBlockReason": "Z12",
+        "BillingBlockReason": "",
+        "TotalNetAmount": 14486.00,
+        "TransactionCurrency": "USD"
+      },
+      "to_Item": [
+        {
+          "SalesOrderItem": "10",
+          "Material": "200000102",
+          "MaterialID": "IMMEX45PFS",
+          "RequestedQuantity": 2,
+          "RequestedQuantityUnit": "EA",
+          "Plant": "US20",
+          "StorageLocation": "COLD",
+          "NetAmount": 14486.00,
+          "TransactionCurrency": "USD",
+          "Batch": "B-STL-2602C",
+          "ItemDeliveryBlockReason": "Z12",
+          "SDProcessStatus": "A"
+        }
+      ],
+      "to_Partner": [
+        {"PartnerFunction": "AG", "Customer": "17100002", "Name": "MetroMed Wholesale Corporation"},
+        {"PartnerFunction": "WE", "Customer": "17100012", "Name": "MetroMed Wholesale DC - Memphis"}
+      ],
+      "to_PricingElement": [
+        {"SalesOrderItem": "10", "ConditionType": "PR00", "ConditionAmount": 14850.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCON", "ConditionAmount": -460.00, "ConditionCurrency": "USD"},
+        {"SalesOrderItem": "10", "ConditionType": "ZCOLD", "ConditionAmount": 96.00, "ConditionCurrency": "USD"}
+      ],
+      "to_ScheduleLine": [
+        {
+          "SalesOrderItem": "10",
+          "ScheduleLine": "1",
+          "RequestedDeliveryDate": "2026-06-25",
+          "ConfirmedDeliveryDate": "2026-06-26",
+          "OrderQuantity": 2,
+          "ConfirmedQuantity": 2,
+          "Unit": "EA"
+        }
+      ],
+      "to_Text": [
+        {
+          "TextID": "ZBLK",
+          "Language": "EN",
+          "LongText": "Z12 block: cold-chain validation required before release."
+        }
+      ],
+      "to_HeaderBillingPlan": [],
+      "logistics_status": {
+        "delivery_number": null,
+        "shipment_status": "BLOCKED",
+        "tracking_number": null,
+        "estimated_ship_date": null,
+        "estimated_delivery_date": "2026-06-26"
+      },
+      "invoice_reference": null
+    }
+  ]
+}
+

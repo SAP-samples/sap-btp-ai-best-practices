@@ -1,0 +1,29 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+httpx>=0.28.0
+requests>=2.32.0
+python-dotenv>=1.0.0
+sap-ai-sdk-gen[all]>=6.7.0
+# LangChain 0.3 stack - pin upper bounds to avoid breaking major-version jumps
+langchain
+langchain-core>=0.3.20
+langchain-community>=0.3.10
+langchain-google-vertexai>=2.0.0,
+langchain-openai>=0.2.0
+langgraph>=0.2.60
+langgraph-checkpoint-sqlite
+langchain-aws>=0.2.0
+langchain-mcp-adapters
+mcp>=1.9.2
+pydantic>=2.10.0
+sqlalchemy>=2.0.0
+sqlalchemy-hana>=2.0.0
+hdbcli
+pandas>=2.2.0
+openpyxl>=3.1.0
+fpdf2>=2.8.0
+python-multipart>=0.0.9
+# Fix numpy compatibility issues
+numpy
+PyJWT>=2.10.1
+cryptography>=43.0.0

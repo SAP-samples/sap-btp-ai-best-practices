@@ -1,0 +1,52 @@
+{
+  "questions": [
+    {
+      "id": "Q-PRICE-001",
+      "text": "What is the price for Northstar for Glycemor 10 mg?",
+      "expected_tool": "get_pricing_for_customer_material",
+      "fixture": "API_SALES_ORDER_SIMULATION_SRV__pricing_simulations.json#SIM-000001"
+    },
+    {
+      "id": "Q-AVAIL-001",
+      "text": "Is Glycemor 10 mg available on June 24?",
+      "expected_tool": "get_material_availability",
+      "fixture": "API_MATERIAL_STOCK_SRV__material_stock_availability.json#GLYCE10MG-US10-2026-06-24"
+    },
+    {
+      "id": "Q-STATUS-001",
+      "text": "What is the status of order 50214567?",
+      "expected_tool": "get_order_status",
+      "fixture": "API_SALES_ORDER_SRV__sales_orders_header_item_partner_status.json#50214567"
+    },
+    {
+      "id": "Q-CUSTOMER-001",
+      "text": "Which customer is linked to DEA number BC1234567?",
+      "expected_tool": "lookup_customer_by_dea",
+      "fixture": "ZSD_EXTERNAL_INFO__customers_dea_gts_lookup.json#BC1234567"
+    },
+    {
+      "id": "Q-BATCH-001",
+      "text": "What is the expiry date for batch B-INV-2604A?",
+      "expected_tool": "lookup_batch_expiry",
+      "fixture": "API_BATCH_SRV__batch_expiry_lot_status.json#B-INV-2604A"
+    },
+    {
+      "id": "Q-NDC-001",
+      "text": "Which material maps to NDC 90000-0100-30?",
+      "expected_tool": "lookup_material_by_ndc",
+      "fixture": "ZAPI_DEL_LIST_PRICE_V4__materials_ndc_catalog.json#90000-0100-30"
+    },
+    {
+      "id": "Q-BLOCK-001",
+      "text": "Release all Z12 blocked orders for MetroMed Wholesale.",
+      "expected_tool": "set_or_clear_order_block",
+      "fixture": "API_SALES_ORDER_SRV__sales_orders_header_item_partner_status.json#50220012,50220013"
+    },
+    {
+      "id": "Q-INVOICE-001",
+      "text": "Print invoice 90004568.",
+      "expected_tool": "get_invoice_pdf",
+      "fixture": "API_BILLING_DOCUMENT_SRV__invoice_pdf_metadata.json#90004568"
+    }
+  ]
+}
