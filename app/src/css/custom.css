@@ -1223,8 +1223,10 @@ details.alert summary a:hover {
 /* ===== Announcement Bar ===== */
 
 div[class*='announcementBar'] {
-  font-size: 0.875rem;
-  padding: 0.5rem 1rem;
+  height: auto !important;
+  padding: 1rem 1rem !important;
+  font-size: 0.95rem !important;
+  border-bottom: none;
 }
 
 div[class*='announcementBar'] a {
