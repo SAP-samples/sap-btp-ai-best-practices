@@ -14,7 +14,7 @@ export const TRACKING_EVENTS = {
 
     // Technical View
     TECHNICAL_VIEW: "pv-technical-view",
-    TECHNICAL_VIEW_NARROW_AI: "pv-technical-view-narrow-ai",
+    TECHNICAL_VIEW_PREDICTIVE_AI: "pv-technical-view-predictive-ai",
     TECHNICAL_VIEW_GENERATIVE_AI: "pv-technical-view-generative-ai",
     TECHNICAL_VIEW_GENERATIVE_AI_PLAIN: "pv-technical-view-generative-ai-plain",
     BP_ACCESS_TO_GENERATIVE_AI_MODELS: "pv-bp-access-to-generative-ai-models",

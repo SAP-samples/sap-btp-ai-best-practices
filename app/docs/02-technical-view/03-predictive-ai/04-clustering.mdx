@@ -45,20 +45,20 @@ import PageContributors from "@site/src/components/PageContributors";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Clustering (intro)_external.mp4")}>
+          <Link target="_blank" to={useBaseUrl("predictive-ai/clustering/videos/BTP AI Best Practices - Clustering (intro)_external.mp4")}>
             <Icon name="video" />
             <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/videos/BTP AI Best Practices - Predictive AI - Clustering.mp4")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/clustering/videos/BTP AI Best Practices - Predictive AI - Clustering.mp4")}>
               <Icon name="video" />
               <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/clustering/pdfs/BTP AI Best Practices - Predictive AI - Clustering.pdf")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/clustering/pdfs/BTP AI Best Practices - Predictive AI - Clustering.pdf")}>
               <Icon name="pdf-attachment" />
               <span>Webinar (PDF Presentation)</span>
             </Link>
@@ -143,7 +143,7 @@ Executing PAL and APL functions requires specific database privileges. These are
 |  | Object Creation Privileges (Optional) | May need `CREATE TEMPORARY TABLE` etc., depending on workflow. |
 
 ### High-level Reference Architecture
-![Clustering - High-level Reference Architecture](@site/static/narrow-ai/clustering/images/arch.png)
+![Clustering - High-level Reference Architecture](@site/static/predictive-ai/clustering/images/arch.png)
 
 #### Calling PAL and APL Functions
 
@@ -184,7 +184,7 @@ SAP HANA Predictive Analytics Library, offers a wide range of Clustering algorit
 
 ### Data Preparation and Model Evaluation
 The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
-For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/predictive-ai/data-preparation-and-model-evaluation) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
@@ -564,8 +564,8 @@ CALL _SYS_AFL.PAL_HIERARCHICAL_CLUSTERING (PAL_HIERARCHICAL_CLUSTERING_DATA_TBL,
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
-  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
+  <IconLinkButton href="/docs/technical-view/predictive-ai/regression" text="Regression" />
+  <IconLinkButton href="/docs/technical-view/predictive-ai/anomaly-detection" text="Anomaly Detection" />
 </ul>
 
 </div>

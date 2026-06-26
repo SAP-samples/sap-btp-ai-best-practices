@@ -116,16 +116,16 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/agentic-ai/mcp": "connected",
   "/docs/technical-view/agentic-ai/agentic-ai-security-governance": "locked",
 
-  // Narrow AI
-  "/docs/technical-view/narrow-ai/regression": "scatter-chart",
-  "/docs/technical-view/narrow-ai/time-series-forecasting": "area-chart",
-  "/docs/technical-view/narrow-ai/classification": "tag",
-  "/docs/technical-view/narrow-ai/recommendation": "lateness",
-  "/docs/technical-view/narrow-ai/clustering": "heatmap-chart",
-  "/docs/technical-view/narrow-ai/anomaly-detection": "quality-issue",
-  "/docs/technical-view/narrow-ai/predictive-ai-bdc-btp": "lateness",
-  "/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation": "timesheet",
-  "/docs/technical-view/narrow-ai/training-deployment-custom-ai-models": "puzzle",
+  // Predictive AI
+  "/docs/technical-view/predictive-ai/regression": "scatter-chart",
+  "/docs/technical-view/predictive-ai/time-series-forecasting": "area-chart",
+  "/docs/technical-view/predictive-ai/classification": "tag",
+  "/docs/technical-view/predictive-ai/recommendation": "lateness",
+  "/docs/technical-view/predictive-ai/clustering": "heatmap-chart",
+  "/docs/technical-view/predictive-ai/anomaly-detection": "quality-issue",
+  "/docs/technical-view/predictive-ai/predictive-ai-bdc-btp": "lateness",
+  "/docs/technical-view/predictive-ai/data-preparation-and-model-evaluation": "timesheet",
+  "/docs/technical-view/predictive-ai/training-deployment-custom-ai-models": "puzzle",
 
   // AI Services
   "/docs/technical-view/ai-services/document-information-extraction": "ppt-attachment",

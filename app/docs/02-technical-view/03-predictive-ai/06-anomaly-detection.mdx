@@ -46,20 +46,20 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/videos/BTP AI Best Practices - Anomaly Detection (intro)_external.mp4")}>
+          <Link target="_blank" to={useBaseUrl("predictive-ai/anomaly-detection/videos/BTP AI Best Practices - Anomaly Detection (intro)_external.mp4")}>
             <Icon name="video" />
             <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/videos/BTP AI Best Practices - Anomaly Detection.mp4")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/anomaly-detection/videos/BTP AI Best Practices - Anomaly Detection.mp4")}>
               <Icon name="video" />
               <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/anomaly-detection/pdfs/BTP AI Best Practices - Anomaly Detection.pdf")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/anomaly-detection/pdfs/BTP AI Best Practices - Anomaly Detection.pdf")}>
               <Icon name="pdf-attachment" />
               <span>Webinar (PDF Presentation)</span>
             </Link>
@@ -172,7 +172,7 @@ Executing PAL and APL functions requires specific database privileges. These are
 
 ### High-level Reference Architecture
 
-![High-level Reference Architecture](@site/static/narrow-ai/anomaly-detection/images/arch.png)
+![High-level Reference Architecture](@site/static/predictive-ai/anomaly-detection/images/arch.png)
 
 ### Calling PAL and APL Functions
 
@@ -270,7 +270,7 @@ Implementing anomaly detection effectively involves several key decisions and ad
 
 The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
 
-For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation) page.
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation](/docs/technical-view/predictive-ai/data-preparation-and-model-evaluation) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
@@ -791,8 +791,8 @@ CALL _SYS_AFL.PAL_OUTLIER_DETECTION_FOR_REGRESSION(PAL_DATA_TBL,"#PAL_PARAMETER_
 ## <span className="post-article-first-title">Related Best Practices</span>
 
     <ul className="button-grid">
-      <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
-      <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression"/>
+      <IconLinkButton href="/docs/technical-view/predictive-ai/time-series-forecasting" text="Time Series Forecasting" />
+      <IconLinkButton href="/docs/technical-view/predictive-ai/regression" text="Regression"/>
     </ul>
 
 </div>

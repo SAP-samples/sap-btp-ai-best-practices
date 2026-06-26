@@ -46,20 +46,20 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
     <div className="col col--4">
       <ul className="resource-links">
         <li>
-          <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/videos/BTP AI Best Practices -Time-series forecasting (intro)_external.mp4")}>
+          <Link target="_blank" to={useBaseUrl("predictive-ai/time-series-forecasting/videos/BTP AI Best Practices -Time-series forecasting (intro)_external.mp4")}>
             <Icon name="video" />
             <span>Teaser</span>
           </Link>
         </li>
         <LoginWall renderOnlyWhenLoggedIn={true}>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/videos/BTP AI Best Practices - Predictive AI - Time Series Forecasting.mp4")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/time-series-forecasting/videos/BTP AI Best Practices - Predictive AI - Time Series Forecasting.mp4")}>
               <Icon name="video" />
               <span>Webinar</span>
             </Link>
           </li>
           <li>
-            <Link target="_blank" to={useBaseUrl("narrow-ai/time-series-forecasting/pdfs/BTP AI Best Practices - Predictive AI - Time Series Forecasting.pdf")}>
+            <Link target="_blank" to={useBaseUrl("predictive-ai/time-series-forecasting/pdfs/BTP AI Best Practices - Predictive AI - Time Series Forecasting.pdf")}>
               <Icon name="pdf-attachment" />
               <span>Webinar (PDF Presentation)</span>
             </Link>
@@ -151,7 +151,7 @@ Executing PAL and APL functions requires specific database privileges. These are
 
 ### High-level Reference Architecture
 
-![High-level Reference Architecture](@site/static/narrow-ai/time-series-forecasting/images/arch.png)
+![High-level Reference Architecture](@site/static/predictive-ai/time-series-forecasting/images/arch.png)
 
 #### Calling PAL and APL Functions
 
@@ -179,14 +179,14 @@ SAP HANA Predictive Analytics Library, offers a wide range of time series foreca
   - **Independently apply** Predictive Analysis Library (PAL) functions to subsets of data identified by a grouping column
   - **Single call** invoking massive data-parallel ML processing
   - An example using the Massive implementation can be seen in the following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/pal/notebooks/24QRC03_2.22.ipynb).
-    ![High-level Reference Architecture](@site/static/narrow-ai/time-series-forecasting/images/PAL-example.png)
+    ![High-level Reference Architecture](@site/static/predictive-ai/time-series-forecasting/images/PAL-example.png)
 - **AutoML for Time Series:** AutoML frameworks like [SAP HANA Cloud PAL’s AutoML](https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-predictive-analysis-library/automl-automl) implementation greatly help users in probing multiple algorithms and parameter variations for a given scenario for selecting the best possible algorithm and model. The following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/usecase-examples/sapcommunity-automl-examples/Example%20-%20Using%20PAL%20AutoML%20for%20Time-Series.ipynb) includes an example on how to use AutoML for Time Series. An example using the Massive implementation can be seen in the following [link](https://github.com/SAP-samples/hana-ml-samples/blob/main/Python-API/pal/notebooks/24QRC03_2.22.ipynb).
 
 ### Data Preparation and Model Evaluation
 
 The success of any machine learning model is fundamentally dependent on two core processes: rigorous data preparation and comprehensive model evaluation. These steps ensure the data is clean and relevant and that the model's performance is accurately measured against the right metrics.
 
-For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation page](/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation).
+For a detailed guide on the methodologies, key metrics, and best practices for preparing your data and evaluating model performance across different ML tasks, please refer to our unified [Data Preparation and Model Evaluation page](/docs/technical-view/predictive-ai/data-preparation-and-model-evaluation).
 
 ### Leverage In-Database ML functions from SAP HANA whenever possible
 
@@ -196,7 +196,7 @@ Prioritize HANA ML: If your data resides in SAP HANA or SAP Datasphere, using ha
 
 Identifying anomalies or outliers is a critical aspect of building robust machine learning models. These unusual data points can represent data quality issues, unique real-world events, or errors in data collection that might otherwise skew model training and evaluation.
 
-For a comprehensive guide on the methodologies and best practices for discovering anomalies in your data, please refer to our unified [Anomaly Detection Best Practices](/docs/technical-view/narrow-ai/anomaly-detection) page.
+For a comprehensive guide on the methodologies and best practices for discovering anomalies in your data, please refer to our unified [Anomaly Detection Best Practices](/docs/technical-view/predictive-ai/anomaly-detection) page.
 
 ## <span className="step-number">4</span> <span className="step-title">Implementation</span>
 
@@ -853,8 +853,8 @@ CALL _SYS_AFL.PAL_STATIONARITY_TEST(PAL_TEST_DATA_TBL, PAL_PARAMETER_TBL, ?);
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
-  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
+  <IconLinkButton href="/docs/technical-view/predictive-ai/anomaly-detection" text="Anomaly Detection" />
+  <IconLinkButton href="/docs/technical-view/predictive-ai/regression" text="Regression" />
 </ul>
 
 </div>

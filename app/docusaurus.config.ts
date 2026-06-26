@@ -111,7 +111,13 @@ const config: Config = {
             from: "/docs/technical-view/narrow-ai/sap-rpt",
             to: "/docs/technical-view/ai-services/sap-rpt"
           }
-        ]
+        ],
+        createRedirects(existingPath) {
+          if (existingPath.includes("/docs/technical-view/predictive-ai")) {
+            return [existingPath.replace("/predictive-ai", "/narrow-ai")];
+          }
+          return undefined;
+        }
       }
     ],
     () => ({

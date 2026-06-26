@@ -175,12 +175,12 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/vector-rag-query-pipeline" text="Vector-based RAG (2/2) Query Pipeline" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/kg-rag-creation" text="Knowledge Graph RAG (1/2) Creation" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/rag/kg-rag-query-pipeline" text="Knowledge Graph RAG (2/2) Query Pipeline" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/regression" text="Regression" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/time-series-forecasting" text="Time Series Forecasting" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/classification" text="Classification" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/clustering" text="Clustering" />
-                  <IconLinkButton href="/docs/technical-view/narrow-ai/training-deployment-custom-ai-models" text="Training and Deployment of Custom AI Models" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/regression" text="Regression" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/time-series-forecasting" text="Time Series Forecasting" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/anomaly-detection" text="Anomaly Detection" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/classification" text="Classification" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/clustering" text="Clustering" />
+                  <IconLinkButton href="/docs/technical-view/predictive-ai/training-deployment-custom-ai-models" text="Training and Deployment of Custom AI Models" />
                   <IconLinkButton href="/docs/technical-view/ai-services/sap-document-ai" text="Document AI" />
                   <IconLinkButton href="/docs/technical-view/ai-services/sap-rpt" text="Access to SAP RPT Model" />
                   <IconLinkButton href="/docs/technical-view/ai-services/custom-joule-skills" text="Custom Joule Skills" />
