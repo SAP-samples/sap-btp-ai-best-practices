@@ -124,6 +124,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/narrow-ai/clustering": "heatmap-chart",
   "/docs/technical-view/narrow-ai/anomaly-detection": "quality-issue",
   "/docs/technical-view/narrow-ai/predictive-ai-bdc-btp": "lateness",
+  "/docs/technical-view/narrow-ai/sap-rpt": "table-view",
   "/docs/technical-view/narrow-ai/data-preparation-and-model-evaluation": "timesheet",
   "/docs/technical-view/narrow-ai/training-deployment-custom-ai-models": "puzzle",
 
