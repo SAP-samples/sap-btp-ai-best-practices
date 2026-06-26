@@ -180,6 +180,7 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/narrow-ai/anomaly-detection" text="Anomaly Detection" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/classification" text="Classification" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/clustering" text="Clustering" />
+                  <IconLinkButton href="/docs/technical-view/narrow-ai/sap-rpt" text="Access to SAP RPT Model" />
                   <IconLinkButton href="/docs/technical-view/narrow-ai/training-deployment-custom-ai-models" text="Training and Deployment of Custom AI Models" />
                   <IconLinkButton href="/docs/technical-view/ai-services/sap-document-ai" text="Document AI" />
                   <IconLinkButton href="/docs/technical-view/ai-services/custom-joule-skills" text="Custom Joule Skills" />
