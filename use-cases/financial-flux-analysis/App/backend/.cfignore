@@ -1,0 +1,26 @@
+# No subir el archivo .env a CF — las variables de entorno
+# están definidas en manifest.yml
+.env
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Archivos del sistema
+.DS_Store
+*.swp
+*.swo
+
+# Archivos de desarrollo
+.pytest_cache/
+*.egg-info/
+dist/
+build/

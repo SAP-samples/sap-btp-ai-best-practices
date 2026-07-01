@@ -1,0 +1,261 @@
+<mvc:View
+    controllerName="financial.flux.analysis.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <App id="app" height="100%">
+        <pages>
+            <Page
+                id="idMainPage"
+                showHeader="false"
+                enableScrolling="false"
+                backgroundDesign="Solid">
+
+                <!-- ============================================================
+                     SAP FIORI SHELL BAR
+                     ============================================================ -->
+                <customHeader>
+                    <f:ShellBar
+                        id="idShellBar"
+                        title="Financial Flux Analysis"
+                        secondTitle="SAP HANA Cloud · Generative AI"
+                        homeIcon="./img/sap-logo.svg"
+                        homeIconTooltip="Financial Flux Analysis"
+                        showCopilotButton="false"
+                        showSearchButton="false"
+                        showNotifications="false"
+                        class="fluxShellBar">
+                        <f:profile>
+                            <Avatar
+                                initials="FA"
+                                displaySize="XS"
+                                backgroundColor="Accent6"
+                                tooltip="Financial Flux Analysis" />
+                        </f:profile>
+                    </f:ShellBar>
+                </customHeader>
+
+                <content>
+                    <!-- ============================================================
+                         DYNAMIC PAGE
+                         ============================================================ -->
+                    <f:DynamicPage
+                        id="idDynamicPage"
+                        headerExpanded="true"
+                        toggleHeaderOnTitleClick="true"
+                        fitContent="true"
+                        class="fluxDynamicPage">
+
+                        <!-- TITLE AREA: page heading + Refresh action -->
+                        <f:title>
+                            <f:DynamicPageTitle>
+                                <f:heading>
+                                    <Title
+                                        id="idPageTitle"
+                                        text="Financial Flux Analysis FY {app>/previousYear} vs FY {app>/currentYear}"
+                                        level="H2"
+                                        class="fluxPageTitle" />
+                                </f:heading>
+                                <f:snappedHeading>
+                                    <Title
+                                        text="Financial Flux Analysis FY {app>/previousYear} vs FY {app>/currentYear}"
+                                        level="H3" />
+                                </f:snappedHeading>
+
+                                <!-- Compact filter summary shown when header is collapsed -->
+                                <f:snappedContent>
+                                    <HBox alignItems="Center" class="fluxFilterSnappedRow">
+                                        <core:Icon
+                                            src="sap-icon://filter"
+                                            size="0.875rem"
+                                            class="fluxFilterSnappedIcon sapUiTinyMarginEnd" />
+                                        <Text
+                                            text="FY {app>/currentYear} vs {app>/previousYear}"
+                                            class="fluxFilterSnappedText sapUiTinyMarginEnd" />
+                                        <Text
+                                            id="idSnappedCompany"
+                                            text=""
+                                            class="fluxFilterSnappedCompany" />
+                                    </HBox>
+                                </f:snappedContent>
+
+                                <f:actions>
+                                    <Button
+                                        id="idRefreshDataBtn"
+                                        text="Refresh Data"
+                                        icon="sap-icon://refresh"
+                                        type="Transparent"
+                                        press="onRefreshDataPress"
+                                        tooltip="Reload data from SAP HANA" />
+                                </f:actions>
+                            </f:DynamicPageTitle>
+                        </f:title>
+
+                        <!-- COLLAPSIBLE HEADER: Filter Bar + KPI Summary -->
+                        <f:header>
+                            <f:DynamicPageHeader pinnable="true">
+
+                                <!-- FILTER BAR -->
+                                <HBox
+                                    alignItems="End"
+                                    wrap="Wrap"
+                                    class="fluxFilterBar">
+
+                                    <!-- Current FY -->
+                                    <VBox class="fluxFilterGroup">
+                                        <Label
+                                            text="Current Fiscal Year"
+                                            class="fluxFilterLabel"
+                                            labelFor="idCurrentYearSelect" />
+                                        <Select
+                                            id="idCurrentYearSelect"
+                                            change="onCurrentYearChange"
+                                            width="7.5rem"
+                                            class="fluxFilterSelect" />
+                                    </VBox>
+
+                                    <!-- VS separator -->
+                                    <VBox class="fluxFilterVsSep" justifyContent="End">
+                                        <Text text="vs" class="fluxFilterVsText" />
+                                    </VBox>
+
+                                    <!-- Compare FY -->
+                                    <VBox class="fluxFilterGroup">
+                                        <Label
+                                            text="Compare With"
+                                            class="fluxFilterLabel"
+                                            labelFor="idPreviousYearSelect" />
+                                        <Select
+                                            id="idPreviousYearSelect"
+                                            change="onPreviousYearChange"
+                                            width="7.5rem"
+                                            class="fluxFilterSelect" />
+                                    </VBox>
+
+                                    <!-- Divider -->
+                                    <VBox class="fluxFilterDivider" />
+
+                                    <!-- Company Code -->
+                                    <VBox class="fluxFilterGroup">
+                                        <Label
+                                            text="Company Code"
+                                            class="fluxFilterLabel"
+                                            labelFor="idCompanyCodeSelect" />
+                                        <Select
+                                            id="idCompanyCodeSelect"
+                                            change="onCompanyCodeChange"
+                                            width="11rem"
+                                            class="fluxFilterSelect" />
+                                    </VBox>
+
+                                    <!-- Divider -->
+                                    <VBox class="fluxFilterDivider" />
+
+                                    <!-- Segment -->
+                                    <VBox class="fluxFilterGroup">
+                                        <Label
+                                            text="Segment"
+                                            class="fluxFilterLabel"
+                                            labelFor="idSegmentSelect" />
+                                        <Select
+                                            id="idSegmentSelect"
+                                            change="onSegmentChange"
+                                            width="11rem"
+                                            class="fluxFilterSelect" />
+                                    </VBox>
+
+                                    <!-- Functional Area -->
+                                    <VBox class="fluxFilterGroup">
+                                        <Label
+                                            text="Functional Area"
+                                            class="fluxFilterLabel"
+                                            labelFor="idFunctionalAreaSelect" />
+                                        <Select
+                                            id="idFunctionalAreaSelect"
+                                            change="onFunctionalAreaChange"
+                                            width="13rem"
+                                            class="fluxFilterSelect" />
+                                    </VBox>
+
+                                </HBox>
+
+                                <!-- KPI SUMMARY ROW -->
+                                <HBox
+                                    alignItems="Start"
+                                    class="fluxKpiRow">
+                                    <VBox class="fluxKpiItem">
+                                        <Label
+                                            text="Available Dimensions"
+                                            class="fluxKpiLabel" />
+                                        <Text
+                                            text="3 accounting dimensions"
+                                            class="fluxKpiValue" />
+                                    </VBox>
+                                    <VBox class="fluxKpiItem">
+                                        <Label
+                                            text="Periods"
+                                            class="fluxKpiLabel" />
+                                        <Text
+                                            id="idKpiPeriods"
+                                            text="{app>/previousYear} vs {app>/currentYear}"
+                                            class="fluxKpiValue" />
+                                    </VBox>
+                                    <VBox class="fluxKpiItem">
+                                        <Label
+                                            text="Data Source"
+                                            class="fluxKpiLabel" />
+                                        <Text
+                                            text="SAP HANA Cloud"
+                                            class="fluxKpiValue" />
+                                    </VBox>
+                                </HBox>
+
+                            </f:DynamicPageHeader>
+                        </f:header>
+
+                        <!-- MAIN CONTENT: Tab Bar -->
+                        <f:content>
+                            <IconTabBar
+                                id="idMainIconTabBar"
+                                select="onIconTabBarMainSelect"
+                                expanded="true"
+                                stretchContentHeight="true"
+                                headerMode="Inline"
+                                backgroundDesign="Transparent"
+                                class="fluxTabBar">
+                                <items>
+                                    <IconTabFilter
+                                        text="Annual Summary"
+                                        key="annualSummary"
+                                        icon="sap-icon://bar-chart"
+                                        design="Horizontal">
+                                        <content>
+                                            <mvc:XMLView
+                                                id="idVariancesView"
+                                                viewName="financial.flux.analysis.view.Variances" />
+                                        </content>
+                                    </IconTabFilter>
+                                    <IconTabFilter
+                                        text="Chat IA"
+                                        key="chatIA"
+                                        icon="sap-icon://discussion"
+                                        design="Horizontal">
+                                        <content>
+                                            <mvc:XMLView
+                                                id="idChatView"
+                                                viewName="financial.flux.analysis.view.Chat" />
+                                        </content>
+                                    </IconTabFilter>
+                                </items>
+                            </IconTabBar>
+                        </f:content>
+
+                    </f:DynamicPage>
+                </content>
+            </Page>
+        </pages>
+    </App>
+</mvc:View>

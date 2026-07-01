@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mvc:View
+    controllerName="financial.flux.analysis.controller.WBS"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <VBox
+        class="sapUiLargeMargin"
+        alignItems="Center">
+        <Title text="WBS Analysis" level="H2" class="sapUiMediumMarginBottom" />
+        <MessageStrip
+            text="WBS Analysis is coming soon. This feature is currently under development."
+            type="Information"
+            showIcon="true"
+            class="sapUiMediumMarginBottom" />
+        <Text
+            text="Please use the Variances tab for financial analysis."
+            class="sapUiSmallMarginTop" />
+    </VBox>
+</mvc:View>

@@ -1,0 +1,105 @@
+# =============================================================================
+# Root .gitignore — SAP Fiori + Python Backend monorepo
+# =============================================================================
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ── Editor / IDE ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Environment / Secrets ─────────────────────────────────────────────────────
+# NEVER commit real credentials — use sample.env as template
+.env
+.env.*
+!.env.example
+!sample.env
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# mypy / pyright
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyright/
+
+# ── Node.js / UI5 ─────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+.npm/
+
+# Build output
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# ── Cloud Foundry ─────────────────────────────────────────────────────────────
+# CF pushes use manifest.yml — do not commit local overrides
+cf-*.json
+.cf/
+
+# ── Temporary / OS ────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+*.orig
+Thumbs.db
