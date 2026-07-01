@@ -1,0 +1,16 @@
+{
+  "name": "fe-fiori",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAPUI5 / Fiori frontend consuming FastAPI backend",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && npm run copy-files",
+    "copy-files": "cp -r webapp/Component.js webapp/manifest.json webapp/controller webapp/model webapp/services webapp/util webapp/view webapp/i18n webapp/annotations webapp/css webapp/fragment webapp/img dist/ && cp Staticfile dist/",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vite-plugin-static-copy": "^1.0.0"
+  }
+}

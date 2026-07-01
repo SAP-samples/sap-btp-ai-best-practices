@@ -1,0 +1,155 @@
+<mvc:View
+    controllerName="financial.flux.analysis.controller.Variances"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <VBox class="fluxVariancesContainer">
+
+        <!-- ============================================================
+             FILTER TOOLBAR  (Group By + Search)
+             ============================================================ -->
+        <OverflowToolbar
+            id="idFilterToolbar"
+            class="fluxFilterToolbar"
+            style="Solid">
+
+            <Label text="Group By:" class="fluxGroupByLabel sapUiSmallMarginEnd" />
+
+            <RadioButtonGroup
+                id="idGroupByRadioButtonGroup"
+                selectedIndex="{variances>/selectedGroupByIndex}"
+                select="onRadioButtonGroupGroupBySelect"
+                columns="4">
+                <buttons>
+                    <RadioButton text="G/L Account" />
+                    <RadioButton text="Profit Center" />
+                    <RadioButton text="Cost Center" />
+                    <RadioButton text="Financial Statement Line Item" />
+                </buttons>
+            </RadioButtonGroup>
+
+            <ToolbarSpacer />
+
+            <Text
+                id="idGroupedByText"
+                text="Grouped by: {variances>/selectedGroupBy}"
+                class="fluxGroupedByText sapUiSmallMarginEnd" />
+
+            <Text
+                id="idShowingText"
+                text="Showing {variances>/filteredCount} of {variances>/totalCount} values"
+                class="fluxShowingText sapUiSmallMarginEnd" />
+
+            <SearchField
+                id="idSearchField"
+                placeholder="Search..."
+                liveChange="onSearchLiveChange"
+                search="onSearch"
+                width="14rem" />
+        </OverflowToolbar>
+
+        <!-- ============================================================
+             ANALYTICAL TABLE
+             ============================================================ -->
+        <Table
+            id="idGroupedDataTable"
+            items="{variances>/filteredData}"
+            noDataText="No data available. Select fiscal years and click Refresh Data."
+            growing="true"
+            growingThreshold="100"
+            mode="None"
+            sticky="HeaderToolbar,ColumnHeaders"
+            alternatingRowColors="true"
+            class="fluxAnalyticalTable"
+            backgroundDesign="Transparent">
+
+            <columns>
+                <Column width="22%" vAlign="Middle">
+                    <Text text="{variances>/selectedGroupByName}" />
+                </Column>
+                <Column width="13%" hAlign="End" vAlign="Middle">
+                    <Text text="Current Year" />
+                </Column>
+                <Column width="13%" hAlign="End" vAlign="Middle">
+                    <Text text="Previous Year" />
+                </Column>
+                <Column width="13%" hAlign="End" vAlign="Middle">
+                    <Text text="Annual Delta" />
+                </Column>
+                <Column width="11%" hAlign="End" vAlign="Middle">
+                    <Text text="% Change" />
+                </Column>
+                <Column width="10%" hAlign="End" vAlign="Middle">
+                    <Text text="Records" />
+                </Column>
+                <Column width="12%" hAlign="End" vAlign="Middle">
+                    <Text text="AI Analysis" />
+                </Column>
+            </columns>
+
+            <items>
+                <ColumnListItem
+                    type="Active"
+                    press="onRowPress">
+                    <cells>
+
+                        <!-- Account number + name stacked -->
+                        <VBox class="fluxAccountCell">
+                            <Link
+                                text="{variances>key}"
+                                press="onKeyLinkPress"
+                                class="fluxKeyLink fluxAccountCode" />
+                            <Text
+                                text="{variances>displayName}"
+                                wrapping="false"
+                                class="fluxAccountName" />
+                        </VBox>
+
+                        <!-- Current Year -->
+                        <ObjectNumber
+                            number="{variances>currentAmountFormatted}"
+                            state="None"
+                            emphasized="false"
+                            class="fluxNumericCell" />
+
+                        <!-- Previous Year -->
+                        <ObjectNumber
+                            number="{variances>previousAmountFormatted}"
+                            state="None"
+                            emphasized="false"
+                            class="fluxNumericCell" />
+
+                        <!-- Annual Delta -->
+                        <ObjectNumber
+                            number="{variances>varianceFormatted}"
+                            state="{variances>varianceState}"
+                            emphasized="true"
+                            class="fluxNumericCell" />
+
+                        <!-- % Change -->
+                        <ObjectNumber
+                            number="{variances>variancePercentFormatted}"
+                            state="{variances>varianceState}"
+                            emphasized="false"
+                            class="fluxNumericCell" />
+
+                        <!-- Records -->
+                        <Text
+                            text="{variances>records}"
+                            class="fluxRecordsCell" />
+
+                        <!-- Explain — placeholder only -->
+                        <Button
+                            text="Explain"
+                            icon="sap-icon://simulate"
+                            type="Ghost"
+                            press="onExplainPress"
+                            class="fluxExplainBtn" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+
+    </VBox>
+</mvc:View>

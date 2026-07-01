@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pandas
+python-dotenv
+pydantic
+sap-ai-sdk-gen[all]
+langchain-core
+hdbcli

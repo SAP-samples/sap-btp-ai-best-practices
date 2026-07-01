@@ -1,0 +1,58 @@
+{
+    "_version": "1.58.0",
+    "sap.app": {
+        "id": "financial.flux.analysis",
+        "type": "application",
+        "title": "Financial Flux Analysis",
+        "description": "Enterprise financial variance analysis powered by SAP HANA and Generative AI",
+        "applicationVersion": {
+            "version": "3.0.0"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": false
+        }
+    },
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "financial.flux.analysis.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "financial.flux.analysis.view",
+                "controlId": "app",
+                "controlAggregation": "pages",
+                "async": true
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "home",
+                    "target": "home"
+                }
+            ],
+            "targets": {
+                "home": {
+                    "viewName": "App"
+                }
+            }
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "financial.flux.analysis.i18n.i18n"
+                }
+            }
+        }
+    }
+}
