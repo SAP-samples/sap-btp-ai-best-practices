@@ -1,0 +1,395 @@
+[
+  {
+    "rate_plan": "E21",
+    "display_name": "Residential Time of Use 3-6",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "tou",
+    "simulation_supported": true,
+    "new_enrollment_allowed": false,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "off_peak": 0.0994,
+        "on_peak": 0.1508
+      },
+      "summer": {
+        "off_peak": 0.103,
+        "on_peak": 0.3096
+      },
+      "summer_peak": {
+        "off_peak": 0.0996,
+        "on_peak": 0.3661
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {},
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E23",
+    "display_name": "Basic Residential Plan",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "flat",
+    "simulation_supported": true,
+    "new_enrollment_allowed": true,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "all_kwh": 0.1097
+      },
+      "summer": {
+        "all_kwh": 0.1204
+      },
+      "summer_peak": {
+        "all_kwh": 0.1398
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {},
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E24",
+    "display_name": "Prepay Plan",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "flat",
+    "simulation_supported": false,
+    "new_enrollment_allowed": false,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "all_kwh": 0.1097
+      },
+      "summer": {
+        "all_kwh": 0.1204
+      },
+      "summer_peak": {
+        "all_kwh": 0.1398
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {
+      "all_of": [
+        {
+          "fact_id": "is_mpower_enrolled",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E26",
+    "display_name": "Residential Time of Use",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "tou",
+    "simulation_supported": true,
+    "new_enrollment_allowed": false,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "off_peak": 0.0963,
+        "on_peak": 0.1294
+      },
+      "summer": {
+        "off_peak": 0.0995,
+        "on_peak": 0.1885
+      },
+      "summer_peak": {
+        "off_peak": 0.1069,
+        "on_peak": 0.2604
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {},
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E16",
+    "display_name": "Demand Saver 5-10 P.M.",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "demand",
+    "simulation_supported": true,
+    "new_enrollment_allowed": true,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "super_off_peak": 0.0438,
+        "off_peak": 0.0994,
+        "on_peak": 0.1119
+      },
+      "summer": {
+        "super_off_peak": 0.0393,
+        "off_peak": 0.0995,
+        "on_peak": 0.1257
+      },
+      "summer_peak": {
+        "super_off_peak": 0.0622,
+        "off_peak": 0.0996,
+        "on_peak": 0.1654
+      }
+    },
+    "demand_rates": {
+      "winter": {
+        "avg_on_peak_daily_kw": 9.61
+      },
+      "summer": {
+        "avg_on_peak_daily_kw": 13.56
+      },
+      "summer_peak": {
+        "avg_on_peak_daily_kw": 17.78
+      }
+    },
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {},
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E28",
+    "display_name": "Conserve 6-9 P.M.",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "tou_with_super_off_peak",
+    "simulation_supported": true,
+    "new_enrollment_allowed": true,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "super_off_peak": 0.0432,
+        "off_peak": 0.1355,
+        "on_peak": 0.1508
+      },
+      "summer": {
+        "super_off_peak": 0.0395,
+        "off_peak": 0.1506,
+        "on_peak": 0.1885
+      },
+      "summer_peak": {
+        "super_off_peak": 0.0661,
+        "off_peak": 0.1276,
+        "on_peak": 0.402
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {},
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  },
+  {
+    "rate_plan": "E29",
+    "display_name": "EV Time of Use",
+    "customer_type": "RESIDENTIAL",
+    "rate_kind": "tou_with_super_off_peak",
+    "simulation_supported": false,
+    "new_enrollment_allowed": false,
+    "fixed_charges": {
+      "tier1": 20.0,
+      "tier2": 30.0,
+      "tier3": 40.0
+    },
+    "energy_rates": {
+      "winter": {
+        "super_off_peak": 0.0792,
+        "off_peak": 0.0963,
+        "on_peak": 0.1097
+      },
+      "summer": {
+        "super_off_peak": 0.0793,
+        "off_peak": 0.0964,
+        "on_peak": 0.2195
+      },
+      "summer_peak": {
+        "super_off_peak": 0.0794,
+        "off_peak": 0.0965,
+        "on_peak": 0.2604
+      }
+    },
+    "demand_rates": {},
+    "seasonality": {
+      "winter_months": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ],
+      "summer_months": [
+        5,
+        6,
+        9,
+        10
+      ],
+      "summer_peak_months": [
+        7,
+        8
+      ]
+    },
+    "eligibility_logic": {
+      "all_of": [
+        {
+          "fact_id": "ev_ownership",
+          "op": "eq",
+          "value": true
+        }
+      ]
+    },
+    "evidence_references": [
+      "rate-plan-guide.pdf"
+    ]
+  }
+]

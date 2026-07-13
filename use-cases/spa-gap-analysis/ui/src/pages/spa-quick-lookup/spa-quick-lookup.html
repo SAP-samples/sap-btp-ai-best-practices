@@ -1,0 +1,210 @@
+<div class="spa-quick-lookup-container">
+  <ui5-title>SPA Quick Lookup</ui5-title>
+  <br />
+  <ui5-text>Fast SPA gap analysis - Find missing SPAs for a customer</ui5-text>
+  
+  <!-- Search Card -->
+  <ui5-card style="margin-top: 1.5rem">
+    <ui5-card-header slot="header" title-text="Customer Analysis">
+      <ui5-icon name="search" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+    
+    <div style="padding: 1.5rem">
+      <ui5-label for="customer-id-input" required>Customer ID:</ui5-label>
+      <ui5-input
+        id="customer-id-input"
+        placeholder="Enter customer ID (e.g., 1104)"
+        style="width: 300px; margin-top: 0.5rem"
+      ></ui5-input>
+
+      <div style="margin-top: 1rem">
+        <ui5-checkbox id="filter-has-names" checked text="Only show similar customers with names"></ui5-checkbox>
+      </div>
+
+      <div style="margin-top: 1rem">
+        <ui5-button id="analyze-button" design="Emphasized">Analyze Customer</ui5-button>
+      </div>
+    </div>
+  </ui5-card>
+
+  <!-- Loading Indicator -->
+  <div id="loading-indicator" style="display: none; margin-top: 1.5rem; text-align: center">
+    <ui5-busy-indicator active style="width: 3rem; height: 3rem"></ui5-busy-indicator>
+    <ui5-text>Analyzing customer...</ui5-text>
+  </div>
+
+  <!-- Results Container -->
+  <div id="results-container" style="display: none">
+
+    <!-- Data Glossary Panel (Collapsible) -->
+    <ui5-panel id="data-glossary-panel" collapsed header-text="📖 Data Glossary & Definitions" style="margin-top: 1.5rem">
+      <div style="padding: 1.5rem; background: #f8f9fa;">
+        <div style="display: grid; gap: 1.5rem;">
+
+          <!-- COGS -->
+          <div style="border-left: 4px solid #0070f2; padding-left: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #0070f2;">COGS (Cost of Goods Sold)</h4>
+            <p style="margin: 0 0 0.5rem 0; line-height: 1.6;">
+              <strong>Definition:</strong> The total amount spent by the customer on purchased materials and products.
+            </p>
+            <p style="margin: 0; font-size: 0.9em; color: #666; line-height: 1.6;">
+              <strong>Data Period:</strong> Last 12 months (rolling quarterly data)<br>
+              <strong>Source:</strong> Quarterly sales transactions aggregated from Q1-Q4<br>
+              <strong>Updated:</strong> Quarterly (most recent data: 2026-04-13)
+            </p>
+          </div>
+
+          <!-- RFM -->
+          <div style="border-left: 4px solid #28a745; padding-left: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #28a745;">RFM (Recency, Frequency, Monetary)</h4>
+            <p style="margin: 0 0 0.5rem 0; line-height: 1.6;">
+              <strong>Definition:</strong> Customer segmentation model based on purchase behavior:
+            </p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+              <li><strong>Recency:</strong> How recently the customer made a purchase</li>
+              <li><strong>Frequency:</strong> How often they purchase</li>
+              <li><strong>Monetary:</strong> How much they spend</li>
+            </ul>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9em; color: #666; line-height: 1.6;">
+              <strong>Segments:</strong> Champions, Loyal, Promising, At Risk, Need Attention, Lost<br>
+              <strong>Updated:</strong> Quarterly based on rolling 12-month transaction history
+            </p>
+          </div>
+
+          <!-- Savings -->
+          <div style="border-left: 4px solid #ffc107; padding-left: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #f59e0b;">Savings Analysis (Current Savings on Existing SPAs)</h4>
+            <p style="margin: 0 0 0.5rem 0; line-height: 1.6;">
+              <strong>Definition:</strong> CURRENT cost savings already achieved through existing SPA (Special Price Agreement) pricing.
+            </p>
+            <p style="margin: 0 0 0.5rem 0; line-height: 1.6; background: #fff3cd; padding: 0.75rem; border-radius: 4px;">
+              <strong>⚠️ Important:</strong> This shows <u>actual savings on active SPAs</u>, NOT potential savings from missing SPAs.
+            </p>
+
+            <h5 style="margin: 1rem 0 0.5rem 0; font-size: 0.95em;">How Savings are Calculated:</h5>
+            <ol style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+              <li><strong>Filter materials with active SPAs:</strong> Only materials with both base cost data AND active SPA pricing</li>
+              <li><strong>Calculate difference:</strong> Savings = Base Cost - SPA Price (for each material)</li>
+              <parameter name="Aggregate:</strong> Sum all material-level savings for the customer</li>
+            </ol>
+
+            <!-- Dynamic Example Calculation (populated by JS) -->
+            <div id="example-calculation-container"></div>
+
+            <p style="margin: 0.5rem 0; font-size: 0.9em; background: #e7f3ff; padding: 0.75rem; border-radius: 4px; line-height: 1.6;">
+              <strong>📊 Two Ways to View Savings %:</strong><br>
+              <span id="savings-pct-explanation">
+                Savings % can be viewed as average discount on SPA materials, or as % of total spending
+              </span>
+            </p>
+
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9em; color: #666; line-height: 1.6;">
+              <strong>Coverage:</strong> Savings calculated only for materials with SPA pricing data<br>
+              <strong>Source:</strong> A703 SPA price nets, base cost data, quarterly sales transactions<br>
+              <strong>Updated:</strong> Real-time based on active SPA agreements
+            </p>
+          </div>
+
+          <!-- SPA -->
+          <div style="border-left: 4px solid #6c757d; padding-left: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #6c757d;">SPA (Special Price Agreement)</h4>
+            <p style="margin: 0 0 0.5rem 0; line-height: 1.6;">
+              <strong>Definition:</strong> Pre-negotiated pricing contracts with suppliers for specific materials or material groups.
+            </p>
+            <p style="margin: 0; font-size: 0.9em; color: #666; line-height: 1.6;">
+              <strong>Types:</strong> Blanket SPAs (broad material coverage) and Customer-Specific SPAs<br>
+              <strong>Updated:</strong> Real-time from SAP master data
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </ui5-panel>
+
+    <!-- Customer Profile Panel (Collapsible) -->
+    <ui5-panel id="customer-profile-panel" header-text="Customer Profile" style="margin-top: 1.5rem">
+      <div style="padding: 1rem">
+        <div id="customer-profile"></div>
+      </div>
+    </ui5-panel>
+
+    <!-- Savings Analysis Card -->
+    <ui5-card style="margin-top: 1.5rem" id="savings-analysis-card">
+      <ui5-card-header slot="header" title-text="Savings Analysis & Calculation Details">
+        <ui5-icon name="money-bills" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+
+      <div style="padding: 1.5rem">
+        <div id="savings-analysis-content"></div>
+      </div>
+    </ui5-card>
+
+    <!-- Missing SPAs Card -->
+    <ui5-card style="margin-top: 1.5rem">
+      <ui5-card-header slot="header" title-text="Missing SPAs">
+        <ui5-icon name="alert" slot="avatar"></ui5-icon>
+        <ui5-tag slot="badge" id="missing-spa-count" color-scheme="8">0</ui5-tag>
+      </ui5-card-header>
+
+      <div style="padding: 1.5rem">
+        <div id="missing-spas-list"></div>
+      </div>
+    </ui5-card>
+
+    <!-- Material Category Summary Card -->
+    <ui5-card style="margin-top: 1.5rem; display: none" id="material-summary-card">
+      <ui5-card-header slot="header" title-text="Material Category Summary (Partial)">
+        <ui5-icon name="product" slot="avatar"></ui5-icon>
+        <ui5-tag slot="badge" id="material-category-count" color-scheme="2">0</ui5-tag>
+      </ui5-card-header>
+
+      <div style="padding: 1.5rem">
+        <!-- Coverage warning -->
+        <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 0.75rem 1rem; margin-bottom: 1rem; border-radius: 4px;">
+          <div style="font-size: 0.9em; color: #856404;">
+            <strong>ℹ️ Partial hierarchy view</strong><br>
+            <span id="material-coverage-explanation">This card uses hierarchy-mapped transaction data only and is directional, not a canonical SPA coverage view.</span>
+          </div>
+        </div>
+
+        <!-- Overall stats -->
+        <div class="material-stats-row">
+          <div class="stat-item">
+            <span class="stat-label">Hierarchy-Mapped Spend</span>
+            <span class="stat-value" id="material-total-cogs">$0</span>
+            <span class="stat-sublabel" id="material-coverage-percent" style="font-size: 0.75em; color: #666; display: block; margin-top: 0.25rem;">of total COGS</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">A703 Match Coverage</span>
+            <span class="stat-value" id="material-spa-coverage">0%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Categorized Transactions</span>
+            <span class="stat-value" id="material-transaction-count">0</span>
+          </div>
+        </div>
+
+        <!-- Category tree -->
+        <div id="material-hierarchy-tree"></div>
+      </div>
+    </ui5-card>
+
+    <!-- Similar Customers Card -->
+    <ui5-card style="margin-top: 1.5rem">
+      <ui5-card-header slot="header" title-text="Similar Customers">
+        <ui5-icon name="group" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+
+      <div style="padding: 1.5rem">
+        <div id="similar-customers-list"></div>
+      </div>
+    </ui5-card>
+
+  </div>
+
+  <!-- Error Panel -->
+  <ui5-panel id="error-panel" header-text="Error" collapsed style="margin-top: 1.5rem; display: none">
+    <div id="error-message" style="padding: 1rem; color: red"></div>
+  </ui5-panel>
+
+</div>

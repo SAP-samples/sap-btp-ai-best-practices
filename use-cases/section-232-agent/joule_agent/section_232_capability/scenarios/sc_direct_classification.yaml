@@ -1,0 +1,41 @@
+description: >
+  Run a direct Section 232 eligibility decision from an HTS code and metal
+  weights without referencing a stored item. Use this when the user provides an
+  HTS code plus steel, aluminum, copper, or total weight values. Examples:
+  "Assess HTS 8481.80.30.90 with 1200 grams steel", "Is HTS 7308.90 subject
+  with 500g steel and 20g aluminum?", or "classify 7412.20 with 300 grams of
+  copper".
+
+slots:
+  - name: hts_code
+    description: >
+      Primary HTS code to classify. Capture the code with dots if provided,
+      such as 8481.80.30.90.
+  - name: steel_grams
+    description: >
+      Steel weight in grams. Extract a number from phrases such as "1200 grams
+      steel". Use 0 only if the user explicitly says there is no steel.
+  - name: aluminum_grams
+    description: >
+      Aluminum weight in grams. Extract a number when present. Leave empty if
+      the user did not mention aluminum.
+  - name: copper_grams
+    description: >
+      Copper weight in grams. Extract a number when present. Leave empty if
+      the user did not mention copper.
+  - name: total_weight_grams
+    description: >
+      Total item weight in grams. Extract a number when present. Leave empty
+      when the user only provided metal weights.
+  - name: supporting_hts_candidates
+    description: >
+      Comma-separated supporting HTS candidate codes if the user provides
+      alternatives. Normalize separators to commas.
+  - name: metal_share_certainty
+    description: >
+      Use "exact" when weights are known or measured, and "estimated" when the
+      user says the weights are approximate, estimated, or uncertain.
+
+target:
+  name: fn_direct_classification
+  type: function

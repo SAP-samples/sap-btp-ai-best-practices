@@ -1,0 +1,5 @@
+supplier_id,name,lead_time_days,min_order_qty,reliability_rating
+SUP-001,TechParts GmbH,5,10,4.8
+SUP-002,FurniturePro AG,14,2,4.5
+SUP-003,OfficeWorld Ltd,3,20,4.2
+SUP-004,SafetyFirst SE,7,50,4.9

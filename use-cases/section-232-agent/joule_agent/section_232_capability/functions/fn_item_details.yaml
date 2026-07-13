@@ -1,0 +1,99 @@
+parameters:
+  - name: item_id
+    optional: false
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: /api/metal-composition/items/<? item_id ?>
+        result_variable: detail_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Item {{detail_result.body.item_id}}
+
+            | Field | Value |
+            |---|---|
+            | Product code | {{detail_result.body.product_code}} |
+            | Type | {{detail_result.body.item_type}} |
+            | Priority | {{#if detail_result.body.priority}}{{detail_result.body.priority}}{{else}}-{{/if}} |
+            | Business segment | {{#if detail_result.body.business_segment}}{{detail_result.body.business_segment}}{{else}}-{{/if}} |
+            | Part number | {{#if detail_result.body.pn_revised_standardized}}{{detail_result.body.pn_revised_standardized}}{{else}}-{{/if}} |
+            | Description | {{#if detail_result.body.new_part_description}}{{detail_result.body.new_part_description}}{{else}}{{detail_result.body.part_description}}{{/if}} |
+            | Total weight | {{#if detail_result.body.total_weight_gram}}{{detail_result.body.total_weight_gram}} g{{else}}-{{/if}} |
+            | Documents | {{detail_result.body.docs_status}} |
+
+            {{#if detail_result.body.latest_classification}}
+            ### Latest Analysis
+
+            | Metric | Value |
+            |---|---|
+            | Status | {{detail_result.body.latest_classification.status}} |
+            | Last classified | {{#if detail_result.body.last_classified_at}}{{detail_result.body.last_classified_at}}{{else}}-{{/if}} |
+            {{#if detail_result.body.latest_classification.error}}
+            | Error | {{detail_result.body.latest_classification.error}} |
+            {{/if}}
+
+            {{#if detail_result.body.latest_classification.final_composition}}
+            ### Metal Composition
+
+            | Metal | Grams |
+            |---|---:|
+            | Steel | {{detail_result.body.latest_classification.final_composition.top_level_grams.steel}} |
+            | Aluminum | {{detail_result.body.latest_classification.final_composition.top_level_grams.aluminum}} |
+            | Copper | {{detail_result.body.latest_classification.final_composition.top_level_grams.copper}} |
+            | Cast iron | {{detail_result.body.latest_classification.final_composition.top_level_grams.cast_iron}} |
+            | Estimated total metal | {{detail_result.body.latest_classification.final_composition.estimated_total_metal_grams}} |
+            | Confidence | {{detail_result.body.latest_classification.final_composition.confidence}}% |
+            {{/if}}
+
+            {{#if detail_result.body.latest_classification.hts_classification.best_candidate}}
+            ### HTS Classification
+
+            | Field | Value |
+            |---|---|
+            | Best code | {{detail_result.body.latest_classification.hts_classification.best_candidate.code}} |
+            | Description | {{detail_result.body.latest_classification.hts_classification.best_candidate.description}} |
+            | Confidence | {{detail_result.body.latest_classification.hts_classification.best_candidate.confidence}}% |
+            | Needs review | {{detail_result.body.latest_classification.hts_classification.needs_human_review}} |
+            {{/if}}
+
+            {{#if detail_result.body.latest_classification.section_232_assessment}}
+            ### Section 232 Eligibility
+
+            | Field | Value |
+            |---|---|
+            | Status | {{detail_result.body.latest_classification.section_232_assessment.status}} |
+            | Decision | {{detail_result.body.latest_classification.section_232_assessment.decision}} |
+            | Confidence | {{detail_result.body.latest_classification.section_232_assessment.confidence}}% |
+            | Needs review | {{detail_result.body.latest_classification.section_232_assessment.needs_human_review}} |
+            | Basis | {{detail_result.body.latest_classification.section_232_assessment.basis_summary}} |
+            {{#if detail_result.body.latest_classification.section_232_assessment.supporting_hts_candidates.length}}
+            | Supporting HTS | {{#each detail_result.body.latest_classification.section_232_assessment.supporting_hts_candidates}}{{this}}{{#unless @last}}, {{/unless}}{{/each}} |
+            {{/if}}
+            {{#if detail_result.body.latest_classification.section_232_assessment.chapter_99_candidates.length}}
+            | Chapter 99 | {{#each detail_result.body.latest_classification.section_232_assessment.chapter_99_candidates}}{{this}}{{#unless @last}}, {{/unless}}{{/each}} |
+            {{/if}}
+            {{/if}}
+            {{else}}
+            No stored analysis is available for this item.
+            {{/if}}
+
+  - actions:
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "Next actions"
+            buttons:
+              - title: "Start analysis"
+                value: "Start analysis for {{detail_result.body.item_id}}"
+              - title: "Search product"
+                value: "Find item {{detail_result.body.product_code}}"

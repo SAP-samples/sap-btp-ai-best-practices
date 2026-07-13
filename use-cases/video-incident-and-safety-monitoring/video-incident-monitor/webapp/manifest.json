@@ -1,0 +1,171 @@
+{
+  "_version": "1.73.1",
+  "sap.app": {
+    "id": "videoincidentmonitor",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.19.6",
+      "toolsId": "b70802a2-e17a-434b-9bcc-5a6ab555512d"
+    },
+    "dataSources": {
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/odata/v4/VideoIncidentService/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.136.7",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "rootView": {
+      "viewName": "videoincidentmonitor.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "appView"
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "videoincidentmonitor.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "AnalyzeMedia",
+          "target": "AnalyzeMedia"
+        },
+        {
+          "pattern": "list:?query:",
+          "name": "MediaAnalysisList",
+          "target": "MediaAnalysisList"
+        },
+        {
+          "pattern": "MediaAnalysis({key}):?query:",
+          "name": "MediaAnalysisObjectPage",
+          "target": "MediaAnalysisObjectPage"
+        }
+      ],
+      "targets": {
+        "AnalyzeMedia": {
+          "type": "View",
+          "id": "AnalyzeMedia",
+          "name": "videoincidentmonitor.view.AnalyzeMedia",
+          "viewLevel": 1,
+          "controlAggregation": "pages",
+          "controlId": "app"
+        },
+        "MediaAnalysisList": {
+          "type": "Component",
+          "id": "MediaAnalysisList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/MediaAnalysis",
+              "variantManagement": "Page",
+              "navigation": {
+                "MediaAnalysis": {
+                  "detail": {
+                    "route": "MediaAnalysisObjectPage"
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "tableSettings": {
+                    "type": "ResponsiveTable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "MediaAnalysisObjectPage": {
+          "type": "Component",
+          "id": "MediaAnalysisObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/MediaAnalysis"
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

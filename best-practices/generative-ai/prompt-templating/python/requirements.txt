@@ -1,4 +1,4 @@
 notebook
 jupyterlab
-generative-ai-hub-sdk
+sap-ai-sdk-gen
 python-dotenv

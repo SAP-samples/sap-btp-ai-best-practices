@@ -1,0 +1,24 @@
+---
+applications:
+  - name: video-incident-monitor
+    buildpacks:
+      - staticfile_buildpack
+    memory: 128M
+    disk_quota: 1G
+    path: video-incident-monitor/webapp
+    routes:
+      - route: video-incident-monitor.cfapps.eu10-004.hana.ondemand.com
+
+  - name: video-incident-monitor-backend
+    buildpacks:
+      - python_buildpack
+    stack: cflinuxfs4
+    memory: 512M
+    disk_quota: 2G
+    path: .
+    routes:
+      - route: video-incident-monitor-backend.cfapps.eu10-004.hana.ondemand.com
+    env:
+      API_KEY: ((api_key))
+      ALLOWED_ORIGIN: https://video-incident-monitor.cfapps.eu10-004.hana.ondemand.com
+    health-check-type: port

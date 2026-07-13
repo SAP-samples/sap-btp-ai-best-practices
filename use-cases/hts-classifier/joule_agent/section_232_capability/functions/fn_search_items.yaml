@@ -1,0 +1,79 @@
+parameters:
+  - name: product_code
+    optional: true
+  - name: pn_revised_standardized
+    optional: true
+  - name: new_part_description
+    optional: true
+  - name: part_description
+    optional: true
+  - name: priority
+    optional: true
+  - name: business_segment
+    optional: true
+  - name: has_documents
+    optional: true
+  - name: is_classified
+    optional: true
+  - name: limit
+    optional: true
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: "/api/metal-composition/items?product_code=<? product_code ?>&pn_revised_standardized=<? pn_revised_standardized ?>&new_part_description=<? new_part_description ?>&part_description=<? part_description ?>&priority=<? priority ?>&business_segment=<? business_segment ?>&limit=<? limit == null || limit == '' ? 20 : limit ?>&offset=0<? has_documents == null || has_documents == '' ? '' : '&has_documents=' + has_documents ?><? is_classified == null || is_classified == '' ? '' : '&is_classified=' + is_classified ?>"
+        result_variable: search_result
+
+  - condition: search_result != null && search_result.status_code == 200 && search_result.body != null
+    actions:
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Item Search Results
+
+            Found **{{search_result.body.total}}** item(s). Showing up to **{{search_result.body.limit}}**.
+
+            {{#if search_result.body.items.length}}
+            | Item ID | Product | PN | Segment | Documents | Classification |
+            |---|---|---|---|---|---|
+            {{#each search_result.body.items}}
+            | {{this.item_id}} | {{this.product_code}} | {{#if this.pn_revised_standardized}}{{this.pn_revised_standardized}}{{else}}-{{/if}} | {{#if this.business_segment}}{{this.business_segment}}{{else}}-{{/if}} | {{this.docs_status}} | {{this.classification_status}} |
+            {{/each}}
+            {{else}}
+            No matching items were found.
+            {{/if}}
+
+  - condition: search_result != null && search_result.status_code == 200 && search_result.body != null && search_result.body.items != null && search_result.body.items.size() > 0
+    actions:
+      - type: set-variables
+        variables:
+          - name: first_item_id
+            value: "<? search_result.body.items[0].item_id ?>"
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "Next actions"
+            buttons:
+              - title: "Show first detail"
+                value: "Show details for {{first_item_id}}"
+              - title: "Analyze first"
+                value: "Start analysis for {{first_item_id}}"
+
+  - condition: search_result == null || search_result.body == null || search_result.status_code != 200
+    actions:
+      - type: message
+        message:
+          type: text
+          markdown: true
+          content: |
+            I could not reach the Section 232 API.
+
+            Check that the Joule account has a destination named `Section-232-Agent`
+            and that it points to the deployed API with the `X-API-Key` header.

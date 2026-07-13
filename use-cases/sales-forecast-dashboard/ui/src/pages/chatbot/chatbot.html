@@ -1,0 +1,81 @@
+<div class="chatbot-container">
+  <!-- Chat area using ui5-page with fixed footer -->
+  <ui5-page class="chat-page" fixed-footer background-design="Solid">
+    <!-- Header -->
+    <ui5-bar slot="header" design="Header">
+      <ui5-title slot="startContent">AI Sales Assistant</ui5-title>
+      <ui5-label slot="endContent">Ask questions about your sales forecast data</ui5-label>
+    </ui5-bar>
+
+    <!-- Scrollable messages area with busy indicator -->
+    <ui5-busy-indicator id="chat-busy" size="M" text="AI is thinking...">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome message -->
+        <div class="message assistant">
+          <div class="message-avatar">
+            <ui5-icon name="da"></ui5-icon>
+          </div>
+          <div class="message-content">
+            <ui5-text>Hello! I'm your AI Sales Assistant. I can help you analyze sales forecasts, create what-if scenarios, and answer questions about your store performance. What would you like to know?</ui5-text>
+          </div>
+        </div>
+      </div>
+    </ui5-busy-indicator>
+
+    <!-- Fixed footer with input -->
+    <div slot="footer" class="chat-input-area">
+      <ui5-textarea
+        id="chat-input"
+        placeholder="Type your question here..."
+        growing
+        growing-max-rows="4"
+        class="chat-input"
+      ></ui5-textarea>
+      <ui5-button id="send-btn" design="Emphasized" icon="paper-plane">
+        Send
+      </ui5-button>
+    </div>
+  </ui5-page>
+
+  <!-- Workflows card -->
+  <ui5-card class="suggestions-card">
+    <ui5-card-header slot="header" title-text="Workflows"></ui5-card-header>
+    <ui5-list id="suggestions-list" mode="SingleSelect">
+      <!-- Workflow prompts for the agent (UI label + prompt text) -->
+      <ui5-li icon="excel-attachment" data-question="Export all sales predictions for 2025">Export all sales predictions for 2025</ui5-li>
+      <ui5-li icon="excel-attachment" data-question="Export the current predictions as a CSV file">Export results in csv</ui5-li>
+      <ui5-li icon="pdf-attachment" data-question="Generate a PDF report with the findings from this conversation">Generate report</ui5-li>
+      <ui5-li icon="response" data-question="Perform a sensitivity analysis on the current store and date">Perform sensitivity analysis</ui5-li>
+      <ui5-li icon="response" data-question="For the current predictions, explain these results in relationship with the previous year results. If we are currently comparing a what if scenario and baseline, compare also with respect to the baseline scenario">Explain this results</ui5-li>
+    </ui5-list>
+  </ui5-card>
+
+  <!-- Image Lightbox Modal -->
+  <div id="image-lightbox" class="image-lightbox">
+    <span id="lightbox-close" class="image-lightbox-close">&times;</span>
+    <img id="lightbox-image" src="" alt="Enlarged view">
+  </div>
+
+  <!-- AI Disclaimer Dialog -->
+  <ui5-dialog id="ai-disclaimer-dialog" state="Information" header-text="Information">
+    <div class="ai-disclaimer-content">
+      <ui5-title level="H5">Disclaimer</ui5-title>
+      <ui5-text>
+        Artificial Intelligence (AI) generates results based on multiple sources. Outputs may contain errors and inaccuracies. Consider reviewing all generated results and adjust as necessary.
+      </ui5-text>
+      <ui5-text>
+        For more information, see
+        <ui5-link href="https://www.sap.com/products/artificial-intelligence/ai-ethics.html" target="_blank">SAP AI Ethics</ui5-link>.
+      </ui5-text>
+      <ui5-checkbox
+        id="ai-disclaimer-optout"
+        class="ai-disclaimer-optout"
+        text="Don't show this message again"
+      ></ui5-checkbox>
+    </div>
+    <div slot="footer" class="ai-disclaimer-footer">
+      <ui5-button id="ai-disclaimer-ok" design="Emphasized">OK</ui5-button>
+      <ui5-button id="ai-disclaimer-cancel">Cancel</ui5-button>
+    </div>
+  </ui5-dialog>
+</div>

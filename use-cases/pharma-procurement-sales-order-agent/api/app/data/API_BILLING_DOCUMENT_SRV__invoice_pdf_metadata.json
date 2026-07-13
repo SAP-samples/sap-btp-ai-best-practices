@@ -1,0 +1,21 @@
+{
+  "source": "synthetic_API_BILLING_DOCUMENT_SRV",
+  "billing_documents": [
+    {
+      "billing_document": "90004568",
+      "sales_order": "50214568",
+      "payer": "17100031",
+      "sold_to_party": "17100001",
+      "billing_date": "2026-06-05",
+      "currency": "USD",
+      "net_amount": 6675.00,
+      "tax_amount": 0.00,
+      "gross_amount": 6675.00,
+      "billing_status": "COMPLETED",
+      "pdf_available": true,
+      "pdf_file_name": "invoice_90004568.pdf",
+      "mock_pdf_url": "https://example.invalid/mock/invoice_90004568.pdf"
+    }
+  ]
+}
+

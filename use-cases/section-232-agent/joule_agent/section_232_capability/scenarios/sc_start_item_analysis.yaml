@@ -1,0 +1,20 @@
+description: >
+  Start a backend Section 232 prediction job for a single Material Master item.
+  Use this when the user asks to analyze, classify, rerun, or start analysis
+  for one item id. Examples: "Start analysis for mm:1001", "classify item
+  mm:1001", or "rerun Section 232 analysis for mm:2002 with PDFs".
+
+slots:
+  - name: item_id
+    description: >
+      Backend Material Master item id to classify, in the form mm:1001. Capture
+      the complete value including the prefix and colon.
+  - name: document_mode
+    description: >
+      Evidence mode for the prediction. Default to text_only. Use
+      with_documents only when the user explicitly asks to include PDFs,
+      diagrams, drawings, or uploaded documents.
+
+target:
+  name: fn_start_item_analysis
+  type: function

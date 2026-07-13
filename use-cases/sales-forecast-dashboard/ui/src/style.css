@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  font-family: var(--sapFontFamily);
+}
+
+.content {
+  min-height: 400px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Ensure navigation layout fills viewport */
+#nl1 {
+  height: 100vh;
+}

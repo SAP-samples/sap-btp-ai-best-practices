@@ -1,0 +1,121 @@
+<div class="fine-tuning-container">
+    <ui5-title level="H2">Model Fine-Tuning</ui5-title>
+    <ui5-text>Upload new training data to retrain the anomaly detection model.</ui5-text>
+
+    <!-- Statistics Card -->
+    <ui5-card class="section-card">
+        <ui5-card-header title-text="Current Test Dataset Statistics"></ui5-card-header>
+        <div class="statistics-grid">
+             <div class="stat-item">
+                <ui5-title level="H5">Total Records</ui5-title>
+                <ui5-text id="stat-total-records" class="stat-value">-</ui5-text>
+             </div>
+             <div class="stat-item">
+                <ui5-title level="H5">Current Anomaly Rate</ui5-title>
+                <ui5-text id="stat-anomaly-rate" class="stat-value">-</ui5-text>
+             </div>
+             <div class="stat-item">
+                <ui5-title level="H5">Unique Customers</ui5-title>
+                <ui5-text id="stat-unique-customers" class="stat-value">-</ui5-text>
+             </div>
+             <div class="stat-item">
+                <ui5-title level="H5">Unique Materials</ui5-title>
+                <ui5-text id="stat-unique-materials" class="stat-value">-</ui5-text>
+             </div>
+        </div>
+    </ui5-card>
+
+    <!-- Feature Selection Card -->
+    <ui5-card class="section-card">
+        <ui5-card-header title-text="Feature Selection"></ui5-card-header>
+        <div style="padding: 1rem;">
+            <ui5-text>Select which features to include in the anomaly detection model training:</ui5-text>
+            <div id="features-container" class="features-container">
+                <!-- Populated dynamically -->
+                <ui5-busy-indicator active size="Medium"></ui5-busy-indicator>
+            </div>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--sapList_BorderColor);">
+                <ui5-title level="H5" id="selected-features-count">Selected Features: 0 / 0</ui5-title>
+            </div>
+        </div>
+    </ui5-card>
+
+    <!-- Upload Card -->
+    <ui5-card class="section-card">
+        <ui5-card-header title-text="Upload Training Data"></ui5-card-header>
+        <div style="padding: 1rem;">
+            <div class="upload-section" id="upload-area">
+                <ui5-icon name="upload" style="font-size: 3rem; color: #666; margin-bottom: 1rem;"></ui5-icon>
+                <ui5-text>Drag and drop CSV/Excel file here or click to browse</ui5-text>
+                <ui5-file-uploader id="file-uploader" accept=".csv, .xlsx" style="margin-top: 1rem;">
+                    <ui5-button icon="upload">Browse...</ui5-button>
+                </ui5-file-uploader>
+            </div>
+            <div id="file-status" style="margin-top: 1rem; display: none;">
+                <ui5-message-strip id="upload-msg" design="Information"></ui5-message-strip>
+            </div>
+        </div>
+    </ui5-card>
+
+    <!-- Model Configuration Card -->
+    <ui5-card class="section-card">
+        <ui5-card-header title-text="Model Configuration"></ui5-card-header>
+        <div style="padding: 1rem;">
+            <div class="config-grid">
+                <div class="form-group">
+                    <ui5-label for="n-estimators" show-colon>Number of Estimators</ui5-label>
+                    <ui5-step-input id="n-estimators" min="50" max="500" value="150" step="10"></ui5-step-input>
+                    <ui5-text class="help-text">Number of trees in the forest.</ui5-text>
+                </div>
+
+                <div class="form-group">
+                    <ui5-label for="max-samples" show-colon>Max Samples per Tree</ui5-label>
+                    <ui5-select id="max-samples">
+                        <ui5-option value="256">256</ui5-option>
+                        <ui5-option value="512" selected>512</ui5-option>
+                        <ui5-option value="1024">1024</ui5-option>
+                        <ui5-option value="auto">auto</ui5-option>
+                    </ui5-select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <ui5-checkbox id="auto-contamination" text="Use Auto Contamination Rate" checked></ui5-checkbox>
+            </div>
+
+            <div class="form-group">
+                <ui5-label for="contamination-slider" show-colon>Contamination Rate</ui5-label>
+                <ui5-slider id="contamination-slider" min="0.01" max="0.2" step="0.01" value="0.05" label-interval="5" disabled></ui5-slider>
+                <ui5-text id="contamination-value" style="color: var(--sapContent_DisabledTextColor);">Auto</ui5-text>
+            </div>
+
+            <div class="form-group">
+                <ui5-checkbox id="enable-stratification" text="Enable Customer Stratification" checked></ui5-checkbox>
+                <ui5-text class="help-text" style="display: block; margin-left: 1.75rem;">Train separate models for different customer tiers (recommended)</ui5-text>
+            </div>
+            
+            <div class="form-group">
+                <ui5-message-strip design="Information" hide-close-button>Note: Direct anomaly score threshold adjustment is not available. The model uses statistical thresholds based on the contamination rate.</ui5-message-strip>
+            </div>
+        </div>
+    </ui5-card>
+
+    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 1rem;">
+        <div style="text-align: right;">
+            <ui5-text>Ready to retrain?</ui5-text>
+            <ui5-text style="display: block; font-size: 0.8rem; color: #666;">For this deployment, retraining is disabled</ui5-text>
+        </div>
+        <ui5-button id="train-btn" design="Emphasized" icon="play" disabled>Retrain Model</ui5-button>
+    </div>
+
+    <ui5-dialog id="training-dialog" header-text="Training Status">
+        <div style="padding: 2rem; text-align: center; min-width: 300px;">
+            <ui5-busy-indicator active size="Large" id="train-busy"></ui5-busy-indicator>
+            <ui5-title level="H4" id="train-status-text" style="margin-top: 1rem;">Training in progress...</ui5-title>
+            <ui5-text>This may take a few minutes.</ui5-text>
+        </div>
+        <div slot="footer" style="display: flex; justify-content: flex-end; padding: 0.5rem;">
+            <ui5-button id="dialog-close-btn" design="Emphasized" style="display: none;">Close</ui5-button>
+        </div>
+    </ui5-dialog>
+</div>

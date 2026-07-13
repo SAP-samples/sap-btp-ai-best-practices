@@ -1,0 +1,133 @@
+{
+  "source": "synthetic_zsd_external_info_and_s4_customer_master",
+  "generated_for": "Pharma Procurement Sales Order Agent technical prototype",
+  "customers": [
+    {
+      "customer_id": "17100001",
+      "customer_name": "Northstar Pharmacy Distribution",
+      "aliases": ["Northstar", "Northstar Pharmacy Distribution Inc."],
+      "dea_number": "BC1234567",
+      "hin": "HIN-00981234",
+      "gln": "0031234500001",
+      "customer_group": "PHARMA_DISTRIBUTOR",
+      "sales_area": {
+        "sales_organization": "1710",
+        "distribution_channel": "10",
+        "division": "00"
+      },
+      "partner_roles": {
+        "sold_to": "17100001",
+        "ship_to": "17100011",
+        "bill_to": "17100021",
+        "payer": "17100031"
+      },
+      "ship_to_address": {
+        "name": "Northstar Pharmacy Distribution - Central DC",
+        "street": "7000 Northstar Place",
+        "city": "Dublin",
+        "region": "OH",
+        "postal_code": "43017",
+        "country": "US"
+      },
+      "pharma_compliance": {
+        "dea_license_status": "ACTIVE",
+        "state_license_status": "ACTIVE",
+        "dsCSA_trading_partner_status": "VERIFIED",
+        "controlled_substance_allowed": false,
+        "temperature_control_capable": true
+      },
+      "commercial_terms": {
+        "currency": "USD",
+        "payment_terms": "NET30",
+        "pricing_contract": "CARD-2026-INV",
+        "credit_status": "CLEAR"
+      },
+      "recent_sales_orders": ["50214567", "50214568", "50214569", "50214570", "50214571"]
+    },
+    {
+      "customer_id": "17100002",
+      "customer_name": "MetroMed Wholesale Corporation",
+      "aliases": ["MetroMed Wholesale", "MetroMed Wholesale US"],
+      "dea_number": "BM7654321",
+      "hin": "HIN-00127889",
+      "gln": "0031234500002",
+      "customer_group": "PHARMA_DISTRIBUTOR",
+      "sales_area": {
+        "sales_organization": "1710",
+        "distribution_channel": "10",
+        "division": "00"
+      },
+      "partner_roles": {
+        "sold_to": "17100002",
+        "ship_to": "17100012",
+        "bill_to": "17100022",
+        "payer": "17100032"
+      },
+      "ship_to_address": {
+        "name": "MetroMed Wholesale DC - Memphis",
+        "street": "4200 Distribution Way",
+        "city": "Memphis",
+        "region": "TN",
+        "postal_code": "38118",
+        "country": "US"
+      },
+      "pharma_compliance": {
+        "dea_license_status": "ACTIVE",
+        "state_license_status": "ACTIVE",
+        "dsCSA_trading_partner_status": "VERIFIED",
+        "controlled_substance_allowed": false,
+        "temperature_control_capable": true
+      },
+      "commercial_terms": {
+        "currency": "USD",
+        "payment_terms": "NET45",
+        "pricing_contract": "MCK-2026-BASE",
+        "credit_status": "REVIEW"
+      },
+      "recent_sales_orders": ["50220012", "50220013", "50220014", "50220015", "50220016"]
+    },
+    {
+      "customer_id": "17100003",
+      "customer_name": "ApexCare Distribution",
+      "aliases": ["ABC", "ApexCare"],
+      "dea_number": "BA2468101",
+      "hin": "HIN-00445566",
+      "gln": "0031234500003",
+      "customer_group": "PHARMA_DISTRIBUTOR",
+      "sales_area": {
+        "sales_organization": "1710",
+        "distribution_channel": "10",
+        "division": "00"
+      },
+      "partner_roles": {
+        "sold_to": "17100003",
+        "ship_to": "17100013",
+        "bill_to": "17100023",
+        "payer": "17100033"
+      },
+      "ship_to_address": {
+        "name": "ApexCare Distribution DC - Phoenix",
+        "street": "2550 Pharma Logistics Blvd",
+        "city": "Phoenix",
+        "region": "AZ",
+        "postal_code": "85043",
+        "country": "US"
+      },
+      "pharma_compliance": {
+        "dea_license_status": "ACTIVE",
+        "state_license_status": "ACTIVE",
+        "dsCSA_trading_partner_status": "VERIFIED",
+        "controlled_substance_allowed": false,
+        "temperature_control_capable": false
+      },
+      "commercial_terms": {
+        "currency": "USD",
+        "payment_terms": "NET30",
+        "pricing_contract": "ABC-2026-STD",
+        "credit_status": "CLEAR"
+      },
+      "recent_sales_orders": ["50230031", "50230032"]
+    }
+  ]
+}
+

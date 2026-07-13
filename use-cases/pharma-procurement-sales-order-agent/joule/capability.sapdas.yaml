@@ -1,0 +1,16 @@
+schema_version: 3.27.0
+
+metadata:
+  namespace: joule.ext
+  name: pharma_order_capability
+  version: 1.0.1
+  display_name: Pharma Procurement Sales Order Agent
+  description: >
+    Joule capability for Pharma Procurement Sales Order Agent.
+    Answers customer service questions using a LangGraph agent,
+    MCP-compatible tools, and SAP-like sales order data access.
+
+system_aliases:
+  TEMPLATE_API:
+    destination: pharma-order-agent-api
+

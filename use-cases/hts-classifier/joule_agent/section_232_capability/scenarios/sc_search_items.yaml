@@ -1,0 +1,55 @@
+description: >
+  Search catalog items for Section 232 review by product code, part
+  number, description, priority, business segment, or site context. Use this
+  when the user wants to find matching products before reviewing or starting
+  eligibility analysis. Examples: "Find item 5778800", "Search product code
+  4006107", "show WSS high priority items", "find pump impeller parts", or
+  "look for PN 23-0544-8111".
+
+slots:
+  - name: product_code
+    description: >
+      Product code or material number to search for. Extract numeric or
+      alphanumeric product identifiers from phrases like "product 5778800" or
+      "find item 4006107". Leave empty when the user is searching by another
+      field.
+  - name: pn_revised_standardized
+    description: >
+      Revised or standardized part number. Extract values from phrases like
+      "PN 23-0544-8111" or "part number 36-0752-6711". Leave empty if absent.
+  - name: new_part_description
+    description: >
+      Description terms for the new part description field. Capture concise
+      nouns or phrases such as "valve body", "pump casing", or "impeller".
+  - name: part_description
+    description: >
+      Description terms for the legacy part description field. Capture concise
+      nouns or phrases when the user says "description contains ...".
+  - name: priority
+    description: >
+      Priority filter such as "high", "medium", or "low". Leave empty if the
+      user did not request a priority filter.
+  - name: business_segment
+    description: >
+      Business segment code such as AW, AWS, MCS, WI, or WSS. Normalize to the
+      short uppercase code when possible.
+  - name: has_documents
+    description: >
+      Document availability filter. Use true for requests such as "with
+      documents" or "PDFs available". Use false for requests such as "missing
+      documents" or "without PDFs". Leave empty when no document filter is
+      requested.
+  - name: is_classified
+    description: >
+      Classification status filter. Use true for requests such as "already
+      classified" or "with analysis". Use false for requests such as
+      "unclassified" or "not analyzed". Leave empty when no classification
+      filter is requested.
+  - name: limit
+    description: >
+      Maximum number of items to show. Extract an integer from phrases such as
+      "top 5" or "show 10". Leave empty to use the default.
+
+target:
+  name: fn_search_items
+  type: function

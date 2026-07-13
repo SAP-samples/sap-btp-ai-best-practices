@@ -1,0 +1,20 @@
+description: >
+  Look up HTS codes that are currently eligible for Section 232 treatment. Use
+  this when the user asks which HTS codes are covered, searches for an HTS code
+  or description, or wants the current eligible-code catalog. Examples: "What
+  HTS codes are eligible?", "look up 8481.80.30.90", "eligible valve HTS
+  codes", or "show copper codes".
+
+slots:
+  - name: query
+    description: >
+      Optional HTS code fragment or description keyword to search in the
+      eligible-code catalog. Leave empty to list the first eligible codes.
+  - name: limit
+    description: >
+      Maximum number of HTS code rows to show. Extract an integer if the user
+      asks for a specific count. Leave empty to use the default.
+
+target:
+  name: fn_lookup_hts_codes
+  type: function

@@ -1,0 +1,27 @@
+---
+applications:
+  - name: invoice-matcher-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: invoice-matcher-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://invoice-matcher.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+  - name: invoice-matcher-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: invoice-matcher.cfapps.eu10-005.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://invoice-matcher-api.cfapps.eu10-005.hana.ondemand.com
+      VITE_APP_HOST: invoice-matcher.cfapps.eu10-005.hana.ondemand.com

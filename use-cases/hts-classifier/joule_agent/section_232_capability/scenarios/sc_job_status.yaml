@@ -1,0 +1,15 @@
+description: >
+  Check the status of a Section 232 classification job. Use this when the user
+  asks whether an analysis job is queued, running, complete, failed, or how many
+  items have completed. Examples: "Check job status job-123", "is
+  cls_abc finished?", or "what happened to analysis job 8f4c?".
+
+slots:
+  - name: job_id
+    description: >
+      Classification job id returned by a previous start-analysis request.
+      Capture the complete id exactly as provided.
+
+target:
+  name: fn_job_status
+  type: function

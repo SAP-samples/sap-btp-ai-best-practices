@@ -1,0 +1,11 @@
+description: >
+  List regulatory source documents currently loaded for Section 232 decisions.
+  Use this when the user asks about source PDFs, uploaded notices, loaded
+  regulatory documents, HTS mention counts, extraction status, or where the
+  eligible HTS codes came from. Examples: "What Section 232 source documents
+  are loaded?", "show source PDFs", or "how many HTS codes came from the
+  sources?".
+
+target:
+  name: fn_sources
+  type: function

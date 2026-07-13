@@ -1,0 +1,36 @@
+{
+  "feature_names": [
+    "is_outlet",
+    "is_comp_store",
+    "is_new_store",
+    "is_xmas_window",
+    "is_black_friday_window",
+    "weeks_since_open",
+    "weeks_since_open_capped_13",
+    "weeks_since_open_capped_52",
+    "brand_awareness_dma_roll_mean_4",
+    "brand_consideration_dma_roll_mean_4",
+    "dma_seasonal_weight",
+    "sin_woy",
+    "cos_woy",
+    "is_holiday",
+    "pct_omni_channel_roll_mean_4",
+    "pct_value_product_roll_mean_4",
+    "pct_premium_product_roll_mean_4",
+    "pct_white_glove_roll_mean_4",
+    "pct_primary_financing_roll_mean_4",
+    "pct_secondary_financing_roll_mean_4",
+    "pct_tertiary_financing_roll_mean_4",
+    "horizon"
+  ],
+  "r2_score": 0.9998292194850478,
+  "cat_cols": [
+    "is_outlet",
+    "is_comp_store",
+    "is_new_store",
+    "is_holiday",
+    "is_xmas_window",
+    "is_black_friday_window"
+  ],
+  "channel": "WEB"
+}

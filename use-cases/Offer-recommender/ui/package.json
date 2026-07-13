@@ -1,0 +1,31 @@
+{
+  "name": "customer-offer-advisor-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview --host 0.0.0.0",
+    "create-page": "node scripts/create-page.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ui5/webcomponents": "^2.12.0",
+    "@ui5/webcomponents-ai": "^2.12.0",
+    "@ui5/webcomponents-fiori": "^2.12.0",
+    "@ui5/webcomponents-icons": "^2.12.0",
+    "@ui5/webcomponents-icons-business-suite": "^2.12.0",
+    "@ui5/webcomponents-icons-tnt": "^2.12.0",
+    "chart.js": "^4.5.0",
+    "marked": "^12.0.0",
+    "dayjs": "^1.11.11",
+    "page": "^1.11.6",
+    "vite": "^7.0.4"
+  },
+  "devDependencies": {
+    "jsdom": "^26.0.0",
+    "vitest": "^3.2.4"
+  }
+}

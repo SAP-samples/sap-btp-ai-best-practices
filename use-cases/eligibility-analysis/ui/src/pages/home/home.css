@@ -1,0 +1,38 @@
+/* Home page specific styles */
+.home-container {
+  padding: 1rem;
+}
+
+.home-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.home-card {
+  height: 100%;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+.section-label {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.home-list {
+  margin: 0.5rem 0 0 1.25rem;
+  color: #111111;
+}
+
+.ordered {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.card-content ui5-button {
+  margin-top: 0.75rem;
+}

@@ -1,0 +1,64 @@
+<div class="prompts-page">
+  <div class="page-header">
+    <ui5-title level="H2">Prompts Management</ui5-title>
+  </div>
+
+  <!-- List View -->
+  <div id="prompts-list-view">
+    <div class="toolbar">
+      <ui5-button id="btn-create-prompt" icon="add" design="Emphasized">Create New Prompt</ui5-button>
+      <ui5-button id="btn-refresh-list" icon="refresh">Refresh</ui5-button>
+    </div>
+    <ui5-table id="prompts-table" no-data-text="No prompts found" mode="None">
+      <ui5-table-header-row slot="headerRow">
+        <ui5-table-header-cell>
+          <span style="line-height: 1.4rem">Label</span>
+        </ui5-table-header-cell>
+        <ui5-table-header-cell>
+          <span style="line-height: 1.4rem">Filename</span>
+        </ui5-table-header-cell>
+        <ui5-table-header-cell style="width: 150px">
+          <span style="line-height: 1.4rem">Actions</span>
+        </ui5-table-header-cell>
+      </ui5-table-header-row>
+    </ui5-table>
+  </div>
+
+  <!-- Editor View (Initially Hidden) -->
+  <div id="prompts-editor-view" style="display: none">
+    <div class="toolbar sticky-toolbar">
+      <ui5-button id="btn-back" icon="nav-back">Back</ui5-button>
+      <ui5-title level="H3" id="editor-title">Edit Prompt</ui5-title>
+      <div class="spacer"></div>
+      <ui5-button id="btn-download-editor" icon="download">Download</ui5-button>
+      <ui5-button id="btn-save" design="Emphasized" icon="save">Save</ui5-button>
+    </div>
+
+    <div class="form-container">
+      <div class="form-item">
+        <ui5-label for="input-filename" required>Filename (ending in .md)</ui5-label>
+        <ui5-input id="input-filename" placeholder="e.g. nc-rates.md"></ui5-input>
+      </div>
+
+      <div class="form-item">
+        <ui5-label>Metadata & Instructions (Before Map)</ui5-label>
+        <ui5-textarea id="input-meta" rows="10" placeholder="## Role & Objective..."></ui5-textarea>
+      </div>
+
+      <div class="form-item">
+        <div class="section-header">
+          <ui5-title level="H4">Master Extraction Map</ui5-title>
+          <ui5-button id="btn-add-group" icon="add-folder" design="Emphasized">Add Rate Schedule Group</ui5-button>
+        </div>
+        <div id="map-container">
+          <!-- Groups and Rows will be rendered here dynamically -->
+        </div>
+      </div>
+
+      <div class="form-item">
+        <ui5-label>Execution Instructions (After Map)</ui5-label>
+        <ui5-textarea id="input-execution" rows="5" placeholder="## 4. Execution..."></ui5-textarea>
+      </div>
+    </div>
+  </div>
+</div>

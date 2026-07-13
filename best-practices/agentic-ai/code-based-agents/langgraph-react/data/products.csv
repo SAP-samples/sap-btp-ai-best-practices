@@ -1,0 +1,9 @@
+product_id,name,category,unit_price,currency,supplier_id
+PRD-001,Mechanical Keyboard,IT Equipment,89.99,EUR,SUP-001
+PRD-002,Office Desk Chair,Office Furniture,349.00,EUR,SUP-002
+PRD-003,USB-C Docking Station,IT Equipment,179.50,EUR,SUP-001
+PRD-004,Whiteboard 180x120cm,Office Supplies,124.00,EUR,SUP-003
+PRD-005,Industrial Safety Helmet,Safety Equipment,45.00,EUR,SUP-004
+PRD-006,Ergonomic Mouse,IT Equipment,59.99,EUR,SUP-001
+PRD-007,Standing Desk Converter,Office Furniture,299.00,EUR,SUP-002
+PRD-008,Cable Management Kit,Office Supplies,19.99,EUR,SUP-003

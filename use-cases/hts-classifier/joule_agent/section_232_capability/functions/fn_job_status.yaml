@@ -1,0 +1,34 @@
+parameters:
+  - name: job_id
+    optional: false
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: GET
+        path: /api/metal-composition/classification-jobs/<? job_id ?>
+        result_variable: job_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Classification Job Status
+
+            | Field | Value |
+            |---|---|
+            | Job ID | {{job_result.body.job_id}} |
+            | Job type | {{job_result.body.job_type}} |
+            | Status | {{job_result.body.status}} |
+            | Submitted | {{job_result.body.submitted_at}} |
+            | Started | {{#if job_result.body.started_at}}{{job_result.body.started_at}}{{else}}-{{/if}} |
+            | Finished | {{#if job_result.body.finished_at}}{{job_result.body.finished_at}}{{else}}-{{/if}} |
+            | Total | {{job_result.body.total_count}} |
+            | Completed | {{job_result.body.completed_count}} |
+            | Failed | {{job_result.body.failed_count}} |
+            {{#if job_result.body.error_message}}
+            | Error | {{job_result.body.error_message}} |
+            {{/if}}

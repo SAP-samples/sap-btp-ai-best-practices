@@ -1,0 +1,46 @@
+parameters:
+  - name: item_ids
+    optional: false
+  - name: document_mode
+    optional: true
+
+action_groups:
+  - actions:
+      - type: api-request
+        system_alias: SECTION_232_API
+        method: POST
+        path: /api/metal-composition/items/predict-batch
+        timeout: 45
+        body:
+          item_ids: "<? item_ids.split(',').![#this.trim()] ?>"
+          document_mode: "<? document_mode == 'with_documents' ? 'with_documents' : 'text_only' ?>"
+        result_variable: batch_result
+
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: text
+          markdown: true
+          content: |
+            ## Batch Prediction Submitted
+
+            | Field | Value |
+            |---|---|
+            | Job ID | {{batch_result.body.job_id}} |
+            | Job type | {{batch_result.body.job_type}} |
+            | Status | {{batch_result.body.status}} |
+            | Submitted | {{batch_result.body.submitted_at}} |
+            | Total items | {{batch_result.body.total_count}} |
+
+  - actions:
+      - type: message
+        scripting_type: handlebars
+        message:
+          type: quickReplies
+          content:
+            title: "Next actions"
+            buttons:
+              - title: "Check job"
+                value: "Check job status {{batch_result.body.job_id}}"
+              - title: "Search items"
+                value: "Find item 5778800"

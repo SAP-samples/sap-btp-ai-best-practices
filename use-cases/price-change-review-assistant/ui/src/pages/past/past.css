@@ -1,0 +1,43 @@
+@import "../home/home.css";
+
+.read-only-value {
+  display: block;
+  min-height: 1.5rem;
+  color: var(--sapTextColor);
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid var(--sapList_BorderColor);
+  padding: 0.85rem 1.25rem;
+}
+
+.history-page-indicator {
+  color: var(--sapContent_LabelColor);
+  min-width: 7rem;
+  text-align: center;
+}
+
+.history-reset-dialog-body {
+  max-width: 28rem;
+  padding: 1rem 0;
+  line-height: 1.5;
+}
+
+.history-reset-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .history-pagination {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding: 0.85rem 1rem;
+  }
+}

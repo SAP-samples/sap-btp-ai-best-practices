@@ -1,0 +1,88 @@
+<div class="matcher-page">
+  <!-- Upload Section -->
+  <ui5-panel header-text="Upload Files" class="upload-panel">
+    <div class="upload-row">
+      <div class="upload-field">
+        <ui5-label for="invoiceFile" show-colon>Invoices (CSV or Excel)</ui5-label>
+        <input type="file" id="invoiceFile" accept=".csv,.xlsx,.xls" />
+        <ui5-text id="invoiceFileName" class="file-info"></ui5-text>
+      </div>
+
+      <div class="upload-field">
+        <ui5-label for="paymentFile" show-colon>Payments (CSV or Excel)</ui5-label>
+        <input type="file" id="paymentFile" accept=".csv,.xlsx,.xls" />
+        <ui5-text id="paymentFileName" class="file-info"></ui5-text>
+      </div>
+
+      <div class="upload-field tolerance-field">
+        <ui5-label for="toleranceInput" show-colon>Amount Tolerance</ui5-label>
+        <div class="tolerance-row">
+          <ui5-text>±</ui5-text>
+          <ui5-input id="toleranceInput" value="0.01" type="Number" style="width: 100px;"></ui5-input>
+        </div>
+      </div>
+
+      <div class="upload-field action-field">
+        <ui5-button id="matchButton" design="Emphasized" icon="process">Run Match</ui5-button>
+        <ui5-checkbox id="demoModeCheckbox" text="Demo (100)"></ui5-checkbox>
+      </div>
+    </div>
+  </ui5-panel>
+
+  <!-- Stats Bar -->
+  <div id="statsBar" class="stats-bar hidden">
+    <div class="stat-card">
+      <ui5-label>Total Invoices</ui5-label>
+      <ui5-text id="statTotal" class="stat-number">0</ui5-text>
+    </div>
+    <div class="stat-card stat-success">
+      <ui5-label>Matched</ui5-label>
+      <ui5-text id="statMatched" class="stat-number">0</ui5-text>
+    </div>
+    <div class="stat-card stat-warning">
+      <ui5-label>AI Matched</ui5-label>
+      <ui5-text id="statAiMatched" class="stat-number">0</ui5-text>
+    </div>
+    <div class="stat-card stat-error">
+      <ui5-label>Unmatched</ui5-label>
+      <ui5-text id="statUnmatched" class="stat-number">0</ui5-text>
+    </div>
+
+    <div class="filter-section">
+      <ui5-segmented-button id="filterToggle">
+        <ui5-segmented-button-item pressed>All</ui5-segmented-button-item>
+        <ui5-segmented-button-item>Matched</ui5-segmented-button-item>
+        <ui5-segmented-button-item>AI Matched</ui5-segmented-button-item>
+        <ui5-segmented-button-item>Unmatched</ui5-segmented-button-item>
+      </ui5-segmented-button>
+    </div>
+  </div>
+
+  <!-- Status Message -->
+  <div class="status-row">
+    <ui5-icon name="information" id="statusIcon"></ui5-icon>
+    <ui5-text id="statusMessage">Upload invoice and payment files to begin.</ui5-text>
+  </div>
+
+  <!-- Loading indicator -->
+  <ui5-busy-indicator id="busyIndicator" size="M" class="hidden" active delay="0">
+  </ui5-busy-indicator>
+
+  <!-- Results Table -->
+  <ui5-table id="resultsTable" class="results-table hidden" no-data-text="No results yet.">
+    <ui5-table-header-row slot="headerRow">
+      <ui5-table-header-cell width="170px"><span>Invoice #</span></ui5-table-header-cell>
+      <ui5-table-header-cell width="140px"><span>Invoice Amount</span></ui5-table-header-cell>
+      <ui5-table-header-cell width="140px"><span>Payment Amount</span></ui5-table-header-cell>
+      <ui5-table-header-cell width="150px"><span>Bank Reference</span></ui5-table-header-cell>
+      <ui5-table-header-cell width="120px"><span>Status</span></ui5-table-header-cell>
+      <ui5-table-header-cell width="100px"><span>Confidence</span></ui5-table-header-cell>
+      <ui5-table-header-cell><span>Match Reason</span></ui5-table-header-cell>
+    </ui5-table-header-row>
+  </ui5-table>
+
+  <!-- Search -->
+  <div id="searchRow" class="search-row hidden">
+    <ui5-input id="tableSearch" placeholder="Filter invoice number..." style="width: 250px;"></ui5-input>
+  </div>
+</div>

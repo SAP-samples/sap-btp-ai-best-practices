@@ -1,0 +1,8 @@
+<mvc:View
+    controllerName="videoincidentmonitor.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    displayBlock="true"
+    height="100%">
+    <App id="app" height="100%"/>
+</mvc:View>

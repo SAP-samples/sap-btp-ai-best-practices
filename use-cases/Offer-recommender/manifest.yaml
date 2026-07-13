@@ -1,0 +1,35 @@
+---
+applications:
+  - name: customer-offer-advisor-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: customer-offer-advisor-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://customer-offer-advisor.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://customer-offer-advisor-api.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      hana_address: ((hana_address))
+      hana_port: ((hana_port))
+      hana_user: ((hana_user))
+      hana_password: ((hana_password))
+      hana_encrypt: ((hana_encrypt))
+      AICORE_AUTH_URL: ((AICORE_AUTH_URL))
+      AICORE_CLIENT_ID: ((AICORE_CLIENT_ID))
+      AICORE_CLIENT_SECRET: ((AICORE_CLIENT_SECRET))
+      AICORE_BASE_URL: ((AICORE_BASE_URL))
+      AICORE_RESOURCE_GROUP: ((AICORE_RESOURCE_GROUP))
+  - name: customer-offer-advisor-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: customer-offer-advisor.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://customer-offer-advisor-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: customer-offer-advisor.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

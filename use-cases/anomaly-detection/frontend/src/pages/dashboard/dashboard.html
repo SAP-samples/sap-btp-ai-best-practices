@@ -1,0 +1,168 @@
+<div class="dashboard-split-layout">
+    <!-- Left Column: Dashboard Content -->
+    <div class="dashboard-main-content">
+        <!-- Date Filter Controls -->
+        <div class="date-filter-controls">
+            <div class="filter-item">
+                <ui5-label for="year-select" show-colon>Year</ui5-label>
+                <ui5-select id="year-select"></ui5-select>
+            </div>
+            <div class="filter-item">
+                <ui5-label for="month-select" show-colon>Month</ui5-label>
+                <ui5-select id="month-select"></ui5-select>
+            </div>
+            <div class="filter-item filter-item-day">
+                <ui5-label for="day-input" show-colon>Day</ui5-label>
+                <ui5-input id="day-input" placeholder="e.g., 15" type="Number"></ui5-input>
+                <ui5-button id="apply-day-btn" design="Emphasized">Apply</ui5-button>
+            </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics-row">
+            <ui5-card class="kpi-card">
+                <ui5-card-header title-text="Total Orders"></ui5-card-header>
+                <div style="padding: 1rem; text-align: center;">
+                    <div class="kpi-value" id="kpi-total-orders">-</div>
+                </div>
+            </ui5-card>
+            <ui5-card class="kpi-card">
+                <ui5-card-header title-text="Anomalies"></ui5-card-header>
+                <div style="padding: 1rem; text-align: center;">
+                    <div class="kpi-value" id="kpi-anomalies" style="color: #d04343;">-</div>
+                </div>
+            </ui5-card>
+            <ui5-card class="kpi-card">
+                <ui5-card-header title-text="Anomaly Rate"></ui5-card-header>
+                <div style="padding: 1rem; text-align: center;">
+                    <div class="kpi-value" id="kpi-rate">-</div>
+                </div>
+            </ui5-card>
+        </div>
+
+        <!-- Charts Row: Heatmap Calendar and Anomaly Distribution (50/50) -->
+        <div class="charts-row">
+            <ui5-card class="calendar-card">
+                <ui5-card-header id="calendar-header" title-text="Daily Activity"></ui5-card-header>
+                <div class="heatmap-calendar-container">
+                    <div id="heatmap-calendar" class="heatmap-calendar"></div>
+                    <div class="heatmap-legend">
+                        <span class="legend-item"><span class="legend-color legend-green"></span> 0%</span>
+                        <span class="legend-item"><span class="legend-color legend-light-red"></span> 0-10%</span>
+                        <span class="legend-item"><span class="legend-color legend-medium-red"></span> 10-20%</span>
+                        <span class="legend-item"><span class="legend-color legend-dark-red"></span> >20%</span>
+                    </div>
+                </div>
+            </ui5-card>
+
+            <ui5-card>
+                <ui5-card-header title-text="Anomaly Distribution"></ui5-card-header>
+                <div style="padding: 1rem;">
+                    <canvas id="anomaly-chart"></canvas>
+                </div>
+            </ui5-card>
+        </div>
+
+        <!-- Daily Orders Table -->
+        <ui5-card class="orders-table-card">
+            <ui5-card-header title-text="Daily Orders" subtitle-text="Select a row to view details"></ui5-card-header>
+            <ui5-table id="orders-table" mode="SingleSelect">
+                <ui5-table-header-row slot="headerRow" sticky>
+                    <ui5-table-header-cell id="col-doc" interactive>Doc Number</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-item" interactive>Item</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-material">Material</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-qty" interactive>Qty</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-price" interactive>Price</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-score" interactive>Score</ui5-table-header-cell>
+                    <ui5-table-header-cell id="col-status">Status</ui5-table-header-cell>
+                </ui5-table-header-row>
+            </ui5-table>
+        </ui5-card>
+    </div>
+
+    <!-- Right Column: Selected Order Analysis Panel -->
+    <div class="order-details-panel">
+        <ui5-card class="panel-header-card">
+            <ui5-card-header title-text="Selected Order Analysis"></ui5-card-header>
+        </ui5-card>
+
+        <!-- Placeholder shown when no order is selected -->
+        <div id="order-placeholder" class="order-placeholder">
+            <ui5-icon name="detail-view" style="font-size: 3rem; color: #8c8c8c;"></ui5-icon>
+            <p>Click on any row in the orders table to view detailed analysis here.</p>
+        </div>
+
+        <!-- Order details content (hidden until an order is selected) -->
+        <div id="order-details-content" class="order-details-content" style="display: none;">
+            <!-- Status Banner -->
+            <div id="status-banner" class="status-banner"></div>
+
+            <!-- Order Information Card -->
+            <ui5-card>
+                <ui5-card-header title-text="Order Information"></ui5-card-header>
+                <div style="padding: 1rem;" class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Sold To Number</span>
+                        <span class="info-value" id="val-sold-to">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ship To Party</span>
+                        <span class="info-value" id="val-ship-to">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Material Number</span>
+                        <span class="info-value" id="val-material-number">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Material Description</span>
+                        <span class="info-value" id="val-material-description">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Quantity</span>
+                        <span class="info-value" id="val-qty">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Value</span>
+                        <span class="info-value" id="val-value">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Anomaly Probability</span>
+                        <span class="info-value" id="val-score">-</span>
+                    </div>
+                </div>
+            </ui5-card>
+
+            <!-- SHAP Features Card -->
+            <ui5-card>
+                <ui5-card-header title-text="Key Contributing Features"></ui5-card-header>
+                <ui5-table id="shap-table">
+                    <ui5-table-header-row slot="headerRow">
+                        <ui5-table-header-cell>Feature</ui5-table-header-cell>
+                        <ui5-table-header-cell>Value</ui5-table-header-cell>
+                        <ui5-table-header-cell>Contribution</ui5-table-header-cell>
+                    </ui5-table-header-row>
+                </ui5-table>
+            </ui5-card>
+
+            <!-- AI Analysis Card -->
+            <ui5-card>
+                <ui5-card-header title-text="AI Analysis"></ui5-card-header>
+                <div style="padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <ui5-button id="explain-btn" design="Attention" icon="lightbulb">Generate AI Explanation</ui5-button>
+                    <ui5-busy-indicator id="ai-busy" active size="Medium" style="display: none;"></ui5-busy-indicator>
+                    <div id="ai-result" class="ai-result-box" style="display: none;"></div>
+                </div>
+            </ui5-card>
+
+            <!-- Quick Classification Card -->
+            <ui5-card>
+                <ui5-card-header title-text="Quick Classification"></ui5-card-header>
+                <div style="padding: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                    <ui5-button id="classify-btn" icon="activate">Run Secondary Check (via GenAI)</ui5-button>
+                    <ui5-busy-indicator id="classify-busy" active size="Medium" style="display: none;"></ui5-busy-indicator>
+                    <div id="binary-result" class="ai-result-box" style="display: none;"></div>
+                </div>
+            </ui5-card>
+        </div>
+    </div>
+</div>

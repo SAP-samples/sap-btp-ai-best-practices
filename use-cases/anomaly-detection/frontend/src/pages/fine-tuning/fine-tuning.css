@@ -1,0 +1,124 @@
+.fine-tuning-container {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.section-card {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.upload-section {
+    border: 2px dashed var(--sapList_BorderColor);
+    padding: 2rem;
+    text-align: center;
+    border-radius: 4px;
+    background: var(--sapList_Background);
+    transition: all 0.3s ease;
+}
+
+.upload-section:hover {
+    border-color: var(--sapField_BorderColor_Hover);
+}
+
+.upload-section.dragover {
+    background: var(--sapList_Hover_Background);
+    border-color: var(--sapField_BorderColor_Focus);
+}
+
+/* Statistics Grid */
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--sapList_Background);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    border-right: 1px solid var(--sapList_BorderColor);
+}
+
+.stat-item:last-child {
+    border-right: none;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--sapContent_Illustrative_Color1);
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Feature Selection */
+.features-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.feature-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.feature-group-title {
+    font-weight: bold;
+    color: var(--sapContent_LabelColor);
+    border-bottom: 1px solid var(--sapList_BorderColor);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Configuration Grid */
+.config-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.help-text {
+    font-size: 0.875rem;
+    color: var(--sapContent_LabelColor);
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .statistics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-item {
+        border-right: none;
+        border-bottom: 1px solid var(--sapList_BorderColor);
+    }
+    
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+
+    .config-grid {
+        grid-template-columns: 1fr;
+    }
+}

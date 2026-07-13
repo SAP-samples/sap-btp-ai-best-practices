@@ -1,0 +1,16 @@
+schema_version: 3.27.0
+
+metadata:
+  namespace: joule.ext
+  name: section_232_direct_capability
+  version: 1.0.0
+  display_name: Section 232 Eligibility Assistant
+  description: >
+    Direct Joule capability for Section 232 eligibility workflows.
+    It searches catalog items, reviews stored eligibility analysis, starts
+    backend classification jobs, checks job status, lists regulatory sources,
+    looks up eligible HTS codes, and runs direct Section 232 checks.
+
+system_aliases:
+  SECTION_232_API:
+    destination: Section-232-Agent

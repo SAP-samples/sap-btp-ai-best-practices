@@ -1,0 +1,18 @@
+description: >
+  Answer Pharma Procurement Sales Order Agent questions about customer-specific pricing, availability,
+  sales order status, customer/DEA compliance, NDC/material lookup, blocked
+  orders, batch readiness, invoice metadata, and preview-only transactional
+  requests. Route both read-only questions and action-style preview requests
+  to this function. For create, update, release, reject, expedite, send email,
+  or generate PDF requests, do not answer directly in Joule; call this function
+  so the backend can return a preview-only answer and clearly state that no SAP
+  update is performed. Good examples include: "What is the price for Northstar
+  for Glycemor 10 mg?", "Which Northstar orders have Z12 delivery blocks, and
+  what would be required to release them?", "Preview the release of Z12
+  delivery blocks for open Northstar orders. Do not update SAP.", and "For
+  Northstar, identify Glycemor 10 mg by NDC 90000-0100-30, confirm the price,
+  and tell me whether it can ship this week.".
+
+target:
+  type: function
+  name: fn_pharma_order

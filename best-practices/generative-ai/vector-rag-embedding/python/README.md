@@ -3,21 +3,30 @@ This project demonstrates best practices for accessing Embeddings models using t
 
 ```
 ├── python
-│   ├── LangChain_HANA_VectorStore_Embeddings.ipynb
-│   ├── Native_HANA_VectorStore_Embeddings.ipynb
-│   ├── README.md
-│   └── requirements.txt
+│   ├── LangChain_HANA_VectorStore_Embeddings.ipynb
+│   ├── Native_HANA_VectorStore_Embeddings.ipynb
+│   ├── README.md
+│   └── requirements.txt
 ├── sample_files
-│   ├── sap-business-ai.pdf
-│   ├── sap-hana-cloud.pdf
-│   └── science-data-sample.csv
+│   ├── attention_is_all_you_need.pdf
+│   ├── sap-hana-cloud.pdf
+│   └── science-data-sample.csv
 └── README.md
 ```
+
+## Notebooks
+
+| Notebook | Approach | Data Source | Vector Store Integration |
+|----------|----------|-------------|--------------------------|
+| `Native_HANA_VectorStore_Embeddings.ipynb` | Direct Python + SQL | CSV (science data) | Manual SQL with `hdbcli` |
+| `LangChain_HANA_VectorStore_Embeddings.ipynb` | LangChain framework | PDFs (SAP docs) | [`langchain-hana`](https://github.com/SAP/langchain-integration-for-sap-hana-cloud) |
+
+After creating embeddings, use the corresponding query notebooks in `vector-rag-query/python/` to build a RAG pipeline on top of the stored vectors.
 
 ## Clone the repository
 ``` sh
 git clone https://github.com/SAP-samples/sap-btp-ai-best-practices/
-cd https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/vector-rag-embedding/python
+cd sap-btp-ai-best-practices/best-practices/generative-ai/vector-rag-embedding/python
 ```
 
 ## Create a virtual environment
@@ -37,6 +46,7 @@ pip install -r requirements.txt
     cp .env-example .env
   ```
 * Populate the .env file with the required values.
+* The embedding model defaults to `text-embedding-3-small`. To use a different model available on SAP GenAI Hub, set the `EMBEDDING_MODEL` variable in your `.env` file.
 
 ## Run the Jupyter Notebook
 ``` sh
@@ -50,12 +60,12 @@ The notebooks demonstrate various methods to use Embeddings model and SAP HANA V
 
 * Native Client Integrations (Native_HANA_VectorStore_Embeddings.ipynb):
   * Reads text from csv file and does preprocessing for metadata
-  * Uses OpenAI embedding model from GenAI Hub
+  * Uses an OpenAI-compatible embedding model from GenAI Hub
   * Uses HANA connection context for database operations
 * LangChain Implementations (LangChain_HANA_VectorStore_Embeddings.ipynb):
-  * Reads multiple PDF files a directory and extracts texts from those.
-  * Uses OpenAI embedding model from GenAI Hub
-  * Demonstrates seemless integration between LangChain and SAP HANA Vector Store for all the operations
+  * Reads multiple PDF files from a directory and extracts text
+  * Uses an OpenAI-compatible embedding model from GenAI Hub
+  * Demonstrates seamless integration between LangChain and SAP HANA Vector Store using the [`langchain-hana`](https://github.com/SAP/langchain-integration-for-sap-hana-cloud) package
 
 Each section in the notebook provides a detailed example of how to set up and perform embeddings related operations.
 

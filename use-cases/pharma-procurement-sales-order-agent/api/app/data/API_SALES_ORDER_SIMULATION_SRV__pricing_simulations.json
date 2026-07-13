@@ -1,0 +1,116 @@
+{
+  "source": "synthetic_API_SALES_ORDER_SIMULATION_SRV",
+  "simulations": [
+    {
+      "simulation_id": "SIM-000001",
+      "question_anchor": "What is the price for Northstar for Glycemor 10 mg?",
+      "customer_id": "17100001",
+      "customer_name": "Northstar Pharmacy Distribution",
+      "material_id": "GLYCE10MG",
+      "material_number": "200000045",
+      "quantity": 1,
+      "unit": "EA",
+      "requested_delivery_date": "2026-06-24",
+      "currency": "USD",
+      "list_price": 1500.00,
+      "contract_price": 1380.00,
+      "net_price": 1335.00,
+      "estimated_tax": 0.00,
+      "total_amount": 1335.00,
+      "pricing_elements": [
+        {
+          "condition_type": "PR00",
+          "description": "List price",
+          "amount": 1500.00,
+          "currency": "USD",
+          "statistical": false
+        },
+        {
+          "condition_type": "ZCON",
+          "description": "Northstar contract price adjustment",
+          "amount": -120.00,
+          "currency": "USD",
+          "statistical": false
+        },
+        {
+          "condition_type": "ZDSC",
+          "description": "Contract discount",
+          "amount": -60.00,
+          "currency": "USD",
+          "statistical": false
+        },
+        {
+          "condition_type": "ZFEE",
+          "description": "Pharma handling fee",
+          "amount": 15.00,
+          "currency": "USD",
+          "statistical": false
+        }
+      ],
+      "pharma_pricing_context": {
+        "contract_id": "CARD-2026-INV",
+        "chargeback_eligible": true,
+        "rebate_program": "METABOLIC-2026",
+        "340b_excluded": true,
+        "dsCSA_serialization_included": true
+      },
+      "availability_snapshot": {
+        "available_to_promise_quantity": 480,
+        "plant": "US10",
+        "storage_location": "PHRM"
+      }
+    },
+    {
+      "simulation_id": "SIM-000002",
+      "customer_id": "17100002",
+      "customer_name": "MetroMed Wholesale Corporation",
+      "material_id": "IMMEX45PFS",
+      "material_number": "200000102",
+      "quantity": 12,
+      "unit": "EA",
+      "requested_delivery_date": "2026-06-25",
+      "currency": "USD",
+      "list_price": 7425.00,
+      "contract_price": 7195.00,
+      "net_price": 7243.00,
+      "estimated_tax": 0.00,
+      "total_amount": 86916.00,
+      "pricing_elements": [
+        {
+          "condition_type": "PR00",
+          "description": "List price",
+          "amount": 89100.00,
+          "currency": "USD",
+          "statistical": false
+        },
+        {
+          "condition_type": "ZCON",
+          "description": "MetroMed Wholesale contract price adjustment",
+          "amount": -2760.00,
+          "currency": "USD",
+          "statistical": false
+        },
+        {
+          "condition_type": "ZCOLD",
+          "description": "Cold-chain handling",
+          "amount": 576.00,
+          "currency": "USD",
+          "statistical": false
+        }
+      ],
+      "pharma_pricing_context": {
+        "contract_id": "MCK-2026-BASE",
+        "chargeback_eligible": true,
+        "rebate_program": "IMMUNO-2026",
+        "340b_excluded": true,
+        "dsCSA_serialization_included": true
+      },
+      "availability_snapshot": {
+        "available_to_promise_quantity": 90,
+        "plant": "US20",
+        "storage_location": "COLD"
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,25 @@
+.home-page {
+  padding: 2rem;
+  max-width: 800px;
+}
+
+.home-description {
+  display: block;
+  margin: 0.5rem 0 1.5rem 0;
+  color: var(--sapContent_LabelColor);
+}
+
+.home-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.home-cards ui5-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.card-content {
+  padding: 1rem;
+}

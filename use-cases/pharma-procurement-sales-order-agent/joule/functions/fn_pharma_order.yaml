@@ -1,0 +1,21 @@
+action_groups:
+  - actions:
+      - type: set-variables
+        variables:
+          - name: query_text
+            value: "<? $transient.input.text.raw ?>"
+
+      - type: streamed-message
+        method: POST
+        system_alias: TEMPLATE_API
+        path: /api/joule/pharma-order/stream
+        headers:
+          Accept: "text/event-stream"
+          Connection: "keep-alive"
+          Cache-Control: "no-cache"
+          Content-Type: "application/json"
+        body: >
+          {
+            "question": "<? query_text ?>"
+          }
+        response_chunk_ref: $.message.parts[0].text

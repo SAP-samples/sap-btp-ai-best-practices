@@ -1,0 +1,78 @@
+# =============================================================================
+# Limits Configuration for the Invoice Optimizer
+# =============================================================================
+#
+# This file defines the credit limits that constrain the optimizer. There are
+# three tiers of limits, each expressed in money units (not cents):
+#
+#   1. Facility limits (per Company Code) -- aggregate cap for each legal entity
+#   2. Customer limits (per Customer ID)  -- concentration cap per buyer
+#   3. Group limits (per group ID)        -- aggregate cap across related buyers
+#
+# HOW LIMITS ARE RESOLVED:
+#   - Explicit values in this file always take priority.
+#   - When a section is empty ({}) and synthetic_generation.enabled is true,
+#     limits are computed automatically from the candidate data.
+#   - When switching to real/production limits, populate the explicit sections
+#     and set synthetic_generation.enabled to false.
+#
+# HOW TO ADD EXPLICIT LIMITS:
+#   facility_limits_by_company_code:
+#     "Company Code 1": 15000000.00    # 15M facility for Company Code 1
+#     "Company Code 2": 8000000.00     # 8M facility for Company Code 2
+#
+#   customer_limits:
+#     "100456043": 1200000.00          # 1.2M cap for customer 100456043
+#
+#   group_limits:
+#     "GROUP_A": 3000000.00            # 3M cap for customer group A
+#
+#   customer_to_group:
+#     "100456043": "GROUP_A"           # Map customer to group
+#     "100456220": "GROUP_A"
+# =============================================================================
+
+# Explicit facility limits per Company Code (in money units).
+# Leave empty to use synthetic generation.
+facility_limits_by_company_code: {}
+
+# Explicit customer limits per Customer ID (in money units).
+# Customers not listed here get a default: customer_limit_fraction_of_facility * facility_limit.
+customer_limits: {}
+
+# Explicit group limits per group ID (in money units).
+# Groups not listed here get a default: group_limit_fraction_of_facility * facility_limit.
+group_limits: {}
+
+# Customer-to-group mapping. Only needed when group limits are active.
+# Maps Customer ID -> Group ID.
+customer_to_group: {}
+
+# Static base/original exposure already consuming the line at planning start.
+# Values are in money units and applied as pre-used headroom.
+# For single-week mode, these values are directly subtracted from limits.
+# For multi-week mode, these values are added as base exposure on each week
+# (in addition to any reconstructed lifecycle exposure from history input).
+base_exposure:
+  facility: {}
+  customer: {}
+  group: {}
+
+# Default fractions used when no explicit customer/group limit is provided.
+defaults:
+  # Each customer's default limit = this fraction * their company's facility limit.
+  customer_limit_fraction_of_facility: 0.15
+  # Each group's default limit = this fraction * the facility limit.
+  group_limit_fraction_of_facility: 0.30
+
+# Synthetic limit generation: used when explicit limits are empty.
+# Set enabled to false once real limits from the lender are available.
+synthetic_generation:
+  enabled: true
+  # alpha: facility_limit = alpha * sum(Purchase Price) per company code.
+  # Values < 1.0 create binding constraints (not all candidates can be selected).
+  alpha: 0.85
+  # beta: customer_limit = beta * facility_limit. Controls concentration per buyer.
+  beta: 0.15
+  # gamma: group_limit = gamma * facility_limit. Controls concentration per group.
+  gamma: 0.30

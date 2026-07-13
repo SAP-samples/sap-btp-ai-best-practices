@@ -1,0 +1,11 @@
+ID,PRODUCT,PRICE,ORDERDATE,QUANTITY,COSTCENTER,DISCOUNT_RATE
+44,Office Chair,150.80,2025-11-02,12,Office Furniture,0.08
+104,Server Rack,2200.00,2025-11-01,2,Data Infrastructure,0.15
+88,Laptop Stand,49.90,2025-11-03,25,Office Furniture,0.05
+205,Standing Desk,640.00,2025-11-05,6,Office Furniture,0.10
+306,Monitor 27 inch,289.99,2025-11-08,10,Office Furniture,0.07
+401,Network Switch,980.00,2025-11-10,3,Data Infrastructure,0.12
+502,Keyboard Mechanical,120.00,2025-11-12,30,Office Furniture,0.06
+35,Couch,999.99,2025-11-28,4,Office Furniture,0.09
+610,Cable Management Kit,25.50,2025-11-15,50,Office Furniture,0.03
+711,UPS Battery Backup,450.00,2025-11-18,5,Data Infrastructure,0.11

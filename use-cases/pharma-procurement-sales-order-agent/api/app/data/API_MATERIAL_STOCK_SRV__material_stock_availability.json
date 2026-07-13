@@ -1,0 +1,44 @@
+{
+  "source": "synthetic_API_MATERIAL_STOCK_SRV",
+  "stock_positions": [
+    {
+      "material_id": "GLYCE10MG",
+      "material_number": "200000045",
+      "plant": "US10",
+      "plant_name": "North America Pharma DC",
+      "storage_location": "PHRM",
+      "date": "2026-06-24",
+      "unrestricted_quantity": 1250,
+      "quality_inspection_quantity": 80,
+      "blocked_quantity": 0,
+      "available_to_promise_quantity": 480,
+      "unit": "EA",
+      "batches": ["B-INV-2604A", "B-INV-2605B"],
+      "pharma_handling": {
+        "cold_chain": false,
+        "temperature_range_celsius": "15-30",
+        "serialization_required": true
+      }
+    },
+    {
+      "material_id": "IMMEX45PFS",
+      "material_number": "200000102",
+      "plant": "US20",
+      "plant_name": "Cold Chain DC",
+      "storage_location": "COLD",
+      "date": "2026-06-25",
+      "unrestricted_quantity": 120,
+      "quality_inspection_quantity": 18,
+      "blocked_quantity": 12,
+      "available_to_promise_quantity": 90,
+      "unit": "EA",
+      "batches": ["B-STL-2602C"],
+      "pharma_handling": {
+        "cold_chain": true,
+        "temperature_range_celsius": "2-8",
+        "serialization_required": true
+      }
+    }
+  ]
+}
+

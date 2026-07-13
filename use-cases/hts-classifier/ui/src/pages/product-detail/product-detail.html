@@ -1,0 +1,69 @@
+<div class="product-detail-page">
+  <div class="product-detail-hero">
+    <div>
+      <ui5-button id="detail-back-button" design="Transparent" icon="nav-back">Back to products</ui5-button>
+      <div class="product-detail-kicker" id="detail-kicker">Product Detail</div>
+      <ui5-title level="H2" id="detail-title">Loading…</ui5-title>
+      <ui5-text id="detail-subtitle">Product predictions, optional PDF evidence, and reasoning.</ui5-text>
+    </div>
+    <div class="product-detail-actions">
+      <div class="product-detail-document-mode">
+        <ui5-label for="detail-document-mode">Evidence</ui5-label>
+        <ui5-select id="detail-document-mode">
+          <ui5-option value="text_only" selected>Text only</ui5-option>
+          <ui5-option value="with_documents">With PDFs</ui5-option>
+        </ui5-select>
+      </div>
+      <ui5-button id="detail-export-button" design="Transparent" icon="download" disabled>Export Report</ui5-button>
+      <ui5-button id="detail-classify-button" design="Emphasized" icon="play">Predict product</ui5-button>
+    </div>
+  </div>
+
+  <ui5-message-strip id="detail-message" hide-close-button style="display: none"></ui5-message-strip>
+
+  <div class="product-detail-grid">
+    <ui5-card class="product-detail-card">
+      <ui5-card-header slot="header" title-text="General Information"></ui5-card-header>
+      <div class="product-detail-card-body" id="detail-general-content"></div>
+    </ui5-card>
+
+    <ui5-card class="product-detail-card">
+      <ui5-card-header slot="header" title-text="Documents"></ui5-card-header>
+      <div class="product-detail-card-body">
+        <div class="product-detail-doc-actions">
+          <input id="detail-doc-upload-input" type="file" accept="application/pdf,.pdf" hidden />
+          <ui5-button id="detail-doc-upload-button" design="Transparent" icon="upload">Upload PDF</ui5-button>
+          <ui5-button id="detail-doc-save-button" design="Emphasized" icon="save">Save documents</ui5-button>
+          <ui5-button id="detail-doc-clear-button" design="Transparent">Clear saved assignment</ui5-button>
+        </div>
+        <div class="product-detail-doc-columns">
+          <div>
+            <div class="product-detail-section-title">Uploaded PDFs</div>
+            <div id="detail-assigned-documents"></div>
+          </div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="product-detail-card product-detail-card-wide">
+      <ui5-card-header slot="header" title-text="Classification"></ui5-card-header>
+      <div class="product-detail-card-body" id="detail-classification-content"></div>
+    </ui5-card>
+  </div>
+
+  <ui5-dialog id="detail-reasoning-dialog" header-text="Reasoning">
+    <div class="product-detail-dialog-body" id="detail-reasoning-content"></div>
+    <div slot="footer" class="product-detail-dialog-footer">
+      <ui5-button id="detail-reasoning-close-button" design="Emphasized">Close</ui5-button>
+    </div>
+  </ui5-dialog>
+
+  <ui5-dialog id="detail-pdf-required-dialog" header-text="PDF required">
+    <div class="product-detail-dialog-body" id="detail-pdf-required-content">
+      PDF evidence mode requires an uploaded PDF for this item.
+    </div>
+    <div slot="footer" class="product-detail-dialog-footer">
+      <ui5-button id="detail-pdf-required-close-button" design="Emphasized">Close</ui5-button>
+    </div>
+  </ui5-dialog>
+</div>

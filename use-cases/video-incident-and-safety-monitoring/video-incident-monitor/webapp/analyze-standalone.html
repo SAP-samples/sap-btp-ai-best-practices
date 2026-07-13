@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="backend-api-key" content="74646474849">
+    <title>Video Incident & Safety Monitoring</title>
+
+    <script>
+        window['sap-ui-config'] = { resourceroots: { 'videoincidentmonitor': '/' } };
+    </script>
+    <script id="sap-ui-bootstrap" src="https://ui5.sap.com/1.136.7/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon" data-sap-ui-libs="sap.m,sap.ui.layout,sap.ui.unified"
+        data-sap-ui-resourceroots='{"videoincidentmonitor":"/"}' data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true">
+        </script>
+    <script>
+        sap.ui.loader.config({ paths: { "videoincidentmonitor": "/" } });
+    </script>
+    <script src="config.js"></script>
+
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ui.require([
+                "sap/m/Page",
+                "sap/m/ScrollContainer",
+                "sap/ui/layout/VerticalLayout",
+                "sap/m/Title",
+                "sap/m/Text",
+                "sap/m/Panel",
+                "sap/m/VBox",
+                "sap/m/Label",
+                "sap/m/SegmentedButton",
+                "sap/m/SegmentedButtonItem",
+                "sap/ui/unified/FileUploader",
+                "sap/m/TextArea",
+                "sap/m/HBox",
+                "sap/m/Slider",
+                "sap/m/Input",
+                "sap/m/Button",
+                "sap/m/ObjectStatus",
+                "sap/m/ProgressIndicator",
+                "sap/ui/core/HTML",
+                "sap/m/Link"
+            ], function (Page, ScrollContainer, VerticalLayout, Title, Text, Panel, VBox, Label,
+                SegmentedButton, SegmentedButtonItem, FileUploader, TextArea, HBox,
+                Slider, Input, Button, ObjectStatus, ProgressIndicator, HTML, Link) {
+
+                // Create main page
+                var oPage = new Page("analyzeMediaPage", {
+                    title: "Video Incident & Safety Monitoring",
+                    showNavButton: false
+                });
+
+                // Create scroll container
+                var oScrollContainer = new ScrollContainer({
+                    height: "100%",
+                    width: "100%",
+                    vertical: true,
+                    horizontal: false
+                });
+
+                // Create vertical layout
+                var oVerticalLayout = new VerticalLayout({
+                    width: "100%"
+                }).addStyleClass("sapUiContentPadding");
+
+                // Add description
+                var oDescription3 = new Text({
+                    text: "This scenario can be applied to construction sites, manufacturing plants, logistics hubs, and warehouses to identify unsafe behavior and improve HSE compliance. It can also support control rooms and security teams by prioritizing the most critical moments in long recordings, saving time and reducing manual review effort."
+                }).addStyleClass("sapUiMediumMarginTop sapUiSmallMarginBottom");
+
+                // Create media selection panel
+                var oMediaPanel = new Panel({
+                    headerText: "1. Select Media File",
+                    expandable: false,
+                    expanded: true,
+                    width: "auto"
+                }).addStyleClass("sapUiResponsiveMargin");
+
+                var oMediaVBox = new VBox().addStyleClass("sapUiSmallMargin");
+
+                // Media type selection
+                var oMediaTypeLabel = new Label({
+                    text: "Media Type:",
+                    labelFor: "mediaTypeSelect"
+                });
+
+                var oSegmentedButton = new SegmentedButton("mediaTypeSelect", {
+                    selectedKey: "video",
+                    items: [
+                        new SegmentedButtonItem({
+                            key: "video",
+                            text: "Video",
+                            icon: "sap-icon://video"
+                        }),
+                        new SegmentedButtonItem({
+                            key: "audio",
+                            text: "Audio",
+                            icon: "sap-icon://microphone"
+                        })
+                    ]
+                });
+
+                // File selection options
+                var oFileSourceLabel = new Label({
+                    text: "File Source:",
+                    labelFor: "fileSourceSelect"
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oFileSourceSelect = new SegmentedButton("fileSourceSelect", {
+                    selectedKey: "server",
+                    items: [
+                        new SegmentedButtonItem({
+                            key: "server",
+                            text: "From Server",
+                            icon: "sap-icon://folder"
+                        }),
+                        new SegmentedButtonItem({
+                            key: "upload",
+                            text: "Upload File",
+                            icon: "sap-icon://upload"
+                        })
+                    ]
+                });
+
+                // Server file selection
+                var oServerFileVBox = new VBox("serverFileBox", {
+                    visible: true
+                }).addStyleClass("sapUiSmallMarginTop");
+
+                var oServerFileLabel = new Label({
+                    text: "Select from Server:",
+                    labelFor: "serverFileSelect"
+                });
+
+                var oServerFileSelect = new sap.m.Select("serverFileSelect", {
+                    width: "400px",
+                    items: []
+                });
+
+                oServerFileVBox.addItem(oServerFileLabel);
+                oServerFileVBox.addItem(oServerFileSelect);
+
+                // File uploader (hidden by default)
+                var oUploadVBox = new VBox("uploadFileBox", {
+                    visible: false
+                }).addStyleClass("sapUiSmallMarginTop");
+
+                var oFileLabel = new Label({
+                    text: "Upload File:",
+                    labelFor: "fileUploader"
+                });
+
+                var oFileUploader = new FileUploader("fileUploader", {
+                    name: "mediaFile",
+                    uploadUrl: "/upload",
+                    uploadOnChange: false,
+                    fileType: ["mp4", "avi", "mov", "webm", "wav", "mp3", "ogg", "flac"],
+                    placeholder: "Choose a file...",
+                    width: "400px"
+                });
+
+                oUploadVBox.addItem(oFileLabel);
+                oUploadVBox.addItem(oFileUploader);
+
+                var oFileInfo = new Text("fileInfo", {
+                    text: ""
+                }).addStyleClass("sapUiTinyMarginTop");
+
+                // Media preview box
+                var oPreviewBox = new VBox("mediaPreviewBox", {
+                    visible: false
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oPreviewLabel = new Label({
+                    text: "Preview:"
+                });
+
+                var oMediaPreview = new HTML("mediaPreview", {
+                    content: ""
+                }).addStyleClass("sapUiTinyMarginTop");
+
+                // Build media panel structure
+                oPreviewBox.addItem(oPreviewLabel);
+                oPreviewBox.addItem(oMediaPreview);
+
+                oMediaVBox.addItem(oMediaTypeLabel);
+                oMediaVBox.addItem(oSegmentedButton);
+                oMediaVBox.addItem(oFileSourceLabel);
+                oMediaVBox.addItem(oFileSourceSelect);
+                oMediaVBox.addItem(oServerFileVBox);
+                oMediaVBox.addItem(oUploadVBox);
+                oMediaVBox.addItem(oFileInfo);
+                oMediaVBox.addItem(oPreviewBox);
+
+                oMediaPanel.addContent(oMediaVBox);
+
+                // Create analysis configuration panel
+                var oAnalysisPanel = new Panel({
+                    headerText: "2. Configure Analysis",
+                    expandable: true,
+                    expanded: true,
+                    width: "auto"
+                }).addStyleClass("sapUiResponsiveMargin");
+
+                var oAnalysisVBox = new VBox().addStyleClass("sapUiSmallMargin");
+
+                var oInstructionLabel = new Label({
+                    text: "Instruction for AI:",
+                    labelFor: "instructionText"
+                });
+
+                var oInstructionText = new TextArea("instructionText", {
+                    value: "Analyze this media for safety violations. Are there any incidents or hazards?",
+                    rows: 4,
+                    width: "100%",
+                    placeholder: "Enter your question or instruction..."
+                }).addStyleClass("sapUiTinyMarginTop");
+
+                var oSettingsVBox = new VBox().addStyleClass("sapUiMediumMarginTop");
+
+                var oTempLabel = new Label({
+                    text: "Temperature (0.0 - 2.0):",
+                    labelFor: "temperatureSlider"
+                });
+
+                var oTempHBox = new HBox({
+                    alignItems: "Center"
+                });
+
+                var oTempSlider = new Slider("temperatureSlider", {
+                    value: 0.7,
+                    min: 0,
+                    max: 2,
+                    step: 0.1,
+                    enableTickmarks: true,
+                    width: "300px"
+                });
+
+                var oTempValue = new Text("temperatureValue", {
+                    text: "0.7"
+                }).addStyleClass("sapUiTinyMarginBegin");
+
+                var oTokensLabel = new Label({
+                    text: "Max Tokens:",
+                    labelFor: "maxTokensInput"
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oTokensInput = new Input("maxTokensInput", {
+                    value: "2000",
+                    type: "Number",
+                    width: "200px"
+                });
+
+                // Build analysis panel structure
+                oTempHBox.addItem(oTempSlider);
+                oTempHBox.addItem(oTempValue);
+
+                oSettingsVBox.addItem(oTempLabel);
+                oSettingsVBox.addItem(oTempHBox);
+                oSettingsVBox.addItem(oTokensLabel);
+                oSettingsVBox.addItem(oTokensInput);
+
+                oAnalysisVBox.addItem(oInstructionLabel);
+                oAnalysisVBox.addItem(oInstructionText);
+                oAnalysisVBox.addItem(oSettingsVBox);
+
+                oAnalysisPanel.addContent(oAnalysisVBox);
+
+                // Create analyze button
+                var oButtonVBox = new VBox().addStyleClass("sapUiResponsiveMargin");
+                var oAnalyzeButton = new Button("analyzeButton", {
+                    text: "Analyze Media",
+                    type: "Emphasized",
+                    icon: "sap-icon://play",
+                    enabled: false,
+                    width: "200px"
+                });
+
+                oButtonVBox.addItem(oAnalyzeButton);
+
+                // Create results panel
+                var oResultsPanel = new Panel("resultsPanel", {
+                    headerText: "3. Analysis Results",
+                    expandable: false,
+                    expanded: true,
+                    visible: false,
+                    width: "auto"
+                }).addStyleClass("sapUiResponsiveMargin");
+
+                var oResultsVBox = new VBox().addStyleClass("sapUiSmallMargin");
+
+                var oStatusHBox = new HBox({
+                    alignItems: "Center"
+                });
+
+                var oStatusLabel = new Label({
+                    text: "Status:"
+                });
+
+                var oAnalysisStatus = new ObjectStatus("analysisStatus", {
+                    text: "Processing...",
+                    state: "Information"
+                }).addStyleClass("sapUiTinyMarginBegin");
+
+                var oProgress = new ProgressIndicator("analysisProgress", {
+                    visible: false,
+                    percentValue: 0,
+                    displayValue: "Analyzing...",
+                    state: "Information"
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oResultsBox = new VBox("resultsBox", {
+                    visible: false
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oResultLabel = new Label({
+                    text: "AI Analysis:"
+                });
+
+                var oResultTextBox = new VBox().addStyleClass("analysisResultBox sapUiTinyMarginTop");
+                var oResultText = new Text("analysisResultText", {
+                    text: "",
+                    renderWhitespace: true
+                });
+
+                var oIncidentHBox = new HBox({
+                    alignItems: "Center"
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                var oIncidentLabel = new Label({
+                    text: "Incident Detected:"
+                });
+
+                var oIncidentStatus = new ObjectStatus("incidentStatus", {
+                    text: "No",
+                    state: "Success"
+                }).addStyleClass("sapUiTinyMarginBegin");
+
+                var oSeverityHBox = new HBox("severityBox", {
+                    alignItems: "Center",
+                    visible: false
+                }).addStyleClass("sapUiSmallMarginTop");
+
+                var oSeverityLabel = new Label({
+                    text: "Severity:"
+                });
+
+                var oSeverityStatus = new ObjectStatus("severityStatus", {
+                    text: ""
+                }).addStyleClass("sapUiTinyMarginBegin");
+
+                // Metrics section
+                var oMetricsVBox = new VBox().addStyleClass("sapUiMediumMarginTop");
+                var oMetricsLabel = new Label({
+                    text: "Metrics:"
+                });
+
+                var oMetricsHBox = new HBox().addStyleClass("sapUiTinyMarginTop");
+
+                var oPromptVBox = new VBox().addStyleClass("sapUiSmallMarginEnd");
+                var oPromptLabel = new Label({
+                    text: "Prompt Tokens:"
+                });
+                var oPromptTokens = new Text("promptTokens", {
+                    text: "-"
+                });
+
+                var oCompletionVBox = new VBox().addStyleClass("sapUiSmallMarginEnd");
+                var oCompletionLabel = new Label({
+                    text: "Completion Tokens:"
+                });
+                var oCompletionTokens = new Text("completionTokens", {
+                    text: "-"
+                });
+
+                var oTotalVBox = new VBox().addStyleClass("sapUiSmallMarginEnd");
+                var oTotalLabel = new Label({
+                    text: "Total Tokens:"
+                });
+                var oTotalTokens = new Text("totalTokens", {
+                    text: "-"
+                });
+
+                var oTimeVBox = new VBox();
+                var oTimeLabel = new Label({
+                    text: "Processing Time:"
+                });
+                var oProcessingTime = new Text("processingTime", {
+                    text: "-"
+                });
+
+                var oDownloadButton = new Button({
+                    text: "Download Report",
+                    icon: "sap-icon://download",
+                    width: "200px"
+                }).addStyleClass("sapUiMediumMarginTop");
+
+                // Build results structure
+                oStatusHBox.addItem(oStatusLabel);
+                oStatusHBox.addItem(oAnalysisStatus);
+
+                oResultTextBox.addItem(oResultText);
+
+                oIncidentHBox.addItem(oIncidentLabel);
+                oIncidentHBox.addItem(oIncidentStatus);
+
+                oSeverityHBox.addItem(oSeverityLabel);
+                oSeverityHBox.addItem(oSeverityStatus);
+
+                oPromptVBox.addItem(oPromptLabel);
+                oPromptVBox.addItem(oPromptTokens);
+
+                oCompletionVBox.addItem(oCompletionLabel);
+                oCompletionVBox.addItem(oCompletionTokens);
+
+                oTotalVBox.addItem(oTotalLabel);
+                oTotalVBox.addItem(oTotalTokens);
+
+                oTimeVBox.addItem(oTimeLabel);
+                oTimeVBox.addItem(oProcessingTime);
+
+                oMetricsHBox.addItem(oPromptVBox);
+                oMetricsHBox.addItem(oCompletionVBox);
+                oMetricsHBox.addItem(oTotalVBox);
+                oMetricsHBox.addItem(oTimeVBox);
+
+                oMetricsVBox.addItem(oMetricsLabel);
+                oMetricsVBox.addItem(oMetricsHBox);
+
+                oResultsBox.addItem(oResultLabel);
+                oResultsBox.addItem(oResultTextBox);
+                oResultsBox.addItem(oIncidentHBox);
+                oResultsBox.addItem(oSeverityHBox);
+                oResultsBox.addItem(oMetricsVBox);
+                oResultsBox.addItem(oDownloadButton);
+
+                oResultsVBox.addItem(oStatusHBox);
+                oResultsVBox.addItem(oProgress);
+                oResultsVBox.addItem(oResultsBox);
+
+                oResultsPanel.addContent(oResultsVBox);
+
+                // Create links for navigation
+                var oLinkVBox = new VBox().addStyleClass("sapUiResponsiveMargin");
+                var isLocal = window.location.hostname === "localhost" ||
+                              window.location.hostname === "127.0.0.1" ||
+                              window.location.hostname.includes("local");
+
+                // Always show UI5 Examples link
+                var oUI5ExamplesLink = new Link({
+                    text: "View UI5 Component Examples",
+                    href: "/test/flpSandbox.html?sap-ui-xx-viewCache=false#Shell-home"
+                }).addStyleClass("sapUiMediumMarginTop");
+                oLinkVBox.addItem(oUI5ExamplesLink);
+
+                // Show "View All Analyses" only in local development
+                if (isLocal) {
+                    var oViewAllLink = new Link({
+                        text: "View All Analyses"
+                    }).addStyleClass("sapUiSmallMarginTop");
+                    oLinkVBox.addItem(oViewAllLink);
+                }
+
+                // Build main layout
+                oVerticalLayout.addContent(oDescription3);
+                oVerticalLayout.addContent(oMediaPanel);
+                oVerticalLayout.addContent(oAnalysisPanel);
+                oVerticalLayout.addContent(oButtonVBox);
+                oVerticalLayout.addContent(oResultsPanel);
+                oVerticalLayout.addContent(oLinkVBox);
+
+                oScrollContainer.addContent(oVerticalLayout);
+                oPage.addContent(oScrollContainer);
+
+                // Add event handlers
+                oSegmentedButton.attachSelectionChange(function (oEvent) {
+                    var sMediaType = oEvent.getParameter("item").getKey();
+                    updateFileTypes(sMediaType);
+                    updateServerFileList(sMediaType);
+                    updatePromptForMediaType(sMediaType);
+                    if (oFileSourceSelect.getSelectedKey() === "server") {
+                        loadDefaultMedia(sMediaType);
+                    }
+                });
+
+                oFileSourceSelect.attachSelectionChange(function (oEvent) {
+                    var sSource = oEvent.getParameter("item").getKey();
+                    if (sSource === "server") {
+                        oServerFileVBox.setVisible(true);
+                        oUploadVBox.setVisible(false);
+                        var sMediaType = oSegmentedButton.getSelectedKey();
+                        updateServerFileList(sMediaType);
+                        loadDefaultMedia(sMediaType);
+                    } else {
+                        oServerFileVBox.setVisible(false);
+                        oUploadVBox.setVisible(true);
+                        oPreviewBox.setVisible(false);
+                        oFileInfo.setText("");
+                        oAnalyzeButton.setEnabled(false);
+                    }
+                });
+
+                oServerFileSelect.attachChange(function (oEvent) {
+                    var sSelectedFile = oEvent.getParameter("selectedItem").getKey();
+                    if (sSelectedFile) {
+                        var sMediaType = oSegmentedButton.getSelectedKey();
+                        var sPath = (sMediaType === "video" ? "/Video/" : "/Audio/") + sSelectedFile;
+                        showMediaPreview(sPath, sMediaType, sSelectedFile);
+                        oFileInfo.setText("Server: " + sSelectedFile);
+                        oAnalyzeButton.setEnabled(true);
+                    }
+                });
+
+                oFileUploader.attachChange(function (oEvent) {
+                    var oFile = oEvent.getParameter("files")[0];
+                    if (oFile) {
+                        handleFileSelection(oFile);
+                    }
+                });
+
+                oTempSlider.attachLiveChange(function (oEvent) {
+                    var fValue = oEvent.getParameter("value");
+                    oTempValue.setText(fValue.toFixed(1));
+                });
+
+                oAnalyzeButton.attachPress(function () {
+                    analyzeMedia();
+                });
+
+                oDownloadButton.attachPress(function () {
+                    downloadReport();
+                });
+
+                if (isLocal && oViewAllLink) {
+                    oViewAllLink.attachPress(function () {
+                        // Development: Navigate to FLP sandbox home
+                        window.location.href = "/test/flpSandbox.html?sap-ui-xx-viewCache=false#Shell-home";
+                    });
+                }
+
+                // Helper functions
+                function updateFileTypes(sMediaType) {
+                    if (sMediaType === "video") {
+                        oFileUploader.setFileType(["mp4", "avi", "mov", "webm"]);
+                        oFileUploader.setMimeType("video/mp4,video/avi,video/quicktime,video/webm");
+                    } else {
+                        oFileUploader.setFileType(["wav", "mp3", "ogg", "flac"]);
+                        oFileUploader.setMimeType("audio/wav,audio/mpeg,audio/ogg,audio/flac");
+                    }
+                }
+
+                function updateServerFileList(sMediaType) {
+                    // Clear existing items
+                    oServerFileSelect.removeAllItems();
+
+                    // Available files from each directory
+                    var availableFiles = {
+                        "video": [
+                            "14_Team000884-xx_xx_xxxx - walking along the tube.mp4",
+                            "33_Team000708-xx_xx_xxxx -_railings on the stairs are not installed.mp4"
+                        ],
+                        "audio": [
+                            "text_input_20250903.mp3",
+                            "youre-on-the-right-track.wav"
+                        ]
+                    };
+
+                    var aFiles = availableFiles[sMediaType];
+                    if (aFiles && aFiles.length > 0) {
+                        aFiles.forEach(function (sFileName) {
+                            oServerFileSelect.addItem(new sap.ui.core.Item({
+                                key: sFileName,
+                                text: sFileName
+                            }));
+                        });
+
+                        // Select first item by default
+                        oServerFileSelect.setSelectedKey(aFiles[0]);
+                    }
+                }
+
+                function updatePromptForMediaType(sMediaType) {
+                    if (sMediaType === "video") {
+                        oInstructionText.setValue("Analyze this media for safety violations. Are there any incidents or hazards?");
+                    } else if (sMediaType === "audio") {
+                        oInstructionText.setValue("Recognize and summarise audio");
+                    }
+                }
+
+                function loadDefaultMedia(sMediaType) {
+                    // Default files from each directory
+                    var defaultFiles = {
+                        "video": [
+                            "14_Team000884-xx_xx_xxxx - walking along the tube.mp4",
+                            "33_Team000708-xx_xx_xxxx -_railings on the stairs are not installed.mp4"
+                        ],
+                        "audio": [
+                            "text_input_20250903.mp3",
+                            "youre-on-the-right-track.wav"
+                        ]
+                    };
+
+                    var sPath = sMediaType === "video" ? "/Video/" : "/Audio/";
+                    var aFiles = defaultFiles[sMediaType];
+
+                    if (aFiles && aFiles.length > 0) {
+                        var sFirstFile = aFiles[0];
+                        var sFullPath = sPath + sFirstFile;
+
+                        // Test if file exists by trying to load it
+                        fetch(sFullPath, { method: 'HEAD' })
+                            .then(response => {
+                                if (response.ok) {
+                                    showMediaPreview(sFullPath, sMediaType, sFirstFile);
+                                    oFileInfo.setText("Default: " + sFirstFile);
+                                    oAnalyzeButton.setEnabled(true);
+                                } else {
+                                    console.log("Default file not found:", sFullPath);
+                                }
+                            })
+                            .catch(error => {
+                                console.log("Could not load default media:", error);
+                            });
+                    }
+                }
+
+                function handleFileSelection(oFile) {
+                    oFileInfo.setText("Selected: " + oFile.name + " (" + (oFile.size / 1024 / 1024).toFixed(2) + " MB)");
+
+                    var sObjectURL = URL.createObjectURL(oFile);
+                    var sMediaType = oSegmentedButton.getSelectedKey();
+                    showMediaPreview(sObjectURL, sMediaType, oFile.name);
+                    oAnalyzeButton.setEnabled(true);
+                }
+
+                function showMediaPreview(sUrl, sMediaType, sFileName) {
+                    var sHTML;
+                    if (sMediaType === "video") {
+                        sHTML = '<video controls style="max-width: 100%; max-height: 400px; border-radius: 4px;">' +
+                            '<source src="' + sUrl + '">' +
+                            'Your browser does not support the video tag.' +
+                            '</video>';
+                    } else {
+                        sHTML = '<audio controls style="width: 100%;">' +
+                            '<source src="' + sUrl + '">' +
+                            'Your browser does not support the audio tag.' +
+                            '</audio>';
+                    }
+
+                    oMediaPreview.setContent(sHTML);
+                    oPreviewBox.setVisible(true);
+                }
+
+                function analyzeMedia() {
+                    var sInstruction = oInstructionText.getValue();
+                    var fTemperature = parseFloat(oTempSlider.getValue());
+                    var iMaxTokens = parseInt(oTokensInput.getValue());
+
+                    if (!sInstruction) {
+                        sap.m.MessageBox.warning("Please provide an instruction for analysis.");
+                        return;
+                    }
+
+                    // Show results panel and progress
+                    oResultsPanel.setVisible(true);
+                    oProgress.setVisible(true);
+                    oResultsBox.setVisible(false);
+                    oAnalysisStatus.setText("Processing...").setState("Information");
+                    oAnalyzeButton.setEnabled(false);
+
+                    // Get current media file
+                    var oFile = null;
+                    var sFileInfo = oFileInfo.getText();
+
+                    if (sFileInfo.startsWith("Selected:")) {
+                        // User uploaded file
+                        var oFileUploadDom = document.getElementById("fileUploader-fu");
+                        if (oFileUploadDom && oFileUploadDom.files && oFileUploadDom.files[0]) {
+                            oFile = oFileUploadDom.files[0];
+                        }
+                    }
+
+                    if (!oFile && (sFileInfo.startsWith("Default:") || sFileInfo.startsWith("Server:"))) {
+                        // Server file - need to fetch it
+                        var sMediaType = oSegmentedButton.getSelectedKey();
+                        var sFileName = sFileInfo.startsWith("Default:") ?
+                            sFileInfo.replace("Default: ", "") :
+                            sFileInfo.replace("Server: ", "");
+                        var sPath = (sMediaType === "video" ? "/Video/" : "/Audio/") + sFileName;
+
+                        fetch(sPath)
+                            .then(response => response.blob())
+                            .then(blob => {
+                                var file = new File([blob], sFileName, { type: blob.type });
+                                sendAnalysisRequest(file, sInstruction, fTemperature, iMaxTokens);
+                            })
+                            .catch(error => {
+                                console.error("Error fetching server file:", error);
+                                oProgress.setVisible(false);
+                                oAnalysisStatus.setText("Error").setState("Error");
+                                sap.m.MessageBox.error("Failed to load server media file: " + error.message);
+                                oAnalyzeButton.setEnabled(true);
+                            });
+                        return;
+                    }
+
+                    if (oFile) {
+                        sendAnalysisRequest(oFile, sInstruction, fTemperature, iMaxTokens);
+                    } else {
+                        sap.m.MessageBox.warning("Please select a media file first.");
+                        oProgress.setVisible(false);
+                        oAnalyzeButton.setEnabled(true);
+                    }
+                }
+
+                function sendAnalysisRequest(oFile, sInstruction, fTemperature, iMaxTokens) {
+                    var formData = new FormData();
+                    formData.append("file", oFile);
+                    formData.append("instruction", sInstruction);
+                    formData.append("temperature", fTemperature);
+                    formData.append("maxTokens", iMaxTokens);
+                    formData.append("autoAnalyze", "true");
+
+                    fetch(window.AI_CORE_VIDEO_CONFIG.backendBaseUrl + "/odata/v4/VideoIncidentService/MediaAnalysis", {
+                        method: "POST",
+                        headers: window.AI_CORE_VIDEO_CONFIG.apiKey ? { "X-API-Key": window.AI_CORE_VIDEO_CONFIG.apiKey } : undefined,
+                        body: formData
+                    })
+                        .then(function (response) {
+                            if (!response.ok) {
+                                throw new Error("HTTP error! status: " + response.status);
+                            }
+                            return response.json();
+                        })
+                        .then(function (result) {
+                            oProgress.setVisible(false);
+                            oResultsBox.setVisible(true);
+
+                            if (result.status === "completed") {
+                                oAnalysisStatus.setText("Completed").setState("Success");
+                            } else if (result.status === "failed") {
+                                oAnalysisStatus.setText("Failed").setState("Error");
+                            } else {
+                                oAnalysisStatus.setText(result.status).setState("Warning");
+                            }
+
+                            oResultText.setText(result.analysisResult || "No result available");
+
+                            if (result.incidentDetected) {
+                                oIncidentStatus.setText("Yes").setState("Error");
+                                oSeverityHBox.setVisible(true);
+
+                                var severityMap = {
+                                    "critical": "Error",
+                                    "high": "Warning",
+                                    "medium": "Warning",
+                                    "low": "Success"
+                                };
+                                var severityState = severityMap[result.severity] || "None";
+                                oSeverityStatus.setText(result.severity ? result.severity.toUpperCase() : "Unknown").setState(severityState);
+                            } else {
+                                oIncidentStatus.setText("No").setState("Success");
+                                oSeverityHBox.setVisible(false);
+                            }
+
+                            oPromptTokens.setText(result.promptTokens || "-");
+                            oCompletionTokens.setText(result.completionTokens || "-");
+                            oTotalTokens.setText(result.totalTokens || "-");
+                            oProcessingTime.setText(result.processingTime ? result.processingTime + "s" : "-");
+
+                            sap.m.MessageToast.show("Analysis completed successfully!");
+                        })
+                        .catch(function (error) {
+                            console.error("Analysis error:", error);
+                            oProgress.setVisible(false);
+                            oAnalysisStatus.setText("Error").setState("Error");
+                            sap.m.MessageBox.error("Analysis failed: " + error.message);
+                        })
+                        .finally(function () {
+                            oAnalyzeButton.setEnabled(true);
+                        });
+                }
+
+                function downloadReport() {
+                    var sResult = oResultText.getText();
+                    var sFileInfo = oFileInfo.getText();
+                    var sFileName = sFileInfo.includes(":") ? sFileInfo.split(": ")[1] : "analysis";
+                    var sReportName = sFileName + "_analysis.txt";
+
+                    var blob = new Blob([sResult], { type: "text/plain" });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.href = url;
+                    a.download = sReportName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    sap.m.MessageToast.show("Report downloaded");
+                }
+
+                // Initialize server file list and load default video on startup
+                updateServerFileList("video");
+                loadDefaultMedia("video");
+
+                // Place page in DOM
+                oPage.placeAt("content");
+            });
+        });
+    </script>
+
+    <style>
+        html,
+        body,
+        #content {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .analysisResultBox {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0a6ed1;
+        }
+    </style>
+</head>
+
+<body class="sapUiBody" id="content">
+</body>
+
+</html>

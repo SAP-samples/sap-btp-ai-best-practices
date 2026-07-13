@@ -1,0 +1,17 @@
+[
+  {
+    "taxonomy": "UTILITY_SERVICES",
+    "naic_prefixes": [
+      "221"
+    ],
+    "industry_keywords": [
+      "small operations",
+      "water services"
+    ]
+  },
+  {
+    "taxonomy": "GENERAL_BUSINESS",
+    "naic_prefixes": [],
+    "industry_keywords": []
+  }
+]

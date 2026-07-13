@@ -1,0 +1,101 @@
+material_code,material_description,supplier_id,current_price,currency,uom
+8510031,Apex Carbon Road Bike: Ultra-lightweight aerodynamic frame with integrated cable routing.,SUP001,2150.00,EUR,EA
+8510032,Vortex Aerodynamic Helmet: Wind-tunnel tested with 15 cooling vents and MIPS protection.,SUP001,180.00,EUR,EA
+8510033,Grip-Master Cycling Gloves: Padded with high-density gel for vibration dampening.,SUP001,28.50,EUR,PR
+8510034,Summit-Pro MTB Pedals: CNC-machined aluminum with adjustable tension for secure clipping.,SUP001,95.00,EUR,PR
+8510035,Shift-Logic Derailleur Set: Electronic shifting system for precise gear changes.,SUP001,420.00,EUR,EA
+8622040,Terra-Flex Trail Runners: High-traction outsole designed for mud and rocky terrain.,SUP002,110.00,EUR,PR
+8622041,Hydro-Lite 2L Vest: Minimalist hydration pack with a 2-liter BPA-free water bladder.,SUP002,65.00,EUR,EA
+8622042,Ultra-Grip Trekking Poles: Telescopic carbon fiber poles with ergonomic cork handles.,SUP002,72.00,EUR,PR
+8622043,Solar-Peak Windbreaker: Recycled polyester fabric with UV 50+ protection.,SUP002,55.00,EUR,EA
+8622044,Eco-Thrive Yoga Mat: Biodegradable natural rubber with a non-slip textured surface.,SUP002,32.00,EUR,EA
+8733050,Stradivarius Leather Soccer Ball: Hand-stitched premium synthetic leather for professional play.,SUP003,38.00,EUR,EA
+8733051,Titanium-Shield Shin Guards: Anatomically shaped with EVA foam backing for impact absorption.,SUP003,22.00,EUR,PR
+8733052,Pro-Goalie Latex Gloves: 4mm German latex palm for superior grip in wet conditions.,SUP003,45.00,EUR,PR
+8733053,Nitro-Speed Soccer Cleats: Lightweight microfiber upper with a conical stud configuration.,SUP003,89.00,EUR,PR
+8733054,"Enduro-Mesh Team Jersey: Breathable, moisture-wicking fabric with reinforced stitching.",SUP003,42.00,EUR,EA
+8844060,Court-King Tennis Racket: Graphite-tungsten frame designed for maximum power and control.,SUP004,80.00,EUR,EA
+8844061,Spin-Pro Tennis Strings: Co-polyester construction for enhanced ball bite and durability.,SUP004,15.00,EUR,EA
+8844062,Baseline Court Shoes: Lateral stability system with non-marking herringbone outsoles.,SUP004,95.00,EUR,PR
+8844063,Precision Felt Tennis Balls: Pressurized cores with high-visibility felt for all surfaces.,SUP004,8.50,EUR,PK
+8844064,Ace-Performance Visor: Curved brim with a moisture-absorbing sweatband.,SUP004,18.00,EUR,EA
+8955070,Powder-Glide Downhill Skis: Multi-layer wood core with a carbon backbone for stability.,SUP005,520.00,EUR,PR
+8955071,Polar-Vision Goggles: Dual-pane anti-fog lenses with 100% UVA/UVB protection.,SUP005,85.00,EUR,EA
+8955072,Summit-Insulated Parka: 800-fill power down jacket with a waterproof GORE-TEX shell.,SUP005,380.00,EUR,EA
+8955073,Edge-Control Ski Boots: Heat-moldable liner with a 120 flex rating for advanced skiers.,SUP005,155.00,EUR,PR
+8955074,Avalanche-Safety Probe: 300cm aluminum probe with quick-lock tensioning system.,SUP005,60.00,EUR,EA
+8100110,Aqua-Speed Racing Goggles: Low-profile hydrodynamic design with mirrored lenses.,SUP006,24.00,EUR,EA
+8100111,Glide-Tech Competition Swimsuit: Chlorine-resistant fabric with 4-way stretch.,SUP006,68.00,EUR,EA
+8100112,Power-Stroke Training Fins: Short-blade design to improve leg strength and tempo.,SUP006,32.00,EUR,PR
+8100113,Logic-Cap Silicone Hat: High-stretch silicone to reduce water resistance.,SUP006,9.00,EUR,EA
+8100114,"Dry-Core Microfiber Towel: Ultra-absorbent, quick-drying towel that packs down small.",SUP006,15.00,EUR,EA
+8200220,Zenith Seamless Leggings: High-waisted compression fabric for unrestricted movement.,SUP007,18.00,EUR,EA
+8200221,Flow-State Yoga Block: High-density EVA foam for support in deep stretching.,SUP007,7.50,EUR,EA
+8200222,Lotus-Grip Headband: Non-slip velvet lining to keep hair secure during inversions.,SUP007,6.00,EUR,EA
+8200223,Core-Balance Pilates Ball: Anti-burst PVC construction for core strengthening.,SUP007,14.00,EUR,EA
+8200224,Aura-Weight Yoga Bolster: Organic cotton cover with buckwheat hull filling.,SUP007,38.00,EUR,EA
+8300330,Puck-Master Hockey Stick: One-piece carbon composite with a mid-kick point.,SUP008,105.00,EUR,EA
+8300331,Ice-Guard Helmet: Dual-density liner with a stainless steel cage for protection.,SUP008,140.00,EUR,EA
+8300332,Velocity Pro Ice Skates: Heat-moldable boot with Tuuk Lightspeed edge holders.,SUP008,260.00,EUR,PR
+8300333,Impact-Shield Shoulder Pads: Integrated sternum protection with anatomical caps.,SUP008,95.00,EUR,EA
+8300334,Tactical Goalie Pads: Ultra-lightweight foam with reinforced leather for butterfly play.,SUP008,540.00,EUR,PR
+8400440,Tidal-Wave Inflatable SUP: Drop-stitch technology for rigid performance.,SUP009,310.00,EUR,EA
+8400441,Navigator Carbon Paddle: 3-piece adjustable shaft with a reinforced nylon blade.,SUP009,85.00,EUR,EA
+8400442,Deep-Sea Wetsuit: 3/2mm limestone neoprene with blind-stitched seams.,SUP009,180.00,EUR,EA
+8400443,Horizon Sailing Gloves: Amara leather palms with reinforced fingertips.,SUP009,28.00,EUR,PR
+8400444,Storm-Proof Dry Bag: 30L waterproof roll-top bag with heavy-duty PVC coating.,SUP009,32.00,EUR,EA
+8500550,Iron-Max Adjustable Dumbbells: Quick-dial system ranging from 2kg to 24kg.,SUP010,42.00,EUR,EA
+8500551,Power-Rack Training Station: Heavy-duty steel frame with integrated pull-up bar.,SUP010,650.00,EUR,EA
+8500552,Lift-Pro Leather Belt: 4-inch wide contoured cowhide for lumbar support.,SUP010,55.00,EUR,EA
+8500553,Shock-Absorb Gym Flooring: High-density rubber tiles for noise reduction.,SUP010,28.00,EUR,EA
+8500554,Endurance Speed Rope: Ball-bearing handles with a thin steel cable.,SUP010,18.00,EUR,EA
+8600660,Nordic-Cross Skis: Lightweight waxless skis designed for groomed trails.,SUP011,210.00,EUR,PR
+8600661,Thermal-Active Base Layer: Merino wool blend for natural warmth and odor resistance.,SUP011,52.00,EUR,EA
+8600662,Summit-Pace Running Jacket: Windproof front panels with breathable mesh back.,SUP011,98.00,EUR,EA
+8600663,Grip-Traction Ice Cleats: Rubber harness with steel studs for frozen surfaces.,SUP011,24.00,EUR,PR
+8600664,Fjord-Focus Headlamp: 600-lumen LED with a rechargeable lithium-ion battery.,SUP011,45.00,EUR,EA
+8700770,Riviera Padel Racket: Carbon fiber frame with a soft EVA core for vibration control.,SUP012,135.00,EUR,EA
+8700771,Sun-Guard Performance Polo: Quick-dry fabric with cooling technology.,SUP012,32.00,EUR,EA
+8700772,Marine-Grade Boat Shoes: Siped rubber outsoles for traction on wet decks.,SUP012,68.00,EUR,PR
+8700773,Gulf-Stream Snorkel Mask: Panoramic tempered glass lens with a dry-top snorkel.,SUP012,38.00,EUR,EA
+8700774,Active-Cool Beach Umbrella: Wind-vented canopy with a sand anchor base.,SUP012,55.00,EUR,EA
+8800880,"Wave-Rider Surfboard: 7'0"" funboard shape with a durable epoxy finish.",SUP013,420.00,EUR,EA
+8800881,Atlantic Surfing Leash: 7ft heavy-duty cord with a double-swivel system.,SUP013,22.00,EUR,EA
+8800882,Reef-Guard Rash Guard: UPF 50+ protection with flatlock seams to prevent chafing.,SUP013,28.00,EUR,EA
+8800883,"Hydro-Grip Wax: Organic, biodegradable formula for all water temperatures.",SUP013,4.50,EUR,EA
+8800884,Ocean-Vue Swim Fins: Symmetrical blade design for powerful thrust.,SUP013,35.00,EUR,PR
+8900990,Titan-Grip Kettlebell: Solid cast-iron construction with a wide-loop handle.,SUP014,48.00,EUR,EA
+8900991,Combat-Shield Boxing Gloves: Multi-layered padding with a secure wrist strap.,SUP014,32.00,EUR,PR
+8900992,Iron-Pulse Weight Vest: Adjustable weight up to 20kg with padded straps.,SUP014,85.00,EUR,EA
+8900993,Stamina Punching Bag: Synthetic leather casing filled with shock-absorbing textiles.,SUP014,140.00,EUR,EA
+8900994,Ring-Master Hand Wraps: Semi-elastic cotton material for wrist support.,SUP014,8.00,EUR,PR
+8111000,Autobahn Compression Tights: Gradient compression for muscle recovery.,SUP015,42.00,EUR,EA
+8111001,Rhein-Run Hydration Belt: Low-bounce design with two 250ml BPA-free bottles.,SUP015,28.00,EUR,EA
+8111002,Precision-Fit Sports Bra: High-impact support with moisture-wicking cups.,SUP015,35.00,EUR,EA
+8111003,Sonic-Step Smartwatch: GPS-enabled tracker with heart rate monitoring.,SUP015,175.00,EUR,EA
+8111004,Reflective Safety Vest: High-visibility neon mesh with 360-degree strips.,SUP015,15.00,EUR,EA
+8222110,Lisbon Court Skort: Integrated shorts with ball pockets and wicking fabric.,SUP016,38.00,EUR,EA
+8222111,Iberia Badminton Racket: High-modulus carbon frame with a head-heavy balance.,SUP016,42.00,EUR,EA
+8222112,Court-Master Shuttlecocks: Grade A goose feathers with a natural cork base.,SUP016,18.00,EUR,PK
+8222113,Elite Squash Eye Guards: Impact-resistant lenses with anti-fog coating.,SUP016,25.00,EUR,EA
+8222114,Fast-Foot Indoor Shoes: Gum rubber outsoles for superior grip.,SUP016,72.00,EUR,PR
+8333220,Alpine-Tech Hiking Boots: Nubuck leather with a Vibram sole and waterproof membrane.,SUP017,195.00,CHF,PR
+8333221,Swiss-Precision Compass: Liquid-filled capsule with a magnifying lens.,SUP017,42.00,CHF,EA
+8333222,Summit-Hydra Backpack: 40L capacity with a ventilated back panel.,SUP017,135.00,CHF,EA
+8333223,Peak-Performance Climbing Rope: 60m dynamic rope with a dry-treated core.,SUP017,210.00,CHF,EA
+8333224,Glacier-Protect Sunglasses: Category 4 lenses with removable side shields.,SUP017,98.00,CHF,EA
+8444330,Classic Willow Cricket Bat: Grade 1 English Willow with a Sarawak cane handle.,SUP018,115.00,EUR,EA
+8444331,Belgo-Guard Batting Pads: High-density foam bolsters with reinforced knee rolls.,SUP018,68.00,EUR,PR
+8444332,All-Rounder Cricket Shoes: Hybrid spike system for grass and turf.,SUP018,85.00,EUR,PR
+8444333,Stitch-Master Cricket Ball: Four-piece alum-tanned leather for league play.,SUP018,18.00,EUR,EA
+8444334,Pro-Vent Batting Helmet: Carbon-reinforced shell with an adjustable visor.,SUP018,72.00,EUR,EA
+8555440,Galactic Basketball: Composite leather with deep channels for ball control.,SUP019,22.00,EUR,EA
+8555441,Hoop-Dream High-Tops: Padded ankle support with responsive foam.,SUP019,89.00,EUR,PR
+8555442,"Madrid Mesh Shorts: Lightweight, double-layered mesh for breathability.",SUP019,24.00,EUR,EA
+8555443,Pro-Rim Compression Sleeve: Improves blood flow and keeps muscles warm.,SUP019,12.00,EUR,EA
+8555444,Backcourt Reversible Jersey: Quick-dry polyester with contrast piping.,SUP019,32.00,EUR,EA
+8666550,Baltic-Tough Weight Plate: Rubber-coated Olympic plate with stainless center ring.,SUP020,55.00,EUR,EA
+8666551,Power-Bar Barbell: 20kg chrome-plated steel bar with 700lb capacity.,SUP020,180.00,EUR,EA
+8666552,Grip-Enhance Lifting Chalk: 100% pure magnesium carbonate for a dry grip.,SUP020,8.00,EUR,EA
+8666553,Flex-Band Resistance Set: Set of 5 natural latex bands (Light to X-Heavy).,SUP020,28.00,EUR,SET
+8666554,Stability-Plus Weight Bench: Adjustable flat-incline-decline bench.,SUP020,220.00,EUR,EA

@@ -1,0 +1,28 @@
+---
+applications:
+  - name: section-232-agent-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 1024M
+    routes:
+      - route: section-232-agent-backend.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://section-232-agent.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://section-232-agent-backend.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      METAL_COMPOSITION_HTS_K_CANDIDATES: 5
+      METAL_COMPOSITION_BATCH_MAX_CONCURRENCY: 25
+      METAL_COMPOSITION_CLASSIFICATION_JOB_WORKER_MAX_CONCURRENCY: 1
+  - name: section-232-agent-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: section-232-agent.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://section-232-agent-backend.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: section-232-agent.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

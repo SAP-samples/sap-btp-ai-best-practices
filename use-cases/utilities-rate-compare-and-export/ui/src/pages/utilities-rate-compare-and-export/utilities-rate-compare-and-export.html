@@ -1,0 +1,152 @@
+<div class="rate-mapping-container">
+  <ui5-text> Upload two rate PDFs to extract rates and compare them side-by-side. </ui5-text>
+
+  <ui5-card>
+    <ui5-card-header slot="header" title-text="1. Upload rate PDFs" subtitle-text="Upload two files to compare the extracted results">
+      <ui5-icon name="document" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+
+    <div class="rate-mapping-upload-container">
+      <!-- File 1 -->
+      <div class="rate-mapping-upload-section">
+        <ui5-title level="H5">Select Document 1 (Current Month)</ui5-title>
+        <div style="margin: 0.5rem 0">
+          <ui5-label for="rate-type-select-1" show-colon>File Type</ui5-label>
+          <ui5-select id="rate-type-select-1" style="width: 100%; max-width: 300px"></ui5-select>
+        </div>
+        <div class="rate-mapping-actions">
+          <ui5-file-uploader id="rate-pdf-uploader-1" accept=".pdf" hide-input>
+            <ui5-button id="rate-choose-pdf-1" design="Emphasized" style="min-width: 80px">PDF</ui5-button>
+          </ui5-file-uploader>
+
+          <span class="rate-mapping-or-separator">or</span>
+
+          <ui5-file-uploader id="rate-md-uploader-1" accept=".md,.markdown,.txt" hide-input>
+            <ui5-button id="rate-choose-md-1" style="min-width: 80px">MD / TXT</ui5-button>
+          </ui5-file-uploader>
+
+          <span class="rate-mapping-or-separator">or</span>
+
+          <ui5-file-uploader id="rate-json-uploader-1" accept=".json" hide-input>
+            <ui5-button id="rate-choose-json-1" style="min-width: 80px">JSON</ui5-button>
+          </ui5-file-uploader>
+        </div>
+      </div>
+
+      <!-- File 2 -->
+      <div class="rate-mapping-upload-section">
+        <ui5-title level="H5">Select Document 2 (Previous Month)</ui5-title>
+        <div style="margin: 0.5rem 0">
+          <ui5-label for="rate-type-select-2" show-colon>File Type</ui5-label>
+          <ui5-select id="rate-type-select-2" style="width: 100%; max-width: 300px"></ui5-select>
+        </div>
+        <div class="rate-mapping-actions">
+          <ui5-file-uploader id="rate-pdf-uploader-2" accept=".pdf" hide-input>
+            <ui5-button id="rate-choose-pdf-2" design="Emphasized" style="min-width: 80px">PDF</ui5-button>
+          </ui5-file-uploader>
+
+          <span class="rate-mapping-or-separator">or</span>
+
+          <ui5-file-uploader id="rate-md-uploader-2" accept=".md,.markdown,.txt" hide-input>
+            <ui5-button id="rate-choose-md-2" style="min-width: 80px">MD / TXT</ui5-button>
+          </ui5-file-uploader>
+
+          <span class="rate-mapping-or-separator">or</span>
+
+          <ui5-file-uploader id="rate-json-uploader-2" accept=".json" hide-input>
+            <ui5-button id="rate-choose-json-2" style="min-width: 80px">JSON</ui5-button>
+          </ui5-file-uploader>
+        </div>
+      </div>
+    </div>
+
+    <ui5-message-strip id="rate-error-strip" design="Negative" hide-close-button style="display: none; margin: 1rem"></ui5-message-strip>
+  </ui5-card>
+
+  <ui5-card id="rate-results-card" style="display: none">
+    <ui5-card-header slot="header" title-text="2. Review extracted results" subtitle-text="Side-by-side comparison of mapped rates">
+      <ui5-icon name="table-view" slot="avatar"></ui5-icon>
+    </ui5-card-header>
+
+    <div class="rate-mapping-results-container">
+      <!-- Result 1 -->
+      <div id="rate-result-section-1" class="rate-mapping-result-section" style="visibility: hidden">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem">
+          <div style="display: flex; flex-direction: column; gap: 0.25rem">
+            <ui5-title level="H5">Result 1</ui5-title>
+            <ui5-text id="rate-result-filename-1" style="color: var(--sapContent_LabelColor)"></ui5-text>
+          </div>
+          <div style="display: flex; gap: 0.5rem">
+            <ui5-button id="expand-table-button-1" icon="full-screen" title="Expand Table" disabled></ui5-button>
+            <ui5-button id="download-csv-button-1" design="Emphasized" disabled>Download CSV 1</ui5-button>
+          </div>
+        </div>
+        <div class="rate-mapping-busy-row" style="display: none">
+          <ui5-busy-indicator id="rate-busy-1" size="M" active="false" delay="0"></ui5-busy-indicator>
+        </div>
+        <div class="rate-mapping-table-container">
+          <ui5-table id="rate-mapping-table-1" no-data-text="No data for Document 1" overflow-mode="Scroll" alternate-row-colors style="height: 600px"></ui5-table>
+        </div>
+        <ui5-panel id="rate-markdown-panel-1" header-text="Extracted Markdown 1" collapsed style="display: none">
+          <div style="padding: 0.5rem">
+            <pre id="rate-markdown-output-1" style="white-space: pre-wrap; word-break: break-word; min-height: 80px; margin: 0"></pre>
+          </div>
+        </ui5-panel>
+      </div>
+
+      <!-- Result 2 -->
+      <div id="rate-result-section-2" class="rate-mapping-result-section" style="visibility: hidden">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem">
+          <div style="display: flex; flex-direction: column; gap: 0.25rem">
+            <ui5-title level="H5">Result 2</ui5-title>
+            <ui5-text id="rate-result-filename-2" style="color: var(--sapContent_LabelColor)"></ui5-text>
+          </div>
+          <div style="display: flex; gap: 0.5rem">
+            <ui5-button id="expand-table-button-2" icon="full-screen" title="Expand Table" disabled></ui5-button>
+            <ui5-button id="download-csv-button-2" design="Emphasized" disabled>Download CSV 2</ui5-button>
+          </div>
+        </div>
+        <div class="rate-mapping-busy-row" style="display: none">
+          <ui5-busy-indicator id="rate-busy-2" size="M" active="false" delay="0"></ui5-busy-indicator>
+        </div>
+        <div class="rate-mapping-table-container">
+          <ui5-table id="rate-mapping-table-2" no-data-text="No data for Document 2" overflow-mode="Scroll" alternate-row-colors style="height: 600px"></ui5-table>
+        </div>
+        <ui5-panel id="rate-markdown-panel-2" header-text="Extracted Markdown 2" collapsed style="display: none">
+          <div style="padding: 0.5rem">
+            <pre id="rate-markdown-output-2" style="white-space: pre-wrap; word-break: break-word; min-height: 80px; margin: 0"></pre>
+          </div>
+        </ui5-panel>
+      </div>
+    </div>
+  </ui5-card>
+
+  <!-- Step 3: Changed rates for upload -->
+  <ui5-card id="rate-diff-card" style="display: none">
+    <ui5-card-header slot="header" title-text="3. Changed rates for upload" subtitle-text="Only rows that differ between current and previous month (Document 1 vs Document 2)">
+      <ui5-icon name="table-view" slot="avatar"></ui5-icon>
+      <div slot="action" style="display: flex; gap: 0.5rem">
+        <ui5-button id="expand-diff-table-button" icon="full-screen" title="Expand Table" disabled></ui5-button>
+        <ui5-button id="download-diff-csv-button" design="Emphasized" disabled> Download Changed Rates CSV </ui5-button>
+      </div>
+    </ui5-card-header>
+
+    <div class="rate-diff-card-content">
+      <div class="rate-mapping-result-section">
+        <div class="rate-mapping-table-container">
+          <ui5-table id="rate-diff-table" no-data-text="No changed rates detected" overflow-mode="Scroll" alternate-row-colors style="height: 600px"></ui5-table>
+        </div>
+      </div>
+    </div>
+  </ui5-card>
+
+  <ui5-dialog id="rate-expanded-dialog" style="width: 90%; height: 90%">
+    <div slot="header" style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0">
+      <ui5-title id="rate-expanded-title" level="H5">Expanded View</ui5-title>
+      <ui5-button id="rate-expanded-close" icon="decline"></ui5-button>
+    </div>
+    <div class="rate-mapping-table-container" style="height: 100%; border: none">
+      <ui5-table id="rate-expanded-table" overflow-mode="Scroll" alternate-row-colors style="height: 100%"></ui5-table>
+    </div>
+  </ui5-dialog>
+</div>

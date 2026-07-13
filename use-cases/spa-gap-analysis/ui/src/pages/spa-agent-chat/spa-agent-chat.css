@@ -1,0 +1,313 @@
+/* SPA Agent Chat page styles */
+.spa-agent-chat-container {
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: calc(900px + 2rem);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 84px);
+  box-sizing: border-box;
+}
+
+/* Header section */
+.chat-header {
+  margin-bottom: 1rem;
+}
+
+.chat-header ui5-title {
+  margin-bottom: 0.5rem;
+}
+
+/* Quick actions panel */
+.quick-actions-panel {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-radius: 12px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  margin-top: 0.75rem;
+}
+
+.quick-actions ui5-button,
+.quick-action {
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  height: 2rem;
+  font-weight: normal;
+  box-shadow: 0px 0px 2px rgba(27, 144, 255, 0.16), 0px 4px 8px rgba(27, 144, 255, 0.16);
+}
+
+.quick-actions ui5-button:hover,
+.quick-action:hover {
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0px 0px 4px rgba(27, 144, 255, 0.24), 0px 6px 12px rgba(27, 144, 255, 0.24);
+}
+
+/* Chat messages timeline */
+.chat-timeline {
+  flex: 1 1 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem;
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_BorderColor);
+  border-radius: 12px;
+  min-height: 300px;
+  max-height: calc(100vh - 400px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--sapContent_LabelColor);
+  gap: 0.5rem;
+}
+
+.empty-state ui5-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+/* Message bubbles */
+.message-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin: 0.25rem 0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.message-row.assistant {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--sapGroup_BorderColor);
+  line-height: 1.5;
+  font-family: var(--sapFontFamily);
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.message-bubble.user {
+  background: var(--sapInformationBackground);
+  border-color: transparent;
+  border-radius: 12px 12px 0 12px;
+  text-align: right;
+}
+
+.message-bubble.assistant {
+  background: var(--sapAssistant_Answer_Background, #f5f5f5);
+  color: var(--sapTextColor);
+  border-radius: 12px 12px 12px 0;
+}
+
+.message-bubble p {
+  margin: 0.5rem 0;
+}
+
+.message-bubble p:first-child {
+  margin-top: 0;
+}
+
+.message-bubble p:last-child {
+  margin-bottom: 0;
+}
+
+.message-bubble strong {
+  font-weight: 600;
+}
+
+/* Timestamp */
+.timestamp {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.7rem;
+  margin: 0.25rem 0.5rem;
+  opacity: 0.7;
+}
+
+/* Loading indicator */
+.loading-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--sapAssistant_Answer_Background, #f5f5f5);
+  border-radius: 12px 12px 12px 0;
+  max-width: 75%;
+}
+
+.loading-message ui5-busy-indicator {
+  width: 2rem;
+  height: 2rem;
+}
+
+.loading-text {
+  color: var(--sapContent_LabelColor);
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+/* Chat composer (input area) */
+.chat-composer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.chat-composer ui5-textarea {
+  flex: 1;
+  --sapField_BorderCornerRadius: 0.75rem;
+}
+
+.chat-composer ui5-textarea::part(textarea) {
+  padding-right: 3rem;
+  box-shadow: 0px 0px 2px rgba(27, 144, 255, 0.16), 0px 8px 16px rgba(27, 144, 255, 0.16);
+  border-radius: 0.75rem;
+  min-height: 60px;
+  max-height: 150px;
+}
+
+.send-button-wrapper {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 1rem;
+  z-index: 1;
+}
+
+.send-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.send-button:hover {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16);
+  transform: scale(1.05);
+}
+
+.send-button:active {
+  transform: scale(0.98);
+}
+
+/* Composer note */
+.composer-note {
+  margin-top: 0.5rem;
+  font-size: 11px;
+  color: var(--sapContent_LabelColor);
+  display: block;
+  text-align: center;
+}
+
+/* Clear conversation button */
+.clear-conversation {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .spa-agent-chat-container {
+    padding: 0.5rem;
+  }
+
+  .message-bubble {
+    max-width: 85%;
+    font-size: 13px;
+  }
+
+  .chat-timeline {
+    min-height: 250px;
+  }
+
+  .quick-actions {
+    gap: 0.4rem;
+  }
+}
+
+/* Tables in assistant messages */
+.message-bubble.assistant table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  font-size: 0.85rem;
+}
+
+.message-bubble.assistant th,
+.message-bubble.assistant td {
+  border: 1px solid var(--sapGroup_BorderColor);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.message-bubble.assistant th {
+  background: var(--sapList_HeaderBackground);
+  color: var(--sapList_HeaderTextColor);
+  font-weight: 600;
+}
+
+.message-bubble.assistant td {
+  background: #fff;
+  color: var(--sapTextColor);
+}
+
+/* Code blocks in messages */
+.message-bubble pre,
+.message-bubble code {
+  background: var(--sapBackgroundColor);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.75rem;
+  color: var(--sapTextColor);
+  font-family: monospace;
+}
+
+.message-bubble pre {
+  padding: 0.5rem;
+  overflow-x: auto;
+}

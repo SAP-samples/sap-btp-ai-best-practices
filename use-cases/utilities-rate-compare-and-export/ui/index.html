@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utilities Rate Compare & Export</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <style>
+      /* Hide entire app until JavaScript loads and UI5 components are ready */
+      #app {
+        opacity: 0;
+        transition: opacity 0s ease-in-out;
+      }
+
+      /* Show app when ready */
+      #app.ready {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <ui5-navigation-layout id="nl1" mode="Collapsed">
+        <ui5-shellbar slot="header" notifications-count="72" show-notifications>
+          <ui5-button icon="menu2" slot="startButton" id="startButton"></ui5-button>
+          <ui5-shellbar-branding slot="branding">
+            Utilities Rate Compare & Export
+            <img slot="logo" src="/images/SAP_logo.svg" />
+          </ui5-shellbar-branding>
+          <ui5-shellbar-search slot="searchField" show-clear-icon placeholder="Search Apps, Products"></ui5-shellbar-search>
+
+          <ui5-shellbar-item icon="sys-help" text="Help"></ui5-shellbar-item>
+          <ui5-toggle-button icon="sap-icon://da" tooltip="Joule" slot="assistant"></ui5-toggle-button>
+          <ui5-avatar slot="profile">
+            <img src="/images/avatars/man_avatar_3.png" />
+          </ui5-avatar>
+        </ui5-shellbar>
+
+        <ui5-side-navigation id="sn1" slot="sideContent">
+          <!-- Items -->
+          <!-- <ui5-side-navigation-item text="Home" href="/home" icon="home" selected></ui5-side-navigation-item> -->
+          <ui5-side-navigation-item text="Utilities Rate Compare & Export" href="/utilities-rate-compare-and-export" icon="table-view"></ui5-side-navigation-item>
+          <ui5-side-navigation-item text="Prompts Management" href="/prompts-management" icon="edit"></ui5-side-navigation-item>
+          <!-- <ui5-side-navigation-group text="Document Intelligence" expanded>
+            <ui5-side-navigation-item text="Document Intelligence" href="/document-intelligence" icon="document-text"></ui5-side-navigation-item>
+          </ui5-side-navigation-group> -->
+          <!--
+          <ui5-side-navigation-group text="Chatbot" expanded>
+            <ui5-side-navigation-item text="Simple Query" href="/chat" icon="business-suite/answered-change-request"></ui5-side-navigation-item>
+            <ui5-side-navigation-item text="Chat" href="/chat-with-history" icon="business-suite/answered"></ui5-side-navigation-item>
+            <ui5-side-navigation-item text="Chat with Grounding" href="/chat-with-history-and-grounding" icon="business-suite/answered"></ui5-side-navigation-item>
+            <ui5-side-navigation-item text="Chat with Tools" href="/chat-with-tools" icon="business-suite/answered"></ui5-side-navigation-item>
+          </ui5-side-navigation-group>
+          -->
+        </ui5-side-navigation>
+
+        <div class="content">
+          <!-- Page content will be loaded dynamically here -->
+        </div>
+      </ui5-navigation-layout>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

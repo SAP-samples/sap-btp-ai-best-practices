@@ -1,171 +1,173 @@
-<div class="sales-order-container">
+<div class="sales-order-container" style="padding-bottom: 4rem">
   <!-- Header Section -->
-  <div style="padding: 2rem; background: #f7f7f7;">
+  <div style="padding: 2rem; background: #f7f7f7">
     <!-- Page Title -->
-    <ui5-title level="H2" style="margin-bottom: 2rem; color: #32363a;">Sales Order 170</ui5-title>
-    
+    <ui5-title level="H2" style="margin-bottom: 2rem; color: #32363a">Sales Order 170</ui5-title>
+
     <!-- Header Information Grid -->
-    <div class="header-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-          
+    <div class="header-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem">
+      <!-- Organizational Information -->
+      <div class="info-section">
+        <ui5-title level="H4" style="margin-bottom: 1rem; color: #6a6d70">Organizational Information</ui5-title>
 
-          <!-- Organizational Information -->
-          <div class="info-section">
-            <ui5-title level="H4" style="margin-bottom: 1rem; color: #6a6d70;">Organizational Information</ui5-title>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label required>Sales Organization:</ui5-label>
-              <ui5-input id="sales-org" value="2510" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label required>Distribution Channel:</ui5-label>
-              <ui5-input id="dist-channel" value="10" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label required>Division:</ui5-label>
-              <ui5-input id="division" value="00" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label>Sales office:</ui5-label>
-              <ui5-input id="sales-office" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label>Sales group:</ui5-label>
-              <ui5-input id="sales-group" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-          </div>
-
-          <!-- Customer Information -->
-          <div class="info-section">
-            <ui5-title level="H4" style="margin-bottom: 1rem; color: #6a6d70;">Customer Information</ui5-title>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label required>Sold-To Party:</ui5-label>
-              <ui5-input id="sold-to-party" value="25100004" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label required>Ship-to party:</ui5-label>
-              <ui5-input id="ship-to-party" value="25100004" style="width: 100%; margin-top: 0.25rem;">
-                <ui5-icon name="value-help" slot="icon"></ui5-icon>
-              </ui5-input>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-              <ui5-label>Customer Reference:</ui5-label>
-              <ui5-input id="customer-ref" value="Test Fiori" style="width: 100%; margin-top: 0.25rem;"></ui5-input>
-            </div>
-          </div>
-
-    </div>
-    
-    <!-- Items Section -->
-    <div style="margin-top: 2rem;">
-      <ui5-title level="H4" style="margin-bottom: 1rem; color: #32363a;">Items</ui5-title>
-        
-        <!-- Items Table Header -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <ui5-title level="H5">Sales Order Items (1)</ui5-title>
-          <div style="display: flex; gap: 0.5rem;">
-            <ui5-button design="Transparent">Delete</ui5-button>
-            <ui5-button design="Emphasized">
-              <ui5-icon name="add" slot="icon"></ui5-icon>
-            </ui5-button>
-            <ui5-button design="Transparent">
-              <ui5-icon name="action-settings" slot="icon"></ui5-icon>
-            </ui5-button>
-          </div>
+        <div style="margin-bottom: 1rem">
+          <ui5-label required>Sales Organization:</ui5-label>
+          <ui5-input id="sales-org" value="2510" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
         </div>
 
-        <!-- Items Table -->
-        <ui5-table id="items-table" no-data-text="No items available">
-          <!-- Header Row -->
-          <ui5-table-header-row slot="headerRow">
-            <ui5-table-header-cell style="width: 3rem;">
-              <ui5-checkbox></ui5-checkbox>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 4rem;">
-              <ui5-label>Item</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 8rem;">
-              <ui5-label>Material</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 12rem;">
-              <ui5-label>Description</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 8rem;">
-              <ui5-label>Quantity</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 8rem;">
-              <ui5-label>Net Value</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 6rem;">
-              <ui5-label>Created By</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 8rem;">
-              <ui5-label>Created On</ui5-label>
-            </ui5-table-header-cell>
-            <ui5-table-header-cell style="width: 8rem;">
-              <ui5-label>Created At</ui5-label>
-            </ui5-table-header-cell>
-          </ui5-table-header-row>
-          
-          <!-- Sample Data Row -->
-          <ui5-table-row>
-            <ui5-table-cell>
-              <ui5-checkbox></ui5-checkbox>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text>10</ui5-text>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-link>TG11</ui5-link>
-              <ui5-icon name="value-help" style="margin-left: 0.5rem;"></ui5-icon>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text>Trad.Good 11,PD,Reg,Trading</ui5-text>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text style="color: #d32f2f; font-weight: bold;">16.000</ui5-text>
-              <ui5-text style="margin-left: 0.5rem;">PC</ui5-text>
-              <ui5-icon name="value-help" style="margin-left: 0.5rem;"></ui5-icon>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text style="color: #d32f2f; font-weight: bold;">280.80 EUR</ui5-text>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text>GJKLAPS</ui5-text>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text>Mar 9, 2019</ui5-text>
-            </ui5-table-cell>
-            <ui5-table-cell>
-              <ui5-text>5:10:47 PM</ui5-text>
-            </ui5-table-cell>
-          </ui5-table-row>
-        </ui5-table>
+        <div style="margin-bottom: 1rem">
+          <ui5-label required>Distribution Channel:</ui5-label>
+          <ui5-input id="dist-channel" value="10" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label required>Division:</ui5-label>
+          <ui5-input id="division" value="00" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label>Sales office:</ui5-label>
+          <ui5-input id="sales-office" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label>Sales group:</ui5-label>
+          <ui5-input id="sales-group" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+      </div>
+
+      <!-- Customer Information -->
+      <div class="info-section">
+        <ui5-title level="H4" style="margin-bottom: 1rem; color: #6a6d70">Customer Information</ui5-title>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label required>Sold-To Party:</ui5-label>
+          <ui5-input id="sold-to-party" value="25100004" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label required>Ship-to party:</ui5-label>
+          <ui5-input id="ship-to-party" value="25100004" style="width: 100%; margin-top: 0.25rem">
+            <ui5-icon name="value-help" slot="icon"></ui5-icon>
+          </ui5-input>
+        </div>
+
+        <div style="margin-bottom: 1rem">
+          <ui5-label>Customer Reference:</ui5-label>
+          <ui5-input id="customer-ref" value="Test Fiori" style="width: 100%; margin-top: 0.25rem"></ui5-input>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Section -->
+    <div style="margin-top: 2rem">
+      <ui5-title level="H4" style="margin-bottom: 1rem; color: #32363a">Items</ui5-title>
+
+      <!-- Items Table Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem">
+        <ui5-title level="H5">Sales Order Items (1)</ui5-title>
+        <div style="display: flex; gap: 0.5rem">
+          <ui5-button design="Transparent">Delete</ui5-button>
+          <ui5-button design="Emphasized" id="add-item-btn" icon="add"></ui5-button>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <ui5-table id="items-table" no-data-text="No items available" style="margin-bottom: 5rem">
+        <!-- Header Row -->
+        <ui5-table-header-row slot="headerRow">
+          <ui5-table-header-cell style="width: 3rem"> </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 4rem">
+            <ui5-label>Item</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 8rem">
+            <ui5-label>Material</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 12rem">
+            <ui5-label>Description</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 8rem">
+            <ui5-label>Quantity</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 8rem">
+            <ui5-label>Net Value</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 6rem">
+            <ui5-label>Created By</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 8rem">
+            <ui5-label>Created On</ui5-label>
+          </ui5-table-header-cell>
+          <ui5-table-header-cell style="width: 8rem">
+            <ui5-label>Created At</ui5-label>
+          </ui5-table-header-cell>
+        </ui5-table-header-row>
+
+        <!-- Sample Data Row -->
+        <ui5-table-row>
+          <ui5-table-cell>
+            <ui5-checkbox></ui5-checkbox>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text>10</ui5-text>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-link>TG11</ui5-link>
+            <ui5-icon name="value-help" style="margin-left: 0.5rem"></ui5-icon>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text>Trad.Good 11,PD,Reg,Trading</ui5-text>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text style="color: #d32f2f; font-weight: bold">16.000</ui5-text>
+            <ui5-text style="margin-left: 0.5rem">PC</ui5-text>
+            <ui5-icon name="value-help" style="margin-left: 0.5rem"></ui5-icon>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text style="color: #d32f2f; font-weight: bold">280.80 EUR</ui5-text>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text>GJKLAPS</ui5-text>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text>Mar 9, 2019</ui5-text>
+          </ui5-table-cell>
+          <ui5-table-cell>
+            <ui5-text>5:10:47 PM</ui5-text>
+          </ui5-table-cell>
+        </ui5-table-row>
+      </ui5-table>
     </div>
   </div>
 
   <!-- Footer Actions -->
-  <div class="footer-actions" style="position: fixed; bottom: 0; right: 0; padding: 1rem; background: #354a5f; display: flex; gap: 0.5rem;">
-    <ui5-text style="color: white; margin-right: 1rem;">Draft saved</ui5-text>
+  <div class="footer-actions" style="position: fixed; bottom: 0; right: 0; padding: 1rem; background: #354a5f; display: flex; gap: 0.5rem">
+    <ui5-text style="color: white; margin-right: 1rem">Draft saved</ui5-text>
     <ui5-button design="Emphasized">Save</ui5-button>
-    <ui5-button design="Transparent" style="color: white;">Cancel</ui5-button>
+    <ui5-button design="Transparent" style="color: white">Cancel</ui5-button>
   </div>
+
+  <!-- Success Dialog -->
+  <ui5-dialog id="success-dialog" header-text="Success">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem">
+      <ui5-illustrated-message name="SuccessScreen" title-text="Sales Order Generated">
+        <div slot="subtitle" id="success-message-text"></div>
+      </ui5-illustrated-message>
+    </div>
+    <div slot="footer" style="display: flex; justify-content: flex-end; width: 100%; padding: 0.5rem">
+      <ui5-button design="Emphasized" id="success-dialog-close">OK</ui5-button>
+    </div>
+  </ui5-dialog>
 </div>

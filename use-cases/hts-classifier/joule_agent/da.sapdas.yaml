@@ -1,0 +1,5 @@
+schema_version: 1.4.0
+name: section_232_agent_assistant
+capabilities:
+  - type: local
+    folder: section_232_capability

@@ -1,0 +1,52 @@
+{
+  "businessPartners": [
+    { "id": "BP1000001", "name": "Demo Supplier One", "city": "Demo City", "country": "US", "email": "ap@supplier-one.example.com" },
+    { "id": "BP1000002", "name": "Demo Supplier Two", "city": "Demo City", "country": "US", "email": "ap@supplier-two.example.com" }
+  ],
+  "purchaseOrders": [
+    {
+      "id": "4500000001",
+      "vendorId": "BP1000001",
+      "date": "2025-08-10",
+      "currency": "USD",
+      "status": "OPEN",
+      "items": [
+        { "position": 10, "material": "MAT-GL-001", "description": "Glass Panels", "quantity": 100, "unit": "EA", "price": 12.5 },
+        { "position": 20, "material": "MAT-GL-010", "description": "Sealant", "quantity": 50, "unit": "EA", "price": 3.75 }
+      ]
+    },
+    {
+      "id": "4500000002",
+      "vendorId": "BP1000002",
+      "date": "2025-08-12",
+      "currency": "USD",
+      "status": "PARTIALLY_DELIVERED",
+      "items": [{ "position": 10, "material": "MAT-IT-100", "description": "Consulting Hours", "quantity": 80, "unit": "H", "price": 150 }]
+    }
+  ],
+  "invoices": [
+    {
+      "id": "5100000001",
+      "vendorId": "BP1000001",
+      "poId": "4500000001",
+      "date": "2025-08-14",
+      "currency": "USD",
+      "amount": 1600.0,
+      "status": "PENDING",
+      "items": [
+        { "position": 10, "description": "Glass Panels delivered", "amount": 1250.0 },
+        { "position": 20, "description": "Sealant delivered", "amount": 350.0 }
+      ]
+    },
+    {
+      "id": "5100000002",
+      "vendorId": "BP1000002",
+      "poId": "4500000002",
+      "date": "2025-08-15",
+      "currency": "USD",
+      "amount": 12000.0,
+      "status": "PAID",
+      "items": [{ "position": 10, "description": "Consulting services", "amount": 12000.0 }]
+    }
+  ]
+}

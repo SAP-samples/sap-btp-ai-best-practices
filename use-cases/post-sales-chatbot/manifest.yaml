@@ -1,0 +1,27 @@
+---
+applications:
+  - name: apex-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: apex-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://postsale-chatbot.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://apex-api.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      TABLES_PATH: data/new_tables/
+      LLM_MODEL_NAME: gpt-4o
+  - name: postsale-chatbot
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: postsale-chatbot.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://apex-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: postsale-chatbot.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

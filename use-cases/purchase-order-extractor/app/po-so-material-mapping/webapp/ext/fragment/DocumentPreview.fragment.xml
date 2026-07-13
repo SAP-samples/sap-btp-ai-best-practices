@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:macros="sap.fe.macros">
+	<VBox>
+		
+		<PDFViewer source="{= ${purchaseOrderLineItem/purchaseOrder/pdfContent} ? 'service/DocumentService/PurchaseOrders(ID=' + ${purchaseOrderLineItem/purchaseOrder/ID} + ',IsActiveEntity=true)/pdfContent/$value' : '' }" 
+		isTrustedSource="true" title="{purchaseOrderLineItem/purchaseOrder/filename}" height="400px">
+				<layoutData>
+					<FlexItemData growFactor="1" />
+				</layoutData>
+			</PDFViewer>
+	
+	</VBox>
+</core:FragmentDefinition>

@@ -1,0 +1,29 @@
+---
+applications:
+  - name: spa-gap-analysis-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 1.5G
+    disk_quota: 3G
+    routes:
+      - route: spa-gap-analysis-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://spa-gap-analysis.cfapps.eu10-005.hana.ondemand.com
+      API_BASE_URL: https://spa-gap-analysis-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: spa-gap-analysis-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 512M
+    routes:
+      - route: spa-gap-analysis.cfapps.eu10-005.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://spa-gap-analysis-api.cfapps.eu10-005.hana.ondemand.com
+      VITE_APP_HOST: spa-gap-analysis.cfapps.eu10-005.hana.ondemand.com
+      VITE_API_KEY: ((api_key))
+
+

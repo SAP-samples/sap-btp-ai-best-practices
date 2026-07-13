@@ -1,0 +1,25 @@
+<section class="page-shell">
+  <div class="hero-strip">
+    <div>
+      <h1>Single Account Lookup</h1>
+      <p>Run the deterministic recommendation engine directly and optionally re-evaluate with structured answers.</p>
+    </div>
+  </div>
+
+  <div class="panel-grid two-up">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Lookup</h2>
+      </div>
+      <input id="lookup-account-input" class="text-input" placeholder="Enter billing account number" />
+      <div class="inline-actions">
+        <button id="lookup-submit" class="action-button">Evaluate Account</button>
+        <button id="lookup-recalculate" class="action-button secondary">Recalculate with Answers</button>
+      </div>
+    </div>
+    <div id="lookup-summary" class="panel"></div>
+  </div>
+
+  <div id="lookup-questions" class="panel-grid"></div>
+</section>
+

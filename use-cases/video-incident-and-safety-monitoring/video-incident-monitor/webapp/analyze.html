@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Incident & Safety Monitoring</title>
+
+    <script id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/1.136.7/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-libs="sap.m,sap.ui.layout"
+        data-sap-ui-resourceroots='{
+            "videoincidentmonitor": "./"
+        }'
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-frameOptions="allow">
+    </script>
+
+    <script>
+        sap.ui.getCore().attachInit(function() {
+            new sap.ui.core.ComponentContainer({
+                name: "videoincidentmonitor",
+                settings: {
+                    id: "analyze"
+                },
+                async: true,
+                manifest: false,
+                height: "100%"
+            }).placeAt("content");
+        });
+    </script>
+
+    <style>
+        html, body, #content {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body class="sapUiBody" id="content">
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* Optional: include SAP 72 Light (300). Place the font at ui/public/fonts/72-Light.woff2 */
+@font-face {
+  font-family: "72";
+  src: url("/fonts/72-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100vh;
+  background: #f7f9fb;
+}
+
+.side-nav {
+  border-right: 1px solid var(--sapList_BorderColor, #d9e2ec);
+  background: #ffffff;
+  padding: 1rem 0.75rem;
+}
+
+.side-nav-link {
+  display: block;
+  border-radius: 0.375rem;
+  color: var(--sapTextColor, #1d2d3e);
+  font-family: var(--sapFontFamily, "72", Arial, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.75rem 0.85rem;
+  text-decoration: none;
+}
+
+.side-nav-link:hover,
+.side-nav-link.is-active {
+  background: #eef5ff;
+  color: #0a6ed1;
+}
+
+.content {
+  min-height: 400px;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .side-nav {
+    display: flex;
+    gap: 0.5rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--sapList_BorderColor, #d9e2ec);
+  }
+}

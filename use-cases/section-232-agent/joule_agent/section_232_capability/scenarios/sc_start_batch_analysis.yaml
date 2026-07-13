@@ -1,0 +1,21 @@
+description: >
+  Start a backend Section 232 prediction job for multiple Material Master item ids.
+  Use this when the user asks to analyze a list, batch, or group of Material Master item
+  ids. Examples: "Start batch analysis for mm:1001, mm:1002", "classify
+  these items: mm:2001 and mm:2002", or "run Section 232 for mm:1001,
+  mm:1002, mm:1003 with PDFs".
+
+slots:
+  - name: item_ids
+    description: >
+      Comma-separated Material Master item ids. Capture all ids in order and
+      normalize separators to commas, for example "mm:1001,mm:1002,mm:1003".
+  - name: document_mode
+    description: >
+      Batch-wide evidence mode for the prediction. Default to text_only. Use
+      with_documents only when the user explicitly asks to include PDFs,
+      diagrams, drawings, or uploaded documents.
+
+target:
+  name: fn_start_batch_analysis
+  type: function

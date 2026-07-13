@@ -1,0 +1,4 @@
+requests
+python-dotenv
+pandas
+sap-ai-sdk-gen>=6.6.0

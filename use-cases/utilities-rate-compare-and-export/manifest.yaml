@@ -1,0 +1,25 @@
+---
+applications:
+  - name: utilities-rate-compare-and-export-live-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: utilities-rate-compare-and-export-live-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://utilities-rate-compare-and-export-live.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://utilities-rate-compare-and-export-live-api.cfapps.eu10-004.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+  - name: utilities-rate-compare-and-export-live-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: utilities-rate-compare-and-export-live.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://utilities-rate-compare-and-export-live-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: utilities-rate-compare-and-export-live.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

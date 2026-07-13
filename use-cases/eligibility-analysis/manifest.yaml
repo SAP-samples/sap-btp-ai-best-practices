@@ -1,0 +1,38 @@
+---
+applications:
+  - name: eligibility-analysis-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: eligibility-analysis-api.cfapps.eu10-004.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://eligibility-analysis.cfapps.eu10-004.hana.ondemand.com
+      API_BASE_URL: https://eligibility-analysis-api.cfapps.eu10-004.hana.ondemand.com
+      A2A_BASE_URL: https://eligibility-analysis-api.cfapps.eu10-004.hana.ondemand.com
+      A2A_ENDPOINT_URL: https://eligibility-analysis-api.cfapps.eu10-004.hana.ondemand.com/api/a2a
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      AICORE_MODEL: gpt-4.1
+      APP_ENV: production
+      API_KEY: ((api_key))
+      hana_address: ((hana_address))
+      hana_port: ((hana_port))
+      hana_user: ((hana_user))
+      hana_password: ((hana_password))
+      hana_encrypt: ((hana_encrypt))
+  - name: eligibility-analysis-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: eligibility-analysis.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://eligibility-analysis-api.cfapps.eu10-004.hana.ondemand.com
+      VITE_APP_HOST: eligibility-analysis.cfapps.eu10-004.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

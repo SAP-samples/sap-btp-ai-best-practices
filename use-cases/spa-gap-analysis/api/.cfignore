@@ -1,0 +1,92 @@
+# Python virtual environments (CRITICAL - do not upload!)
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.tmp-tests/
+
+# Tests (pandas tests alone are ~100MB+)
+tests/
+test/
+*_test.py
+test_*.py
+.benchmarks/
+
+# Development files
+.git/
+.gitignore
+*.md
+README*
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+app.log
+
+# Raw source data and ETL snapshots are not needed at runtime
+app/data/raw/
+app/data/processed_anonymized/
+app/data/.processed_anonymized_staging/
+app/data/processed/baselines/
+app/data/processed/backup_2026-04-14/
+app/data/processed/*.backup_*
+app/data/processed/*.bak
+app/data/processed/*.tmp
+
+# ETL-only parquet artifacts not read by runtime services
+app/data/processed/customer_spa_opportunity_impact.parquet
+app/data/processed/base_cost.parquet
+app/data/processed/base_cost_current.parquet
+app/data/processed/customer_material_snapshot_q4.parquet
+app/data/processed/a703_enhanced.parquet
+app/data/processed/a704_material_groups.parquet
+app/data/processed/spa_material_prices_current.parquet
+app/data/processed/spa_group_rules_current.parquet
+
+# Local ad hoc analysis / verification scripts
+analyze_*.py
+check_*.py
+verify_*.py
+show_*.py
+critical_analysis.py
+CRITICAL_ANALYSIS_REPORT.py
+FINAL_SUMMARY.py
+gap_analysis_validation.py
+calculate_material_potential.py
+run_transformers.py
+save_raw_data.py
+regenerate_cache.py
+snapshot_etl_baseline.py
+compare_etl_baselines.py
+AGENT_CHAT_FILTER_SUMMARY.py
+report.txt
+
+# Local parquet scratch files at api root (runtime uses app/data/processed)
+customer_savings.parquet
+quarterly_rfm.parquet
+test_output.parquet
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Documentation
+docs/
+
+# NOTE: .env is intentionally NOT excluded from CF upload for this POC.
+# It remains excluded from git by the repository .gitignore.

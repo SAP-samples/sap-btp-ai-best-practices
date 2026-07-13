@@ -1,0 +1,5 @@
+schema_version: 1.0.0
+name: pharma_order_assistant
+capabilities:
+  - type: local
+    folder: ./joule

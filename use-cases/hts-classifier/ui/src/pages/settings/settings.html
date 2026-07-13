@@ -1,0 +1,251 @@
+<div class="settings-page">
+  <div class="settings-hero">
+    <div>
+      <div class="settings-kicker">Administration</div>
+      <ui5-title level="H2">Settings</ui5-title>
+      <ui5-text>Manage Section 232 draft-batch processing, publish reviewed rulesets, refresh the HTS tree-search catalog, and clear saved classifications.</ui5-text>
+    </div>
+    <div class="settings-summary" id="settings-summary-cards"></div>
+  </div>
+
+  <ui5-message-strip id="settings-message" hide-close-button style="display: none"></ui5-message-strip>
+
+  <div class="settings-grid">
+    <ui5-card class="settings-card settings-card-wide">
+      <ui5-card-header slot="header" title-text="Metal Composition Source"></ui5-card-header>
+      <div class="settings-card-body">
+        <div class="settings-helper-panel">
+          <div class="settings-mode-bar settings-composition-mode-bar">
+            <div class="settings-field settings-switch-field">
+              <ui5-label for="settings-gcc-composition-toggle">Use GCC tracker metal composition</ui5-label>
+              <ui5-switch id="settings-gcc-composition-toggle"></ui5-switch>
+            </div>
+            <div class="settings-mode-copy">
+              <div id="settings-composition-mode-summary" class="settings-mode-summary"></div>
+              <div class="settings-copy">
+                When enabled, GCC-backed items use GCC tracker prepared metal grams as the authoritative composition source.
+                PDFs are optional extra evidence for HTS-facing clues such as extracted codes, context of use, and uncertainty notes.
+              </div>
+              <div class="settings-copy">
+                When disabled, the application keeps the legacy PDF-derived composition fallback and requires PDFs.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-source-actions">
+          <ui5-button id="settings-composition-mode-save-button" design="Emphasized">Save composition mode</ui5-button>
+          <div id="settings-composition-mode-status" class="settings-selection-copy"></div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card">
+      <ui5-card-header slot="header" title-text="Section 232 Draft Review"></ui5-card-header>
+      <div class="settings-card-body">
+        <div class="settings-helper-panel">
+          <div class="settings-section-title">Recommended sources</div>
+          <div class="settings-copy">
+            Choose official Section 232 PDF notices from BIS and the Federal Register, then process them into a reviewable draft batch.
+            Look for notices such as
+            <span class="settings-inline-highlight">Adoption and Procedures of the Section 232 Steel and Aluminum Tariff Inclusions Process</span>.
+          </div>
+          <div class="settings-link-list">
+            <a
+              href="https://media.bis.gov/about-bis/bis-leadership-and-offices/SIES/section-232-investigations/section-232-steel-aluminum"
+              target="_blank"
+              rel="noreferrer"
+            >
+              BIS Section 232 steel and aluminum page
+            </a>
+            <a
+              href="https://www.federalregister.gov/documents/search?conditions%5Bsearch_type_id%5D=3&conditions%5Bterm%5D=Adoption+and+Procedures+of+the+Section+232+Steel+and+Aluminum+Tariff+Inclusions+Process&order=newest"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Federal Register inclusion-process updates
+            </a>
+          </div>
+        </div>
+
+        <div class="settings-source-actions">
+          <input id="settings-source-upload-input" type="file" accept="application/pdf,.pdf" multiple hidden />
+          <ui5-button id="settings-source-select-button" design="Transparent" icon="upload">Choose PDFs</ui5-button>
+          <ui5-button id="settings-source-process-button" design="Emphasized" icon="upload-to-cloud">Process &amp; review</ui5-button>
+        </div>
+
+        <div id="settings-source-selection" class="settings-selection-copy">No PDF files selected.</div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Draft workflow snapshot</div>
+          <div class="settings-stat-grid" id="settings-corpus-stats"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <div class="settings-section-title">Current draft batch</div>
+            <div class="settings-section-actions">
+              <ui5-button id="settings-review-open-button" design="Transparent" icon="inspect" disabled>Open Review</ui5-button>
+              <ui5-button id="settings-review-cancel-button" design="Transparent" icon="decline" disabled>Cancel Draft</ui5-button>
+            </div>
+          </div>
+          <div class="settings-stat-grid" id="settings-draft-batch-stats"></div>
+          <div id="settings-draft-batch-copy" class="settings-selection-copy">No draft batch has been processed in this session.</div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Stored source documents</div>
+          <div id="settings-source-list"></div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card">
+      <ui5-card-header slot="header" title-text="Published Section 232 Ruleset"></ui5-card-header>
+      <div class="settings-card-body">
+        <div class="settings-copy">
+          Eligible code count is projected from the active published ruleset only. Reduced-rate includes stay in the include family,
+          and removed codes drop out of this preview.
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-header">
+            <div class="settings-section-title">Published eligible HTS codes</div>
+            <ui5-button id="settings-code-review-button" design="Transparent" icon="inspect">Open published review</ui5-button>
+          </div>
+          <div id="settings-code-preview"></div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card settings-card-wide">
+      <ui5-card-header slot="header" title-text="Upload GCC Tracker File"></ui5-card-header>
+      <div class="settings-card-body">
+        <div class="settings-helper-panel">
+          <div class="settings-copy">
+            Upload the current GCC Tracker Excel workbook to rebuild the HANA serving table used by GCC-backed items.
+            A successful refresh replaces the previous tracker dataset, clears saved classification snapshots, and cancels active
+            classification jobs so row-indexed results do not survive a tracker replacement.
+          </div>
+        </div>
+
+        <div class="settings-source-actions">
+          <input
+            id="settings-gcc-tracker-upload-input"
+            type="file"
+            accept=".xlsb,.xlsx,application/vnd.ms-excel.sheet.binary.macroEnabled.12,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            hidden
+          />
+          <ui5-button id="settings-gcc-tracker-select-button" design="Transparent" icon="upload">Choose workbook</ui5-button>
+          <ui5-button id="settings-gcc-tracker-refresh-button" design="Emphasized" icon="upload-to-cloud">Upload &amp; refresh HANA</ui5-button>
+        </div>
+
+        <div id="settings-gcc-tracker-selection" class="settings-selection-copy">No GCC Tracker .xlsb or .xlsx file selected.</div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Latest Settings-page refresh</div>
+          <div class="settings-stat-grid settings-stat-grid-wide" id="settings-gcc-tracker-refresh-result"></div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card settings-card-wide">
+      <ui5-card-header slot="header" title-text="HTS Catalog Sources"></ui5-card-header>
+      <div class="settings-card-body">
+        <div class="settings-helper-panel">
+          <div class="settings-copy">
+            Upload managed HTS catalog source files for the tree-search model. Accepted filenames are
+            <span class="settings-inline-highlight">chapterNN.csv</span> and
+            <span class="settings-inline-highlight">hts_code_map.csv</span>. Official chapter downloads such as
+            <span class="settings-inline-highlight">htsdata.csv</span> are mapped automatically from the first HTS code in the file.
+            Matching chapter or code-map targets replace the current managed source.
+          </div>
+          <div class="settings-link-list">
+            <a href="https://hts.usitc.gov/" target="_blank" rel="noreferrer">Download official HTS chapter CSV files from hts.usitc.gov</a>
+          </div>
+        </div>
+
+        <div class="settings-source-actions">
+          <input id="settings-hts-catalog-upload-input" type="file" accept=".csv,text/csv" multiple hidden />
+          <ui5-button id="settings-hts-catalog-select-button" design="Transparent" icon="upload">Choose CSVs</ui5-button>
+          <ui5-button id="settings-hts-catalog-upload-button" design="Emphasized" icon="upload-to-cloud">Upload catalog sources</ui5-button>
+        </div>
+
+        <div id="settings-hts-catalog-selection" class="settings-selection-copy">No HTS catalog CSV files selected.</div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Catalog summary</div>
+          <div class="settings-stat-grid settings-stat-grid-wide" id="settings-hts-catalog-stats"></div>
+          <div id="settings-hts-refresh-error" class="settings-tag-row"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Managed source files</div>
+          <div id="settings-hts-catalog-list"></div>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card settings-card-wide">
+      <ui5-card-header slot="header" title-text="Section 232 Reset"></ui5-card-header>
+      <div class="settings-card-body settings-reset-layout">
+        <div>
+          <div class="settings-copy">
+            This permanently removes stored Section 232 source PDFs, pending draft batches, published rulesets, and review history.
+            Managed HTS catalog sources and saved classifications stay in place.
+          </div>
+          <div class="settings-stat-grid settings-stat-grid-wide" id="settings-section-232-reset-stats"></div>
+        </div>
+        <div class="settings-reset-actions">
+          <ui5-button id="settings-section-232-reset-button" design="Negative" icon="reset">Reset all Section 232 data</ui5-button>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card class="settings-card settings-card-wide">
+      <ui5-card-header slot="header" title-text="Classification Reset"></ui5-card-header>
+      <div class="settings-card-body settings-reset-layout">
+        <div>
+          <div class="settings-copy">
+            This removes saved classification snapshots only. Document assignments and Section 232 source data stay in place.
+          </div>
+          <div class="settings-stat-grid" id="settings-classification-stats"></div>
+        </div>
+        <div class="settings-reset-actions">
+          <ui5-button id="settings-reset-button" design="Negative" icon="reset">Reset all classifications</ui5-button>
+        </div>
+      </div>
+    </ui5-card>
+  </div>
+
+  <ui5-dialog id="settings-reset-dialog" header-text="Reset all classifications">
+    <div class="settings-dialog-body">
+      This will permanently remove all saved classification snapshots. Product records, document assignments, and Section 232 settings will not be changed.
+    </div>
+    <div slot="footer" class="settings-dialog-footer">
+      <ui5-button id="settings-reset-cancel-button" design="Transparent">Cancel</ui5-button>
+      <ui5-button id="settings-reset-confirm-button" design="Negative">Reset classifications</ui5-button>
+    </div>
+  </ui5-dialog>
+
+  <ui5-dialog id="settings-section-232-reset-dialog" header-text="Reset all Section 232 data">
+    <div class="settings-dialog-body">
+      <div class="settings-copy">
+        This permanently deletes stored source PDFs, pending draft batches, published rulesets, and Section 232 review history.
+        Type <span class="settings-inline-highlight">RESET SECTION 232</span> to enable the destructive action.
+      </div>
+      <div class="settings-field settings-confirmation-field">
+        <ui5-label for="settings-section-232-reset-confirmation-input">Confirmation phrase</ui5-label>
+        <ui5-input
+          id="settings-section-232-reset-confirmation-input"
+          placeholder="Type RESET SECTION 232"
+          value=""
+        ></ui5-input>
+      </div>
+    </div>
+    <div slot="footer" class="settings-dialog-footer">
+      <ui5-button id="settings-section-232-reset-cancel-button" design="Transparent">Cancel</ui5-button>
+      <ui5-button id="settings-section-232-reset-confirm-button" design="Negative" disabled>Reset Section 232 data</ui5-button>
+    </div>
+  </ui5-dialog>
+</div>

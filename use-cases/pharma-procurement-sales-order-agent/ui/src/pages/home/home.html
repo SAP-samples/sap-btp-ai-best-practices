@@ -1,0 +1,75 @@
+<div class="home-container">
+  <ui5-title>Home</ui5-title>
+  <br />
+  <ui5-text> This is a template for building applications with UI5 Web Components (Plain JS) and FastAPI. </ui5-text>
+
+  <div class="home-grid">
+    <ui5-card>
+      <ui5-card-header slot="header" title-text="API Health Check">
+        <ui5-icon name="activity-assigned-to-goal" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <ui5-text>Click the button to check the health of the backend API.</ui5-text>
+        <div style="margin-top: 1rem">
+          <ui5-button id="health-check-button">Check Health</ui5-button>
+        </div>
+        <ui5-panel id="health-response-panel" header-text="API Response" collapsed style="margin-top: 1rem">
+          <div id="health-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+        </ui5-panel>
+      </div>
+    </ui5-card>
+
+    <ui5-card>
+      <ui5-card-header slot="header" title-text="Minimal LLM Demo">
+        <ui5-icon name="lightbulb" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <ui5-label for="llm-input" show-colon>Ask something</ui5-label>
+        <div style="margin-top: 0.5rem; margin-bottom: 1rem">
+          <ui5-textarea id="llm-input" placeholder="Type your question here..." rows="3" style="width: 100%"></ui5-textarea>
+        </div>
+        <ui5-button id="llm-submit-button" design="Emphasized">Send</ui5-button>
+
+        <ui5-panel id="llm-response-panel" header-text="Response" collapsed style="margin-top: 1rem">
+          <div id="llm-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+        </ui5-panel>
+      </div>
+    </ui5-card>
+
+    <ui5-card>
+      <ui5-card-header slot="header" title-text="AI Agent">
+        <ui5-icon name="tnt/robot" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <ui5-text>This agent has access to tools (currently a calculator) to solve tasks.</ui5-text>
+        <div style="margin-top: 1rem">
+          <ui5-label for="agent-input" show-colon>Ask a question (e.g., "Calculate (123 + 456) * 789 / 10")</ui5-label>
+          <div style="margin-top: 0.5rem; margin-bottom: 1rem">
+            <ui5-textarea id="agent-input" placeholder="Type your question here..." rows="3" style="width: 100%"></ui5-textarea>
+          </div>
+          <ui5-button id="agent-submit-button" design="Emphasized">Submit</ui5-button>
+
+          <ui5-panel id="agent-response-panel" header-text="Response" collapsed style="margin-top: 1rem">
+            <div id="agent-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+          </ui5-panel>
+        </div>
+      </div>
+    </ui5-card>
+
+    <ui5-card>
+      <ui5-card-header slot="header" title-text="HANA Connection Demo">
+        <ui5-icon name="database" slot="avatar"></ui5-icon>
+      </ui5-card-header>
+      <div style="padding: 1rem">
+        <ui5-text>Test the connection to your SAP HANA database.</ui5-text>
+        <div style="margin-top: 1rem">
+          <ui5-button id="hana-test-button">Test Connection</ui5-button>
+
+          <ui5-panel id="hana-response-panel" header-text="Result" collapsed style="margin-top: 1rem">
+            <div id="hana-response-container" style="padding: 1rem; white-space: pre-wrap; min-height: 50px"></div>
+          </ui5-panel>
+        </div>
+      </div>
+    </ui5-card>
+  </div>
+</div>
