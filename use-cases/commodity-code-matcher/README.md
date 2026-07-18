@@ -1,255 +1,279 @@
-# Deployment Guide
+# Commodity Code Pipeline
 
-This directory contains the deployment configuration and scripts for deploying the Commodity Code Pipeline to SAP Cloud Foundry.
+The Commodity Code Pipeline extracts invoice data from PDFs, matches line items to HANA-hosted reference codes, verifies suggestions with an LLM, and exposes the results through a Streamlit UI and SAP Joule.
 
-## Overview
+## Architecture
 
-The deployment consists of two applications:
+The solution has three user-facing components:
 
-1. **API Application** (`commodity-code-pipeline-api`): FastAPI backend service that provides document extraction and reference-code matching functionality
-2. **UI Application** (`commodity-code-pipeline-ui`): Streamlit frontend application that provides a user interface for interacting with the API
+1. **API** (`commodity-code-pipeline-api`): FastAPI service that accepts asynchronous extraction jobs, runs document extraction and code matching, and stores job state, uploaded PDFs, result metadata, and generated Excel workbooks in SAP HANA.
+2. **UI** (`commodity-code-pipeline-ui`): Streamlit application that uploads one or more PDFs, polls the API, previews completed results, and downloads an Excel workbook.
+3. **Joule assistant** (`commodity_code_assistant`): Direct SAPDAS assistant that accepts one PDF, submits it to the same API, checks job status on demand, and displays structured results in pages of up to 30 line items.
 
-Both applications are configured to run on SAP Cloud Foundry and communicate with each other using secure API keys.
+```text
+Streamlit UI ─┐
+              ├─> FastAPI ─> HANA job storage ─> PDF extraction ─> HANA reference data
+SAP Joule ────┘                                                      │
+                                                                      └─> embedding match ─> LLM verification
+```
+
+The Joule module contains dialog orchestration only. Extraction, matching, persistence, and LLM processing remain in `api/`.
+
+## Repository Layout
+
+```text
+.
+├── api/                         # FastAPI service and extraction pipeline
+│   ├── app/                     # API routes, models, and services
+│   ├── doc_extraction/          # PDF extraction, embeddings, and LLM processing
+│   ├── scripts/                 # Reference-data and sample-PDF utilities
+│   └── tests/                   # Backend tests
+├── ui/                          # Streamlit application
+│   ├── src/                     # UI pages and API client
+│   └── tests/                   # UI tests
+├── joule_agent/                 # SAPDAS assistant and Commodity Code capability
+│   ├── assistant.da.sapdas.yaml # Assistant deployment descriptor
+│   └── commodity_code_capability/
+├── generated_reference_data/    # Synthetic reference-data artifacts
+├── docs/                        # Architecture and feature documentation
+├── manifest.yaml                # Cloud Foundry API/UI manifest
+└── deploy.sh                    # API/UI deployment helper
+```
+
+## Processing Flows
+
+### Streamlit
+
+1. The user uploads one or more PDFs.
+2. The UI submits a multipart request to `POST /api/extraction/run`.
+3. The API stores the job and PDFs in HANA and returns `202 Accepted` with a `job_id`.
+4. The UI polls `GET /api/extraction/jobs/{job_id}` until the job is `SUCCEEDED` or `FAILED`.
+5. A successful run shows a preview and enables the Excel download endpoint.
+
+### Joule
+
+1. Joule accepts exactly one PDF of at most 10 MB.
+2. The capability sends the resolved PDF bytes to `POST /api/extraction/jobs`.
+3. The returned `job_id` is stored as `last_job_id` for the active conversation.
+4. The user checks the job explicitly; Joule does not poll automatically.
+5. After the job succeeds, Joule retrieves `GET /api/extraction/jobs/{job_id}/result?page={page}` and displays the structured line items.
+
+Recognized job states are `QUEUED`, `RUNNING`, `SUCCEEDED`, and `FAILED`.
 
 ## Prerequisites
 
-Before deploying, ensure you have:
+### API and UI
 
-- SAP Cloud Foundry CLI (`cf`) installed and configured
-- Access to the target Cloud Foundry space (eu10-004)
-- Appropriate permissions to deploy applications
-- Python 3.x installed locally (for local testing)
+- Cloud Foundry CLI, authenticated against the target org and space
+- Permission to push applications and configure environment variables
+- SAP HANA credentials with permission to read the reference tables and create or use the extraction job tables
+- SAP Gen AI Hub credentials or service binding available to the API runtime
+- Python 3 for local validation
 
-## Folder Structure
+### Joule
 
+- A deployed and reachable API application
+- Joule Studio CLI 1.5.21 authenticated against the target tenant
+- Permission to deploy and launch digital assistants
+- Permission to create or update an SAP BTP destination
+
+## Runtime Configuration
+
+### API environment variables
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `API_KEY` | Production | Protects all extraction endpoints through `X-API-Key`. |
+| `APP_ENV` | Production | Set to `production`; the API fails closed when `API_KEY` is missing. |
+| `ALLOWED_ORIGIN` | Production UI | Allowed Streamlit origin for CORS. |
+| `hana_address`, `hana_port`, `hana_user`, `hana_password` | Yes | HANA connection used by reference data and extraction jobs. |
+| `hana_encrypt` | No | Enables encrypted HANA connections; defaults to `true`. |
+| `hana_ssl_validate_certificate` | No | Enables HANA certificate validation; defaults to `false`. |
+| `HANA_SCHEMA` | No | Overrides the current HANA schema. |
+| `HANA_REFERENCE_DATA_VERSION` | No | Requires all three reference tables to contain the expected shared `DATA_VERSION`. |
+| `HANA_COMMODITY_CATALOG_TABLE` | No | Overrides `REFERENCE_COMMODITY_CATALOG`. |
+| `HANA_UNSPSC_MAPPING_TABLE` | No | Overrides `REFERENCE_UNSPSC_MAPPING`. |
+| `HANA_SUPPLIER_GROUPS_TABLE` | No | Overrides `REFERENCE_SUPPLIER_GROUPS`. |
+| `HANA_EXTRACTION_JOBS_TABLE` | No | Overrides `EXTRACTION_JOBS`. |
+| `HANA_EXTRACTION_JOB_FILES_TABLE` | No | Overrides `EXTRACTION_JOB_FILES`. |
+| `EXTRACTION_JOB_WORKERS` | No | Concurrent in-process workers; defaults to `1`. |
+| `EXTRACTION_MAX_QUEUED_JOBS` | No | Maximum queued plus running jobs; defaults to `20`. |
+| `LLM_MODEL`, `LLM_MODEL_NAME` | No | Extraction and verification model overrides; defaults are `gpt-4.1`. |
+| `EMBEDDING_MODEL` | No | Embedding model override; defaults to `text-embedding-3-large`. |
+
+The API creates and validates the HANA extraction job tables on first use. The three reference tables must already be populated and must share one `DATA_VERSION`. `api/scripts/generate_and_load_reference_data.py --help` documents the available generation and HANA-load options when authorized source datasets are available.
+
+### UI environment variables
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `API_BASE_URL` | Yes | Base URL of the API application. |
+| `API_KEY` | Production | Must match the API application's key. |
+
+## Deploy the API and UI
+
+Review `manifest.yaml`, configure the HANA and SAP Gen AI Hub runtime in the target landscape, and deploy manually from the repository root.
+
+For API/UI-only deployment, the helper generates a new API key and passes it to Cloud Foundry:
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
 ```
-anonymized/
-├── manifest.yaml          # Cloud Foundry deployment manifest
-├── deploy.sh              # Automated deployment script
-├── mkdocs.yml            # MkDocs configuration (for documentation)
-├── api/                  # FastAPI backend application
-│   ├── app/              # Application code
-│   │   ├── main.py       # FastAPI application entry point
-│   │   ├── models/       # Data models
-│   │   ├── routers/      # API route handlers
-│   │   └── services/    # Business logic services
-│   ├── .cfignore         # Excludes local seed data from the CF artifact
-│   ├── outputs/          # Generated output files
-│   ├── scripts/          # Synthetic data generation and HANA load tooling
-│   └── requirements.txt  # Python dependencies
-└── ui/                   # Streamlit frontend application
-    ├── streamlit_app.py  # Streamlit application entry point
-    ├── src/              # Source code
-    ├── static/           # Static assets (fonts, images, styles)
-    └── requirements.txt  # Python dependencies
+
+For a deployment that will also be used by Joule, retain the generated key because the same value must be added to the BTP destination:
+
+```bash
+API_KEY="$(openssl rand -hex 32)"
+cf push --var api_key="$API_KEY"
 ```
 
-## LLM Extraction Features
+Configure any HANA variables that are not supplied through the target landscape's service or secret management, then restage the API. For example:
 
-### Vendor Name Extraction
+```bash
+cf set-env commodity-code-pipeline-api hana_address "<host>"
+cf set-env commodity-code-pipeline-api hana_port "<port>"
+cf set-env commodity-code-pipeline-api hana_user "<user>"
+cf set-env commodity-code-pipeline-api hana_password "<password>"
+cf set-env commodity-code-pipeline-api HANA_SCHEMA "<schema>"
+cf restage commodity-code-pipeline-api
+```
 
-When using `llm_extraction=True` (default behavior), the system extracts vendor company names with enhanced accuracy:
+Do not commit credentials or API keys.
 
-- **Combined Text + Image Analysis**: The LLM processes both the full document text AND the first page as an image in a single call
-- **Logo Recognition**: Vendor information is extracted from logos and letterheads on the first page that may not be captured in text extraction
-- **Export Field**: Results are exported to Excel as the `header_vendorName` column
-- **Optimized Performance**: Single LLM call per document reduces costs and improves speed
+### Verify the Cloud Foundry applications
 
-### Extracted Fields
+```bash
+curl https://commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com/api/health
+cf app commodity-code-pipeline-api
+cf app commodity-code-pipeline-ui
+cf logs commodity-code-pipeline-api --recent
+```
 
-The extraction schema has been optimized to eliminate redundant fields and reduce token usage:
+The Streamlit UI is available at:
 
-**Header Fields** (9 fields):
-- `documentDate` - Document/invoice date
-- `deliveryDate` - Delivery or due date
-- `senderAddress` - Sender address
-- `vendorName` - Vendor/company name (extracted from text + first page image)
-- `receiverID` - Receiver identifier
-- `shipToName` - Ship-to recipient name
-- `shipToAddress` - Ship-to address
-- `currencyCode` - Currency code (header-level)
-- `netAmount` - Total net amount
+```text
+https://commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com
+```
 
-**Line Item Fields** (7 fields):
-- `description` - Item description
-- `netAmount` - Line item net amount
-- `quantity` - Item quantity
-- `unitPrice` - Unit price
-- `materialNumber` - Material/product number
-- `itemNumber` - Line item number
-- `usageSummary` - Semantic summary of item's business purpose
+## Deploy the Joule Assistant
 
-### Excel Output
+### 1. Create the BTP destination
 
-The Excel workbook produced by the API includes:
-- Document metadata fields (prefixed with `header_`)
-- Line item details
-- Reference code matches (Top 5 with descriptions)
-- LLM verification results (when `llm_verify=True`)
+Create or update the destination used by `joule_agent/commodity_code_capability/capability.sapdas.yaml`:
 
-All schema fields are exported to ensure efficient token usage - no fields are extracted without being used in the final output.
+```text
+Name: CommodityCodePipelineAPI
+Type: HTTP
+URL: https://commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com
+Proxy Type: Internet
+Authentication: NoAuthentication
+URL.headers.X-API-Key: <same API_KEY configured on the API application>
+```
 
-### Reference Data Runtime
+Keep the API key in the destination; do not add it to the SAPDAS YAML files.
 
-The deployment runtime no longer reads local Excel/CSV reference files from the Cloud Foundry container.
+### 2. Validate the SAPDAS files
 
-- Synthetic reference datasets are generated offline with `api/scripts/generate_and_load_reference_data.py`
-- The generated datasets are loaded into HANA tables
-- The API validates a shared `DATA_VERSION` across the three HANA tables before processing requests
-- `.cfignore` prevents the local seed files, generated outputs, and scripts from being shipped with the API app
+Run these commands from the repository root:
 
-### Reference Data Layout
+```bash
+joule lint joule_agent/assistant.da.sapdas.yaml
+joule compile joule_agent/commodity_code_capability /tmp/commodity_code_joule_compile
+```
 
-This repository retains only anonymized reference assets.
+### 3. Deploy and launch
 
-- Synthetic reference datasets live under `generated_reference_data/`
-- Original source workbooks and CSV seed files are not included
-- Any sample documents and outputs kept in the repo are anonymized examples only
+Deployment must be run manually by a user authenticated to the target Joule tenant:
 
-## Deployment Process
+```bash
+joule deploy --compile \
+  joule_agent/assistant.da.sapdas.yaml \
+  --name commodity_code_assistant
 
-### Automated Deployment
+joule launch commodity_code_assistant
+```
 
-The easiest way to deploy is using the provided deployment script:
+## Use the Joule Assistant
 
-  ```bash
-  cd anonymized
-  chmod +x deploy.sh
-  ./deploy.sh
-  ```
+Keep the upload, status checks, and result navigation in the same Joule conversation because `last_job_id` is conversation-scoped.
 
-The script will:
-1. Generate a secure, random 256-bit API key
-2. Deploy both applications to Cloud Foundry using the generated key
-3. Configure the applications with the necessary environment variables
+1. Ask Joule to upload and classify a PDF, then attach one PDF of at most 10 MB.
+2. Select **Check status**. If the job is still `QUEUED` or `RUNNING`, select **Check again** later.
+3. When the job is complete, select **Show page 1**.
+4. Use **Next page** and **Previous page**, or ask `Show page 2 of the latest commodity code results`.
+5. Uploading another PDF in the same conversation replaces `last_job_id` with the new job.
 
-### Manual Deployment
+Each Joule line item contains:
 
-If you prefer to deploy manually or need more control:
+- description
+- net amount
+- quantity
+- unit price
+- AI-suggested commodity code
+- AI confidence score
+- AI reasoning
 
-1. **Generate an API key** (optional, if not using the script):
-   ```bash
-   API_KEY=$(openssl rand -hex 32)
-   ```
+For the complete destination, API, response, and troubleshooting contract, see [docs/joule-agent-integration.md](docs/joule-agent-integration.md).
 
-2. **Deploy using Cloud Foundry CLI**:
-   ```bash
-   cf push --var api_key="$API_KEY"
-   ```
+## API Endpoints
 
-   Or if you want to use a specific API key:
-   ```bash
-   cf push --var api_key="your-api-key-here"
-   ```
+All extraction endpoints require `X-API-Key` when `API_KEY` is configured.
 
-### Deployment Configuration
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | API health probe. |
+| `GET` | `/api/extraction/defaults` | UI extraction defaults. |
+| `POST` | `/api/extraction/run` | Submit one or more multipart PDF uploads from the UI. |
+| `POST` | `/api/extraction/jobs` | Submit one raw PDF body from Joule. |
+| `GET` | `/api/extraction/jobs/{job_id}` | Read status and progress. |
+| `GET` | `/api/extraction/jobs/{job_id}/result?page=1` | Read one structured Joule result page. |
+| `GET` | `/api/extraction/jobs/{job_id}/download` | Download the completed Excel workbook. |
 
-The `manifest.yaml` file contains the deployment configuration:
+## Local Development
 
-- **Memory**: 512M for API application, 256M for UI application
-- **Disk Quota**: 1G for each application
-- **Buildpack**: Python buildpack
-- **Routes**: 
-  - API: `commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com`
-  - UI: `commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com`
+Create an `api/.env` with the required HANA and SAP Gen AI Hub configuration, then install dependencies:
 
-## Environment Variables
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r api/requirements.txt -r ui/requirements.txt
+```
 
-### API Application
+Start the API:
 
-The API application uses the following environment variables:
+```bash
+cd api
+python -m app.main
+```
 
-- `PYTHONPATH`: Set to "." for proper module resolution
-- `ALLOWED_ORIGIN`: CORS origin for the UI application (automatically set to UI route)
-- `APP_ENV`: Set to "production" for production deployments
-- `API_KEY`: Secure API key for authentication (generated automatically by deploy.sh)
-- `hana_address`, `hana_port`, `hana_user`, `hana_password`, `hana_encrypt`: HANA connectivity for synthetic reference tables
-- `HANA_SCHEMA`, `HANA_REFERENCE_DATA_VERSION`, `HANA_*_TABLE`: Optional schema/table overrides for HANA reference data
+In another terminal, start the UI:
 
-### UI Application
+```bash
+cd ui
+API_BASE_URL=http://127.0.0.1:8000 python streamlit_app.py
+```
 
-The UI application uses the following environment variables:
+When a local `API_KEY` is configured, pass the same value to the UI process.
 
-- `PYTHONPATH`: Set to "." for proper module resolution
-- `API_BASE_URL`: Base URL of the API application (automatically set to API route)
-- `API_KEY`: Secure API key for authentication (must match API application key)
+## Tests
 
-## Post-Deployment
+```bash
+cd api
+python3 -m unittest discover -s tests -p 'test_*.py'
 
-After successful deployment:
+cd ../ui
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
 
-1. **Verify API Health**: Visit `https://commodity-code-pipeline-api.cfapps.eu10-004.hana.ondemand.com/api/health` to check if the API is running
-
-2. **Access UI**: Visit `https://commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com` to access the Streamlit application
-
-3. **Check Logs**: Monitor application logs using:
-   ```bash
-   cf logs commodity-code-pipeline-api --recent
-   cf logs commodity-code-pipeline-ui --recent
-   ```
-
-4. **Validate branding cleanup**:
-   ```bash
-   ./verify_anonymization.sh
-   ```
+Validate Joule separately with the lint and compile commands in the deployment section.
 
 ## Troubleshooting
 
-### Common Issues
-
-1. **Deployment Fails with "Not logged in"**
-   - Solution: Log in to Cloud Foundry first using `cf login`
-
-2. **API Key Mismatch**
-   - Ensure both applications use the same API key
-   - The deploy.sh script handles this automatically
-
-3. **CORS Errors**
-   - Verify that `ALLOWED_ORIGIN` in the API matches the UI route
-   - Check that `APP_ENV` is set to "production"
-
-4. **Module Import Errors**
-   - Ensure `PYTHONPATH` is set correctly in the manifest
-   - Verify that all dependencies are listed in requirements.txt
-
-5. **Memory or Disk Quota Exceeded**
-   - Adjust memory and disk_quota values in manifest.yaml
-   - Ensure your Cloud Foundry space has sufficient quota
-
-### Viewing Application Status
-
-Check application status:
-```bash
-cf apps
-```
-
-View detailed information about an application:
-```bash
-cf app commodity-code-pipeline-api
-cf app commodity-code-pipeline-ui
-```
-
-## Updating Applications
-
-To update an application after making changes:
-
-1. Make your code changes in the `api/` or `ui/` directories
-2. Run the deployment script again:
-   ```bash
-   ./deploy.sh
-   ```
-
-Cloud Foundry will detect changes and redeploy the applications automatically.
-
-## Security Notes
-
-- The API key is generated randomly for each deployment
-- Both applications must share the same API key for communication
-- The API key is injected during deployment and stored as an environment variable
-- Never commit API keys to version control
-- The deploy.sh script generates a new key for each deployment
-
-## Additional Resources
-
-- [SAP Cloud Foundry Documentation](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment)
-- [Cloud Foundry CLI Documentation](https://docs.cloudfoundry.org/cf-cli/)
+- **`503 API authentication is not configured`**: set `API_KEY` when `APP_ENV=production`, then restage the API.
+- **HANA storage or reference-data errors**: verify the lowercase HANA connection variables, schema permissions, reference-table names, and shared `DATA_VERSION`.
+- **Joule receives `401`**: verify `URL.headers.X-API-Key` in `CommodityCodePipelineAPI` matches the API application key.
+- **Joule cannot prepare a status or result path**: redeploy the current SAPDAS files and begin a new conversation so an older `last_job_id` value is not reused.
+- **Results are unavailable**: check the job first; structured result pages are returned only after `SUCCEEDED`.
+- **CORS errors**: verify `ALLOWED_ORIGIN` matches the deployed Streamlit route.
+- **Capacity errors**: check Cloud Foundry quota and adjust `memory` or `disk_quota` in `manifest.yaml` when needed.

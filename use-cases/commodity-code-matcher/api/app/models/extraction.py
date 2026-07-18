@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictFloat, StrictInt
 
 
 class ExtractionOptions(BaseModel):
@@ -66,6 +66,76 @@ class ExtractionJobStatusResponse(BaseModel):
     line_items_preview: List[Dict[str, Any]] = Field(default_factory=list)
     errors: List[str] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
+
+
+class JouleLineItem(BaseModel):
+    """One commodity-code result rendered for a Joule user.
+
+    Numeric document values remain numeric when detected. Missing values use the
+    explicit ``Not detected`` text required by the conversational contract.
+
+    Args:
+        description: Extracted line-item description.
+        net_amount: Detected numeric net amount or missing-value label.
+        quantity: Detected numeric quantity or missing-value label.
+        unit_price: Detected numeric unit price or missing-value label.
+        ai_suggested_commodity_code: LLM-selected code, including ``UNSURE``.
+        ai_confidence_score: Whole percentage string or missing-value label.
+        ai_reasoning: LLM reasoning or retained fallback explanation.
+
+    Returns:
+        A validated seven-field line-item model for the public Joule response.
+    """
+
+    description: str
+    net_amount: StrictInt | StrictFloat | str
+    quantity: StrictInt | StrictFloat | str
+    unit_price: StrictInt | StrictFloat | str
+    ai_suggested_commodity_code: str
+    ai_confidence_score: str
+    ai_reasoning: str
+
+
+class ExtractionResultPagination(BaseModel):
+    """Navigation metadata for one fixed-size structured result page.
+
+    Args:
+        current_page: Current one-based page number.
+        page_size: Fixed maximum number of line items per page.
+        total_items: Total line items stored for the job.
+        total_pages: Total number of available pages.
+        previous_page: Previous page number, or ``None`` on the first page.
+        next_page: Next page number, or ``None`` on the last page.
+
+    Returns:
+        Validated pagination metadata nested in a job result response.
+    """
+
+    current_page: int
+    page_size: int
+    total_items: int
+    total_pages: int
+    previous_page: Optional[int] = None
+    next_page: Optional[int] = None
+
+
+class ExtractionJobResultResponse(BaseModel):
+    """One fixed-size page of structured Joule extraction results.
+
+    Args:
+        job_id: Stable extraction job identifier.
+        status: Terminal job status, currently ``SUCCEEDED``.
+        line_items: Up to 30 normalized Joule line items.
+        pagination: Nested navigation metadata for the current page.
+
+    Returns:
+        The exact public result payload rendered by the API.
+    """
+
+    job_id: str
+    status: str
+    line_items: List[JouleLineItem] = Field(default_factory=list)
+    pagination: ExtractionResultPagination
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,0 +1,65 @@
+action_groups:
+  - actions:
+      - type: file-upload
+        content:
+          message: Upload one PDF whose line items should be classified.
+          on_cancel:
+            title: Cancel PDF upload?
+            message: The PDF will not be submitted.
+            button_labels:
+              cancel: Yes, cancel
+              continue: Continue upload
+        allowed_file_types:
+          - pdf
+        max_file_size: 10MB
+        max_files_allowed: 1
+        result_variable: uploaded_document
+
+      - type: status-update
+        message: Submitting the PDF for extraction and commodity-code matching...
+
+      - type: api-request
+        method: POST
+        system_alias: CommodityCodeAPI
+        path: /api/extraction/jobs
+        headers:
+          Content-Type: application/octet-stream
+          Accept: application/json
+        body: <? uploaded_document.files.get(0).file_reference_id ?>
+        result_variable: submit_result
+
+  - condition: >
+      submit_result != null && submit_result.status_code == 202 &&
+      submit_result.body != null && submit_result.body.job_id != null &&
+      submit_result.body.job_id != ''
+    actions:
+      - type: message
+        message:
+          type: text
+          content: >
+            The PDF was accepted. Job ID: `<? submit_result.body.job_id ?>`.
+          markdown: true
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: Extraction and matching continue in the background.
+            buttons:
+              - title: Check status
+                value: Check the latest commodity code job status
+
+  - condition: >
+      submit_result == null || submit_result.status_code != 202 ||
+      submit_result.body == null || submit_result.body.job_id == null ||
+      submit_result.body.job_id == ''
+    actions:
+      - type: message
+        message:
+          type: text
+          content: The backend did not accept the PDF. Please try again.
+
+result:
+  job_id: >-
+    <? submit_result != null && submit_result.status_code == 202 &&
+    submit_result.body != null && submit_result.body.job_id != null &&
+    submit_result.body.job_id != '' ? submit_result.body.job_id : null ?>

@@ -1,0 +1,5 @@
+schema_version: 1.4.0
+name: commodity_code_assistant
+capabilities:
+  - type: local
+    folder: commodity_code_capability

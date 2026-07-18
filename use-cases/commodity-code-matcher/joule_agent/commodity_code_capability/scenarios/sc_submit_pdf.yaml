@@ -1,0 +1,10 @@
+description: >
+  Uploads and submits one new Portable Document Format (PDF) file to start a new
+  asynchronous extraction and commodity-code classification job. It handles
+  initial document submission and returns a new job identifier.
+target:
+  type: function
+  name: fn_submit_pdf
+capability_context:
+  - name: last_job_id
+    value: $target_result.job_id

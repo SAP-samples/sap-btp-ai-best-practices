@@ -7,10 +7,15 @@ import os
 import threading
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, Body, Depends, File, Form, Header, HTTPException, UploadFile, status
 from fastapi.responses import Response
 
-from ..models.extraction import ExtractionJobStatusResponse, ExtractionJobSubmitResponse, ExtractionOptions
+from ..models.extraction import (
+    ExtractionJobResultResponse,
+    ExtractionJobStatusResponse,
+    ExtractionJobSubmitResponse,
+    ExtractionOptions,
+)
 from ..services.auth import require_api_key
 from ..services.extraction_jobs import (
     ExtractionJobManager,
@@ -24,9 +29,9 @@ from ..services.extraction_jobs import (
 from ..services.extraction_service import ExtractionConfig
 
 logger = logging.getLogger(__name__)
-_DEFAULT_OPTIONS = ExtractionOptions()
 _JOB_MANAGER: ExtractionJobManager | None = None
 _JOB_MANAGER_LOCK = threading.Lock()
+_MAX_JOULE_PDF_BYTES = 10 * 1024 * 1024
 
 router = APIRouter(dependencies=[Depends(require_api_key)])
 
@@ -86,6 +91,38 @@ async def _read_uploads(files: List[UploadFile]) -> list[JobFilePayload]:
     return payloads
 
 
+def _submit_job(files: list[JobFilePayload], config: ExtractionConfig) -> ExtractionJobSubmitResponse:
+    """Submit validated files while preserving the public job error contract.
+
+    Args:
+        files: Validated PDF payloads ready for HANA persistence.
+        config: Server- or form-owned extraction settings.
+
+    Returns:
+        Immediate asynchronous job metadata.
+
+    Raises:
+        HTTPException: Maps queue, validation, storage, and runtime failures to
+            the established extraction API status codes.
+    """
+
+    try:
+        return get_job_manager().submit(files=files, config=config)
+    except QueueFullError as exc:
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except JobStorageError as exc:
+        logger.exception("Extraction job storage unavailable")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc))
+    except RuntimeError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc))
+    except Exception as exc:
+        logger.exception("Unexpected error during extraction job submission")
+        error_message = f"Extraction job submission failed: {exc}"
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message) from exc
+
+
 @router.get("/defaults", response_model=ExtractionOptions)
 async def get_defaults() -> ExtractionOptions:
     """Expose the default configuration so the UI can prime form fields."""
@@ -126,22 +163,42 @@ async def run_extraction(
         logger.exception("Invalid extraction configuration")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
-    try:
-        payloads = await _read_uploads(files)
-        return get_job_manager().submit(files=payloads, config=config)
-    except QueueFullError as exc:
-        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(exc))
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
-    except JobStorageError as exc:
-        logger.exception("Extraction job storage unavailable")
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc))
-    except RuntimeError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc))
-    except Exception as exc:
-        logger.exception("Unexpected error during extraction job submission")
-        error_message = f"Extraction job submission failed: {exc}"
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=error_message) from exc
+    payloads = await _read_uploads(files)
+    return _submit_job(payloads, config)
+
+
+@router.post(
+    "/jobs",
+    response_model=ExtractionJobSubmitResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def submit_joule_pdf(
+    body: bytes = Body(default=b"", media_type="application/octet-stream"),
+    content_type: str | None = Header(default=None, alias="Content-Type"),
+) -> ExtractionJobSubmitResponse:
+    """Submit one raw PDF from Joule using fixed server-owned extraction options.
+
+    Args:
+        body: Resolved attachment bytes sent by Joule.
+        content_type: Request media type, which must be octet-stream.
+
+    Returns:
+        Immediate asynchronous job metadata for later polling.
+    """
+
+    media_type = (content_type or "").split(";", 1)[0].strip().lower()
+    if media_type != "application/octet-stream":
+        raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, detail="Expected application/octet-stream.")
+    if not body:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="PDF body must not be empty.")
+    if len(body) > _MAX_JOULE_PDF_BYTES:
+        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="PDF exceeds the 10 MiB limit.")
+    if not body.startswith(b"%PDF-"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Body is not a valid PDF file.")
+
+    payload = JobFilePayload(filename="joule_document.pdf", content_type="application/pdf", content=body)
+    config = ExtractionConfig(llm_verify=True)
+    return _submit_job([payload], config)
 
 
 @router.get("/jobs/{job_id}", response_model=ExtractionJobStatusResponse)
@@ -152,6 +209,36 @@ async def get_job_status(job_id: str) -> ExtractionJobStatusResponse:
         return get_job_manager().get_status(job_id)
     except JobNotFoundError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found.")
+    except JobStorageError as exc:
+        logger.exception("Extraction job storage unavailable")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc))
+
+
+@router.get("/jobs/{job_id}/result", response_model=ExtractionJobResultResponse)
+async def get_job_result(job_id: str, page: str = "1") -> ExtractionJobResultResponse:
+    """Return one 30-row page of structured Joule line-item results.
+
+    Args:
+        job_id: Stable identifier returned by submission.
+        page: One-based result page number supplied as query text.
+
+    Returns:
+        Completed structured extraction results and pagination metadata.
+    """
+
+    try:
+        page_number = int(page)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Page must be an integer.") from exc
+
+    try:
+        return get_job_manager().get_result_page(job_id, page=page_number)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except JobNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found.")
+    except JobResultNotReadyError:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Job result is not ready.")
     except JobStorageError as exc:
         logger.exception("Extraction job storage unavailable")
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc))

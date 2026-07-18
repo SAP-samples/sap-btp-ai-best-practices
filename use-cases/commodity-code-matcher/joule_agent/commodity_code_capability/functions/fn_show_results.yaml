@@ -1,0 +1,108 @@
+parameters:
+  - name: job_id
+    optional: true
+  - name: page
+    optional: true
+
+action_groups:
+  - condition: job_id == null || job_id == ''
+    actions:
+      - type: message
+        message:
+          type: text
+          content: Upload a PDF first so there are commodity-code results to show.
+
+  - condition: job_id != null && job_id != '' && (page == null || page == '')
+    actions:
+      - type: message
+        message:
+          type: text
+          content: Tell me the result page number to show, for example, "Show page 2 of the latest commodity code results."
+
+  - condition: job_id != null && job_id != '' && page != null && page != ''
+    actions:
+      - type: status-update
+        message: Loading commodity-code result page <? page ?>...
+      - type: api-request
+        method: GET
+        system_alias: CommodityCodeAPI
+        path: /api/extraction/jobs/<? job_id ?>/result?page=<? page ?>
+        headers:
+          Accept: application/json
+        result_variable: result_page
+
+  - condition: >
+      job_id != null && job_id != '' && page != null && page != '' &&
+      result_page != null && result_page['status_code'] == 200 &&
+      result_page['body'] != null && result_page['body']['line_items'] != null &&
+      result_page['body']['pagination'] != null &&
+      result_page['body']['pagination']['previous_page'] != null &&
+      result_page['body']['pagination']['next_page'] != null
+    actions:
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: Choose another result page.
+            buttons:
+              - title: Previous page
+                value: Show page <? result_page.body.pagination.previous_page ?> of the latest commodity code results
+              - title: Next page
+                value: Show page <? result_page.body.pagination.next_page ?> of the latest commodity code results
+
+  - condition: >
+      job_id != null && job_id != '' && page != null && page != '' &&
+      result_page != null && result_page['status_code'] == 200 &&
+      result_page['body'] != null && result_page['body']['line_items'] != null &&
+      result_page['body']['pagination'] != null &&
+      result_page['body']['pagination']['previous_page'] == null &&
+      result_page['body']['pagination']['next_page'] != null
+    actions:
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: More line items are available.
+            buttons:
+              - title: Next page
+                value: Show page <? result_page.body.pagination.next_page ?> of the latest commodity code results
+
+  - condition: >
+      job_id != null && job_id != '' && page != null && page != '' &&
+      result_page != null && result_page['status_code'] == 200 &&
+      result_page['body'] != null && result_page['body']['line_items'] != null &&
+      result_page['body']['pagination'] != null &&
+      result_page['body']['pagination']['previous_page'] != null &&
+      result_page['body']['pagination']['next_page'] == null
+    actions:
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: This is the final result page.
+            buttons:
+              - title: Previous page
+                value: Show page <? result_page.body.pagination.previous_page ?> of the latest commodity code results
+
+  - condition: >
+      job_id != null && job_id != '' && page != null && page != '' &&
+      (result_page == null || result_page['status_code'] != 200 ||
+      result_page['body'] == null || result_page['body']['line_items'] == null ||
+      result_page['body']['pagination'] == null)
+    actions:
+      - type: message
+        message:
+          type: text
+          content: The requested result page is unavailable. Check that the job succeeded and the page number exists.
+
+result:
+  line_items: >-
+    <? job_id != null && job_id != '' && page != null && page != '' &&
+    result_page != null && result_page['status_code'] == 200 &&
+    result_page['body'] != null && result_page['body']['line_items'] != null ?
+    result_page['body']['line_items'] : null ?>
+  pagination: >-
+    <? job_id != null && job_id != '' && page != null && page != '' &&
+    result_page != null && result_page['status_code'] == 200 &&
+    result_page['body'] != null && result_page['body']['pagination'] != null ?
+    result_page['body']['pagination'] : null ?>
