@@ -1,0 +1,2 @@
+variables:
+  - name: last_job_id

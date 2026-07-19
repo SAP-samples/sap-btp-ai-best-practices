@@ -1,0 +1,10 @@
+description: >
+  Checks, polls, or refreshes the processing status of the existing extraction
+  and commodity-code classification job most recently submitted in the active
+  conversation. It reports QUEUED, RUNNING, SUCCEEDED, or FAILED.
+target:
+  type: function
+  name: fn_check_job
+  parameters:
+    - name: job_id
+      value: $capability_context.last_job_id

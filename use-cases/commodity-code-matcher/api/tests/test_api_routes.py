@@ -11,8 +11,19 @@ from fastapi.testclient import TestClient
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.main import app
-from app.models.extraction import ExtractionJobStatusResponse, ExtractionJobSubmitResponse, JobResultFile
-from app.services.extraction_jobs import JobNotFoundError, JobResultNotReadyError
+from app.models.extraction import (
+    ExtractionJobResultResponse,
+    ExtractionJobStatusResponse,
+    ExtractionJobSubmitResponse,
+    JobResultFile,
+    JouleLineItem,
+)
+from app.services.extraction_jobs import (
+    JobNotFoundError,
+    JobResultNotReadyError,
+    JobStorageError,
+    QueueFullError,
+)
 
 
 class ApiRouteTests(unittest.TestCase):
@@ -59,6 +70,147 @@ class ApiRouteTests(unittest.TestCase):
         self.assertEqual(payload["status_url"], "/api/extraction/jobs/job-123")
         manager.submit.assert_called_once()
 
+    def test_raw_pdf_submission_uses_fixed_server_owned_options(self) -> None:
+        """Raw Joule uploads submit one PDF with LLM verification enabled."""
+
+        manager = Mock()
+        manager.submit.return_value = ExtractionJobSubmitResponse(
+            job_id="job-raw",
+            status="QUEUED",
+            status_url="/api/extraction/jobs/job-raw",
+            download_url="/api/extraction/jobs/job-raw/download",
+            created_at="2026-07-18T08:00:00Z",
+        )
+
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            response = self.client.post(
+                "/api/extraction/jobs",
+                content=b"%PDF-1.7\nraw-pdf",
+                headers={"Content-Type": "application/octet-stream"},
+            )
+
+        self.assertEqual(response.status_code, 202)
+        submitted = manager.submit.call_args.kwargs
+        self.assertEqual(len(submitted["files"]), 1)
+        self.assertEqual(submitted["files"][0].filename, "joule_document.pdf")
+        self.assertEqual(submitted["files"][0].content, b"%PDF-1.7\nraw-pdf")
+        self.assertTrue(submitted["config"].llm_verify)
+        self.assertEqual(submitted["config"].top_k, 5)
+
+    def test_raw_pdf_submission_accepts_exact_limit_and_media_type_parameters(self) -> None:
+        """Exactly 10 MiB and a parameterized octet-stream media type are accepted."""
+
+        manager = Mock()
+        manager.submit.return_value = ExtractionJobSubmitResponse(
+            job_id="job-limit",
+            status="QUEUED",
+            status_url="/api/extraction/jobs/job-limit",
+            download_url="/api/extraction/jobs/job-limit/download",
+            created_at="2026-07-18T08:00:00Z",
+        )
+        exact_limit = b"%PDF-" + b"x" * (10 * 1024 * 1024 - 5)
+
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            response = self.client.post(
+                "/api/extraction/jobs",
+                content=exact_limit,
+                headers={"Content-Type": "application/octet-stream; charset=binary"},
+            )
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(len(manager.submit.call_args.kwargs["files"][0].content), 10 * 1024 * 1024)
+
+    def test_raw_pdf_submission_rejects_invalid_bodies(self) -> None:
+        """Raw submissions reject wrong media types, empty bodies, oversized files, and non-PDF bytes."""
+
+        wrong_media = self.client.post(
+            "/api/extraction/jobs",
+            content=b"%PDF-1.7",
+            headers={"Content-Type": "application/pdf"},
+        )
+        empty = self.client.post(
+            "/api/extraction/jobs",
+            content=b"",
+            headers={"Content-Type": "application/octet-stream"},
+        )
+        oversized = self.client.post(
+            "/api/extraction/jobs",
+            content=b"%PDF-" + b"x" * (10 * 1024 * 1024),
+            headers={"Content-Type": "application/octet-stream"},
+        )
+        invalid_pdf = self.client.post(
+            "/api/extraction/jobs",
+            content=b"not-a-pdf",
+            headers={"Content-Type": "application/octet-stream"},
+        )
+
+        self.assertEqual(wrong_media.status_code, 415)
+        self.assertEqual(empty.status_code, 400)
+        self.assertEqual(oversized.status_code, 413)
+        self.assertEqual(invalid_pdf.status_code, 400)
+
+    def test_raw_pdf_submission_preserves_queue_full_behavior(self) -> None:
+        """Raw submissions map the existing queue-capacity error to HTTP 429."""
+
+        manager = Mock()
+        manager.submit.side_effect = QueueFullError("Too many jobs.")
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            response = self.client.post(
+                "/api/extraction/jobs",
+                content=b"%PDF-1.7",
+                headers={"Content-Type": "application/octet-stream"},
+            )
+
+        self.assertEqual(response.status_code, 429)
+
+    def test_raw_pdf_submission_maps_manager_failures(self) -> None:
+        """Raw submissions preserve validation, storage, and runtime error status codes."""
+
+        cases = (
+            (ValueError("invalid job"), 400),
+            (JobStorageError("offline"), 503),
+            (RuntimeError("worker failed"), 500),
+        )
+        for error, expected_status in cases:
+            with self.subTest(error=type(error).__name__):
+                manager = Mock()
+                manager.submit.side_effect = error
+                with patch("app.routers.extraction.get_job_manager", return_value=manager):
+                    response = self.client.post(
+                        "/api/extraction/jobs",
+                        content=b"%PDF-1.7",
+                        headers={"Content-Type": "application/octet-stream"},
+                    )
+                self.assertEqual(response.status_code, expected_status)
+
+    def test_raw_pdf_submission_requires_configured_api_key(self) -> None:
+        """The Joule upload route is protected by the shared extraction API key."""
+
+        manager = Mock()
+        manager.submit.return_value = ExtractionJobSubmitResponse(
+            job_id="job-auth",
+            status="QUEUED",
+            status_url="/api/extraction/jobs/job-auth",
+            download_url="/api/extraction/jobs/job-auth/download",
+            created_at="2026-07-18T08:00:00Z",
+        )
+        with patch.dict("os.environ", {"API_KEY": "secret"}, clear=False), patch(
+            "app.routers.extraction.get_job_manager", return_value=manager
+        ):
+            missing = self.client.post(
+                "/api/extraction/jobs",
+                content=b"%PDF-1.7",
+                headers={"Content-Type": "application/octet-stream"},
+            )
+            accepted = self.client.post(
+                "/api/extraction/jobs",
+                content=b"%PDF-1.7",
+                headers={"Content-Type": "application/octet-stream", "X-API-Key": "secret"},
+            )
+
+        self.assertEqual(missing.status_code, 401)
+        self.assertEqual(accepted.status_code, 202)
+
     def test_job_status_returns_job_metadata(self) -> None:
         """The job status route returns polling metadata from the manager."""
 
@@ -93,6 +245,73 @@ class ApiRouteTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "SUCCEEDED")
         self.assertEqual(response.json()["download_url"], "/api/extraction/jobs/job-123/download")
+
+    def test_job_result_returns_one_paginated_joule_page(self) -> None:
+        """Completed result requests return the manager's deterministic Joule payload."""
+
+        manager = Mock()
+        manager.get_result_page.return_value = ExtractionJobResultResponse(
+            job_id="job-123",
+            status="SUCCEEDED",
+            pagination={
+                "current_page": 2,
+                "page_size": 30,
+                "total_items": 31,
+                "total_pages": 2,
+                "previous_page": 1,
+                "next_page": None,
+            },
+            line_items=[
+                JouleLineItem(
+                    description="Brake pads",
+                    net_amount=100,
+                    quantity=2,
+                    unit_price=50.0,
+                    ai_suggested_commodity_code="RC0001",
+                    ai_confidence_score="91%",
+                    ai_reasoning="Best semantic match.",
+                )
+            ],
+        )
+
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            response = self.client.get("/api/extraction/jobs/job-123/result?page=2")
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(set(payload), {"job_id", "status", "line_items", "pagination"})
+        self.assertEqual(payload["line_items"][0]["quantity"], 2)
+        self.assertEqual(payload["pagination"]["current_page"], 2)
+        self.assertEqual(payload["pagination"]["previous_page"], 1)
+        self.assertIsNone(payload["pagination"]["next_page"])
+        manager.get_result_page.assert_called_once_with("job-123", page=2)
+
+    def test_job_result_maps_invalid_missing_pending_and_storage_errors(self) -> None:
+        """The result route maps pagination and repository failures to its public status codes."""
+
+        manager = Mock()
+        manager.get_result_page.side_effect = ValueError("Page must be at least 1.")
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            invalid = self.client.get("/api/extraction/jobs/job-123/result?page=0")
+            non_numeric = self.client.get("/api/extraction/jobs/job-123/result?page=abc")
+
+        manager.get_result_page.side_effect = JobNotFoundError("missing")
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            missing = self.client.get("/api/extraction/jobs/job-404/result")
+
+        manager.get_result_page.side_effect = JobResultNotReadyError("pending")
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            pending = self.client.get("/api/extraction/jobs/job-123/result")
+
+        manager.get_result_page.side_effect = JobStorageError("offline")
+        with patch("app.routers.extraction.get_job_manager", return_value=manager):
+            unavailable = self.client.get("/api/extraction/jobs/job-123/result")
+
+        self.assertEqual(invalid.status_code, 400)
+        self.assertEqual(non_numeric.status_code, 400)
+        self.assertEqual(missing.status_code, 404)
+        self.assertEqual(pending.status_code, 409)
+        self.assertEqual(unavailable.status_code, 503)
 
     def test_job_download_returns_excel_bytes_after_success(self) -> None:
         """Completed job downloads return the generated Excel bytes."""

@@ -1,0 +1,16 @@
+description: >
+  Shows the first page of line items and AI-suggested commodity codes from the
+  latest completed PDF classification job in the active conversation.
+target:
+  type: function
+  name: fn_show_results
+  parameters:
+    - name: job_id
+      value: $capability_context.last_job_id
+    - name: page
+      value: '1'
+response_context:
+  - value: $target_result.line_items
+    description: Classified invoice line items
+  - value: $target_result.pagination
+    description: Result page navigation metadata

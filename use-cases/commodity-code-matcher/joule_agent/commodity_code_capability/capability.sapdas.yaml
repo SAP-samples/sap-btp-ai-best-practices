@@ -1,0 +1,10 @@
+schema_version: 3.27.0
+metadata:
+  namespace: joule.ext
+  name: commodity_code_capability
+  version: 1.0.0
+  display_name: Commodity Code Assistant
+  description: Extract invoice line items from one PDF and suggest commodity codes with confidence and reasoning.
+system_aliases:
+  CommodityCodeAPI:
+    destination: CommodityCodePipelineAPI
