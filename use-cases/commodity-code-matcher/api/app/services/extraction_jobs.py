@@ -15,7 +15,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Sequence
 
-from ..models.extraction import ExtractionJobStatusResponse, ExtractionJobSubmitResponse, JobResultFile
+from ..models.extraction import (
+    ExtractionJobResultResponse,
+    ExtractionJobStatusResponse,
+    ExtractionJobSubmitResponse,
+    ExtractionResultPagination,
+    JobResultFile,
+)
 from .extraction_service import ExtractionConfig, run_extraction_for_paths
 
 logger = logging.getLogger(__name__)
@@ -30,6 +36,7 @@ EXCEL_MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.s
 
 DEFAULT_JOBS_TABLE = "EXTRACTION_JOBS"
 DEFAULT_FILES_TABLE = "EXTRACTION_JOB_FILES"
+JOULE_RESULT_PAGE_SIZE = 30
 
 
 class QueueFullError(RuntimeError):
@@ -97,6 +104,16 @@ class ExtractionJobRepository(Protocol):
 
     def get_result_file(self, job_id: str) -> JobResultFile:
         """Return the completed Excel artifact for a job."""
+
+    def get_result_metadata(self, job_id: str) -> Dict[str, Any]:
+        """Return completed structured result metadata for a job.
+
+        Args:
+            job_id: Stable identifier for the completed job.
+
+        Returns:
+            Parsed metadata containing the normalized Joule line items.
+        """
 
     def mark_running(self, job_id: str, started_at: str) -> None:
         """Mark a queued job as running."""
@@ -255,6 +272,7 @@ class InMemoryExtractionJobRepository:
         self._jobs: Dict[str, Dict[str, Any]] = {}
         self._files: Dict[str, List[StoredJobFile]] = {}
         self._results: Dict[str, JobResultFile] = {}
+        self._result_metadata: Dict[str, Dict[str, Any]] = {}
 
     def create_job(self, job_id: str, files: Sequence[JobFilePayload], config: ExtractionConfig, created_at: str) -> None:
         """Persist a queued job and its uploaded files in memory."""
@@ -327,6 +345,24 @@ class InMemoryExtractionJobRepository:
                 raise JobResultNotReadyError("Job result is not ready.")
             return result
 
+    def get_result_metadata(self, job_id: str) -> Dict[str, Any]:
+        """Return completed structured metadata from the in-memory store.
+
+        Args:
+            job_id: Stable identifier for the completed job.
+
+        Returns:
+            A shallow copy of the stored result metadata.
+        """
+
+        with self._lock:
+            job = self._jobs.get(job_id)
+            if job is None:
+                raise JobNotFoundError(f"Job not found: {job_id}")
+            if job["status"] != JOB_STATUS_SUCCEEDED:
+                raise JobResultNotReadyError("Job result is not ready.")
+            return dict(self._result_metadata.get(job_id, {}))
+
     def mark_running(self, job_id: str, started_at: str) -> None:
         """Mark an in-memory job as running."""
 
@@ -382,6 +418,11 @@ class InMemoryExtractionJobRepository:
                 }
             )
             self._results[job_id] = JobResultFile(filename=output_filename, content_type=content_type, content=content)
+            self._result_metadata[job_id] = {
+                key: value
+                for key, value in result_payload.items()
+                if key not in {"headers_preview", "line_items_preview"}
+            }
 
     def mark_failed(self, job_id: str, error_message: str, finished_at: str) -> None:
         """Persist an in-memory job failure."""
@@ -594,6 +635,24 @@ class HanaExtractionJobRepository:
                 content_type=row["OUTPUT_MIME_TYPE"] or EXCEL_MIME_TYPE,
                 content=_bytes_from_blob(row["RESULT_BLOB"]),
             )
+
+        return self._with_connection(_read)
+
+    def get_result_metadata(self, job_id: str) -> Dict[str, Any]:
+        """Return completed structured result metadata stored in HANA.
+
+        Args:
+            job_id: Stable identifier for the completed HANA job row.
+
+        Returns:
+            Parsed JSON from the existing result metadata NCLOB.
+        """
+
+        def _read(connection) -> Dict[str, Any]:
+            row = self._fetch_job_row(connection, job_id)
+            if row["STATUS"] != JOB_STATUS_SUCCEEDED:
+                raise JobResultNotReadyError("Job result is not ready.")
+            return _json_loads(row.get("RESULT_METADATA_JSON"), {})
 
         return self._with_connection(_read)
 
@@ -1013,6 +1072,46 @@ class ExtractionJobManager:
         """Return a completed Excel file for a submitted job."""
 
         return self.repository.get_result_file(job_id)
+
+    def get_result_page(self, job_id: str, page: int) -> ExtractionJobResultResponse:
+        """Return one fixed-size page of completed structured Joule results.
+
+        Args:
+            job_id: Identifier returned by job submission.
+            page: One-based page number requested by the caller.
+
+        Returns:
+            A page containing at most 30 normalized line items.
+
+        Raises:
+            ValueError: If the requested page is outside the available range.
+            JobNotFoundError: If the job does not exist.
+            JobResultNotReadyError: If processing has not succeeded.
+        """
+
+        if page < 1:
+            raise ValueError("Page must be at least 1.")
+        # ponytail: load the full NCLOB before slicing; use a child HANA result-lines table only if measured volume requires it.
+        metadata = self.repository.get_result_metadata(job_id)
+        items = metadata.get("joule_line_items") or []
+        total_items = len(items)
+        total_pages = (total_items + JOULE_RESULT_PAGE_SIZE - 1) // JOULE_RESULT_PAGE_SIZE
+        if total_pages == 0 or page > total_pages:
+            raise ValueError(f"Page {page} is outside the available result range.")
+        start = (page - 1) * JOULE_RESULT_PAGE_SIZE
+        return ExtractionJobResultResponse(
+            job_id=job_id,
+            status=JOB_STATUS_SUCCEEDED,
+            line_items=items[start : start + JOULE_RESULT_PAGE_SIZE],
+            pagination=ExtractionResultPagination(
+                current_page=page,
+                page_size=JOULE_RESULT_PAGE_SIZE,
+                total_items=total_items,
+                total_pages=total_pages,
+                previous_page=page - 1 if page > 1 else None,
+                next_page=page + 1 if page < total_pages else None,
+            ),
+        )
 
     def wait_for_job(self, job_id: str, timeout_seconds: float) -> None:
         """Wait for a background job to finish; intended for tests.

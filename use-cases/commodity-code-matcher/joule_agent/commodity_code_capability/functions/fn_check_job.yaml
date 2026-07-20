@@ -1,0 +1,106 @@
+parameters:
+  - name: job_id
+    optional: true
+
+action_groups:
+  - condition: job_id == null || job_id == ''
+    actions:
+      - type: message
+        message:
+          type: text
+          content: Upload a PDF first so there is a commodity-code job to check.
+
+  - condition: job_id != null && job_id != ''
+    actions:
+      - type: status-update
+        message: Checking the commodity-code job...
+      - type: api-request
+        method: GET
+        system_alias: CommodityCodeAPI
+        path: /api/extraction/jobs/<? job_id ?>
+        headers:
+          Accept: application/json
+        result_variable: status_result
+
+  - condition: >
+      job_id != null && job_id != '' && status_result != null &&
+      status_result['status_code'] == 200 && status_result['body'] != null &&
+      (status_result['body']['status'] == 'QUEUED' ||
+      status_result['body']['status'] == 'RUNNING')
+    actions:
+      - type: message
+        message:
+          type: text
+          content: >
+            Job `<? job_id ?>` is **<? status_result.body.status ?>**.
+          markdown: true
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: Processing is not finished yet.
+            buttons:
+              - title: Check again
+                value: Check the latest commodity code job status again
+
+  - condition: >
+      job_id != null && job_id != '' && status_result != null &&
+      status_result['status_code'] == 200 && status_result['body'] != null &&
+      status_result['body']['status'] == 'SUCCEEDED'
+    actions:
+      - type: message
+        message:
+          type: text
+          content: The commodity-code job `<? job_id ?>` is complete.
+      - type: message
+        message:
+          type: quickReplies
+          content:
+            title: The extracted line items are ready.
+            buttons:
+              - title: Show page 1
+                value: Show page 1 of the latest commodity code results
+
+  - condition: >
+      job_id != null && job_id != '' && status_result != null &&
+      status_result['status_code'] == 200 && status_result['body'] != null &&
+      status_result['body']['status'] == 'FAILED'
+    actions:
+      - type: message
+        message:
+          type: text
+          content: The commodity-code job failed. Upload the PDF again or contact the backend operator.
+
+  - condition: >
+      job_id != null && job_id != '' &&
+      (status_result == null || status_result['status_code'] != 200 ||
+      status_result['body'] == null || status_result['body']['status'] == null)
+    actions:
+      - type: message
+        message:
+          type: text
+          content: I could not retrieve a valid status for this commodity-code job.
+
+  - condition: >
+      job_id != null && job_id != '' && status_result != null &&
+      status_result['status_code'] == 200 && status_result['body'] != null &&
+      status_result['body']['status'] != null &&
+      status_result['body']['status'] != 'QUEUED' &&
+      status_result['body']['status'] != 'RUNNING' &&
+      status_result['body']['status'] != 'SUCCEEDED' &&
+      status_result['body']['status'] != 'FAILED'
+    actions:
+      - type: message
+        message:
+          type: text
+          content: >
+            The backend returned the unsupported status
+            **<? status_result.body.status ?>** for this job.
+          markdown: true
+
+result:
+  status: >-
+    <? job_id == null || job_id == '' ? 'NO_JOB' :
+    (status_result != null && status_result['status_code'] == 200 &&
+    status_result['body'] != null && status_result['body']['status'] != null ?
+    status_result['body']['status'] : 'ERROR') ?>

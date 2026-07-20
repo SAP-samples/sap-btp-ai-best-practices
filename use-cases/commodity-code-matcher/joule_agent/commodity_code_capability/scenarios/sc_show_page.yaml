@@ -1,0 +1,17 @@
+description: >
+  Shows a specified numbered page of line items and AI-suggested commodity codes
+  from the latest completed PDF classification job in the active conversation.
+slots:
+  - name: page
+    description: One-based result page number to display, such as 2 or 3
+target:
+  type: function
+  name: fn_show_results
+  parameters:
+    - name: job_id
+      value: $capability_context.last_job_id
+response_context:
+  - value: $target_result.line_items
+    description: Classified invoice line items
+  - value: $target_result.pagination
+    description: Result page navigation metadata

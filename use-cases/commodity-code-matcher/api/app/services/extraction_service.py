@@ -43,6 +43,16 @@ API_EXPORT_COLUMNS = [
     "LLM_Reason_Desc",
     "Block_By_LLM_Desc",
 ]
+_LINE_ITEM_VALUE_COLUMNS = (
+    "description",
+    "netAmount",
+    "quantity",
+    "unitPrice",
+    "materialNumber",
+    "itemNumber",
+    "usageSummary",
+)
+_NOT_DETECTED = "Not detected"
 
 
 def _normalize_label(value: str) -> str:
@@ -170,6 +180,122 @@ def _annotate_vendor(headers_df: pd.DataFrame, line_items_df: pd.DataFrame) -> N
 
     line_items_df["Vendor"] = line_vendor_series.apply(_coerce_text_value)
 
+
+def _normalize_scalar(value: object) -> object | None:
+    """Return a JSON-safe scalar or ``None`` for a missing pandas value.
+
+    Args:
+        value: Scalar extracted from an enriched pandas row.
+
+    Returns:
+        A native Python scalar, or ``None`` when the value is missing.
+    """
+
+    if value is None:
+        return None
+    try:
+        if bool(pd.isna(value)):
+            return None
+    except (TypeError, ValueError):
+        pass
+    if hasattr(value, "item"):
+        return value.item()
+    return value
+
+
+def _detected_value(value: object) -> object:
+    """Preserve a detected scalar and label a missing value for Joule.
+
+    Args:
+        value: Scalar value from an enriched matcher row.
+
+    Returns:
+        The native scalar or the configured missing-value label.
+    """
+
+    normalized = _normalize_scalar(value)
+    if normalized is None or (isinstance(normalized, str) and not normalized.strip()):
+        return _NOT_DETECTED
+    return normalized
+
+
+def _detected_text(value: object) -> str:
+    """Return detected text without replacing meaningful fallback labels.
+
+    Args:
+        value: Text-like scalar from an enriched matcher row.
+
+    Returns:
+        Detected text, retained fallback text, or the missing-value label.
+    """
+
+    normalized = _detected_value(value)
+    return normalized if isinstance(normalized, str) else str(normalized)
+
+
+def _confidence_percentage(value: object) -> str:
+    """Format a zero-to-one confidence score as a whole percentage string.
+
+    Args:
+        value: Numeric matcher confidence or an existing text label.
+
+    Returns:
+        Whole percentage text, retained text, or the missing-value label.
+    """
+
+    normalized = _normalize_scalar(value)
+    if normalized is None or (isinstance(normalized, str) and not normalized.strip()):
+        return _NOT_DETECTED
+    if isinstance(normalized, str):
+        return normalized
+    return f"{float(normalized) * 100:.0f}%"
+
+
+def _genuine_line_items(line_items_df: pd.DataFrame) -> pd.DataFrame:
+    """Remove extractor placeholder rows that contain no genuine item values.
+
+    Args:
+        line_items_df: Raw line-item rows returned by document extraction.
+
+    Returns:
+        A copy containing only rows with at least one detected item value.
+    """
+
+    if line_items_df is None or line_items_df.empty:
+        return pd.DataFrame()
+    available = [column for column in _LINE_ITEM_VALUE_COLUMNS if column in line_items_df.columns]
+    if not available:
+        return line_items_df.iloc[0:0].copy()
+    genuine_mask = line_items_df[available].apply(
+        lambda row: any(_normalize_scalar(value) not in (None, "") for value in row),
+        axis=1,
+    )
+    return line_items_df.loc[genuine_mask].reset_index(drop=True)
+
+
+def _serialize_joule_line_items(line_items_df: pd.DataFrame) -> list[dict[str, object]]:
+    """Serialize every enriched row into the exact seven-field Joule contract.
+
+    Args:
+        line_items_df: Commodity-code matcher output containing enriched rows.
+
+    Returns:
+        JSON-safe dictionaries for deterministic Joule rendering.
+    """
+
+    return [
+        {
+            "description": _detected_text(row.get("description")),
+            "net_amount": _detected_value(row.get("netAmount")),
+            "quantity": _detected_value(row.get("quantity")),
+            "unit_price": _detected_value(row.get("unitPrice")),
+            "ai_suggested_commodity_code": _detected_text(row.get("LLM_Suggestion_Desc")),
+            "ai_confidence_score": _confidence_percentage(row.get("LLM_Confidence_Desc")),
+            "ai_reasoning": _detected_text(row.get("LLM_Reason_Desc")),
+        }
+        for _, row in line_items_df.iterrows()
+    ]
+
 @dataclass(slots=True)
 class ExtractionConfig:
     llm_verify: bool = False
@@ -272,8 +398,9 @@ def _run_embedding_pipeline(
         add_placeholders=config.add_placeholder_columns
     )
 
+    line_items_df = _genuine_line_items(line_items_df)
     if line_items_df.empty:
-        raise RuntimeError("No line items were extracted from the provided PDFs.")
+        raise RuntimeError("No genuine line items were extracted from the provided PDFs.")
 
     _annotate_vendor(headers_df, line_items_df)
 
@@ -341,6 +468,7 @@ def run_extraction_for_paths(
         "reference_data_version": result.reference_data_version,
         "headers_preview": _preview(result.headers_df),
         "line_items_preview": _preview(result.line_items_df),
+        "joule_line_items": _serialize_joule_line_items(result.line_items_df),
         "errors": result.errors,
         "warnings": [],
     }
