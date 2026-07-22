@@ -1,0 +1,586 @@
+@import "../purchase-requisition/purchase-requisition.css";
+
+.review-page {
+  max-width: 1440px;
+  font-size: 0.875rem;
+}
+
+.review-header {
+  align-items: end;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.review-header ui5-title[level="H2"] {
+  font-size: 1.25rem;
+}
+
+.section-heading ui5-title[level="H4"],
+.review-section > ui5-title[level="H4"] {
+  font-size: 1rem;
+}
+
+.review-header > div {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.review-header ui5-text,
+.section-heading ui5-text {
+  color: var(--sapContent_LabelColor);
+}
+
+.document-picker {
+  color: var(--sapContent_LabelColor);
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 600;
+  gap: 0.25rem;
+  min-width: 260px;
+}
+
+.document-picker ui5-select,
+.sap-field-grid ui5-input,
+.sap-field-grid ui5-date-picker {
+  width: 100%;
+}
+
+#review-message {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.review-loading {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.review-workspace {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.source-column,
+.pr-column {
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_ContentBorderColor);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.75rem;
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.section-heading > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.simple-badge {
+  background: var(--sapInformativeBackground);
+  border-radius: 1rem;
+  color: var(--sapInformativeTextColor);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+}
+
+.review-pdf {
+  background: var(--sapBackgroundColor);
+  border: 1px solid var(--sapList_BorderColor);
+  box-sizing: border-box;
+  height: clamp(320px, 46vh, 520px);
+  min-height: 320px;
+  width: 100%;
+}
+
+.attention-banner {
+  align-items: flex-start;
+  background: var(--sapWarningBackground);
+  border-left: 0.25rem solid var(--sapCriticalColor);
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.attention-banner[data-state="ready"] {
+  background: var(--sapSuccessBackground);
+  border-left-color: var(--sapPositiveColor);
+}
+
+.attention-banner > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.attention-banner span {
+  color: var(--sapContent_LabelColor);
+}
+
+.review-section {
+  border-bottom: 1px solid var(--sapList_BorderColor);
+  padding: 0.35rem 0 0.75rem;
+}
+
+.review-section + .review-section {
+  padding-top: 0.75rem;
+}
+
+.fact-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: 0.55rem;
+}
+
+.fact {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.fact span {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.78rem;
+}
+
+.fact strong {
+  overflow-wrap: anywhere;
+}
+
+.line-table-wrap {
+  margin-top: 0.55rem;
+  overflow-x: auto;
+}
+
+.line-table {
+  border-collapse: collapse;
+  min-width: 560px;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.line-table th:first-child,
+.line-table td:first-child {
+  width: 48%;
+}
+
+.line-table th,
+.line-table td {
+  border-bottom: 1px solid var(--sapList_BorderColor);
+  font-size: 0.8rem;
+  padding: 0.45rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.line-table th:not(:first-child),
+.line-table td:not(:first-child) {
+  white-space: nowrap;
+}
+
+.line-table th {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.compact-heading {
+  align-items: flex-start;
+}
+
+.master-data-loading {
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+  min-height: 3.5rem;
+}
+
+.match-status {
+  background: var(--sapInformativeBackground);
+  border-radius: 1rem;
+  color: var(--sapInformativeTextColor);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  white-space: nowrap;
+}
+
+.match-status[data-state="matched"] {
+  background: var(--sapSuccessBackground);
+  color: var(--sapPositiveTextColor);
+}
+
+.match-status[data-state="review"] {
+  background: var(--sapWarningBackground);
+  color: var(--sapCriticalTextColor);
+}
+
+.match-status[data-state="unavailable"] {
+  background: var(--sapErrorBackground);
+  color: var(--sapNegativeTextColor);
+}
+
+.master-data-heading-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.partner-match-row {
+  align-items: end;
+  background: var(--sapObjectHeader_Background);
+  border: 1px solid var(--sapList_BorderColor);
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(260px, 1.2fr);
+  margin-top: 0.55rem;
+  padding: 0.65rem;
+}
+
+.partner-match-row > div {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.partner-match-row ui5-select {
+  width: 100%;
+}
+
+.match-label,
+.partner-match-row small,
+.guardrail-note,
+.match-table td small {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.76rem;
+}
+
+.match-table {
+  min-width: 980px;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.match-table th:first-child,
+.match-table td:first-child {
+  width: 38%;
+}
+
+.match-table th:nth-child(2),
+.match-table td:nth-child(2) {
+  width: 47%;
+}
+
+.match-table th:nth-child(3),
+.match-table td:nth-child(3) {
+  width: 15%;
+}
+
+.match-table td:first-child {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.match-table ui5-select {
+  max-width: 100%;
+  width: 100%;
+}
+
+.material-candidate-cell {
+  min-width: 0;
+  vertical-align: top;
+}
+
+.material-proposal-action {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.2rem;
+  max-width: 100%;
+}
+
+.material-proposal-action ui5-button {
+  max-width: 100%;
+}
+
+.confidence-value {
+  font-weight: 600;
+}
+
+.confidence-value[data-confidence="High"] {
+  color: var(--sapPositiveTextColor);
+}
+
+.confidence-value[data-confidence="Medium"] {
+  color: var(--sapCriticalTextColor);
+}
+
+.confidence-value[data-confidence="Low"] {
+  color: var(--sapNegativeTextColor);
+}
+
+.match-decision {
+  color: var(--sapContent_LabelColor);
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.match-table td:last-child {
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.match-review-row {
+  background: var(--sapWarningBackground);
+}
+
+.proposal-status {
+  color: var(--sapContent_LabelColor);
+  display: block;
+  line-height: 1.3;
+}
+
+.proposal-status[data-state="draft"] {
+  border-left: 0.18rem solid var(--sapInformativeColor);
+  color: var(--sapInformativeTextColor);
+  margin-top: 0.2rem;
+  padding-left: 0.45rem;
+}
+
+.intelligence-facts {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.intelligence-fact {
+  background: var(--sapObjectHeader_Background);
+  border: 1px solid var(--sapList_BorderColor);
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.6rem;
+}
+
+.intelligence-fact span,
+.intelligence-fact small,
+.supplier-onboarding span,
+.supplier-onboarding small {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.76rem;
+}
+
+.intelligence-fact strong,
+.intelligence-fact small {
+  overflow-wrap: anywhere;
+}
+
+.intelligence-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.55rem;
+}
+
+.purchasing-history {
+  background: var(--sapGroup_ContentBackground);
+  border-top: 1px solid var(--sapList_BorderColor);
+  margin-top: 0.55rem;
+  padding-top: 0.65rem;
+}
+
+.purchasing-history ui5-title[level="H5"] {
+  font-size: 0.9rem;
+}
+
+.purchasing-history ui5-title[level="H5"]:not(:first-child) {
+  display: block;
+  margin-top: 0.8rem;
+}
+
+.history-table td:first-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.history-table td:first-child small {
+  color: var(--sapContent_LabelColor);
+}
+
+.pr-history-table th:first-child,
+.pr-history-table td:first-child {
+  width: 40%;
+}
+
+.supplier-onboarding {
+  align-items: center;
+  background: var(--sapWarningBackground);
+  border-left: 0.25rem solid var(--sapCriticalColor);
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  margin-top: 0.65rem;
+  padding: 0.65rem;
+}
+
+.supplier-onboarding > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.confidence-explanation,
+.guardrail-note {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.76rem;
+  margin: 0.75rem 0 0;
+}
+
+.confidence-explanation {
+  margin-bottom: 0;
+}
+
+.sap-field-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sap-field-grid .sap-field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.sap-field-grid .sap-field[data-defaulted="true"] {
+  border-left: 0.2rem solid var(--sapCriticalColor);
+  padding-left: 0.55rem;
+}
+
+.sap-field-grid .sap-field[data-match-state="matched"] {
+  border-left: 0.2rem solid var(--sapPositiveColor);
+  padding-left: 0.55rem;
+}
+
+.sap-field-grid .sap-field[data-match-state="matched"] small {
+  color: var(--sapPositiveTextColor);
+}
+
+.sap-field-grid small {
+  color: var(--sapCriticalTextColor);
+  font-weight: 400;
+  min-height: 1rem;
+}
+
+.review-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding-top: 0.75rem;
+}
+
+.review-success {
+  align-items: center;
+  display: grid;
+  gap: 0.8rem;
+  justify-items: center;
+  margin: 4rem auto;
+  max-width: 620px;
+  text-align: center;
+}
+
+.success-symbol {
+  align-items: center;
+  background: var(--sapSuccessBackground);
+  border-radius: 50%;
+  color: var(--sapPositiveTextColor);
+  display: flex;
+  height: 4rem;
+  justify-content: center;
+  width: 4rem;
+}
+
+.success-symbol ui5-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.created-pr-number {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.75rem 0;
+}
+
+.created-pr-number span {
+  color: var(--sapContent_LabelColor);
+}
+
+.created-pr-number strong {
+  font-size: 1.65rem;
+}
+
+@media (max-width: 1050px) {
+  .fact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sap-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .intelligence-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .review-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .document-picker {
+    min-width: 0;
+  }
+
+  .fact-grid,
+  .sap-field-grid,
+  .intelligence-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .review-pdf {
+    height: 420px;
+  }
+
+  .partner-match-row {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .supplier-onboarding {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .review-actions {
+    flex-direction: column-reverse;
+  }
+
+  .review-actions ui5-button {
+    width: 100%;
+  }
+}

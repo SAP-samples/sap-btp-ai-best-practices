@@ -1,0 +1,192 @@
+.simple-page {
+  box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 1180px;
+  width: 100%;
+}
+
+.simple-header {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 auto 1.25rem;
+  max-width: 760px;
+  text-align: center;
+}
+
+.simple-header ui5-text,
+.step-copy ui5-text,
+.progress-note {
+  color: var(--sapContent_LabelColor);
+}
+
+#one-click-message {
+  display: block;
+  margin: 0 auto 1rem;
+  max-width: 860px;
+}
+
+.quote-wizard {
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_ContentBorderColor);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  display: block;
+  height: min(660px, calc(100vh - 220px));
+  margin: 0 auto;
+  max-width: 900px;
+  min-height: 480px;
+  overflow: hidden;
+}
+
+.wizard-step-content {
+  box-sizing: border-box;
+  display: grid;
+  gap: 1.25rem;
+  margin: 0 auto;
+  max-width: 720px;
+  min-height: 320px;
+  padding: 1.5rem;
+  width: 100%;
+}
+
+.step-copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.file-choice {
+  align-items: center;
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapField_BorderColor);
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 92px;
+  padding: 1rem;
+}
+
+.file-choice > ui5-icon {
+  color: var(--sapContent_IconColor);
+  height: 2rem;
+  width: 2rem;
+}
+
+.file-choice-copy {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.file-choice-copy strong,
+.file-choice-copy span {
+  overflow-wrap: anywhere;
+}
+
+.file-choice-copy span {
+  color: var(--sapContent_LabelColor);
+}
+
+.wizard-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.validation-step {
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.centered-copy {
+  justify-items: center;
+}
+
+#one-click-progress {
+  max-width: 560px;
+  width: 100%;
+}
+
+.completion-step {
+  align-content: center;
+}
+
+.result-state {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.result-icon {
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  height: 3.5rem;
+  justify-content: center;
+  width: 3.5rem;
+}
+
+.success-state .result-icon {
+  background: var(--sapSuccessBackground);
+  color: var(--sapPositiveTextColor);
+}
+
+.review-state .result-icon {
+  background: var(--sapWarningBackground);
+  color: var(--sapCriticalTextColor);
+}
+
+.result-icon ui5-icon {
+  height: 1.65rem;
+  width: 1.65rem;
+}
+
+.success-reference {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.5rem 0;
+}
+
+.success-reference span {
+  color: var(--sapContent_LabelColor);
+}
+
+.success-reference strong {
+  font-size: 1.4rem;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .simple-header {
+    text-align: left;
+  }
+
+  .quote-wizard {
+    height: calc(100vh - 185px);
+    min-height: 500px;
+  }
+
+  .wizard-step-content {
+    padding: 1rem 0.25rem;
+  }
+
+  .file-choice {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .file-choice ui5-file-uploader {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .file-choice ui5-button,
+  .wizard-actions,
+  .wizard-actions ui5-button {
+    width: 100%;
+  }
+}

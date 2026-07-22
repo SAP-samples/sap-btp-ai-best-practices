@@ -1,0 +1,10 @@
+flowchart LR
+    USER["Business user"] --> UI["SAP UI5 Web Components UI"]
+    UI -->|"HTTPS + API key"| API["FastAPI backend"]
+    API --> STORE["Local or CF ephemeral workspace<br/>PDFs and run artifacts"]
+    API --> PIPE["Quote extraction pipeline"]
+    PIPE --> HUB["SAP BTP Generative AI Hub<br/>required"]
+    PIPE -.->|"optional"| DOCAI["SAP Document AI"]
+    API -.->|"optional"| DEST["SAP BTP Destination + Connectivity"]
+    DEST -.-> S4["SAP S/4HANA<br/>master data and PR API"]
+    PIPE --> OBS["Token usage and application logs"]

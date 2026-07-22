@@ -1,0 +1,9 @@
+app_prefix: quote-to-pr-demo
+api_route: quote-to-pr-demo-api.cfapps.<region>.hana.ondemand.com
+ui_route: quote-to-pr-demo.cfapps.<region>.hana.ondemand.com
+api_key: replace-with-a-long-random-value
+aicore_auth_url: https://<subaccount>.authentication.<region>.hana.ondemand.com
+aicore_client_id: <client-id>
+aicore_client_secret: <client-secret>
+aicore_base_url: https://api.ai.<region>.prod.hana.ondemand.com
+aicore_resource_group: default

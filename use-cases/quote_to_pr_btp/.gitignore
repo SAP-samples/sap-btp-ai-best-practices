@@ -1,0 +1,49 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+vars.yml
+vars.yaml
+cf-vars.yml
+cf-vars.yaml
+api/dox_client/schemas/service_key.json
+
+# Runtime data and uploaded business documents
+*.pdf
+*.PDF
+api/app/data/purchase_requisition/data/*
+!api/app/data/purchase_requisition/data/.gitkeep
+api/app/data/purchase_requisition/runs/
+api/app/data/purchase_requisition/material_proposals/
+api/app/data/purchase_requisition/back_office_referrals/
+api/app/data/purchase_requisition/_runner_work/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.test_tmp/
+pytest-cache-files-*/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node and frontend build output
+node_modules/
+ui/dist/
+npm-debug.log*
+
+# Logs, local tools and editor files
+*.log
+.cf/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
