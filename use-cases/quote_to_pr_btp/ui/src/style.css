@@ -1,0 +1,44 @@
+/* Optional: include SAP 72 Light (300). Place the font at ui/public/fonts/72-Light.woff2 */
+@font-face {
+  font-family: "72";
+  src: url("/fonts/72-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+  background: var(--sapBackgroundColor, #f5f6f7);
+  color: var(--sapTextColor, #1d2d3e);
+  font-family: "72", Arial, Helvetica, sans-serif;
+}
+
+.content {
+  box-sizing: border-box;
+  min-height: calc(100vh - 3rem);
+  padding: 1.5rem;
+}
+
+#sn1[hidden] {
+  display: none !important;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}
+
+@media (max-width: 700px) {
+  .content {
+    padding: 1rem;
+  }
+}

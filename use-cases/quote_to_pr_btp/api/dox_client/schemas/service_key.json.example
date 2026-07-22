@@ -1,0 +1,9 @@
+{
+  "uaa": {
+    "url": "https://your-subdomain.authentication.eu10.hana.ondemand.com",
+    "clientid": "your-client-id-here",
+    "clientsecret": "your-client-secret-here"
+  },
+  "url": "https://aiservices-dox.cfapps.eu10.hana.ondemand.com",
+  "swagger": "/document-information-extraction/v1/"
+}
