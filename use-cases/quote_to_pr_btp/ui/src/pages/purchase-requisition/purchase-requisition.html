@@ -1,0 +1,72 @@
+<div class="simple-page one-click-page">
+  <header class="simple-header">
+    <ui5-title level="H2">Create a purchase requisition</ui5-title>
+    <ui5-text>Upload a supplier quote. The app validates it and either creates the PR or asks for the minimum required input.</ui5-text>
+  </header>
+
+  <ui5-message-strip id="one-click-message" design="Information" hide-close-button hidden></ui5-message-strip>
+
+  <ui5-wizard id="quote-wizard" content-layout="SingleStep" class="quote-wizard">
+    <ui5-wizard-step id="wizard-upload" title-text="Upload quote" icon="upload-to-cloud" selected>
+      <section class="wizard-step-content upload-step">
+        <div class="step-copy">
+          <ui5-title level="H3">Choose a supplier quote</ui5-title>
+          <ui5-text>PDF files only. One quote is processed at a time.</ui5-text>
+        </div>
+
+        <div class="file-choice">
+          <ui5-icon name="document-text"></ui5-icon>
+          <div class="file-choice-copy">
+            <strong id="one-click-file-title">No PDF selected</strong>
+            <span id="one-click-file-note">Choose the quote you want to convert into a PR.</span>
+          </div>
+          <ui5-file-uploader id="one-click-file" accept=".pdf,application/pdf" hide-input accessible-name="Choose supplier quote PDF">
+            <ui5-button icon="upload">Choose PDF</ui5-button>
+          </ui5-file-uploader>
+        </div>
+
+        <ui5-message-strip design="Information" hide-close-button>
+          Automatic creation happens only when required values pass validation. Otherwise, only the fields needing confirmation are shown.
+        </ui5-message-strip>
+
+        <div class="wizard-actions">
+          <ui5-button id="one-click-run" design="Emphasized" icon="activate" disabled>Extract and Validate</ui5-button>
+        </div>
+      </section>
+    </ui5-wizard-step>
+
+    <ui5-wizard-step id="wizard-validate" title-text="Validate" icon="inspection" disabled>
+      <section class="wizard-step-content validation-step" aria-live="polite">
+        <ui5-busy-indicator id="one-click-busy" active size="M"></ui5-busy-indicator>
+        <div class="step-copy centered-copy">
+          <ui5-title id="one-click-progress-title" level="H3">Preparing your quote</ui5-title>
+          <ui5-text id="one-click-progress-text">Uploading the PDF securely.</ui5-text>
+        </div>
+        <ui5-progress-indicator id="one-click-progress" value="8" display-value="Starting" accessible-name="Quote processing progress"></ui5-progress-indicator>
+        <ui5-text class="progress-note">The page updates automatically while the document is processed.</ui5-text>
+      </section>
+    </ui5-wizard-step>
+
+    <ui5-wizard-step id="wizard-complete" title-text="Complete" icon="message-success" disabled>
+      <section class="wizard-step-content completion-step" aria-live="polite">
+        <div id="one-click-success" class="result-state success-state" hidden>
+          <div class="result-icon"><ui5-icon name="message-success"></ui5-icon></div>
+          <ui5-title level="H3">Purchase requisition created</ui5-title>
+          <ui5-text id="one-click-success-text">The quote was validated and created successfully in S/4HANA.</ui5-text>
+          <div class="success-reference">
+            <span>PR number</span>
+            <strong id="one-click-pr-number">-</strong>
+          </div>
+          <ui5-button id="one-click-another" icon="add">Process Another Quote</ui5-button>
+        </div>
+
+        <div id="one-click-review" class="result-state review-state" hidden>
+          <div class="result-icon"><ui5-icon name="alert"></ui5-icon></div>
+          <ui5-title level="H3">Your input is needed</ui5-title>
+          <ui5-text id="one-click-review-text">A required value could not be confirmed from the quote.</ui5-text>
+          <ui5-button id="one-click-open-review" design="Emphasized" icon="inspection">Review Required Fields</ui5-button>
+        </div>
+      </section>
+    </ui5-wizard-step>
+  </ui5-wizard>
+</div>

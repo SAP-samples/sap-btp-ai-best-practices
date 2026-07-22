@@ -1,0 +1,14 @@
+.env
+.env.*
+.venv/
+venv/
+**/__pycache__/
+**/*.pyc
+*.log
+*.pdf
+*.PDF
+dox_client/schemas/service_key.json
+app/data/purchase_requisition/data/*
+app/data/purchase_requisition/runs/
+app/data/purchase_requisition/material_proposals/
+app/data/purchase_requisition/back_office_referrals/

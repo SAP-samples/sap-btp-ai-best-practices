@@ -1,0 +1,34 @@
+---
+applications:
+  - name: ((app_prefix))-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 2G
+    routes:
+      - route: ((api_route))
+    env:
+      APP_ENV: production
+      ALLOWED_ORIGIN: https://((ui_route))
+      API_KEY: ((api_key))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      PR_WORKSPACE_ROOT: ./app/data/purchase_requisition
+      DOCAI_ENABLED: false
+      S4_INTEGRATION_ENABLED: false
+
+  - name: ((app_prefix))-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: ((ui_route))
+    env:
+      VITE_API_BASE_URL: https://((api_route))
+      VITE_LOCAL_API_BASE_URL: http://127.0.0.1:8056
+      VITE_API_KEY: ((api_key))

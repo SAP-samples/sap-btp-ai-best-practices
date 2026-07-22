@@ -1,0 +1,34 @@
+{
+    "name":  "quote-to-pr-btp-ai-ui",
+    "private":  true,
+    "version":  "0.0.0",
+    "type":  "module",
+    "scripts":  {
+                    "dev":  "vite",
+                    "build":  "vite build",
+                    "preview":  "vite preview",
+                    "postinstall":  "vite build",
+                    "start":  "vite preview --host 0.0.0.0",
+                    "create-page":  "node scripts/create-page.js"
+                },
+    "dependencies":  {
+                         "@ui5/webcomponents":  "2.23.1",
+                         "@ui5/webcomponents-ai":  "2.23.1",
+                         "@ui5/webcomponents-fiori":  "2.23.1",
+                         "@ui5/webcomponents-icons":  "2.23.1",
+                         "@ui5/webcomponents-icons-business-suite":  "2.23.1",
+                         "@ui5/webcomponents-icons-tnt":  "2.23.1",
+                         "chart.js":  "4.5.1",
+                         "marked":  "12.0.2",
+                         "dayjs":  "1.11.21",
+                         "page":  "1.3.7",
+                         "vite":  "7.3.5"
+                     },
+    "overrides":  {
+                       "esbuild":  "0.28.1"
+                   },
+    "engines":  {
+                    "node":  "22.x",
+                    "npm":  "10.x"
+                }
+}

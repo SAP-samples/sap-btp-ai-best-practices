@@ -1,0 +1,220 @@
+<div class="simple-page review-page">
+  <header class="review-header">
+    <div>
+      <ui5-title level="H2">Review and create</ui5-title>
+      <ui5-text>Compare the source quote with the proposed purchase requisition. Fields that need attention are highlighted.</ui5-text>
+    </div>
+    <div class="document-picker">
+      <ui5-label for="review-document">Document</ui5-label>
+      <ui5-select id="review-document" accessible-name="Document to review"></ui5-select>
+    </div>
+  </header>
+
+  <ui5-message-strip id="review-message" design="Information" hide-close-button hidden></ui5-message-strip>
+
+  <section id="review-loading" class="review-loading" aria-live="polite">
+    <ui5-busy-indicator active size="M"></ui5-busy-indicator>
+    <ui5-text>Loading the saved extraction and source document.</ui5-text>
+  </section>
+
+  <main id="review-workspace" class="review-workspace" hidden>
+    <section class="source-column" aria-label="Source supplier quote">
+      <div class="section-heading">
+        <div>
+          <ui5-title level="H4">Source quote</ui5-title>
+          <ui5-text id="review-source-name">-</ui5-text>
+        </div>
+        <span id="review-document-type" class="simple-badge">PDF</span>
+      </div>
+      <iframe id="review-pdf" class="review-pdf" title="Supplier quote PDF preview"></iframe>
+    </section>
+
+    <section class="pr-column" aria-label="Purchase requisition values">
+      <div id="review-attention" class="attention-banner">
+        <ui5-icon name="alert"></ui5-icon>
+        <div>
+          <strong id="review-attention-title">Checking required values</strong>
+          <span id="review-attention-text">The app is preparing the proposed PR.</span>
+        </div>
+      </div>
+
+      <section class="review-section">
+        <ui5-title level="H4">Quote details</ui5-title>
+        <div id="review-quote-fields" class="fact-grid"></div>
+      </section>
+
+      <section class="review-section">
+        <ui5-title level="H4">Line items</ui5-title>
+        <div class="line-table-wrap">
+          <table class="line-table">
+            <thead>
+              <tr><th>Description</th><th>Qty</th><th>UoM</th><th>Unit price</th><th>Total</th></tr>
+            </thead>
+            <tbody id="review-line-items"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="review-section intelligence-section" aria-label="Vendor and purchasing intelligence">
+        <div class="section-heading compact-heading">
+          <div>
+            <ui5-title level="H4">Vendor and purchasing intelligence</ui5-title>
+            <ui5-text>See supplier status, similar purchases, and earlier requisitions before you create this PR.</ui5-text>
+          </div>
+          <span id="intelligence-source" class="match-status" data-state="loading">Loading</span>
+        </div>
+        <div id="intelligence-loading" class="master-data-loading">
+          <ui5-busy-indicator active size="S"></ui5-busy-indicator>
+          <ui5-text>Checking purchasing context.</ui5-text>
+        </div>
+        <div id="intelligence-content" hidden>
+          <div id="intelligence-facts" class="intelligence-facts"></div>
+          <div class="intelligence-actions">
+            <ui5-button id="toggle-purchasing-history" icon="inspect">View purchasing history</ui5-button>
+          </div>
+          <div id="purchasing-history" class="purchasing-history" hidden>
+            <ui5-title level="H5">Historical purchases for similar items</ui5-title>
+            <div class="line-table-wrap">
+              <table class="line-table history-table">
+                <thead><tr><th>Similar item</th><th>PO</th><th>Net unit price</th><th>Quantity</th><th>Created</th></tr></thead>
+                <tbody id="purchase-history-rows"></tbody>
+              </table>
+            </div>
+            <ui5-title level="H5">Previous purchase requisitions for this supplier</ui5-title>
+            <div class="line-table-wrap">
+              <table class="line-table pr-history-table">
+                <thead><tr><th>Purchase requisition</th><th>Status</th><th>Created</th></tr></thead>
+                <tbody id="pr-history-rows"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="supplier-onboarding" class="supplier-onboarding" hidden>
+            <ui5-icon name="alert"></ui5-icon>
+            <div>
+              <strong>New supplier onboarding required</strong>
+              <span>No reliable supplier was found. The PR may continue without a fixed supplier, but procurement back office must validate and onboard the vendor.</span>
+              <small id="back-office-status"></small>
+            </div>
+            <ui5-button id="send-back-office" design="Emphasized" icon="forward">Send to back office</ui5-button>
+          </div>
+          <p id="intelligence-notice" class="guardrail-note"></p>
+        </div>
+      </section>
+
+      <section class="review-section master-data-section" aria-label="Suggested SAP master-data matches">
+        <div class="section-heading compact-heading">
+          <div>
+            <ui5-title level="H4">Suggested SAP matches</ui5-title>
+            <ui5-text>Values not printed on the quote are compared with S/4HANA master data.</ui5-text>
+          </div>
+          <div class="master-data-heading-actions">
+            <span id="master-data-status" class="match-status" data-state="loading">Searching</span>
+            <ui5-button
+              id="refresh-master-data"
+              icon="refresh"
+              tooltip="Search again after supplier or material data changes in S/4HANA"
+              accessible-name="Search S/4HANA again"
+            >Search again</ui5-button>
+          </div>
+        </div>
+        <div id="master-data-loading" class="master-data-loading">
+          <ui5-busy-indicator active size="S"></ui5-busy-indicator>
+          <ui5-text>Finding supplier and material candidates.</ui5-text>
+        </div>
+        <div id="master-data-content" hidden>
+          <div class="partner-match-row">
+            <div>
+              <span class="match-label">Business partner / supplier</span>
+              <strong id="partner-source-name">-</strong>
+              <small id="partner-match-note">-</small>
+            </div>
+            <ui5-select id="review-partner-match" accessible-name="Suggested S/4 supplier"></ui5-select>
+          </div>
+          <div class="line-table-wrap">
+            <table class="line-table match-table">
+              <thead>
+                <tr><th>Quote item</th><th>Suggested SAP material</th><th>Match</th></tr>
+              </thead>
+              <tbody id="material-match-rows"></tbody>
+            </table>
+          </div>
+          <p class="confidence-explanation">Confidence shows how closely the quote item matches the suggested SAP material.</p>
+          <p id="master-data-guardrail" class="guardrail-note"></p>
+        </div>
+      </section>
+
+      <section class="review-section sap-fields-section">
+        <div class="section-heading compact-heading">
+          <div>
+            <ui5-title level="H4">Required SAP values</ui5-title>
+            <ui5-text>Confirm the highlighted defaults before creating the PR.</ui5-text>
+          </div>
+        </div>
+        <div class="sap-field-grid">
+          <div class="sap-field">
+            <ui5-label for="review-material">PR material</ui5-label>
+            <ui5-input id="review-material"></ui5-input>
+            <small data-note-for="material"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-plant">Plant</ui5-label>
+            <ui5-input id="review-plant"></ui5-input>
+            <small data-note-for="plant"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-purchasing-group">Purchasing group</ui5-label>
+            <ui5-input id="review-purchasing-group"></ui5-input>
+            <small data-note-for="purchasing_group"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-company-code">Company code</ui5-label>
+            <ui5-input id="review-company-code"></ui5-input>
+            <small data-note-for="company_code"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-material-group">Material group</ui5-label>
+            <ui5-input id="review-material-group"></ui5-input>
+            <small data-note-for="material_group"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-supplier">Supplier</ui5-label>
+            <ui5-input id="review-supplier"></ui5-input>
+            <small data-note-for="supplier"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-base-unit">Base unit</ui5-label>
+            <ui5-input id="review-base-unit"></ui5-input>
+            <small data-note-for="base_unit"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-unit-price">Unit price</ui5-label>
+            <ui5-input id="review-unit-price" inputmode="decimal"></ui5-input>
+            <small data-note-for="unit_price"></small>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-currency">Currency</ui5-label>
+            <ui5-input id="review-currency"></ui5-input>
+          </div>
+          <div class="sap-field">
+            <ui5-label for="review-delivery-date">Delivery date</ui5-label>
+            <ui5-date-picker id="review-delivery-date" format-pattern="yyyy-MM-dd" placeholder="YYYY-MM-DD"></ui5-date-picker>
+            <small data-note-for="delivery_date"></small>
+          </div>
+        </div>
+      </section>
+
+      <div class="review-actions">
+        <ui5-button id="review-back" icon="nav-back">Back</ui5-button>
+        <ui5-button id="review-create" design="Emphasized" icon="accept" disabled>Create PR</ui5-button>
+      </div>
+    </section>
+  </main>
+
+  <section id="review-success" class="review-success" hidden aria-live="polite">
+    <div class="success-symbol"><ui5-icon name="message-success"></ui5-icon></div>
+    <ui5-title level="H2">Purchase requisition created</ui5-title>
+    <ui5-text>The reviewed values were accepted by S/4HANA.</ui5-text>
+    <div class="created-pr-number"><span>PR number</span><strong id="review-pr-number">-</strong></div>
+    <ui5-button id="review-new-quote" design="Emphasized" icon="add">Process Another Quote</ui5-button>
+  </section>
+</div>
