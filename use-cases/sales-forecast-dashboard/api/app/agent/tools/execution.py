@@ -1607,8 +1607,41 @@ def analyze_sensitivity(
         # All modifiable features
         features_to_test = get_modifiable_features(channel)
 
-    # Filter to features that exist in baseline
+    # Apply store scope consistently to both features and the cached baseline
+    # prediction. The input uses profit_center_nbr as the canonical store key.
     df = baseline_scenario.df
+    baseline_pred = session.get_prediction(baseline_name)
+    prediction_df = baseline_pred.predictions_df
+
+    if store_id is not None:
+        store_column = "profit_center_nbr"
+        if store_column not in df.columns:
+            return {
+                "error": f"Baseline scenario '{baseline_name}' is missing "
+                f"'{store_column}'; cannot filter store {store_id}."
+            }
+
+        df = df.loc[df[store_column] == store_id]
+        if df.empty:
+            return {
+                "error": f"Store {store_id} not found in baseline scenario "
+                f"'{baseline_name}'."
+            }
+
+        if store_column not in prediction_df.columns:
+            return {
+                "error": f"Baseline predictions for '{baseline_name}' are missing "
+                f"'{store_column}'; cannot filter store {store_id}."
+            }
+
+        prediction_df = prediction_df.loc[prediction_df[store_column] == store_id]
+        if prediction_df.empty:
+            return {
+                "error": f"No baseline predictions found for store {store_id} "
+                f"in '{baseline_name}'."
+            }
+
+    # Filter to features that exist in the scoped baseline.
     features_to_test = [f for f in features_to_test if f in df.columns]
 
     if not features_to_test:
@@ -1617,8 +1650,7 @@ def analyze_sensitivity(
         }
 
     # Get baseline sales
-    baseline_pred = session.get_prediction(baseline_name)
-    baseline_sales = baseline_pred.predictions_df["pred_sales_p50"].sum()
+    baseline_sales = prediction_df["pred_sales_p50"].sum()
 
     if baseline_sales == 0:
         return {"error": "Baseline sales is zero. Cannot compute elasticity."}

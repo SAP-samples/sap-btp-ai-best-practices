@@ -66,8 +66,9 @@ def _normalize_model_b_columns(df: pd.DataFrame) -> pd.DataFrame:
     # First lowercase all columns (existing behavior)
     df.columns = [col.lower() for col in df.columns]
 
-    # Then apply specific mappings for TitleCase columns
-    df = df.rename(columns=MODEL_B_COLUMN_MAPPING)
+    # Rename in place so a large MODEL_B result does not allocate a second
+    # DataFrame while both copies are temporarily resident.
+    df.rename(columns=MODEL_B_COLUMN_MAPPING, inplace=True)
 
     return df
 
@@ -236,20 +237,50 @@ def close_connection() -> None:
 # Generic Query Functions
 # =============================================================================
 
-def query_to_dataframe(query: str) -> pd.DataFrame:
+def query_to_dataframe(query: str, label: Optional[str] = None) -> pd.DataFrame:
     """
     Execute SQL query and return results as pandas DataFrame.
 
     Args:
         query: SQL query string
+        label: Optional safe label describing the query scope for memory logs.
 
     Returns:
         DataFrame with query results
     """
     cc = get_hana_connection()
     hdf = cc.sql(query)
-    label = f"query:{query[:80].replace(chr(10), ' ')}"
-    return collect_dataframe_with_memory_logging(label, hdf.collect)
+    collect_label = label or f"query:{query[:80].replace(chr(10), ' ')}"
+    return collect_dataframe_with_memory_logging(collect_label, hdf.collect)
+
+
+def _describe_query_scope(where_clause: Optional[str]) -> str:
+    """Return a bounded, value-free description of a SQL filter.
+
+    Args:
+        where_clause: SQL predicates used for a HANA table query.
+
+    Returns:
+        Semicolon-delimited names of recognized filters, or ``all`` when the
+        query is unfiltered.
+    """
+    if not where_clause:
+        return "all"
+
+    upper_clause = where_clause.upper()
+    scope_fields = []
+    for column_name, scope_name in (
+        ("PROFIT_CENTER_NBR", "store_ids"),
+        ("CHANNEL", "channel"),
+        ("ORIGIN_WEEK_DATE", "origin_week_date"),
+        ("TARGET_WEEK_DATE", "target_week_date"),
+        ("DMA", "dmas"),
+        ("HORIZON", "max_horizon"),
+    ):
+        if column_name in upper_clause:
+            scope_fields.append(scope_name)
+
+    return ";".join(scope_fields) if scope_fields else "filtered"
 
 
 def load_table(
@@ -280,7 +311,8 @@ def load_table(
         query += f" WHERE {where_clause}"
 
     hdf = cc.sql(query)
-    return collect_dataframe_with_memory_logging(table_name, hdf.collect)
+    label = f"{table_name} scope={_describe_query_scope(where_clause)}"
+    return collect_dataframe_with_memory_logging(label, hdf.collect)
 
 
 # =============================================================================
@@ -557,6 +589,126 @@ def load_ga_dma() -> pd.DataFrame:
 # Filtered Loaders (Server-Side Filtering)
 # =============================================================================
 
+def _build_model_b_conditions(
+    profit_center_nbrs: Optional[List[int]] = None,
+    channel: Optional[str] = None,
+    origin_week_date: Optional[str] = None,
+    min_horizon: Optional[int] = None,
+    max_horizon: Optional[int] = None,
+) -> List[str]:
+    """Build safe SQL predicates shared by scoped MODEL_B queries.
+
+    Args:
+        profit_center_nbrs: Store IDs to include.
+        channel: Sales channel to include.
+        origin_week_date: Exact origin date to include.
+        min_horizon: Minimum forecast horizon to include.
+        max_horizon: Maximum forecast horizon to include.
+
+    Returns:
+        SQL predicate strings containing integer-coerced numeric values and
+        escaped string literals.
+    """
+    conditions: List[str] = []
+
+    if profit_center_nbrs:
+        ids_str = ",".join(str(int(store_id)) for store_id in profit_center_nbrs)
+        conditions.append(f"PROFIT_CENTER_NBR IN ({ids_str})")
+
+    if channel:
+        escaped_channel = channel.upper().replace("'", "''")
+        conditions.append(f"CHANNEL = '{escaped_channel}'")
+
+    if origin_week_date:
+        escaped_origin = origin_week_date.replace("'", "''")
+        conditions.append(f"ORIGIN_WEEK_DATE = '{escaped_origin}'")
+
+    if min_horizon is not None:
+        conditions.append(f"HORIZON >= {int(min_horizon)}")
+
+    if max_horizon is not None:
+        conditions.append(f"HORIZON <= {int(max_horizon)}")
+
+    return conditions
+
+
+def load_model_b_origin_summary(
+    profit_center_nbrs: Optional[List[int]] = None,
+    channel: Optional[str] = None,
+    max_horizon: Optional[int] = None,
+) -> pd.DataFrame:
+    """Load compact MODEL_B origin coverage metadata from HANA.
+
+    The result contains one row per origin instead of collecting every feature
+    row and column. It is used to choose the single origin required for a
+    baseline before the full MODEL_B slice is requested.
+
+    Args:
+        profit_center_nbrs: Optional store IDs defining the forecast scope.
+        channel: Optional channel filter (``B&M`` or ``WEB``).
+        max_horizon: Maximum horizon required by the forecast.
+
+    Returns:
+        DataFrame with ``origin_week_date``, ``max_target_week_date``, and
+        ``horizon_count`` columns.
+    """
+    schema = os.getenv("HANA_SCHEMA", "AICOE")
+    conditions = _build_model_b_conditions(
+        profit_center_nbrs=profit_center_nbrs,
+        channel=channel,
+        min_horizon=1,
+        max_horizon=max_horizon,
+    )
+    where_clause = " AND ".join(conditions) if conditions else "1 = 1"
+    query = f'''
+        SELECT
+            ORIGIN_WEEK_DATE,
+            MAX(TARGET_WEEK_DATE) AS MAX_TARGET_WEEK_DATE,
+            COUNT(DISTINCT HORIZON) AS HORIZON_COUNT
+        FROM "{schema}"."MODEL_B"
+        WHERE {where_clause}
+        GROUP BY ORIGIN_WEEK_DATE
+        ORDER BY ORIGIN_WEEK_DATE
+    '''
+    label = f"MODEL_B_ORIGIN_SUMMARY scope={_describe_query_scope(where_clause)}"
+    df = query_to_dataframe(query, label=label)
+    df.columns = [column.lower() for column in df.columns]
+    return df
+
+
+def load_model_b_last_origin_by_store(
+    profit_center_nbrs: List[int],
+    channel: Optional[str] = None,
+) -> pd.DataFrame:
+    """Load each requested store's most recent MODEL_B origin from HANA.
+
+    Args:
+        profit_center_nbrs: Store IDs whose data recency should be checked.
+        channel: Optional channel filter (``B&M`` or ``WEB``).
+
+    Returns:
+        DataFrame with ``profit_center_nbr`` and ``last_origin_week_date``.
+    """
+    schema = os.getenv("HANA_SCHEMA", "AICOE")
+    conditions = _build_model_b_conditions(
+        profit_center_nbrs=profit_center_nbrs,
+        channel=channel,
+    )
+    where_clause = " AND ".join(conditions) if conditions else "1 = 0"
+    query = f'''
+        SELECT
+            PROFIT_CENTER_NBR,
+            MAX(ORIGIN_WEEK_DATE) AS LAST_ORIGIN_WEEK_DATE
+        FROM "{schema}"."MODEL_B"
+        WHERE {where_clause}
+        GROUP BY PROFIT_CENTER_NBR
+    '''
+    label = f"MODEL_B_STORE_RECENCY scope={_describe_query_scope(where_clause)}"
+    df = query_to_dataframe(query, label=label)
+    df.columns = [column.lower() for column in df.columns]
+    return df
+
+
 def load_model_b_filtered(
     profit_center_nbrs: Optional[List[int]] = None,
     channel: Optional[str] = None,
@@ -579,20 +731,12 @@ def load_model_b_filtered(
     Returns:
         DataFrame with filtered MODEL_B data (lowercase columns)
     """
-    conditions = []
-
-    if profit_center_nbrs:
-        ids_str = ",".join(str(int(i)) for i in profit_center_nbrs)
-        conditions.append(f"PROFIT_CENTER_NBR IN ({ids_str})")
-
-    if channel:
-        conditions.append(f"CHANNEL = '{channel.upper()}'")
-
-    if origin_week_date:
-        conditions.append(f"ORIGIN_WEEK_DATE = '{origin_week_date}'")
-
-    if max_horizon is not None:
-        conditions.append(f"HORIZON <= {int(max_horizon)}")
+    conditions = _build_model_b_conditions(
+        profit_center_nbrs=profit_center_nbrs,
+        channel=channel,
+        origin_week_date=origin_week_date,
+        max_horizon=max_horizon,
+    )
 
     where_clause = " AND ".join(conditions) if conditions else None
 

@@ -305,12 +305,17 @@ def collect_dataframe_with_memory_logging(
     """
     configure_memory_file_logging()
     before = get_process_memory()
+    logger.info(
+        "hana_collect stage=before label=%s %s",
+        label,
+        _format_memory_for_log(before),
+    )
     df = collect_func()
     after = get_process_memory()
     summary = summarize_dataframe(label, df)
 
     logger.info(
-        "hana_collect label=%s rows=%s columns=%s dataframe_mb=%.2f "
+        "hana_collect stage=after label=%s rows=%s columns=%s dataframe_mb=%.2f "
         "rss_delta_mb=%s uss_delta_mb=%s before_%s after_%s",
         label,
         summary["rows"],
