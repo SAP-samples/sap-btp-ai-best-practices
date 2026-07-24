@@ -20,7 +20,12 @@ from langchain_core.tools import tool
 
 from app.agent.session import get_session
 from app.agent.state import ScenarioData
-from app.agent.hana_loader import load_model_b_filtered, load_store_master
+from app.agent.hana_loader import (
+    load_model_b_filtered,
+    load_model_b_last_origin_by_store,
+    load_model_b_origin_summary,
+    load_store_master,
+)
 
 
 def _get_fiscal_context(origin_date: str) -> Dict[str, Any]:
@@ -30,6 +35,62 @@ def _get_fiscal_context(origin_date: str) -> Dict[str, Any]:
         return _get_fiscal_fields(origin_date)
     except Exception:
         return {}
+
+
+def _select_model_b_origin(
+    summary: pd.DataFrame,
+    requested_origin: pd.Timestamp,
+    horizon_weeks: int,
+) -> tuple[str, Optional[str]]:
+    """Select one MODEL_B origin from compact HANA coverage metadata.
+
+    Args:
+        summary: One aggregate row per available MODEL_B origin.
+        requested_origin: User-requested simulation origin.
+        horizon_weeks: Number of forecast horizons that must be covered.
+
+    Returns:
+        A tuple containing ``backtesting`` or ``forecasting`` and the selected
+        origin date in ``YYYY-MM-DD`` format. The date is ``None`` when no
+        usable aggregate row exists.
+    """
+    required_columns = {
+        "origin_week_date",
+        "max_target_week_date",
+        "horizon_count",
+    }
+    if summary.empty or not required_columns.issubset(summary.columns):
+        return "forecasting", None
+
+    metadata = summary.loc[:, list(required_columns)].copy()
+    metadata["origin_week_date"] = pd.to_datetime(
+        metadata["origin_week_date"], errors="coerce"
+    )
+    metadata["max_target_week_date"] = pd.to_datetime(
+        metadata["max_target_week_date"], errors="coerce"
+    )
+    metadata["horizon_count"] = pd.to_numeric(
+        metadata["horizon_count"], errors="coerce"
+    ).fillna(0)
+    metadata = metadata.dropna(subset=["origin_week_date"])
+    if metadata.empty:
+        return "forecasting", None
+
+    origins = metadata["origin_week_date"]
+    max_target_date = metadata["max_target_week_date"].max()
+    target_end = requested_origin + pd.Timedelta(weeks=horizon_weeks)
+
+    if pd.notna(max_target_date) and target_end <= max_target_date:
+        prior_origins = origins[origins <= requested_origin]
+        selected = prior_origins.max() if not prior_origins.empty else origins.min()
+        return "backtesting", pd.Timestamp(selected).strftime("%Y-%m-%d")
+
+    full_coverage = metadata.loc[
+        metadata["horizon_count"] >= horizon_weeks,
+        "origin_week_date",
+    ]
+    selected = full_coverage.max() if not full_coverage.empty else origins.max()
+    return "forecasting", pd.Timestamp(selected).strftime("%Y-%m-%d")
 
 
 def _check_store_staleness(
@@ -269,6 +330,7 @@ def initialize_forecast_simulation(
     channel: str = "B&M",
     store_ids: Optional[List[int]] = None,
     dmas: Optional[List[str]] = None,
+    allow_all_stores: bool = False,
 ) -> Dict[str, Any]:
     """
     Initialize a forecast simulation and create the baseline scenario.
@@ -288,8 +350,10 @@ def initialize_forecast_simulation(
                      This is when the forecast is made.
         horizon_weeks: How far ahead to forecast (1-52 weeks). Default 13 (one quarter).
         channel: Channel to analyze: "B&M" (brick & mortar) or "WEB". Default "B&M".
-        store_ids: Optional list of profit_center_nbr to include. If None, uses all stores.
+        store_ids: Optional list of profit_center_nbr values to include.
         dmas: Optional list of DMAs to include (e.g., ["CHICAGO", "NEW YORK"]).
+        allow_all_stores: Explicit opt-in for a whole-portfolio forecast when
+            neither store_ids nor dmas is supplied. Defaults to False.
 
     Returns:
         Dictionary containing:
@@ -302,11 +366,11 @@ def initialize_forecast_simulation(
         - mode: "backtesting" or "forecasting" based on data availability
 
     Example:
-        >>> initialize_forecast_simulation("2024-01-15", horizon_weeks=13, channel="B&M")
+        >>> initialize_forecast_simulation(
+        ...     "2024-01-15", horizon_weeks=13, channel="B&M", store_ids=[63]
+        ... )
         {"status": "initialized", "origin_date": "2024-01-15", ...}
     """
-    session = get_session()
-
     # Validate inputs
     if horizon_weeks < 1 or horizon_weeks > 52:
         return {"error": f"horizon_weeks must be 1-52, got {horizon_weeks}"}
@@ -320,77 +384,94 @@ def initialize_forecast_simulation(
     except Exception as e:
         return {"error": f"Invalid origin_date format: {origin_date}. Use YYYY-MM-DD. Error: {e}"}
 
-    # Update session state
-    session.set_origin_date(origin_date)
-    session.set_horizon_weeks(horizon_weeks)
-    session.set_channel(channel)
+    if not store_ids and not dmas and not allow_all_stores:
+        return {
+            "error": "Forecast scope is required to protect application memory.",
+            "hint": "Provide store_ids or dmas. Set allow_all_stores=true only for an explicitly requested whole-portfolio forecast.",
+        }
 
-    if store_ids:
-        session.set_store_filter(store_ids)
+    requested_store_ids = (
+        list(dict.fromkeys(int(store_id) for store_id in store_ids))
+        if store_ids
+        else None
+    )
+    effective_store_ids = requested_store_ids
+
+    # Resolve every DMA scope to store IDs before querying MODEL_B. This keeps
+    # all full-column HANA reads server-side scoped, including combined filters.
     if dmas:
-        session.set_dma_filter(dmas)
-
-    # Determine mode: backtesting vs forecasting
-    # Check if we have historical data for the requested horizon
-    mode = "forecasting"  # Default to forecasting mode
-    baseline_df = None
-    stale_store_warnings = []  # Track potentially closed stores
-    stale_store_ids = []  # Store IDs that are stale/closed
-    valid_store_ids = []  # Store IDs with recent data
-    actual_origin_date = None  # Track actual origin date used in backtesting mode
-
-    # Resolve DMAs to store IDs for efficient server-side filtering
-    # This prevents loading ALL stores when user only specifies DMAs
-    effective_store_ids = store_ids
-    if dmas and not store_ids:
         try:
             store_master_df = load_store_master()
-            dma_stores = store_master_df[store_master_df["market_city"].isin(dmas)]
-            effective_store_ids = dma_stores["profit_center_nbr"].tolist()
-            if not effective_store_ids:
+            if not {"market_city", "profit_center_nbr"}.issubset(store_master_df.columns):
+                return {"error": "Store master is missing DMA or store ID columns."}
+
+            requested_dmas = {str(dma).casefold() for dma in dmas}
+            dma_mask = (
+                store_master_df["market_city"].astype(str).str.casefold().isin(requested_dmas)
+            )
+            dma_store_ids = [
+                int(store_id)
+                for store_id in store_master_df.loc[dma_mask, "profit_center_nbr"].tolist()
+            ]
+            if not dma_store_ids:
                 return {"error": f"No stores found in DMAs: {dmas}"}
+
+            if requested_store_ids:
+                dma_store_set = set(dma_store_ids)
+                effective_store_ids = [
+                    store_id
+                    for store_id in requested_store_ids
+                    if store_id in dma_store_set
+                ]
+                if not effective_store_ids:
+                    return {
+                        "error": f"None of the requested stores are in DMAs: {dmas}"
+                    }
+            else:
+                effective_store_ids = dma_store_ids
         except Exception as e:
             return {"error": f"Failed to resolve DMAs to store IDs: {e}"}
 
-    # Load historical data from HANA to check coverage (server-side filtering for performance)
+    stale_store_warnings: List[str] = []
+    actual_origin_date: Optional[str] = None
+
     try:
-        historical_df = load_model_b_filtered(
-            profit_center_nbrs=effective_store_ids,
-            channel=channel,
-            max_horizon=horizon_weeks,
-        )
-        historical_df["origin_week_date"] = pd.to_datetime(historical_df["origin_week_date"])
-        historical_df["target_week_date"] = pd.to_datetime(historical_df["target_week_date"])
+        # Explicit store requests retain the existing stale-store protection,
+        # but use a two-column aggregate rather than full MODEL_B history.
+        if requested_store_ids:
+            recency_df = load_model_b_last_origin_by_store(
+                profit_center_nbrs=effective_store_ids or [],
+                channel=channel,
+            )
+            if not recency_df.empty:
+                recency_df["last_origin_week_date"] = pd.to_datetime(
+                    recency_df["last_origin_week_date"], errors="coerce"
+                )
+            latest_by_store = {
+                int(row["profit_center_nbr"]): row["last_origin_week_date"]
+                for _, row in recency_df.iterrows()
+                if pd.notna(row.get("last_origin_week_date"))
+            }
 
-        # Filter by dmas if specified and we have store_ids (both filters active)
-        # Skip if dmas was already resolved to effective_store_ids above
-        if dmas and store_ids:
-            historical_df = historical_df[historical_df["dma"].isin(dmas)]
-
-        # Check for potentially closed stores (last data >13 weeks before origin)
-        # Separate into valid vs stale stores
-        if store_ids:
-            for store_id in store_ids:
-                store_data = historical_df[historical_df["profit_center_nbr"] == store_id]
-                if store_data.empty:
+            valid_store_ids: List[int] = []
+            for store_id in requested_store_ids:
+                last_date = latest_by_store.get(store_id)
+                if last_date is None:
                     stale_store_warnings.append(
                         f"Store {store_id}: No historical data found in dataset"
                     )
-                    stale_store_ids.append(store_id)
-                else:
-                    last_date = store_data["origin_week_date"].max()
-                    weeks_stale = (origin_dt - last_date).days / 7
-                    if weeks_stale > 13:
-                        stale_store_warnings.append(
-                            f"Store {store_id}: Last data from {last_date.strftime('%Y-%m-%d')} "
-                            f"({int(weeks_stale)} weeks ago) - store may be closed"
-                        )
-                        stale_store_ids.append(store_id)
-                    else:
-                        valid_store_ids.append(store_id)
+                    continue
 
-            # If ALL requested stores are stale/closed, return an error
-            if len(valid_store_ids) == 0:
+                weeks_stale = (origin_dt - last_date).days / 7
+                if weeks_stale > 13:
+                    stale_store_warnings.append(
+                        f"Store {store_id}: Last data from {last_date.strftime('%Y-%m-%d')} "
+                        f"({int(weeks_stale)} weeks ago) - store may be closed"
+                    )
+                else:
+                    valid_store_ids.append(store_id)
+
+            if not valid_store_ids:
                 return {
                     "error": "All requested stores have stale or missing data for the specified date.",
                     "details": stale_store_warnings,
@@ -398,56 +479,46 @@ def initialize_forecast_simulation(
                     "Try a different store or an earlier origin_date within the store's operating period.",
                 }
 
-            # Filter historical data to only valid stores
-            if stale_store_ids:
-                historical_df = historical_df[
-                    ~historical_df["profit_center_nbr"].isin(stale_store_ids)
-                ]
+            valid_store_set = set(valid_store_ids)
+            effective_store_ids = [
+                store_id
+                for store_id in (effective_store_ids or [])
+                if store_id in valid_store_set
+            ]
 
-        # Check if target dates fall within historical data
-        target_end = origin_dt + pd.Timedelta(weeks=horizon_weeks)
-        max_historical_date = historical_df["target_week_date"].max()
+        # Select the one origin needed for the baseline from compact aggregate
+        # rows before requesting any full MODEL_B feature columns.
+        origin_summary = load_model_b_origin_summary(
+            profit_center_nbrs=effective_store_ids,
+            channel=channel,
+            max_horizon=horizon_weeks,
+        )
+        mode, selected_origin = _select_model_b_origin(
+            origin_summary,
+            origin_dt,
+            horizon_weeks,
+        )
+        if selected_origin is None:
+            return {
+                "error": "Could not create baseline scenario. No origin metadata is available for the specified scope."
+            }
 
-        if target_end <= max_historical_date:
-            # Backtesting mode - we have actual data
-            mode = "backtesting"
+        baseline_df = load_model_b_filtered(
+            profit_center_nbrs=effective_store_ids,
+            channel=channel,
+            origin_week_date=selected_origin,
+            max_horizon=horizon_weeks,
+        )
+        if "horizon" in baseline_df.columns:
+            horizon_values = pd.to_numeric(baseline_df["horizon"], errors="coerce")
+            baseline_df = baseline_df.loc[
+                (horizon_values >= 1) & (horizon_values <= horizon_weeks)
+            ].copy()
 
-            # Find the closest prior origin_week_date (floor to week start)
-            # This handles cases where data might not always be on Mondays
-            unique_origins = historical_df["origin_week_date"].unique()
-
-            # Filter to origins <= requested date, then take the max (most recent prior)
-            prior_origins = [o for o in unique_origins if pd.Timestamp(o) <= origin_dt]
-
-            if prior_origins:
-                # Floor: use the most recent origin that is <= requested date
-                closest_origin = max(prior_origins, key=lambda x: pd.Timestamp(x))
-            else:
-                # If no prior origins exist, use the earliest available
-                closest_origin = min(unique_origins, key=lambda x: pd.Timestamp(x))
-
-            actual_origin_date = pd.Timestamp(closest_origin).strftime("%Y-%m-%d")
-
-            # Load actual data for the closest origin and requested horizons
-            mask = (
-                (historical_df["origin_week_date"] == closest_origin)
-                & (historical_df["horizon"] >= 1)
-                & (historical_df["horizon"] <= horizon_weeks)
-            )
-            baseline_df = historical_df[mask].copy()
-
-        else:
-            # Forecasting mode - generate baselines using generator
-            # Use valid_store_ids to exclude stale/closed stores when store_ids was provided
-            # Otherwise use DMA-resolved effective_store_ids from earlier
-            mode = "forecasting"
-            forecasting_store_ids = valid_store_ids if store_ids else effective_store_ids
-            baseline_df = _generate_baseline_from_hana(
-                origin_date, horizon_weeks, channel, forecasting_store_ids, dmas
-            )
+        if mode == "backtesting":
+            actual_origin_date = selected_origin
 
     except Exception as e:
-        # Fall back to forecasting mode with error message
         return {
             "error": f"Failed to load historical data from HANA: {e}. "
             "Please ensure HANA connection is available."
@@ -457,6 +528,15 @@ def initialize_forecast_simulation(
         return {
             "error": "Could not create baseline scenario. No data available for the specified parameters."
         }
+
+    # Persist context only after a bounded baseline has been created. Failed
+    # initialization attempts therefore do not leave a partially initialized session.
+    session = get_session()
+    session.set_origin_date(origin_date)
+    session.set_horizon_weeks(horizon_weeks)
+    session.set_channel(channel)
+    session.set_store_filter(effective_store_ids or [])
+    session.set_dma_filter(list(dmas or []))
 
     # Create baseline scenario with channel-specific name to allow both
     # B&M and WEB baselines to coexist in the same session
@@ -487,7 +567,7 @@ def initialize_forecast_simulation(
         "channel": channel,
         "mode": mode,
         "store_count": baseline_df["profit_center_nbr"].nunique() if "profit_center_nbr" in baseline_df.columns else 0,
-        "store_filter": store_ids or "all",
+        "store_filter": effective_store_ids or "all",
         "dma_filter": dmas or "all",
         "baseline_scenario": {
             "name": baseline_name,
@@ -508,65 +588,6 @@ def initialize_forecast_simulation(
         response["warnings"] = stale_store_warnings
 
     return response
-
-
-def _generate_baseline_from_hana(
-    origin_date: str,
-    horizon_weeks: int,
-    channel: str,
-    store_ids: Optional[List[int]],
-    dmas: Optional[List[str]],
-) -> Optional[pd.DataFrame]:
-    """
-    Generate baseline from HANA model_b data for forecasting mode.
-
-    Uses the most recent available origin date from HANA data that has
-    ALL requested horizons (to avoid data edge effects where recent dates
-    may have incomplete horizon coverage).
-    Server-side filtering is applied for channel, store_ids, and max_horizon.
-    """
-    try:
-        # Use server-side filtering for better performance
-        historical_df = load_model_b_filtered(
-            profit_center_nbrs=store_ids,
-            channel=channel,
-            max_horizon=horizon_weeks,
-        )
-        historical_df["origin_week_date"] = pd.to_datetime(historical_df["origin_week_date"])
-
-        # Filter by dmas if specified (still client-side as DMA filter is less common)
-        if dmas:
-            historical_df = historical_df[historical_df["dma"].isin(dmas)]
-
-        if historical_df.empty:
-            return None
-
-        # Find the most recent origin date that has ALL requested horizons.
-        # Due to data edge effects, the most recent origin dates may have
-        # incomplete horizon coverage (e.g., only horizon 1-3 instead of 1-13).
-        horizon_counts = historical_df.groupby("origin_week_date")["horizon"].nunique()
-        full_coverage_origins = horizon_counts[horizon_counts >= horizon_weeks].index
-
-        if len(full_coverage_origins) > 0:
-            # Use the most recent origin with full horizon coverage
-            best_origin = max(full_coverage_origins)
-        else:
-            # Fall back to most recent origin if none have full coverage
-            best_origin = historical_df["origin_week_date"].max()
-
-        # Filter to that origin and the requested horizons
-        mask = (
-            (historical_df["origin_week_date"] == best_origin)
-            & (historical_df["horizon"] >= 1)
-            & (historical_df["horizon"] <= horizon_weeks)
-        )
-        baseline_df = historical_df[mask].copy()
-
-        return baseline_df if not baseline_df.empty else None
-
-    except Exception as e:
-        print(f"Warning: HANA baseline generation failed: {e}")
-        return None
 
 
 def _generate_baseline_from_generator(
