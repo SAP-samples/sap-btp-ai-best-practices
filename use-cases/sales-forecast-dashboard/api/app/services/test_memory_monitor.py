@@ -43,9 +43,37 @@ def test_collect_dataframe_with_memory_logging_logs_result(
     )
 
     assert len(df) == 3
-    assert "hana_collect label=MODEL_B" in caplog.text
+    assert "hana_collect stage=before label=MODEL_B" in caplog.text
+    assert "hana_collect stage=after label=MODEL_B" in caplog.text
     assert "rows=3" in caplog.text
     assert "rss_delta_mb=25.50" in caplog.text
+
+
+def test_collect_dataframe_logs_before_collection_failure(monkeypatch, caplog) -> None:
+    """The last log identifies query scope even when HANA collection is killed."""
+    monkeypatch.setattr(
+        memory_monitor,
+        "get_process_memory",
+        lambda: {"rss_mb": 512.0, "uss_mb": 480.0, "source": "test"},
+    )
+    caplog.set_level(logging.INFO, logger=memory_monitor.LOGGER_NAME)
+
+    def fail_collection() -> pd.DataFrame:
+        """Represent a HANA collection that fails before returning a DataFrame."""
+        assert "hana_collect stage=before" in caplog.text
+        raise MemoryError("synthetic collect failure")
+
+    with pytest.raises(MemoryError, match="synthetic collect failure"):
+        memory_monitor.collect_dataframe_with_memory_logging(
+            "MODEL_B scope=store_ids;channel;origin_week_date;max_horizon",
+            fail_collection,
+        )
+
+    assert (
+        "hana_collect stage=before label=MODEL_B "
+        "scope=store_ids;channel;origin_week_date;max_horizon"
+    ) in caplog.text
+    assert "hana_collect stage=after" not in caplog.text
 
 
 def test_memory_logged_tool_logs_before_and_after(monkeypatch, caplog) -> None:

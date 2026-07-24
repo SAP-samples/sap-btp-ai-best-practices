@@ -278,9 +278,9 @@ When you initialize a forecast simulation, the system creates a channel-specific
 This allows both B&M and WEB baselines to coexist in the same session without overwriting each other.
 
 **Comparing B&M vs WEB in the same conversation:**
-1. Initialize B&M: `initialize_forecast_simulation(..., channel="B&M")` -> creates `baseline_bm`
+1. Initialize B&M with the user's scope: `initialize_forecast_simulation(..., channel="B&M", store_ids=[...])` -> creates `baseline_bm`
 2. Run B&M forecast: `run_forecast_model(["baseline_bm"])`
-3. Initialize WEB: `initialize_forecast_simulation(..., channel="WEB")` -> creates `baseline_web`
+3. Initialize WEB with the same scope: `initialize_forecast_simulation(..., channel="WEB", store_ids=[...])` -> creates `baseline_web`
 4. Run WEB forecast: `run_forecast_model(["baseline_web"])`
 5. Both baselines now exist and can be plotted/exported separately
 
@@ -374,6 +374,13 @@ ALWAYS check if the session is initialized.
    - `horizon_weeks`: Default to 1 for data lookups (e.g., "what is the value on [date]"), or 13 for forecasts unless specified. If the user says "5 months", convert to weeks (approximately 22 weeks).
    - `channel`: Default to "B&M" unless specified
 4. Proceed with `initialize_forecast_simulation` using the extracted or default values
+
+**Forecast scope safety:**
+- ALWAYS carry forward store IDs or DMAs already named in the conversation when
+  calling `initialize_forecast_simulation` on a later date-only turn.
+- Initialization requires `store_ids` or `dmas` to keep HANA queries bounded.
+- Set `allow_all_stores=true` only when the user explicitly requests a whole-
+  portfolio or all-store forecast. Never use it merely because scope is missing.
 
 **Examples of extracting dates from user requests:**
 - "What is the awareness level of store 35 on 4 April 2025?" -> origin_date = "2025-04-04", horizon_weeks = 1

@@ -104,16 +104,22 @@ class FakeSensitivitySession(FakeForecastSession):
         super().__init__(checkpoint_dir)
         baseline_df = pd.DataFrame(
             {
-                "channel": ["B&M", "B&M"],
-                "feature_one": [10.0, 10.0],
-                "feature_two": [20.0, 20.0],
+                "channel": ["B&M", "B&M", "B&M", "B&M"],
+                "profit_center_nbr": [46, 46, 62, 62],
+                "feature_one": [10.0, 10.0, 100.0, 100.0],
+                "feature_two": [20.0, 20.0, 200.0, 200.0],
             }
         )
         self.baseline = FakeScenario("baseline_bm", baseline_df)
         self.sensitivity = None
         self.predictions["baseline_bm"] = FakePredictionResult(
             scenario_name="baseline_bm",
-            predictions_df=pd.DataFrame({"pred_sales_p50": [100.0]}),
+            predictions_df=pd.DataFrame(
+                {
+                    "profit_center_nbr": [46, 46, 62, 62],
+                    "pred_sales_p50": [40.0, 60.0, 400.0, 600.0],
+                }
+            ),
         )
 
     def get_scenario(self, scenario_name: str | None = None) -> FakeScenario:
@@ -322,3 +328,107 @@ def test_analyze_sensitivity_reuses_cached_pipeline_and_controls_traffic(
     assert {call["pipeline"] for call in run_calls} == {pipeline}
     assert {call["estimate_traffic"] for call in run_calls} == {include_traffic}
     assert {call["save_outputs"] for call in run_calls} == {False}
+
+
+def test_analyze_sensitivity_filters_scenario_and_predictions_by_store(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    """A store sensitivity request must perturb and compare only that store."""
+    module = load_execution_module(monkeypatch)
+    checkpoint_dir = tmp_path / "checkpoints"
+    create_checkpoint_files(checkpoint_dir)
+    session = FakeSensitivitySession(checkpoint_dir)
+    run_calls = []
+
+    def fake_get_cached_inference_pipeline(**kwargs: Any) -> object:
+        """Return a stable fake model pipeline."""
+        return object()
+
+    def fake_run_cached_inference(**kwargs: Any) -> SimpleNamespace:
+        """Return +/-20 percent sales around the selected store baseline."""
+        run_calls.append(kwargs)
+        sales = 120.0 if kwargs["label"].endswith(":up") else 80.0
+        return SimpleNamespace(
+            bm_predictions=pd.DataFrame({"pred_sales_p50": [sales]}),
+            web_predictions=None,
+        )
+
+    monkeypatch.setattr(module, "get_session", lambda: session)
+    monkeypatch.setattr(
+        module,
+        "get_cached_inference_pipeline",
+        fake_get_cached_inference_pipeline,
+        raising=False,
+    )
+    monkeypatch.setattr(module, "run_cached_inference", fake_run_cached_inference, raising=False)
+
+    result = get_tool_function(module.analyze_sensitivity)(store_id=46)
+
+    assert result["status"] == "analyzed"
+    assert len(run_calls) == 4
+    assert all(len(call["model_b_data"]) == 2 for call in run_calls)
+    assert all(
+        set(call["model_b_data"]["profit_center_nbr"]) == {46}
+        for call in run_calls
+    )
+    elasticities = {item["feature"]: item for item in result["elasticities"]}
+    assert elasticities["feature_one"]["current_mean"] == 10.0
+    assert elasticities["feature_two"]["current_mean"] == 20.0
+    assert all(item["elasticity_up"] == 1.0 for item in elasticities.values())
+    assert all(item["elasticity_down"] == 1.0 for item in elasticities.values())
+    assert all(item["elasticity"] == 1.0 for item in elasticities.values())
+
+
+def test_analyze_sensitivity_rejects_store_missing_from_baseline(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    """An unknown store fails before the process-level model is loaded."""
+    module = load_execution_module(monkeypatch)
+    checkpoint_dir = tmp_path / "checkpoints"
+    create_checkpoint_files(checkpoint_dir)
+    session = FakeSensitivitySession(checkpoint_dir)
+    monkeypatch.setattr(module, "get_session", lambda: session)
+    monkeypatch.setattr(
+        module,
+        "get_cached_inference_pipeline",
+        lambda **kwargs: pytest.fail("pipeline must not load"),
+        raising=False,
+    )
+
+    result = get_tool_function(module.analyze_sensitivity)(store_id=999)
+
+    assert result == {
+        "error": "Store 999 not found in baseline scenario 'baseline_bm'."
+    }
+
+
+def test_analyze_sensitivity_rejects_missing_store_prediction(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    """A scoped sensitivity fails before model load if its prediction is absent."""
+    module = load_execution_module(monkeypatch)
+    checkpoint_dir = tmp_path / "checkpoints"
+    create_checkpoint_files(checkpoint_dir)
+    session = FakeSensitivitySession(checkpoint_dir)
+    session.predictions["baseline_bm"].predictions_df = pd.DataFrame(
+        {
+            "profit_center_nbr": [62, 62],
+            "pred_sales_p50": [400.0, 600.0],
+        }
+    )
+    monkeypatch.setattr(module, "get_session", lambda: session)
+    monkeypatch.setattr(
+        module,
+        "get_cached_inference_pipeline",
+        lambda **kwargs: pytest.fail("pipeline must not load"),
+        raising=False,
+    )
+
+    result = get_tool_function(module.analyze_sensitivity)(store_id=46)
+
+    assert result == {
+        "error": "No baseline predictions found for store 46 in 'baseline_bm'."
+    }
