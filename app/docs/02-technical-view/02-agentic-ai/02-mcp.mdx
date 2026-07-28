@@ -118,7 +118,7 @@ You can find pricing details for AI Core "Extended" in the [Discovery Center –
 
 MCP introduces distinct roles (Host, Client, Server) and a specific interaction sequence. Misunderstanding these roles leads to incorrect implementations where developers conflate the client with the server, hardcode tool definitions into the agent, or bypass the credential isolation that MCP provides.
 
-The **MCP Sequence Flow** describes the 10-step interaction pattern that every MCP-based agent follows. The flow begins with a user request, proceeds through tool discovery, LLM evaluation and decision, tool invocation via the MCP client, backend translation and execution by the MCP server, and concludes with response formatting, context injection back to the LLM, and final synthesis of a human-readable answer. For the full step-by-step breakdown of this flow (including the six actors involved and OAuth security handling), see the [Model Context Protocol (MCP) from Fundamentals to Practice](https://sap.plateau.com/learning/user/common/viewItemDetails.do?componentID=DEV_00012797_WBT&componentTypeID=COURSE&fromSF=Y&revisionDate=1768567829000&menuGroup=Learning&menuItem=Cur&fromDeepLink=true&hideItemDetailsBackLink=true#/DBD0E817362EA6A2190018FAF5DCAE9F) tutorial.
+The **MCP Sequence Flow** describes the 10-step interaction pattern that every MCP-based agent follows. The flow begins with a user request, proceeds through tool discovery, LLM evaluation and decision, tool invocation via the MCP client, backend translation and execution by the MCP server, and concludes with response formatting, context injection back to the LLM, and final synthesis of a human-readable answer.
 
 ![MCP Architecture Diagram](@site/static/agentic-ai/mcp/images/mcp-architecture-diagram.png)
 

@@ -14,7 +14,7 @@ export const TRACKING_EVENTS = {
 
     // Technical View
     TECHNICAL_VIEW: "pv-technical-view",
-    TECHNICAL_VIEW_NARROW_AI: "pv-technical-view-narrow-ai",
+    TECHNICAL_VIEW_PREDICTIVE_AI: "pv-technical-view-predictive-ai",
     TECHNICAL_VIEW_GENERATIVE_AI: "pv-technical-view-generative-ai",
     TECHNICAL_VIEW_GENERATIVE_AI_PLAIN: "pv-technical-view-generative-ai-plain",
     BP_ACCESS_TO_GENERATIVE_AI_MODELS: "pv-bp-access-to-generative-ai-models",
@@ -95,5 +95,8 @@ export const TRACKING_EVENTS = {
     DOWNLOAD_TRANSLATION_HUB: "btn-download-translation-hub",
     DOWNLOAD_PRO_CODE_AI_AGENTS: "btn-download-pro-code-ai-agents",
     DOWNLOAD_RPT1: "btn-download-rpt-1"
+    // AI4U promotion links tracked dynamically in Root.tsx as:
+    // btn-announcement-bar:{url}
+    // btn-navbar:{url}
   }
 } as const;

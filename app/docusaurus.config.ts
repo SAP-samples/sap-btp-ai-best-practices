@@ -103,6 +103,23 @@ const config: Config = {
 
   plugins: [
     registerDownloadRoute,
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            from: "/docs/technical-view/narrow-ai/sap-rpt",
+            to: "/docs/technical-view/ai-services/sap-rpt"
+          }
+        ],
+        createRedirects(existingPath) {
+          if (existingPath.includes("/docs/technical-view/predictive-ai")) {
+            return [existingPath.replace("/predictive-ai", "/narrow-ai")];
+          }
+          return undefined;
+        }
+      }
+    ],
     () => ({
       name: "google-site-verification",
       injectHtmlTags() {
@@ -122,6 +139,15 @@ const config: Config = {
   ],
 
   themeConfig: {
+    announcementBar: {
+      id: 'ai4u_promo',
+      content:
+        'Want to see real AI solutions on SAP BTP? ' +
+        '<a target="_blank" rel="noopener noreferrer" href="https://ai4u-website.cfapps.eu10-004.hana.ondemand.com/services?utm_source=btp-ai-best-practices&utm_medium=referral&utm_campaign=ai4u-promo&utm_content=announcement-bar">Browse 50+ projects in the AI4U Use Case Repository</a>',
+      backgroundColor: '#0070f2',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
     // Social card image
     image: "img/logo.png",
     navbar: {
@@ -143,6 +169,14 @@ const config: Config = {
           to: "/about",
           position: "left",
           label: "About"
+        },
+        {
+          href: "https://ai4u-website.cfapps.eu10-004.hana.ondemand.com/services?utm_source=btp-ai-best-practices&utm_medium=referral&utm_campaign=ai4u-promo&utm_content=navbar",
+          label: "AI Use Cases",
+          position: "left",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "navbar__item--ai4u",
         },
         // { to: "/blog", label: "Blog", position: "left" },
         {
