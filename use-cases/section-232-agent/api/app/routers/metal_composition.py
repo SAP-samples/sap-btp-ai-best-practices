@@ -464,6 +464,10 @@ async def list_metal_composition_items(
     priority: Optional[str] = Query(None),
     business_segment: Optional[str] = Query(None),
     product_code: Optional[str] = Query(None),
+    product_code_exact: bool = Query(
+        False,
+        description="Match the normalized product code exactly instead of using substring search.",
+    ),
     pn_revised_standardized: Optional[str] = Query(None),
     new_part_description: Optional[str] = Query(None),
     part_description: Optional[str] = Query(None),
@@ -477,6 +481,7 @@ async def list_metal_composition_items(
         priority=priority,
         business_segment=business_segment,
         product_code=product_code,
+        product_code_exact=product_code_exact,
         pn_revised_standardized=pn_revised_standardized,
         new_part_description=new_part_description,
         part_description=part_description,

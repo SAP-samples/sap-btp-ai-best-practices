@@ -3,7 +3,16 @@ parameters:
     optional: false
 
 action_groups:
-  - actions:
+  - condition: item_id != null && !item_id.startsWith('mm:')
+    actions:
+      - type: dialog-function
+        name: fn_search_items
+        parameters:
+          - name: product_code
+            value: "<? item_id ?>"
+
+  - condition: item_id != null && item_id.startsWith('mm:')
+    actions:
       - type: api-request
         system_alias: SECTION_232_API
         method: GET
@@ -85,7 +94,8 @@ action_groups:
             No stored analysis is available for this item.
             {{/if}}
 
-  - actions:
+  - condition: item_id != null && item_id.startsWith('mm:') && detail_result != null && detail_result.status_code == 200
+    actions:
       - type: message
         scripting_type: handlebars
         message:
@@ -94,6 +104,6 @@ action_groups:
             title: "Next actions"
             buttons:
               - title: "Start analysis"
-                value: "Start analysis for {{detail_result.body.item_id}}"
+                value: "Start analysis for Material Master item ID {{detail_result.body.item_id}}"
               - title: "Search product"
                 value: "Find item {{detail_result.body.product_code}}"
