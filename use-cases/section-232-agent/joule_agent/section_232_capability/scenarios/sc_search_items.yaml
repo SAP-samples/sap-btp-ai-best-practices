@@ -1,18 +1,31 @@
 description: >
   Search catalog items for Section 232 review by product code, part
   number, description, priority, business segment, or site context. Use this
-  when the user wants to find matching products before reviewing or starting
-  eligibility analysis. Examples: "Find item 5778800", "Search product code
-  4006107", "show WSS high priority items", "find pump impeller parts", or
-  "look for PN 23-0544-8111".
+  whenever the user supplies a product code or material number without the
+  canonical "mm:" item-id prefix, including requests to describe or analyze
+  that product. Product-number searches must show all matching item ids before
+  details or analysis starts. Examples: "Find item 5778800", "tell me the
+  details for material SYN-10001", "analyze product 4006107", "show WSS high
+  priority items", or "look for PN 23-0544-8111".
 
 slots:
   - name: product_code
     description: >
       Product code or material number to search for. Extract numeric or
       alphanumeric product identifiers from phrases like "product 5778800" or
-      "find item 4006107". Leave empty when the user is searching by another
-      field.
+      "details for material SYN-10001". Leave empty when the user is searching
+      by another field.
+  - name: item_id
+    description: >
+      Canonical Material Master item id in the form mm:1001. Capture this only
+      when an utterance already contains the mm: prefix but was routed to this
+      search scenario.
+  - name: requested_action
+    description: >
+      Follow-up action for a canonical item id routed here. Normalize requests
+      to start, run, classify, or analyze as "analyze"; normalize requests to
+      show, review, describe, or explain as "details". Leave empty for normal
+      product searches.
   - name: pn_revised_standardized
     description: >
       Revised or standardized part number. Extract values from phrases like

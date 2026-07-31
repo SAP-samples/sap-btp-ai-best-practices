@@ -32,6 +32,13 @@ def _contains_filter(value: Optional[str], query: Optional[str]) -> bool:
     return query.lower() in (value or "").lower()
 
 
+def _matches_product_code(value: Optional[str], query: Optional[str], *, exact: bool) -> bool:
+    """Match a product-code query exactly or by the existing substring behavior."""
+    if not exact or not query:
+        return _contains_filter(value, query)
+    return normalize_lookup_value(value) == normalize_lookup_value(query)
+
+
 def _matches_facet(value: Optional[str], selected: Optional[str]) -> bool:
     if not selected:
         return True
@@ -131,6 +138,7 @@ class MetalCompositionItemService:
         priority: Optional[str] = None,
         business_segment: Optional[str] = None,
         product_code: Optional[str] = None,
+        product_code_exact: bool = False,
         pn_revised_standardized: Optional[str] = None,
         new_part_description: Optional[str] = None,
         part_description: Optional[str] = None,
@@ -146,7 +154,7 @@ class MetalCompositionItemService:
             for item in base_items
             if _matches_facet(item["priority"], priority)
             and _matches_facet(item["business_segment"], business_segment)
-            and _contains_filter(item["product_code"], product_code)
+            and _matches_product_code(item["product_code"], product_code, exact=product_code_exact)
             and _contains_filter(item["pn_revised_standardized"], pn_revised_standardized)
             and _contains_filter(item["new_part_description"], new_part_description)
             and _contains_filter(item["part_description"], part_description)

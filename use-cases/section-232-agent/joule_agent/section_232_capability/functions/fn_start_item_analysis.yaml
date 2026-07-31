@@ -5,7 +5,16 @@ parameters:
     optional: true
 
 action_groups:
-  - actions:
+  - condition: item_id != null && !item_id.startsWith('mm:')
+    actions:
+      - type: dialog-function
+        name: fn_search_items
+        parameters:
+          - name: product_code
+            value: "<? item_id ?>"
+
+  - condition: item_id != null && item_id.startsWith('mm:')
+    actions:
       - type: api-request
         system_alias: SECTION_232_API
         method: POST
@@ -37,7 +46,8 @@ action_groups:
             | Submitted | {{submit_result.body.submitted_at}} |
             | Total items | {{submit_result.body.total_count}} |
 
-  - actions:
+  - condition: item_id != null && item_id.startsWith('mm:') && submit_result != null && submit_result.status_code == 202
+    actions:
       - type: message
         scripting_type: handlebars
         message:
@@ -48,4 +58,4 @@ action_groups:
               - title: "Check job"
                 value: "Check job status {{submit_result.body.job_id}}"
               - title: "Show item"
-                value: "Show details for {{submitted_item_id}}"
+                value: "Show details for Material Master item ID {{submitted_item_id}}"
