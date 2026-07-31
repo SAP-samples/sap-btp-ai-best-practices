@@ -1,6 +1,10 @@
 parameters:
   - name: product_code
     optional: true
+  - name: item_id
+    optional: true
+  - name: requested_action
+    optional: true
   - name: pn_revised_standardized
     optional: true
   - name: new_part_description
@@ -19,14 +23,31 @@ parameters:
     optional: true
 
 action_groups:
-  - actions:
+  - condition: item_id != null && item_id.startsWith('mm:') && requested_action != null && requested_action.equalsIgnoreCase('analyze')
+    actions:
+      - type: dialog-function
+        name: fn_start_item_analysis
+        parameters:
+          - name: item_id
+            value: "<? item_id ?>"
+
+  - condition: item_id != null && item_id.startsWith('mm:') && (requested_action == null || !requested_action.equalsIgnoreCase('analyze'))
+    actions:
+      - type: dialog-function
+        name: fn_item_details
+        parameters:
+          - name: item_id
+            value: "<? item_id ?>"
+
+  - condition: item_id == null || !item_id.startsWith('mm:')
+    actions:
       - type: api-request
         system_alias: SECTION_232_API
         method: GET
-        path: "/api/metal-composition/items?product_code=<? product_code ?>&pn_revised_standardized=<? pn_revised_standardized ?>&new_part_description=<? new_part_description ?>&part_description=<? part_description ?>&priority=<? priority ?>&business_segment=<? business_segment ?>&limit=<? limit == null || limit == '' ? 20 : limit ?>&offset=0<? has_documents == null || has_documents == '' ? '' : '&has_documents=' + has_documents ?><? is_classified == null || is_classified == '' ? '' : '&is_classified=' + is_classified ?>"
+        path: "/api/metal-composition/items?product_code=<? product_code ?>&product_code_exact=true&pn_revised_standardized=<? pn_revised_standardized ?>&new_part_description=<? new_part_description ?>&part_description=<? part_description ?>&priority=<? priority ?>&business_segment=<? business_segment ?>&limit=<? limit == null || limit == '' ? (product_code == null || product_code == '' ? 20 : 500) : limit ?>&offset=0<? has_documents == null || has_documents == '' ? '' : '&has_documents=' + has_documents ?><? is_classified == null || is_classified == '' ? '' : '&is_classified=' + is_classified ?>"
         result_variable: search_result
 
-  - condition: search_result != null && search_result.status_code == 200 && search_result.body != null
+  - condition: (item_id == null || !item_id.startsWith('mm:')) && search_result != null && search_result.status_code == 200 && search_result.body != null
     actions:
       - type: message
         scripting_type: handlebars
@@ -44,11 +65,17 @@ action_groups:
             {{#each search_result.body.items}}
             | {{this.item_id}} | {{this.product_code}} | {{#if this.pn_revised_standardized}}{{this.pn_revised_standardized}}{{else}}-{{/if}} | {{#if this.business_segment}}{{this.business_segment}}{{else}}-{{/if}} | {{this.docs_status}} | {{this.classification_status}} |
             {{/each}}
+
+            To choose a different result, use its **Item ID**:
+
+            - `Show details for mm:2002`
+            - `Start analysis for mm:2002`
+            - `Start batch analysis for mm:2001, mm:2002`
             {{else}}
             No matching items were found.
             {{/if}}
 
-  - condition: search_result != null && search_result.status_code == 200 && search_result.body != null && search_result.body.items != null && search_result.body.items.size() > 0
+  - condition: (item_id == null || !item_id.startsWith('mm:')) && search_result != null && search_result.status_code == 200 && search_result.body != null && search_result.body.items != null && search_result.body.items.size() > 0
     actions:
       - type: set-variables
         variables:
@@ -62,11 +89,11 @@ action_groups:
             title: "Next actions"
             buttons:
               - title: "Show first detail"
-                value: "Show details for {{first_item_id}}"
+                value: "Show details for Material Master item ID {{first_item_id}}"
               - title: "Analyze first"
-                value: "Start analysis for {{first_item_id}}"
+                value: "Start analysis for Material Master item ID {{first_item_id}}"
 
-  - condition: search_result == null || search_result.body == null || search_result.status_code != 200
+  - condition: (item_id == null || !item_id.startsWith('mm:')) && (search_result == null || search_result.body == null || search_result.status_code != 200)
     actions:
       - type: message
         message:

@@ -2888,12 +2888,30 @@ def _build_duplicate_ui_workbook_store() -> WorkbookStore:
                 "Date Started": "2025-03-03",
                 "Date Completed": "2025-03-04",
             },
+            {
+                "source_row_id": 2003,
+                "normalized_product_code": "dup-232-extended",
+                "Product code": "DUP-232-EXTENDED",
+                "PN Revised/ Standardized": "PN-DUP-232-C",
+                "Part description": "Bearing housing extended variant",
+                "New Part Description": "Bearing housing extended variant",
+                "Site": "Madrid",
+                "Business Segment": "WI",
+                "Priority": "P3",
+                "Priority.1": "Partial product-code match",
+                "Material Content Method": "ERP Extract",
+                "MaterialIdentified": "1",
+                "Total Weight (Gram)": 55.0,
+                "Date Started": "2025-03-05",
+                "Date Completed": "2025-03-06",
+            },
         ]
     )
     prepared_df = pd.DataFrame(
         [
             {"source_row_id": 2001, "row_id": 1, "Total Weight (Gram)": 21.0},
             {"source_row_id": 2002, "row_id": 2, "Total Weight (Gram)": 34.0},
+            {"source_row_id": 2003, "row_id": 3, "Total Weight (Gram)": 55.0},
         ]
     )
     return WorkbookStore(source_df=source_df, prepared_df=prepared_df)
@@ -2939,6 +2957,42 @@ def test_items_endpoint_supports_boolean_filters(tmp_path):
         assert body["items"][0]["item_id"] == "mm:1001"
         assert body["items"][0]["has_documents"] is True
         assert body["items"][0]["is_classified"] is True
+    finally:
+        app.dependency_overrides.clear()
+
+def test_items_endpoint_supports_exact_product_code_filter(tmp_path):
+    service = _make_duplicate_ui_service(tmp_path)
+    client = _client_with_service(service)
+    try:
+        exact_response = client.get(
+            "/api/metal-composition/items",
+            params={"product_code": "dup-232", "product_code_exact": "true"},
+            headers={"X-API-Key": "test-api-key"},
+        )
+
+        assert exact_response.status_code == 200
+        exact_body = exact_response.json()
+        assert exact_body["total"] == 2
+        assert [item["item_id"] for item in exact_body["items"]] == ["mm:2001", "mm:2002"]
+        assert {item["product_code"] for item in exact_body["items"]} == {"DUP-232"}
+
+        contains_response = client.get(
+            "/api/metal-composition/items",
+            params={"product_code": "DUP-232"},
+            headers={"X-API-Key": "test-api-key"},
+        )
+
+        assert contains_response.status_code == 200
+        assert contains_response.json()["total"] == 3
+
+        missing_response = client.get(
+            "/api/metal-composition/items",
+            params={"product_code": "missing-232", "product_code_exact": "true"},
+            headers={"X-API-Key": "test-api-key"},
+        )
+
+        assert missing_response.status_code == 200
+        assert missing_response.json()["total"] == 0
     finally:
         app.dependency_overrides.clear()
 
