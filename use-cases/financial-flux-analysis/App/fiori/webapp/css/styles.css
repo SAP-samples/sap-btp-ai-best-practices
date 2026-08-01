@@ -1,0 +1,862 @@
+/* ==========================================================================
+   Financial Flux Analysis — SAP Fiori Horizon Theme
+   SAP CSS custom properties used throughout for theme compliance.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Global / Reset
+   -------------------------------------------------------------------------- */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+  color: var(--sapTextColor, #32363a);
+}
+
+/* --------------------------------------------------------------------------
+   2. SAP ShellBar branding
+   -------------------------------------------------------------------------- */
+
+/* Ensure ShellBar uses full SAP Horizon styling */
+.fluxShellBar.sapFShellBar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+/* SAP logo image in ShellBar homeIcon */
+.sapFShellBarHomeIcon img {
+  height: 1.25rem;
+  width: auto;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   3. Dynamic Page
+   -------------------------------------------------------------------------- */
+
+.fluxDynamicPage {
+  height: 100%;
+}
+
+/* DynamicPageTitle area */
+.sapFDynamicPageTitle {
+  padding: 0.75rem 2rem;
+  background-color: var(--sapPageHeader_Background, #fff);
+  border-bottom: 1px solid var(--sapPageHeader_BorderColor, #e5e5e5);
+}
+
+/* --------------------------------------------------------------------------
+   4. Page Title
+   -------------------------------------------------------------------------- */
+
+.fluxPageTitle .sapMTitle {
+  font-size: var(--sapFontHeader2Size, 1.375rem);
+  font-weight: 700;
+  color: var(--sapGroup_TitleTextColor, #32363a);
+  line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   5. Filter Bar — enterprise-grade layout
+   -------------------------------------------------------------------------- */
+
+/* Outer container */
+.fluxFilterBar {
+  padding: 1rem 2rem 0.75rem;
+  gap: 0;
+  align-items: flex-end;
+  background-color: var(--sapPageHeader_Background, #fff);
+  flex-wrap: wrap;
+  row-gap: 0.75rem;
+}
+
+/* Individual filter group (label + select) */
+.fluxFilterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-right: 1.25rem;
+}
+
+/* Filter label */
+.fluxFilterLabel.sapMLbl {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  font-weight: 600;
+  color: var(--sapContent_LabelColor, #6a6d70);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Filter select */
+.fluxFilterSelect.sapMSlt {
+  border-radius: 0.375rem;
+  border: 1.5px solid var(--sapField_BorderColor, #89919a);
+  background-color: var(--sapField_Background, #fff);
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 500;
+  transition: border-color 0.15s;
+}
+
+.fluxFilterSelect.sapMSlt:hover {
+  border-color: var(--sapField_Hover_BorderColor, #0070f2);
+}
+
+/* "vs" separator between year selects */
+.fluxFilterVsSep {
+  margin-right: 1.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.fluxFilterVsText.sapMText {
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 600;
+  color: var(--sapContent_LabelColor, #6a6d70);
+  white-space: nowrap;
+}
+
+/* Vertical divider between filter groups */
+.fluxFilterDivider {
+  width: 1px;
+  height: 2.25rem;
+  background-color: var(--sapPageHeader_BorderColor, #e5e5e5);
+  margin: 0 1.25rem 0.25rem;
+  align-self: flex-end;
+}
+
+/* Snapped filter summary (shown when header is collapsed) */
+.fluxFilterSnappedRow {
+  gap: 0.375rem;
+}
+
+.fluxFilterSnappedIcon {
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+.fluxFilterSnappedText.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapContent_LabelColor, #6a6d70);
+  font-weight: 500;
+}
+
+.fluxFilterSnappedCompany.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapHighlightColor, #0070f2);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   6. KPI Summary Row
+   -------------------------------------------------------------------------- */
+
+.fluxKpiRow {
+  padding: 0.75rem 2rem 0.5rem;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.fluxKpiItem {
+  min-width: 9rem;
+}
+
+.fluxKpiLabel {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapContent_LabelColor, #6a6d70);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.fluxKpiValue {
+  font-size: var(--sapFontSize, 0.875rem);
+  color: var(--sapTextColor, #32363a);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   7. Tab Bar
+   -------------------------------------------------------------------------- */
+
+.fluxTabBar.sapMITB {
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+}
+
+.fluxTabBar .sapMITBHead {
+  background-color: var(--sapPageHeader_Background, #fff);
+  border-bottom: 1px solid var(--sapPageHeader_BorderColor, #e5e5e5);
+  padding: 0 2rem;
+}
+
+.fluxTabBar .sapMITBContent {
+  padding: 0;
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+}
+
+/* --------------------------------------------------------------------------
+   8. Variances Container
+   -------------------------------------------------------------------------- */
+
+.fluxVariancesContainer {
+  width: 100%;
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+}
+
+/* --------------------------------------------------------------------------
+   9. Filter Toolbar (Group By + Search inside Variances view)
+   -------------------------------------------------------------------------- */
+
+.fluxFilterToolbar.sapMTB {
+  background-color: var(--sapPageHeader_Background, #fff);
+  border-bottom: 1px solid var(--sapPageHeader_BorderColor, #e5e5e5);
+  padding: 0.5rem 2rem;
+  min-height: 3rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fluxGroupByLabel.sapMLbl {
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 600;
+  color: var(--sapTextColor, #32363a);
+  white-space: nowrap;
+}
+
+.fluxGroupedByText.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapHighlightColor, #0070f2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fluxShowingText.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapContent_LabelColor, #6a6d70);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   10. Analytical Table
+   -------------------------------------------------------------------------- */
+
+.fluxAnalyticalTable.sapMList {
+  width: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: var(--sapList_Background, #fff);
+}
+
+.fluxAnalyticalTable .sapMListTblHeaderCell {
+  background-color: var(--sapList_HeaderBackground, #f5f6f7);
+  color: var(--sapList_HeaderTextColor, #32363a);
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 2px solid var(--sapList_BorderColor, #e5e5e5);
+}
+
+.fluxAnalyticalTable .sapMLIB {
+  border-bottom: 1px solid var(--sapList_BorderColor, #e5e5e5);
+  transition: background-color 0.12s ease;
+}
+
+.fluxAnalyticalTable .sapMLIB:hover {
+  background-color: var(--sapList_Hover_Background, #eaf0fb);
+}
+
+.fluxAnalyticalTable .sapMListTblCell {
+  padding: 0.5rem 0.75rem;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   11. Numeric Cells & Value States
+   -------------------------------------------------------------------------- */
+
+.fluxNumericCell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--sapFontSize, 0.875rem);
+}
+
+.fluxNumericCell.sapMObjectNumber {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.fluxNumericCell .sapMObjectNumberText {
+  font-size: var(--sapFontSize, 0.875rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.sapMObjectNumberStatusSuccess .sapMObjectNumberText {
+  color: var(--sapPositiveColor, #107e3e);
+}
+
+.sapMObjectNumberStatusError .sapMObjectNumberText {
+  color: var(--sapNegativeColor, #bb0000);
+}
+
+.fluxPositiveValue {
+  color: var(--sapPositiveColor, #107e3e);
+  font-weight: 600;
+}
+
+.fluxNegativeValue {
+  color: var(--sapNegativeColor, #bb0000);
+  font-weight: 600;
+}
+
+.fluxNeutralValue {
+  color: var(--sapTextColor, #32363a);
+}
+
+/* --------------------------------------------------------------------------
+   12. Key Link (drilldown) + Account Cell
+   -------------------------------------------------------------------------- */
+
+.fluxKeyLink.sapMLnk {
+  color: var(--sapLinkColor, #0070f2);
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.fluxKeyLink.sapMLnk:hover {
+  color: var(--sapLink_Hover_Color, #0040b0);
+  text-decoration: underline;
+}
+
+/* Account cell: number on top, name below */
+.fluxAccountCell {
+  gap: 0.1rem;
+}
+
+.fluxAccountCode.sapMLnk {
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 600;
+  color: var(--sapLinkColor, #0070f2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.fluxAccountName.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapContent_LabelColor, #6a6d70);
+  font-weight: 400;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 18rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Responsive breakpoints (non-chat)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+  .fluxFilterBar {
+    padding: 0.75rem 1rem 0.5rem;
+  }
+  .fluxKpiRow {
+    padding: 0.5rem 1rem 0.25rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .fluxFilterDivider {
+    display: none;
+  }
+  .fluxFilterGroup {
+    margin-right: 0.75rem;
+  }
+  .fluxKpiItem {
+    min-width: 7rem;
+  }
+  .fluxGroupedByText.sapMText,
+  .fluxShowingText.sapMText {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Chat IA Module — SAP Joule-inspired conversational UI
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Chat root container
+   -------------------------------------------------------------------------- */
+
+.fluxChatRoot {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  height: calc(100vh - 14rem);
+  min-height: 400px;
+  width: 100%;
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+  overflow: hidden;
+}
+
+/* All direct children of chat root stretch full width */
+.fluxChatRoot > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+}
+
+/* --------------------------------------------------------------------------
+   Joule-style header bar
+   -------------------------------------------------------------------------- */
+
+.fluxChatHeader {
+  background: linear-gradient(135deg,
+    var(--sapShell_Background, #354a5e) 0%,
+    #1a3a5c 100%);
+  padding: 0.75rem 1.5rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fluxChatHeaderIcon {
+  color: #7dd3fc;
+}
+
+.fluxChatHeaderTitle.sapMTitle {
+  color: #ffffff;
+  font-size: var(--sapFontSize, 0.875rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.fluxChatHeaderSubtitle.sapMText {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  line-height: 1.3;
+}
+
+.fluxChatClearBtn.sapMBtn {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.fluxChatClearBtn.sapMBtn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   Scrollable message area
+   -------------------------------------------------------------------------- */
+
+.fluxChatMessagesContainer {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem 0.75rem;
+  background-color: var(--sapBackgroundColor, #f5f6f7);
+  scroll-behavior: smooth;
+  min-height: 0;
+}
+
+.fluxChatMessageList.sapMList {
+  background: transparent;
+}
+
+.fluxChatMessageList .sapMLIB {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Message rows
+   -------------------------------------------------------------------------- */
+
+.fluxChatMessageRow {
+  width: 100%;
+  padding: 0.25rem 0;
+  animation: fluxFadeIn 0.2s ease-out;
+}
+
+@keyframes fluxFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Message bubbles — shared base
+   -------------------------------------------------------------------------- */
+
+.fluxChatBubbleUser,
+.fluxChatBubbleAssistant,
+.fluxChatBubbleError {
+  max-width: 72%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  word-break: break-word;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* User bubble — SAP Horizon accent blue */
+.fluxChatBubbleUser {
+  background-color: var(--sapButton_Emphasized_Background, #0070f2);
+  color: var(--sapButton_Emphasized_TextColor, #fff);
+  border-bottom-right-radius: 0.2rem;
+}
+
+/* Assistant bubble — white card */
+.fluxChatBubbleAssistant {
+  background-color: var(--sapTile_Background, #fff);
+  color: var(--sapTextColor, #32363a);
+  border: 1px solid var(--sapTile_BorderColor, #e5e5e5);
+  border-bottom-left-radius: 0.2rem;
+}
+
+/* Error bubble */
+.fluxChatBubbleError {
+  background-color: var(--sapErrorBackground, #ffeaea);
+  color: var(--sapNegativeTextColor, #bb0000);
+  border: 1px solid var(--sapNegativeColor, #bb0000);
+  border-bottom-left-radius: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Bubble header (role label + timestamp)
+   -------------------------------------------------------------------------- */
+
+.fluxChatBubbleHeader {
+  margin-bottom: 0.375rem;
+  gap: 0.375rem;
+}
+
+.fluxChatBubbleRoleIcon {
+  font-size: 0.875rem;
+  color: var(--sapBrandColor, #0070f2);
+}
+
+.fluxChatBubbleLabel.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  font-weight: 700;
+  opacity: 0.75;
+  flex: 1;
+}
+
+.fluxChatBubbleUser .fluxChatBubbleLabel.sapMText {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fluxChatTimestamp.sapMText {
+  font-size: 0.6875rem;
+  opacity: 0.55;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.fluxChatBubbleUser .fluxChatTimestamp.sapMText {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* --------------------------------------------------------------------------
+   Bubble text content
+   -------------------------------------------------------------------------- */
+
+.fluxChatBubbleText {
+  font-size: var(--sapFontSize, 0.875rem);
+  line-height: 1.55;
+}
+
+.fluxChatBubbleUser .fluxChatBubbleText {
+  color: var(--sapButton_Emphasized_TextColor, #fff);
+}
+
+.fluxChatBubbleText .sapMFT {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.fluxChatBubbleText ul {
+  margin: 0.375rem 0 0.375rem 1.25rem;
+  padding: 0;
+}
+
+.fluxChatBubbleText li {
+  margin-bottom: 0.2rem;
+}
+
+.fluxChatBubbleText strong {
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Empty state — Joule welcome screen
+   -------------------------------------------------------------------------- */
+
+.fluxChatEmptyState {
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+  flex: 1;
+}
+
+/* Joule AI avatar circle */
+.fluxJouleAvatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0070f2 0%, #1a3a5c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 4px 16px rgba(0, 112, 242, 0.3);
+}
+
+.fluxJouleAvatarIcon {
+  color: #ffffff;
+}
+
+.fluxChatWelcomeTitle.sapMTitle {
+  font-size: var(--sapFontHeader3Size, 1.125rem);
+  font-weight: 700;
+  color: var(--sapTextColor, #32363a);
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.fluxChatHintText.sapMText {
+  color: var(--sapContent_LabelColor, #6a6d70);
+  font-size: var(--sapFontSize, 0.875rem);
+  max-width: 30rem;
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Suggestion chips — horizontal wrapping
+   -------------------------------------------------------------------------- */
+
+.fluxChatSuggestions {
+  gap: 0.5rem;
+  max-width: 38rem;
+  margin: 0 auto;
+}
+
+.fluxChatSuggestionBtn.sapMBtn {
+  border: 1.5px solid var(--sapButton_BorderColor, #0070f2);
+  border-radius: 1.25rem;
+  color: var(--sapButton_TextColor, #0070f2);
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  font-weight: 500;
+  padding: 0.3rem 0.875rem;
+  height: auto;
+  min-height: 2rem;
+  white-space: nowrap;
+  margin: 0.2rem;
+  background-color: transparent;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.fluxChatSuggestionBtn.sapMBtn:hover {
+  background-color: var(--sapButton_Hover_Background, #e8f1fd);
+  border-color: var(--sapHighlightColor, #0070f2);
+}
+
+/* --------------------------------------------------------------------------
+   Error strip
+   -------------------------------------------------------------------------- */
+
+.fluxChatErrorStrip {
+  margin: 0 1rem 0.5rem;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Joule thinking indicator (animated dots)
+   -------------------------------------------------------------------------- */
+
+.fluxChatBusyRow {
+  padding: 0.5rem 1.5rem 0.25rem;
+  flex-shrink: 0;
+}
+
+.fluxThinkingBubble {
+  background-color: var(--sapTile_Background, #fff);
+  border: 1px solid var(--sapTile_BorderColor, #e5e5e5);
+  border-radius: 0.75rem;
+  border-bottom-left-radius: 0.2rem;
+  padding: 0.625rem 0.875rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.fluxThinkingIcon {
+  font-size: 0.875rem;
+  color: var(--sapBrandColor, #0070f2);
+}
+
+.fluxThinkingLabel.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  font-weight: 700;
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+/* Animated dots */
+.fluxThinkingDots {
+  gap: 0.3rem;
+}
+
+.fluxDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--sapBrandColor, #0070f2);
+  opacity: 0.4;
+  animation: fluxDotPulse 1.4s ease-in-out infinite;
+}
+
+.fluxDot1 { animation-delay: 0s; }
+.fluxDot2 { animation-delay: 0.2s; }
+.fluxDot3 { animation-delay: 0.4s; }
+
+@keyframes fluxDotPulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+  40%           { opacity: 1;   transform: scale(1.1); }
+}
+
+/* --------------------------------------------------------------------------
+   Sticky composer area
+   -------------------------------------------------------------------------- */
+
+.fluxChatComposer {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+  background-color: var(--sapPageFooter_Background, #fff);
+  border-top: 1px solid var(--sapPageFooter_BorderColor, #e5e5e5);
+  padding: 0.75rem 1.5rem 0.75rem;
+}
+
+.fluxChatComposer > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  align-self: stretch !important;
+}
+
+/* Input row: Toolbar resets */
+.fluxChatInputRow.sapMTB {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-end !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: auto !important;
+  min-height: auto !important;
+  gap: 0.75rem;
+}
+
+/* TextArea inside Toolbar grows to fill remaining space */
+.fluxChatInputRow .sapMTextArea,
+.fluxChatInputRow .fluxChatTextArea {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 0 !important;
+}
+
+/* Text area */
+.fluxChatTextArea.sapMTextArea {
+  border-radius: 0.625rem;
+  border: 1.5px solid var(--sapField_BorderColor, #89919a);
+  background-color: var(--sapField_Background, #fff);
+  font-size: var(--sapFontSize, 0.875rem);
+  resize: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fluxChatTextArea.sapMTextArea:focus-within {
+  border-color: var(--sapField_Focus_BorderColor, #0070f2);
+  box-shadow: 0 0 0 2px rgba(0, 112, 242, 0.15);
+  outline: none;
+}
+
+/* Send button — circular */
+.fluxChatSendBtn.sapMBtn {
+  min-width: 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 112, 242, 0.3);
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.fluxChatSendBtn.sapMBtn:hover {
+  box-shadow: 0 3px 10px rgba(0, 112, 242, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Composer footer */
+.fluxChatComposerFooter {
+  padding: 0.25rem 0.125rem 0;
+}
+
+.fluxChatCharCount.sapMText {
+  font-size: var(--sapFontSmallSize, 0.75rem);
+  color: var(--sapContent_LabelColor, #6a6d70);
+}
+
+.fluxChatComposerHint.sapMText {
+  font-size: 0.6875rem;
+  color: var(--sapContent_LabelColor, #6a6d70);
+  opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive adjustments for Chat
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .fluxChatBubbleUser,
+  .fluxChatBubbleAssistant,
+  .fluxChatBubbleError {
+    max-width: 90%;
+  }
+
+  .fluxChatMessagesContainer {
+    padding: 0.75rem 0.75rem 0.5rem;
+  }
+
+  .fluxChatComposer {
+    padding: 0.5rem 0.5rem 0.375rem;
+  }
+
+  .fluxChatHeader {
+    padding: 0.5rem 1rem;
+  }
+
+  .fluxChatSuggestions {
+    max-width: 100%;
+  }
+
+  .fluxChatComposerHint.sapMText {
+    display: none;
+  }
+}

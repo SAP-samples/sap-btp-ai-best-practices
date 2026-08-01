@@ -1,0 +1,331 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Dialog
+        id="idAIAnalysisDialog"
+        title="AI Executive Analysis: {aiResult>/accountName}"
+        contentWidth="60rem"
+        resizable="true"
+        draggable="true"
+        verticalScrolling="true"
+        class="fluxAIDialog">
+
+        <content>
+            <VBox class="sapUiSmallMargin">
+
+                <!-- ======================================================
+                     LEVEL 1 — Executive Summary Panel
+                     ====================================================== -->
+                <Panel
+                    headerText="Executive Summary"
+                    expandable="false"
+                    expanded="true"
+                    backgroundDesign="Solid"
+                    class="sapUiSmallMarginBottom fluxAIPanel">
+
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+
+                            <!-- YoY Metrics row — Current Year first -->
+                            <Label text="Year-over-Year Analysis" design="Bold" class="sapUiTinyMarginBottom" />
+                            <HBox wrap="Wrap" class="fluxAIMetricsRow sapUiSmallMarginBottom">
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="Current Year" class="fluxKpiLabel" />
+                                    <Text text="{aiResult>/currentYearFormatted}" class="fluxKpiValue" />
+                                </VBox>
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="Previous Year" class="fluxKpiLabel" />
+                                    <Text text="{aiResult>/previousYearFormatted}" class="fluxKpiValue" />
+                                </VBox>
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="Annual Delta" class="fluxKpiLabel" />
+                                    <ObjectNumber
+                                        number="{aiResult>/deltaFormatted}"
+                                        state="{aiResult>/deltaState}"
+                                        emphasized="true" />
+                                </VBox>
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="% Change" class="fluxKpiLabel" />
+                                    <ObjectNumber
+                                        number="{aiResult>/deltaPercentFormatted}"
+                                        state="{aiResult>/deltaState}"
+                                        emphasized="false" />
+                                </VBox>
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="Segment" class="fluxKpiLabel" />
+                                    <Text text="{aiResult>/segment}" class="fluxKpiValue" />
+                                </VBox>
+                                <VBox class="fluxAIMetricItem">
+                                    <Label text="Records" class="fluxKpiLabel" />
+                                    <Text text="{aiResult>/recordsSummary}" class="fluxKpiValue" />
+                                </VBox>
+                            </HBox>
+
+                            <!-- Document Types summary -->
+                            <Label
+                                text="Document Types (Current Year)"
+                                design="Bold"
+                                class="sapUiTinyMarginBottom" />
+                            <List
+                                id="idDocTypeList"
+                                items="{aiResult>/docTypes}"
+                                showSeparators="Inner"
+                                backgroundDesign="Transparent"
+                                class="sapUiSmallMarginBottom fluxAIDocTypeList">
+                                <StandardListItem
+                                    title="{aiResult>jeTypeName} ({aiResult>jeType})"
+                                    description="{aiResult>amountFormatted} · {aiResult>count} docs"
+                                    icon="sap-icon://document" />
+                            </List>
+
+                            <!-- Top Suppliers summary -->
+                            <Label
+                                text="Top Suppliers (Current Year)"
+                                design="Bold"
+                                class="sapUiTinyMarginBottom" />
+                            <List
+                                id="idSupplierList"
+                                items="{aiResult>/suppliers}"
+                                showSeparators="Inner"
+                                backgroundDesign="Transparent"
+                                class="sapUiSmallMarginBottom fluxAIDocTypeList">
+                                <StandardListItem
+                                    title="{aiResult>supplier}"
+                                    description="{aiResult>amountFormatted}"
+                                    icon="sap-icon://supplier" />
+                            </List>
+
+                            <!-- ============================================
+                                 Flash Expense Comparative Analysis
+                                 FY vs FY per category + Period Breakdown
+                                 ============================================ -->
+                            <Label
+                                text="{aiResult>/flashVarianceTitle}"
+                                design="Bold"
+                                class="sapUiTinyMarginBottom" />
+
+                            <!-- FY vs FY Comparison Table -->
+                            <Table
+                                id="idFlashTable"
+                                items="{aiResult>/flashItems}"
+                                showSeparators="Inner"
+                                backgroundDesign="Transparent"
+                                noDataText="No Flash Line Item data available for this account."
+                                class="sapUiSmallMarginBottom fluxFlashTable">
+                                <columns>
+                                    <Column width="28%">
+                                        <Text text="Flash Category" />
+                                    </Column>
+                                    <Column width="14%" hAlign="End">
+                                        <Text text="{aiResult>/flashCurrYearLabel}" />
+                                    </Column>
+                                    <Column width="14%" hAlign="End">
+                                        <Text text="{aiResult>/flashPrevYearLabel}" />
+                                    </Column>
+                                    <Column width="16%" hAlign="End">
+                                        <Text text="Delta" />
+                                    </Column>
+                                    <Column width="10%" hAlign="End">
+                                        <Text text="Δ%" />
+                                    </Column>
+                                    <Column width="18%" hAlign="Center">
+                                        <Text text="Impact" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <VBox>
+                                                <Text text="{aiResult>category}" wrapping="true" />
+                                                <Text
+                                                    text="{aiResult>netZeroNote}"
+                                                    class="fluxNetZeroNote"
+                                                    visible="{aiResult>hasNetZero}" />
+                                            </VBox>
+                                            <ObjectNumber
+                                                number="{aiResult>currentFmt}"
+                                                emphasized="false" />
+                                            <ObjectNumber
+                                                number="{aiResult>previousFmt}"
+                                                emphasized="false" />
+                                            <ObjectNumber
+                                                number="{aiResult>deltaFmt}"
+                                                state="{aiResult>deltaState}"
+                                                emphasized="false" />
+                                            <ObjectNumber
+                                                number="{aiResult>deltaPctFmt}"
+                                                state="{aiResult>deltaState}"
+                                                emphasized="false" />
+                                            <ObjectStatus
+                                                text="{aiResult>impactText}"
+                                                state="{aiResult>deltaState}" />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+
+                            <!-- Period Breakdown (expandable) -->
+                            <Panel
+                                id="idFlashPeriodPanel"
+                                headerText="Period Breakdown"
+                                expandable="true"
+                                expanded="false"
+                                backgroundDesign="Transparent"
+                                class="sapUiSmallMarginBottom">
+                                <content>
+                                    <Table
+                                        id="idFlashPeriodTable"
+                                        items="{aiResult>/flashPeriods}"
+                                        showSeparators="Inner"
+                                        backgroundDesign="Transparent"
+                                        noDataText="No period data available."
+                                        class="fluxFlashTable">
+                                        <columns>
+                                            <Column width="10%">
+                                                <Text text="Period" />
+                                            </Column>
+                                            <Column width="26%">
+                                                <Text text="Flash Category" />
+                                            </Column>
+                                            <Column width="14%" hAlign="End">
+                                                <Text text="{aiResult>/flashCurrYearLabel}" />
+                                            </Column>
+                                            <Column width="14%" hAlign="End">
+                                                <Text text="{aiResult>/flashPrevYearLabel}" />
+                                            </Column>
+                                            <Column width="16%" hAlign="End">
+                                                <Text text="Delta" />
+                                            </Column>
+                                            <Column width="10%" hAlign="End">
+                                                <Text text="Δ%" />
+                                            </Column>
+                                            <Column width="10%" hAlign="Center">
+                                                <Text text="Impact" />
+                                            </Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Text text="{aiResult>monthLabel}" />
+                                                    <Text text="{aiResult>category}" wrapping="true" />
+                                                    <ObjectNumber number="{aiResult>currentFmt}" emphasized="false" />
+                                                    <ObjectNumber number="{aiResult>previousFmt}" emphasized="false" />
+                                                    <ObjectNumber number="{aiResult>deltaFmt}" state="{aiResult>deltaState}" emphasized="false" />
+                                                    <ObjectNumber number="{aiResult>deltaPctFmt}" state="{aiResult>deltaState}" emphasized="false" />
+                                                    <ObjectStatus text="{aiResult>impactText}" state="{aiResult>deltaState}" />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </content>
+                            </Panel>
+
+                            <core:HTML content="&lt;hr style='border:none;border-top:1px solid #e5e5e5;margin:0.75rem 0'/&gt;" />
+
+                            <!-- AI Explanation -->
+                            <Label text="AI Analysis" design="Bold" class="sapUiTinyMarginBottom" />
+                            <Text
+                                id="idAIExplanationText"
+                                text="{aiResult>/explanation}"
+                                wrapping="true"
+                                class="fluxAIExplanationText" />
+
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- ======================================================
+                     LEVEL 2 — Line Item Detail Panel (expandable)
+                     ====================================================== -->
+                <Panel
+                    id="idDetailPanel"
+                    headerText="Line Item Detail"
+                    expandable="true"
+                    expanded="false"
+                    backgroundDesign="Solid"
+                    class="fluxAIPanel">
+
+                    <content>
+                        <Table
+                            id="idLineItemsTable"
+                            items="{aiResult>/lineItems}"
+                            growing="true"
+                            growingThreshold="50"
+                            noDataText="Click 'Load Detail' to fetch line items."
+                            backgroundDesign="Transparent"
+                            class="fluxDrilldownTable">
+
+                            <columns>
+                                <Column width="12%">
+                                    <Text text="JE Type" />
+                                </Column>
+                                <Column width="18%">
+                                    <Text text="Journal Entry Text" />
+                                </Column>
+                                <Column width="14%">
+                                    <Text text="Supplier" />
+                                </Column>
+                                <Column width="10%">
+                                    <Text text="Assignment Ref." />
+                                </Column>
+                                <Column width="10%" hAlign="End">
+                                    <Text text="Amount" />
+                                </Column>
+                                <Column width="12%">
+                                    <Text text="Flash Grouping" />
+                                </Column>
+                                <Column width="8%">
+                                    <Text text="Profit Center" />
+                                </Column>
+                                <Column width="8%">
+                                    <Text text="Cost Center" />
+                                </Column>
+                                <Column width="8%">
+                                    <Text text="WBS Element" />
+                                </Column>
+                            </columns>
+
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{aiResult>JE Type Display}" />
+                                        <Text text="{aiResult>Journal Entry Item Text}" wrapping="true" />
+                                        <Text text="{aiResult>Name of Supplier}" />
+                                        <Text text="{aiResult>Assignment Reference}" />
+                                        <ObjectNumber
+                                            number="{aiResult>amount_numeric}"
+                                            emphasized="false" />
+                                        <ObjectStatus
+                                            text="{aiResult>Flash Grouping}"
+                                            state="{= ${aiResult>Flash Grouping} === 'Employee Expense'       ? 'Information' :
+                                                       ${aiResult>Flash Grouping} === 'Outside Services'       ? 'Warning'     :
+                                                       ${aiResult>Flash Grouping} === 'Repair and Maintenance' ? 'Error'       :
+                                                       ${aiResult>Flash Grouping} === 'Travel and Entertainment' ? 'Success'   : 'None'}" />
+                                        <Text text="{aiResult>Profit Center}" />
+                                        <Text text="{aiResult>Cost Center}" />
+                                        <Text text="{aiResult>WBS Element}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+
+        <!-- Footer buttons -->
+        <beginButton>
+            <Button text="Close" press="onAIDialogClose" />
+        </beginButton>
+        <endButton>
+            <Button
+                text="Load Detail"
+                icon="sap-icon://detail-view"
+                type="Emphasized"
+                press="onExplainDetailPress" />
+        </endButton>
+
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Flux Analysis</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- SAP UI5 Bootstrap -->
+    <script
+        id="sap-ui-bootstrap"
+        src="https://ui5.sap.com/1.120.0/resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-libs="sap.m,sap.ui.layout,sap.f,sap.ui.core"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-async="true"
+        data-sap-ui-preload="off"
+        data-sap-ui-resourceroots='{"financial.flux.analysis": "./"}'
+        data-sap-ui-frameOptions="trusted">
+    </script>
+
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            new sap.ui.core.ComponentContainer({
+                name: "financial.flux.analysis",
+                settings: {
+                    id: "component"
+                },
+                async: true,
+                height: "100%"
+            }).placeAt("content");
+        });
+    </script>
+</head>
+<body class="sapUiBody" id="content" style="height:100%;overflow:hidden;">
+</body>
+</html>

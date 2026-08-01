@@ -1,0 +1,203 @@
+<mvc:View
+    controllerName="financial.flux.analysis.controller.Chat"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <VBox
+        id="idChatRoot"
+        height="100%"
+        alignItems="Stretch"
+        class="fluxChatRoot">
+
+        <!-- ============================================================
+             JOULE HEADER BAR
+             ============================================================ -->
+        <HBox
+            id="idChatHeader"
+            alignItems="Center"
+            justifyContent="SpaceBetween"
+            class="fluxChatHeader">
+            <HBox alignItems="Center">
+                <core:Icon
+                    src="sap-icon://ai"
+                    size="1.25rem"
+                    class="fluxChatHeaderIcon sapUiTinyMarginEnd" />
+                <VBox>
+                    <Title text="Financial AI Assistant" level="H4" class="fluxChatHeaderTitle" />
+                    <Text text="Powered by SAP AI Core" class="fluxChatHeaderSubtitle" />
+                </VBox>
+            </HBox>
+            <Button
+                id="idChatClearBtn"
+                icon="sap-icon://delete"
+                type="Transparent"
+                tooltip="Clear conversation"
+                press="onClearConversation"
+                class="fluxChatClearBtn" />
+        </HBox>
+
+        <!-- ============================================================
+             SCROLLABLE MESSAGE AREA
+             ============================================================ -->
+        <VBox
+            id="idChatMessagesContainer"
+            class="fluxChatMessagesContainer"
+            fitContainer="true">
+
+            <!-- Message list (populated by controller) -->
+            <List
+                id="idChatMessageList"
+                showSeparators="None"
+                backgroundDesign="Transparent"
+                class="fluxChatMessageList" />
+
+            <!-- EMPTY STATE: Joule-style welcome -->
+            <VBox
+                id="idChatEmptyState"
+                visible="true"
+                class="fluxChatEmptyState"
+                alignItems="Center"
+                justifyContent="Center">
+
+                <!-- AI Avatar -->
+                <VBox class="fluxJouleAvatar sapUiSmallMarginBottom" alignItems="Center">
+                    <core:Icon
+                        src="sap-icon://ai"
+                        size="2.5rem"
+                        class="fluxJouleAvatarIcon" />
+                </VBox>
+
+                <Title
+                    text="Hello, I'm your Financial AI Assistant"
+                    level="H3"
+                    textAlign="Center"
+                    class="fluxChatWelcomeTitle sapUiSmallMarginBottom" />
+
+                <Text
+                    text="Ask me anything about G/L accounts, cost centers, suppliers, variances, and financial performance."
+                    textAlign="Center"
+                    class="fluxChatHintText sapUiSmallMarginBottom" />
+
+                <!-- Suggestion chips — horizontal wrapping -->
+                <FlexBox
+                    wrap="Wrap"
+                    justifyContent="Center"
+                    class="fluxChatSuggestions sapUiSmallMarginTop">
+                    <Button
+                        text="Show biggest variances"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                    <Button
+                        text="Top cost centers"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                    <Button
+                        text="Largest supplier increase"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                    <Button
+                        text="Why did account 61005002 increase?"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                    <Button
+                        text="Compare FY2025 vs FY2026"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                    <Button
+                        text="What caused repair &amp; maintenance variance?"
+                        type="Transparent"
+                        press="onSuggestionPress"
+                        class="fluxChatSuggestionBtn" />
+                </FlexBox>
+
+            </VBox>
+
+        </VBox>
+
+        <!-- ============================================================
+             ERROR STRIP
+             ============================================================ -->
+        <MessageStrip
+            id="idChatErrorStrip"
+            text=""
+            type="Error"
+            showIcon="true"
+            showCloseButton="true"
+            visible="false"
+            class="fluxChatErrorStrip"
+            close="onErrorStripClose" />
+
+        <!-- ============================================================
+             THINKING INDICATOR (Joule-style)
+             ============================================================ -->
+        <HBox
+            id="idChatBusyRow"
+            visible="false"
+            alignItems="Center"
+            class="fluxChatBusyRow">
+            <VBox class="fluxThinkingBubble">
+                <HBox alignItems="Center">
+                    <core:Icon src="sap-icon://ai" class="fluxThinkingIcon sapUiTinyMarginEnd" />
+                    <Text text="AI Assistant" class="fluxThinkingLabel sapUiTinyMarginEnd" />
+                </HBox>
+                <HBox alignItems="Center" class="fluxThinkingDots sapUiTinyMarginTop">
+                    <VBox class="fluxDot fluxDot1" />
+                    <VBox class="fluxDot fluxDot2" />
+                    <VBox class="fluxDot fluxDot3" />
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <!-- ============================================================
+             STICKY COMPOSER AREA
+             ============================================================ -->
+        <VBox width="100%" alignItems="Stretch" class="fluxChatComposer">
+
+            <!-- Input row: Toolbar always stretches to full width in SAPUI5 -->
+            <Toolbar class="fluxChatInputRow sapUiNoContentPadding">
+                <TextArea
+                    id="idChatInput"
+                    placeholder="Ask about accounts, cost centers, suppliers, variances..."
+                    rows="2"
+                    growing="false"
+                    width="auto"
+                    maxLength="1000"
+                    liveChange="onInputLiveChange"
+                    class="fluxChatTextArea" />
+                <Button
+                    id="idChatSendBtn"
+                    icon="sap-icon://paper-plane"
+                    type="Emphasized"
+                    enabled="false"
+                    tooltip="Send message (Enter)"
+                    press="onSendMessage"
+                    class="fluxChatSendBtn" />
+            </Toolbar>
+
+            <!-- Footer row: char count + hint -->
+            <HBox
+                justifyContent="SpaceBetween"
+                alignItems="Center"
+                width="100%"
+                class="fluxChatComposerFooter">
+                <Text
+                    id="idChatCharCount"
+                    text=""
+                    class="fluxChatCharCount" />
+                <Text
+                    text="Press Enter to send · Shift+Enter for new line"
+                    class="fluxChatComposerHint" />
+            </HBox>
+
+        </VBox>
+
+    </VBox>
+
+</mvc:View>

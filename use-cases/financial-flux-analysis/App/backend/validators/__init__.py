@@ -1,0 +1,1 @@
+"""Data validators — integrity checks for the enriched financial dataset."""
