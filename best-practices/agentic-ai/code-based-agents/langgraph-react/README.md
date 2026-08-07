@@ -1,6 +1,6 @@
 # LangGraph ReAct Agents
 
-This section contains three progressive Jupyter notebooks that demonstrate how to build **ReAct agents using LangGraph** on SAP BTP. The examples start with a basic tool-calling agent and build toward an enterprise procurement workflow, showing how the same underlying pattern scales to real-world business scenarios.
+This section contains four progressive Jupyter notebooks that demonstrate how to build and observe **ReAct agents using LangGraph** on SAP BTP. The examples start with a basic tool-calling agent, build toward an enterprise procurement workflow, and finish with a provider-aware token-caching experiment.
 
 ## Purpose
 
@@ -13,6 +13,8 @@ While the `native-react/` example shows the ReAct loop from scratch, these noteb
 | `01_react_agent.ipynb` | Basic ReAct agent with simple tools |
 | `02_multi_step_workflow.ipynb` | Multi-agent routing with conditional edges and specialized agents |
 | `03_procurement_workflow.ipynb` | Enterprise procurement workflow with business logic and mock SAP data |
+| `04_token_caching.ipynb` | OpenAI, Claude/Bedrock, and Gemini cache telemetry in one ReAct loop |
+| `normalize_usage.py` | Provider-neutral cache and token usage normalization for notebook 4 |
 | `tools.py` | Simple tools shared across notebooks 1 and 2 (`add`, `multiply`, `get_weather`) |
 | `procurement_tools.py` | Enterprise tools for notebook 3 (product lookup, inventory, budget, suppliers, purchase orders) |
 | `data/` | CSV files with mock enterprise data (products, inventory, budgets, suppliers) |
@@ -103,6 +105,22 @@ START --> assistant --> [tools_condition] --> tools --> assistant --> ... --> EN
 - Procedural workflow encoded in the system prompt
 - Graceful failure handling driven by the LLM (budget exceeded, out of stock, product not found)
 - Mock data loaded from CSV files simulating SAP systems (Material Master, Warehouse Management, Controlling, Vendor Master)
+
+### Notebook 4: Token Caching Across Providers
+
+**Goal**: Measure how caching changes uncached prompt processing inside a simple, append-only ReAct loop.
+
+The graph keeps the same `assistant -> tools -> assistant` topology while changing only the SAP Gen AI Hub model adapter and cache strategy:
+
+- OpenAI `ChatOpenAI`: passive caching
+- Claude `ChatBedrockConverse`: explicit `cache_control`
+- Gemini `ChatGoogleGenerativeAI`: passive implicit caching
+
+**Demonstrates**:
+- Per-call normalized input, cache-read, cache-write, output, and total tokens
+- Cold-run nonces and stable prompt prefixes
+- Provider thresholds and consecutive-turn verification
+- Why total prompt volume and uncached input are different measurements
 
 ## Tools
 
@@ -196,6 +214,8 @@ result = agent.invoke({"messages": [("user", "your question")]})
    jupyter lab 01_react_agent.ipynb
    ```
 
+Notebook 4 makes live calls to three configured deployments. Review its model configuration and expected call count before running it.
+
 ## Key Takeaways
 
 - **Framework benefits**: LangGraph handles message state, tool execution, and routing logic, letting you focus on tool design and business logic instead of parsing and loop management.
@@ -203,3 +223,4 @@ result = agent.invoke({"messages": [("user", "your question")]})
 - **Graph complexity is not always necessary**: Notebook 3 shows that a simple two-node graph with well-designed tools and a detailed system prompt can handle complex multi-step business workflows.
 - **Tool design matters more than graph design**: Tools that return contextual information (like inventory at all plants) reduce the number of agent iterations and improve response quality.
 - **Scoped tool access** (Notebook 2) is a practical pattern for limiting cost, reducing errors, and enforcing domain boundaries in multi-agent systems.
+- **Caching must be measured** (Notebook 4): keep the transcript append-only, instrument each model call, and inspect consecutive cache reads instead of assuming a provider cached the prompt.
