@@ -1,0 +1,54 @@
+# ── OS / Editor ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Python ───────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ── Node / Angular ───────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+
+# ── PyInstaller / build artifacts ────────────────────────────────────────
+build/
+dist/
+*.spec.bak
+
+# ── Executables (packaged agents — never commit) ────────────────────────
+Executable_Agents/
+
+# ── Downloads / runtime data ─────────────────────────────────────────────
+downloads/
+backend/downloads/
+
+# ── Browser profile / cookies / sessions (sensitive) ────────────────────
+backend/browser_profile/
+backend/cookies.json
+backend/session_cookies.json
+cookies.json
+session_cookies.json
+
+# ── Secrets / credentials ────────────────────────────────────────────────
+.env
+*.env
+!*.env.example
+backend/.env
+kyma-kubeconfig.yaml
+*kubeconfig*.yaml
+!*kubeconfig*.example.yaml
+
+# ── Misc ─────────────────────────────────────────────────────────────────
+*.log
+*.zip
+ejemplos/

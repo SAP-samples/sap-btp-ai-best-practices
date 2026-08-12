@@ -1,0 +1,46 @@
+# kyma/job-trigger.yaml
+# One-off Job — used when the user clicks "Run Now" in the CF UI.
+# The CF backend applies this dynamically via kubectl or the Kubernetes API.
+# The job name is timestamped so multiple triggers don't conflict.
+#
+# Manual trigger (for testing):
+#   kubectl apply -f kyma/job-trigger.yaml -n <your-namespace>
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ibp-extractor-manual        # CF backend replaces this with a timestamped name
+  labels:
+    app: ibp-extractor
+    trigger: manual
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: ibp-extractor
+          image: <your-registry>/ibp-extractor-agent:latest
+          imagePullPolicy: Always
+          env:
+            - name: JOB_NAME
+              value: "__JOB_NAME__"          # replaced by CF backend at trigger time
+            - name: CF_BACKEND_URL
+              value: "https://<your-cf-backend-host>"
+            - name: COOKIES_FILE
+              value: "/app/cookies/session_cookies.json"
+          volumeMounts:
+            - name: cookies-volume
+              mountPath: /app/cookies
+              readOnly: true
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+      volumes:
+        - name: cookies-volume
+          secret:
+            secretName: ibp-cookies
