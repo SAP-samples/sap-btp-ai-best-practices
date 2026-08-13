@@ -7,10 +7,10 @@ applications:
     memory: 512M
     disk_quota: 2G
     routes:
-      - route: grir-api.cfapps.eu10-005.hana.ondemand.com
+      - route: grir-api.cfapps.((cf_app_domain))
     env:
-      ALLOWED_ORIGIN: https://grir-ui.cfapps.eu10-005.hana.ondemand.com
-      API_BASE_URL: https://grir-api.cfapps.eu10-005.hana.ondemand.com
+      ALLOWED_ORIGIN: https://grir-ui.cfapps.((cf_app_domain))
+      API_BASE_URL: https://grir-api.cfapps.((cf_app_domain))
       APP_ENV: production
       API_KEY: ((api_key))
       AICORE_AUTH_URL: ((aicore_auth_url))
@@ -25,8 +25,8 @@ applications:
     command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
     memory: 256M
     routes:
-      - route: grir-ui.cfapps.eu10-005.hana.ondemand.com
+      - route: grir-ui.cfapps.((cf_app_domain))
     env:
-      VITE_API_BASE_URL: https://grir-api.cfapps.eu10-005.hana.ondemand.com
-      VITE_APP_HOST: grir-ui.cfapps.eu10-005.hana.ondemand.com
+      VITE_API_BASE_URL: https://grir-api.cfapps.((cf_app_domain))
+      VITE_APP_HOST: grir-ui.cfapps.((cf_app_domain))
       VITE_API_KEY: ((api_key))

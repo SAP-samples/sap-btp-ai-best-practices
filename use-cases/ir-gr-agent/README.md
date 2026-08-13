@@ -103,7 +103,7 @@ npm run dev
    ```bash
    cf login -a <API_ENDPOINT> --sso
    # Example:
-   cf login -a https://api.cf.eu10-004.hana.ondemand.com -o btp-ai-sandbox -s Dev
+   cf login -a https://api.cf.<YOUR_CF_REGION>.hana.ondemand.com -o <YOUR_ORG> -s <YOUR_SPACE>
    ```
 
 2. **Update `manifest.yaml`**
