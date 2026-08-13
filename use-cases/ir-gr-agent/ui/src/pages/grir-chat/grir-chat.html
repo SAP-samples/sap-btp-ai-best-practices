@@ -1,0 +1,115 @@
+<div class="jl-shell" id="jlShell" data-theme="light">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────── -->
+  <aside class="jl-sidebar" id="jlSidebar">
+    <div class="jl-sidebar-header">
+      <button class="jl-icon-btn" id="jlSidebarToggle" title="Close panel">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="3.5" width="16" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="8.25" width="16" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="13" width="16" height="1.5" rx="0.75" fill="currentColor"/></svg>
+      </button>
+      <span class="jl-sidebar-title">GR/IR Assistant</span>
+    </div>
+    <button class="jl-new-chat-btn" id="jlNewChatBtn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      New conversation
+    </button>
+    <div class="jl-sessions-label">History</div>
+    <ul class="jl-session-list" id="jlSessionList"></ul>
+    <div class="jl-sidebar-footer">
+      <div class="jl-sidebar-footer-row">
+        <span class="jl-badge-protocol">GR/IR Agent</span>
+        <button class="jl-icon-btn jl-theme-btn" id="jlThemeToggle" title="Toggle theme">
+          <svg class="jl-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="jl-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CHAT PANEL ────────────────────────────── -->
+  <main class="jl-chat-panel" id="jlChatPanel">
+
+    <header class="jl-chat-header">
+      <button class="jl-icon-btn" id="jlSidebarToggleMobile">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1" y="3.5" width="16" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="8.25" width="16" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="13" width="16" height="1.5" rx="0.75" fill="currentColor"/></svg>
+      </button>
+      <div class="jl-chat-header-brand">
+        <svg class="jl-header-diamond" width="28" height="30" viewBox="0 0 130 130" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M46.6026,37C45.3357,37,44.1364,37.5715,43.3379,38.5556L24.9405,61.23C23.7324,62.7189,23.6834,64.8368,24.8211,66.3802L61.616,116.29C62.4087,117.365,63.6647,118,65,118C66.3353,118,67.5913,117.365,68.384,116.29L105.179,66.3802C106.317,64.8368,106.268,62.7189,105.06,61.23L86.6621,38.5556C85.8636,37.5715,84.6643,37,83.3974,37H46.6026ZM88.3249,63.5392C79.643,62.0748,76.8647,55.2489,75.9469,50.9797C75.8477,50.5577,75.302,50.5825,75.2276,51.0045C73.764,59.6919,66.9425,62.4719,62.6759,63.3903C62.2543,63.4896,62.2791,64.0357,62.7008,64.1101C71.3827,65.5746,74.1609,72.4004,75.0787,76.6697C75.178,77.0917,75.7237,77.0668,75.7981,76.6449C77.2616,67.9574,84.0832,65.1774,88.3497,64.259C88.7714,64.1598,88.7466,63.6137,88.3249,63.5392Z"
+            fill="url(#jlDg1)"/>
+          <defs><linearGradient id="jlDg1" x1="0" y1="0" x2="130" y2="130" gradientUnits="userSpaceOnUse"><stop stop-color="#5d36ff"/><stop offset="1" stop-color="#a100c2"/></linearGradient></defs>
+        </svg>
+        <span class="jl-header-title">Joule <span class="jl-header-subtitle">GR/IR Assistant</span></span>
+      </div>
+      <div class="jl-header-actions">
+        <button class="jl-icon-btn" id="jlRestartBtn" title="Restart conversation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.51 15a9 9 0 102.36-9.36L1 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="jl-messages-area" id="jlMessagesArea">
+
+      <!-- Welcome state -->
+      <div class="jl-welcome-state" id="jlWelcomeState">
+        <div class="jl-welcome-diamond-wrap">
+          <svg class="jl-welcome-sparkle" width="100" height="108" viewBox="0 0 130 130" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M46.6026,37C45.3357,37,44.1364,37.5715,43.3379,38.5556L24.9405,61.23C23.7324,62.7189,23.6834,64.8368,24.8211,66.3802L61.616,116.29C62.4087,117.365,63.6647,118,65,118C66.3353,118,67.5913,117.365,68.384,116.29L105.179,66.3802C106.317,64.8368,106.268,62.7189,105.06,61.23L86.6621,38.5556C85.8636,37.5715,84.6643,37,83.3974,37H46.6026ZM88.3249,63.5392C79.643,62.0748,76.8647,55.2489,75.9469,50.9797C75.8477,50.5577,75.302,50.5825,75.2276,51.0045C73.764,59.6919,66.9425,62.4719,62.6759,63.3903C62.2543,63.4896,62.2791,64.0357,62.7008,64.1101C71.3827,65.5746,74.1609,72.4004,75.0787,76.6697C75.178,77.0917,75.7237,77.0668,75.7981,76.6449C77.2616,67.9574,84.0832,65.1774,88.3497,64.259C88.7714,64.1598,88.7466,63.6137,88.3249,63.5392Z"
+              fill="url(#jlDgW)"/>
+            <path d="M101.542,20.3013C102.16,23.126,104.031,27.6422,109.878,28.6111C110.162,28.6604,110.179,29.0217,109.895,29.0874C107.022,29.695,102.428,31.5343,101.442,37.2822C101.392,37.5614,101.024,37.5778,100.958,37.2986C100.34,34.4739,98.4685,29.9578,92.6215,28.9888C92.3375,28.9396,92.3208,28.5783,92.6048,28.5126C95.4782,27.9049,100.072,26.0656,101.058,20.3178C101.108,20.0386,101.476,20.0222,101.542,20.3013Z" fill="url(#jlDgW)"/>
+            <path d="M42.2811,0.302036C43.1925,4.53904,45.9515,11.3133,54.5733,12.7667C54.9921,12.8406,55.0167,13.3826,54.598,13.4811C50.361,14.3925,43.5867,17.1515,42.1333,25.7733C42.0594,26.1921,41.5174,26.2167,41.4189,25.798C40.5075,21.561,37.7485,14.7867,29.1267,13.3333C28.7079,13.2594,28.6833,12.7174,29.102,12.6189C33.339,11.7075,40.1133,8.94848,41.5667,0.326668C41.6406,-0.0921059,42.1826,-0.116738,42.2811,0.302036Z" fill="url(#jlDgW)"/>
+            <path d="M16.7874,26.3048C17.395,29.1782,19.2344,33.7722,24.9822,34.7579C25.2614,34.808,25.2778,35.1755,24.9986,35.2423C22.174,35.8604,17.6578,37.7315,16.6889,43.5784C16.6396,43.8624,16.2783,43.8791,16.2126,43.5951C15.605,40.7218,13.7657,36.1277,8.01778,35.1421C7.7386,35.092,7.72218,34.7244,8.00136,34.6576C10.826,34.0395,15.3422,32.1685,16.3111,26.3215C16.3604,26.0375,16.7217,26.0208,16.7874,26.3048Z" fill="url(#jlDgW)"/>
+            <defs><linearGradient id="jlDgW" x1="0" y1="0" x2="130" y2="130" gradientUnits="userSpaceOnUse"><stop stop-color="#5d36ff"/><stop offset="1" stop-color="#a100c2"/></linearGradient></defs>
+          </svg>
+        </div>
+        <h1 class="jl-welcome-title">Welcome to GR/IR Assistant</h1>
+        <p class="jl-welcome-subtitle">Ask about purchase orders, find discrepancies, or get an issue summary.</p>
+        <div class="jl-suggestions-grid">
+          <button class="jl-suggestion-chip" data-query="Any issues with PO 8000003848?">
+            Any issues with PO 8000003848?
+          </button>
+          <button class="jl-suggestion-chip" data-query="Show me all missing GR items">
+            Show me all missing GR items
+          </button>
+          <button class="jl-suggestion-chip" data-query="Give me a summary of all issues">
+            Give me a summary of all issues
+          </button>
+          <button class="jl-suggestion-chip" data-query="Which vendors have the most discrepancies?">
+            Which vendors have the most discrepancies?
+          </button>
+          <button class="jl-suggestion-chip" data-query="Show me items open more than 90 days">
+            Show me items open more than 90 days
+          </button>
+          <button class="jl-suggestion-chip" data-query="Find all high dollar urgency items">
+            Find all high dollar urgency items
+          </button>
+        </div>
+      </div>
+
+      <!-- Conversation populated by JS -->
+      <div class="jl-conversation" id="jlConversation"></div>
+
+    </div><!-- /messages-area -->
+
+    <div class="jl-input-area">
+      <div class="jl-input-wrapper">
+        <textarea
+          id="jlChatInput"
+          class="jl-chat-textarea"
+          placeholder="Ask about a PO, issue type, or vendor…"
+          rows="1"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button class="jl-send-btn" id="jlSendBtn" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <p class="jl-input-disclaimer">Joule uses AI. Please verify results.</p>
+    </div>
+
+  </main>
+</div>
