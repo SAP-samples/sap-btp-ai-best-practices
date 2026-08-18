@@ -1,0 +1,23 @@
+---
+applications:
+  - name: docai-backend
+    memory: 1024M
+    disk_quota: 1024M
+    instances: 1
+    buildpacks:
+      - python_buildpack
+    command: gunicorn api:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level info
+    health-check-type: http
+    health-check-http-endpoint: /health
+    env:
+      PYTHONPATH: .
+      APP_ENV: production
+      LOG_LEVEL: INFO
+         # SAP AI Core / GenAI Hub
+      AICORE_AUTH_URL: "https://dts-ai-core.authentication.eu10.hana.ondemand.com"
+      AICORE_CLIENT_ID: "sb-8fad0827-27c5-43b0-a9ab-3a3a4ffb2785!b217189|aicore!b540"
+      AICORE_CLIENT_SECRET: "5a204956-c8ea-4189-a4be-abae7f6d5c08$O5gIBT3xZbKWk98MpfTbZ0W7NqHncWRkRCmQLWplqQU="
+      AICORE_BASE_URL: "https://api.ai.prod.eu-central-1.aws.ml.hana.ondemand.com/v2"
+      AICORE_RESOURCE_GROUP: "default"
+      
+  

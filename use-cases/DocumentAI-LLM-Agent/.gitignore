@@ -1,0 +1,97 @@
+# ============================================================
+# CREDENCIALES Y CONFIGURACIÓN SENSIBLE
+# ============================================================
+# Archivo de credenciales SAP (clientid, clientsecret, token_url, etc.)
+docai.json
+**/docai.json
+backend/docai.json
+/backend/docai.json
+
+# Variables de entorno (pueden contener API keys, URLs internas, etc.)
+# Ignora cualquier .env en cualquier subdirectorio del repositorio
+.env
+.env.*
+**/.env
+**/.env.*
+# Excepciones: archivos de ejemplo que SÍ deben versionarse
+!**/.env.example
+!**/.env_example
+!frontend/.env.example
+!backend/post/create/.env_example
+
+# Otros archivos con secretos comunes
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+credentials.json
+
+# ============================================================
+# DEPENDENCIAS
+# ============================================================
+frontend/node_modules/
+backend/__pycache__/
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ============================================================
+# BUILD / DIST
+# ============================================================
+frontend/dist/
+frontend/.vite/
+
+# ============================================================
+# OUTPUTS GENERADOS EN RUNTIME
+# ============================================================
+backend/output/
+backend/invoice/
+
+# ============================================================
+# SISTEMA OPERATIVO
+# ============================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# ============================================================
+# IDEs Y EDITORES
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+# LOGS Y TEMPORALES
+# ============================================================
+*.log
+*.tmp
+*.temp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================================
+# PYTHON VIRTUAL ENVIRONMENTS
+# ============================================================
+.venv/
+venv/
+env/
+ENV/
+
+# ============================================================
+# ARCHIVOS DE DIAGRAMAS TEMPORALES
+# ============================================================
+backend/.$*.bkp
+backend/other-cool-stuff/.$*.bkp
