@@ -1,0 +1,32 @@
+---
+applications:
+  - name: docai-backend
+    memory: 1024M
+    disk_quota: 1024M
+    instances: 1
+    buildpacks:
+      - python_buildpack
+    command: gunicorn api:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level info
+    health-check-type: http
+    health-check-http-endpoint: /health
+    env:
+      PYTHONPATH: .
+      APP_ENV: production
+      LOG_LEVEL: INFO
+      # SAP AI Core / GenAI Hub — replace with your own service key values
+      AICORE_AUTH_URL: "https://<your-subaccount>.authentication.<region>.hana.ondemand.com"
+      AICORE_CLIENT_ID: "<your-aicore-client-id>"
+      AICORE_CLIENT_SECRET: "<your-aicore-client-secret>"
+      AICORE_BASE_URL: "https://api.ai.prod.<region>.aws.ml.hana.ondemand.com/v2"
+      AICORE_RESOURCE_GROUP: "default"
+      # SAP Document AI — replace with your own DocAI service key values
+      DOC_AI_CLIENT_ID: "<your-docai-client-id>"
+      DOC_AI_CLIENT_SECRET: "<your-docai-client-secret>"
+      DOC_AI_AUTH_URL: "https://<your-docai-tenant>.authentication.<region>.hana.ondemand.com"
+      DOC_AI_BASE_URL: "https://<region>.doc.cloud.sap"
+      # SAP S/4HANA connection — replace with your system details
+      S4_BASE_URL: "https://<your-s4-host>:<port>"
+      S4_CLIENT: "100"
+      S4_USERNAME: "<your-s4-username>"
+      S4_PASSWORD: "<your-s4-password>"
+      S4_VERIFY: "true"
