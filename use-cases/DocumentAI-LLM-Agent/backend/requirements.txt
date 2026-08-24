@@ -1,0 +1,12 @@
+requests
+python-dotenv
+langchain
+langchain-core
+sap-ai-sdk-gen[all]
+pymupdf
+pdfplumber
+fastapi
+uvicorn[standard]
+gunicorn
+python-multipart
+rapidfuzz

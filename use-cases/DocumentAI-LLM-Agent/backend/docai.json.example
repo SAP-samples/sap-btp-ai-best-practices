@@ -1,0 +1,13 @@
+{
+  "sap.cloud.service": "com.sap.apps.documentinformationextraction",
+  "uaa": {
+    "clientid": "<your-docai-client-id>",
+    "clientsecret": "<your-docai-client-secret>",
+    "url": "https://<your-docai-tenant>.authentication.<region>.hana.ondemand.com",
+    "identityzone": "<your-identityzone>",
+    "tenantid": "<your-tenant-id>"
+  },
+  "url": "https://<region>.doc.cloud.sap",
+  "resturl": "/document-information-extraction/v1/",
+  "odataurl": "/document-ai/v1/"
+}

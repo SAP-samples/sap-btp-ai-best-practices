@@ -1,6 +1,6 @@
 # LangGraph ReAct Agents
 
-This section contains three progressive Jupyter notebooks that demonstrate how to build **ReAct agents using LangGraph** on SAP BTP. The examples start with a basic tool-calling agent and build toward an enterprise procurement workflow, showing how the same underlying pattern scales to real-world business scenarios.
+This section contains five progressive Jupyter notebooks that demonstrate how to build and observe **ReAct agents using LangGraph** on SAP BTP. The examples start with a basic tool-calling agent, build toward an enterprise procurement workflow, and then explore token caching and checkpointed session state.
 
 ## Purpose
 
@@ -13,6 +13,9 @@ While the `native-react/` example shows the ReAct loop from scratch, these noteb
 | `01_react_agent.ipynb` | Basic ReAct agent with simple tools |
 | `02_multi_step_workflow.ipynb` | Multi-agent routing with conditional edges and specialized agents |
 | `03_procurement_workflow.ipynb` | Enterprise procurement workflow with business logic and mock SAP data |
+| `04_token_caching.ipynb` | GPT-5.6 Luna implicit and explicit prompt-cache telemetry in one ReAct loop |
+| `05_checkpointing_and_session_state.ipynb` | Checkpoint continuity, thread isolation, and trimmed model context |
+| `normalize_usage.py` | Cache and token usage normalization for notebook 4 |
 | `tools.py` | Simple tools shared across notebooks 1 and 2 (`add`, `multiply`, `get_weather`) |
 | `procurement_tools.py` | Enterprise tools for notebook 3 (product lookup, inventory, budget, suppliers, purchase orders) |
 | `data/` | CSV files with mock enterprise data (products, inventory, budgets, suppliers) |
@@ -21,7 +24,7 @@ While the `native-react/` example shows the ReAct loop from scratch, these noteb
 
 ## Notebook Progression
 
-The three notebooks form a learning path where complexity increases through **tool design, state management, and prompt sophistication** -- not just graph topology.
+The five notebooks form a learning path where complexity increases through **tool design, state management, prompt sophistication, runtime efficiency, and session continuity** — not just graph topology.
 
 ### Notebook 1: Basic ReAct Agent
 
@@ -33,7 +36,7 @@ The graph has two nodes:
 
 Routing uses `tools_condition`: if the LLM response contains tool calls, go to the tools node; otherwise, end.
 
-```
+```text
 START --> assistant --> [tools_condition] --> tools --> assistant --> ... --> END
                                          \-> END
 ```
@@ -55,7 +58,7 @@ The graph adds an LLM-based classifier node at the entry point. It determines th
 - **weather_agent**: `get_weather` only
 - **general_agent**: all tools
 
-```
+```text
                     START
                       |
                  [classifier]
@@ -93,7 +96,7 @@ This notebook uses the same two-node graph as Notebook 1, but replaces the toy t
 5. Check supplier constraints (lead time, minimum order)
 6. Create a purchase order draft
 
-```
+```text
 START --> assistant --> [tools_condition] --> tools --> assistant --> ... --> END
                                          \-> END
 ```
@@ -103,6 +106,34 @@ START --> assistant --> [tools_condition] --> tools --> assistant --> ... --> EN
 - Procedural workflow encoded in the system prompt
 - Graceful failure handling driven by the LLM (budget exceeded, out of stock, product not found)
 - Mock data loaded from CSV files simulating SAP systems (Material Master, Warehouse Management, Controlling, Vendor Master)
+
+### Notebook 4: Token Caching with GPT-5.6 Luna
+
+**Goal**: Make implicit and explicit prompt-cache behavior visible inside a simple, append-only ReAct loop.
+
+The notebook uses `gpt-5.6-luna` through SAP Generative AI Hub's LangChain Responses API. It first runs a deterministic ReAct sequence with implicit caching and then compares it with an explicit breakpoint placed on the stable system content.
+
+**Demonstrates**:
+- Raw `AIMessage.usage_metadata` inspection
+- Separate provider input, cache-read, cache-write, derived uncached input, output, and total token accounting
+- Cold-run nonces and stable prompt prefixes
+- Consecutive-call telemetry for implicit caching
+- An explicit system-only breakpoint comparison
+- Why cache activity must be verified for the active model, API, SDK, route, and tenant
+
+### Notebook 5: Checkpointing and Session State
+
+**Goal**: Show the difference between complete checkpointed history and the smaller context sent to a model.
+
+The credential-free sections use `InMemorySaver` to make checkpoint behavior reproducible before an optional SAP Generative AI Hub integration applies the same pattern to a live ReAct agent.
+
+**Demonstrates**:
+- Conversation continuity through a shared `thread_id`
+- Isolation between independent threads
+- State loss after replacing the process-local saver
+- Direct inspection of saved history with `graph.get_state`
+- Token-budget trimming that changes model input without deleting checkpointed history
+- The distinct lifecycles of raw history, checkpoints, and rolling summaries
 
 ## Tools
 
@@ -140,7 +171,7 @@ Used by Notebook 3:
 
 ## Common Code Pattern
 
-All three notebooks follow the same initialization pattern:
+The first three notebooks follow the same initialization pattern:
 
 ```python
 # 1. Load environment and initialize LLM
@@ -196,6 +227,8 @@ result = agent.invoke({"messages": [("user", "your question")]})
    jupyter lab 01_react_agent.ipynb
    ```
 
+Notebook 4 makes live calls to the configured `gpt-5.6-luna` deployment. Notebook 5 is credential-free until its final optional integration section; review `RUN_LIVE_DEMO` and model availability before running that section.
+
 ## Key Takeaways
 
 - **Framework benefits**: LangGraph handles message state, tool execution, and routing logic, letting you focus on tool design and business logic instead of parsing and loop management.
@@ -203,3 +236,5 @@ result = agent.invoke({"messages": [("user", "your question")]})
 - **Graph complexity is not always necessary**: Notebook 3 shows that a simple two-node graph with well-designed tools and a detailed system prompt can handle complex multi-step business workflows.
 - **Tool design matters more than graph design**: Tools that return contextual information (like inventory at all plants) reduce the number of agent iterations and improve response quality.
 - **Scoped tool access** (Notebook 2) is a practical pattern for limiting cost, reducing errors, and enforcing domain boundaries in multi-agent systems.
+- **Caching must be measured** (Notebook 4): keep the transcript append-only, instrument each model call, and inspect consecutive cache reads instead of assuming the active route cached the prompt.
+- **Checkpointed state and model context are different** (Notebook 5): retain complete session state when needed while trimming only the message list sent to the model.

@@ -1,0 +1,9 @@
+---
+applications:
+  - name: docai-ux
+    memory: 256M
+    disk_quota: 256M
+    instances: 1
+    buildpacks:
+      - staticfile_buildpack
+    path: dist
