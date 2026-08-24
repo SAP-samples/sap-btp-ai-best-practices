@@ -167,8 +167,10 @@ def normalize_usage(source: str, value: Any) -> dict[str, Any]:
         value: Usage payload or response object.
 
     Returns:
-        A dictionary containing uncached input, total prompt-side input,
-        cache reads/writes, output, reasoning, totals, and raw usage.
+        A dictionary containing preferred ``uncached_input_tokens`` (plus the
+        compatibility alias ``input_tokens``), raw provider input, total
+        prompt-side input, cache reads/writes, output, reasoning, totals, and
+        raw usage.
     """
 
     usage = to_plain(usage_payload(value))
@@ -226,7 +228,9 @@ def normalize_usage(source: str, value: Any) -> dict[str, Any]:
             usage,
             "cache_write_input_tokens",
             "cache_creation_input_tokens",
+            "cache_write_tokens",
             "cacheWriteInputTokens",
+            "cacheWriteTokens",
         )
     )
     detail_cache_write = number(
@@ -234,6 +238,7 @@ def normalize_usage(source: str, value: Any) -> dict[str, Any]:
             input_details,
             "cache_write",
             "cache_creation",
+            "cache_write_tokens",
             "cache_write_input_tokens",
             "cache_creation_input_tokens",
         )
@@ -283,6 +288,7 @@ def normalize_usage(source: str, value: Any) -> dict[str, Any]:
 
     return {
         "source": source,
+        "uncached_input_tokens": input_tokens,
         "input_tokens": input_tokens,
         "input_total_tokens": input_total_tokens,
         "provider_input_tokens": provider_input_tokens,
@@ -297,30 +303,6 @@ def normalize_usage(source: str, value: Any) -> dict[str, Any]:
     }
 
 
-def add_derived_cache_writes(rows: list[dict[str, Any]]) -> None:
-    """Derive cache writes from next-call cache-read growth.
-
-    OpenAI and Gemini do not consistently report cache writes. Whatever call
-    N wrote can surface as the increase in cache reads on call N+1.
-
-    Args:
-        rows: Ordered normalized rows for one run. Mutated in place with
-            ``cache_write_derived_tokens`` and ``cache_write_reported``.
-
-    Returns:
-        None.
-    """
-
-    for index, row in enumerate(rows):
-        row["cache_write_reported"] = row.get("cache_write_input_tokens") is not None
-        if index + 1 < len(rows):
-            next_read = rows[index + 1].get("cache_read_input_tokens") or 0
-            current_read = row.get("cache_read_input_tokens") or 0
-            row["cache_write_derived_tokens"] = max(next_read - current_read, 0)
-        else:
-            row["cache_write_derived_tokens"] = None
-
-
 def _self_check() -> None:
     """Run assertion-based checks for OpenAI, Bedrock, and Gemini shapes."""
 
@@ -333,6 +315,7 @@ def _self_check() -> None:
         },
     )
     assert openai["input_tokens"] == 219
+    assert openai["uncached_input_tokens"] == 219
     assert openai["input_total_tokens"] == 4059
     assert openai["cache_read_input_tokens"] == 3840
 
@@ -365,6 +348,18 @@ def _self_check() -> None:
     assert bedrock_ttl["input_total_tokens"] == 4592
     assert bedrock_ttl["cache_write_input_tokens"] == 4589
 
+    luna = normalize_usage(
+        "openai-responses",
+        {
+            "input_tokens": 2862,
+            "output_tokens": 5,
+            "input_token_details": {"cache_creation": 0, "cache_read": 2830},
+        },
+    )
+    assert luna["provider_input_tokens"] == 2862
+    assert luna["uncached_input_tokens"] == 32
+    assert luna["cache_read_input_tokens"] == 2830
+
     gemini = normalize_usage(
         "gemini",
         {
@@ -378,9 +373,6 @@ def _self_check() -> None:
     assert gemini["input_total_tokens"] == 5000
     assert gemini["cache_read_input_tokens"] == 4200
 
-    rows = [openai, {**openai, "cache_read_input_tokens": 3968}]
-    add_derived_cache_writes(rows)
-    assert rows[0]["cache_write_derived_tokens"] == 128
     print("normalize_usage self-check passed")
 
 
