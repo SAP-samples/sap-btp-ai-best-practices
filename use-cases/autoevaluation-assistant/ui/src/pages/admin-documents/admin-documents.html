@@ -1,0 +1,70 @@
+<section class="document-manager-page">
+  <header class="document-manager-topbar">
+    <div>
+      <ui5-title id="document-manager-title" level="H2">Super Admin Document Manager</ui5-title>
+      <p id="document-manager-subtitle">Manage the global admin corpus used by Joule general RAG answers.</p>
+    </div>
+    <div class="document-manager-actions">
+      <ui5-button id="refresh-documents-button" icon="refresh">Refresh</ui5-button>
+      <ui5-button id="select-documents-button" design="Emphasized" icon="upload">Add documents</ui5-button>
+      <input id="document-file-input" class="document-file-input" type="file" accept=".pdf,.docx,.xlsx,.xlsm,.eml" multiple>
+    </div>
+  </header>
+
+  <section id="document-manager-summary" class="document-manager-summary" hidden></section>
+
+  <section class="document-upload-panel">
+    <div class="document-drop-zone" id="document-drop-zone">
+      <ui5-icon name="upload-to-cloud"></ui5-icon>
+      <div>
+        <strong id="document-upload-title">Upload PDF, Word, Excel, or email admin knowledge</strong>
+        <span id="document-upload-detail">Files are stored in HANA, extracted, chunked, and embedded for Joule admin RAG answers.</span>
+      </div>
+    </div>
+    <div id="selected-document-files" class="selected-document-files" hidden></div>
+  </section>
+
+  <section class="document-table-section">
+    <div class="document-table-header">
+      <ui5-title id="document-table-title" level="H4">Uploaded files</ui5-title>
+      <span id="document-count-label">0 files</span>
+    </div>
+    <div class="document-table-scroll">
+      <table class="document-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Status</th>
+            <th>Chunks</th>
+            <th>Uploaded</th>
+            <th aria-label="Actions"></th>
+          </tr>
+        </thead>
+        <tbody id="document-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="benchmark-admin-section" aria-labelledby="benchmark-admin-title">
+    <div class="benchmark-admin-header">
+      <div>
+        <ui5-title id="benchmark-admin-title" level="H4">Benchmark data</ui5-title>
+        <p id="benchmark-admin-description">Validate and activate versioned assessment benchmark workbooks stored in HANA.</p>
+      </div>
+      <ui5-button id="benchmark-history-refresh-button" icon="refresh">Refresh status</ui5-button>
+    </div>
+
+    <div id="benchmark-active-summary" class="benchmark-active-summary" aria-live="polite"></div>
+
+    <div class="benchmark-upload-controls">
+      <input id="benchmark-workbook-input" class="document-file-input" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+      <ui5-button id="benchmark-select-button" icon="upload">Select XLSX</ui5-button>
+      <span id="benchmark-selected-file" class="benchmark-selected-file">No workbook selected.</span>
+      <ui5-button id="benchmark-validate-button" design="Emphasized" disabled>Validate workbook</ui5-button>
+      <ui5-button id="benchmark-activate-button" design="Negative" disabled>Activate dataset</ui5-button>
+    </div>
+
+    <div id="benchmark-admin-status" class="benchmark-admin-status" aria-live="assertive" hidden></div>
+    <div id="benchmark-validation-result" class="benchmark-validation-result" hidden></div>
+  </section>
+</section>

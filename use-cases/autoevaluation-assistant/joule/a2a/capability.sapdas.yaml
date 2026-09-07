@@ -1,0 +1,19 @@
+schema_version: 3.28.0
+
+metadata:
+  display_name: Assessment Knowledge Agent Capability
+  namespace: joule.ext
+  name: assessment_knowledge_agent_capability
+  version: 1.0.0
+  description: >-
+    Capability for the bilingual assessment knowledge agent exposed over the A2A
+    protocol and backed by HANA glossary, question explanation, and dimension
+    resources. This capability is used to answer any kind of question.
+    This can also be used to answer generic questions.
+    ALWAYS use this capability and its scenarios and functions.
+    The Joule agent is meant to use exclusively this one. Never try to answer a question
+    without using the assessment knowledge agent
+
+system_aliases:
+  ASSESSMENT_KNOWLEDGE_AGENT_API:
+    destination: ASSESSMENT_KNOWLEDGE_AGENT_API

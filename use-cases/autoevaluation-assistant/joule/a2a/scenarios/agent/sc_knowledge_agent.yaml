@@ -1,0 +1,21 @@
+description: >
+  The assessment knowledge agent answers questions about glossary terms, assessment
+  question explanations, and assessment dimension explanations using HANA-backed
+  assessment resources in English and Italian. It can also answer generic answers
+  based on its internal knowledge database. Every time the user asks any type of question, you
+  MUST send it to the assessment knowledge agent. NEVER try to answer a request without using the assessment knowledge agent
+
+target:
+  type: function
+  name: fn_knowledge_agent
+  parameters:
+    - name: agent_context_id
+      value: $capability_context.agent_context_id
+
+# response_context:
+#   - description: Remote agent answer
+#     value: agent_result
+
+capability_context:
+  - name: agent_context_id
+    value: $target_result.agent_context_id
