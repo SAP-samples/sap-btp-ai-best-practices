@@ -1,0 +1,73 @@
+---
+applications:
+  - name: autoevaluation-assistant-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    disk_quota: 2G
+    routes:
+      - route: autoevaluation-assistant-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: ((allowed_origin))
+      API_BASE_URL: ((api_base_url))
+      APP_ENV: production
+      API_KEY: ((api_key))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      GENAI_DEFAULT_MODEL: ((genai_default_model))
+      GENAI_REVIEW_MODEL: ((genai_review_model))
+      GENAI_REASONING_EFFORT: ((genai_reasoning_effort))
+      GENAI_EMBEDDING_MODEL: ((genai_embedding_model))
+      GENAI_TEMPERATURE: ((genai_temperature))
+      GENAI_MAX_TOKENS: ((genai_max_tokens))
+      JOULE_A2A_MODEL_NAME: ((joule_a2a_model_name))
+      AGENT_PUBLIC_URL: ((agent_public_url))
+      LOG_USER_HASH_SALT: ((log_user_hash_salt))
+  - name: autoevaluation-assistant-worker
+    path: api
+    buildpack: python_buildpack
+    command: python -m app.workers.ai_review_worker
+    memory: 512M
+    disk_quota: 2G
+    no-route: true
+    health-check-type: process
+    env:
+      APP_ENV: production
+      API_KEY: ((api_key))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      GENAI_DEFAULT_MODEL: ((genai_default_model))
+      GENAI_REVIEW_MODEL: ((genai_review_model))
+      GENAI_REASONING_EFFORT: ((genai_reasoning_effort))
+      GENAI_EMBEDDING_MODEL: ((genai_embedding_model))
+      GENAI_TEMPERATURE: ((genai_temperature))
+      GENAI_MAX_TOKENS: ((genai_max_tokens))
+      LOG_USER_HASH_SALT: ((log_user_hash_salt))
+  - name: autoevaluation-assistant-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: autoevaluation-assistant.cfapps.eu10-005.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: ((api_base_url))
+      VITE_APP_HOST: autoevaluation-assistant.cfapps.eu10-005.hana.ondemand.com
+      VITE_API_KEY: ((api_key))

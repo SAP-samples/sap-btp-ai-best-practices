@@ -1,0 +1,5 @@
+schema_version: 1.4.0
+name: document_assessment_assistant
+capabilities:
+  - type: local
+    folder: ./joule/a2a

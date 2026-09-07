@@ -1,0 +1,39 @@
+<section class="score-page">
+  <header class="score-topbar">
+    <div>
+      <ui5-title id="score-page-title" level="H2">Score</ui5-title>
+      <p id="score-page-subtitle">Assessment positioning against the active peer cohort.</p>
+      <p id="score-context" class="score-context"></p>
+    </div>
+    <div class="score-actions">
+      <ui5-button id="score-report-button" icon="pdf-attachment">Calification Report</ui5-button>
+      <ui5-button id="score-refresh-button" icon="refresh">Refresh</ui5-button>
+    </div>
+  </header>
+
+  <section id="score-summary" class="score-summary" aria-live="polite" hidden></section>
+
+  <section id="score-benchmark-status" class="score-benchmark-status" aria-live="polite"></section>
+
+  <section class="score-overview-section" aria-labelledby="score-overview-title">
+    <div class="score-section-header">
+      <ui5-title id="score-overview-title" level="H4">Overall performance overview</ui5-title>
+      <ul class="score-legend" aria-label="Benchmark chart legend">
+        <li><span class="legend-swatch best-peer"></span><span id="score-legend-best">Best peer</span></li>
+        <li><span class="legend-swatch peer-average"></span><span id="score-legend-average">Peer average</span></li>
+        <li><span class="legend-swatch company"></span><span id="score-legend-company">Company</span></li>
+      </ul>
+    </div>
+    <p id="score-chart-description" class="score-chart-description"></p>
+    <div id="score-overview-chart-viewport" class="score-chart-viewport">
+      <canvas id="score-overview-chart" role="img"></canvas>
+    </div>
+    <div id="score-overview-positioning"></div>
+  </section>
+
+  <section class="score-dimension-analysis" aria-labelledby="score-dimension-analysis-title">
+    <ui5-title id="score-dimension-analysis-title" level="H4">Dimension analysis</ui5-title>
+    <p id="score-dimension-analysis-description"></p>
+    <div id="score-dimension-sections"></div>
+  </section>
+</section>

@@ -1,0 +1,27 @@
+# Node.js/Vite frontend dependency and local environment files
+node_modules/
+.npm/
+.npmrc
+.pnpm-store/
+.pnpm-debug.log
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
+package-lock.json
+pnpm-lock.json
+bun.lockb
+
+# Build/runtime artifacts
+/dist
+/.cache
+.vite
+
+# Logs and local OS files
+.DS_Store
+Thumbs.db
+
+# local environment files
+.env
+.env.local
+.env.development
+.env.production
