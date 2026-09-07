@@ -1,0 +1,47 @@
+<section class="document-manager-page">
+  <header class="document-manager-topbar">
+    <div>
+      <ui5-title id="document-manager-title" level="H2">Document Manager</ui5-title>
+      <p id="document-manager-subtitle">Manage the assessment evidence corpus used by AI analysis.</p>
+    </div>
+    <div class="document-manager-actions">
+      <ui5-button id="refresh-documents-button" icon="refresh">Refresh</ui5-button>
+      <ui5-button id="select-documents-button" design="Emphasized" icon="upload">Add documents</ui5-button>
+      <input id="document-file-input" class="document-file-input" type="file" accept=".pdf,.docx,.xlsx,.xlsm,.eml" multiple>
+    </div>
+  </header>
+
+  <section id="document-manager-summary" class="document-manager-summary" hidden></section>
+
+  <section class="document-upload-panel">
+    <div class="document-drop-zone" id="document-drop-zone">
+      <ui5-icon name="upload-to-cloud"></ui5-icon>
+      <div>
+        <strong id="document-upload-title">Upload PDF, Word, Excel, or email evidence</strong>
+        <span id="document-upload-detail">Files are stored in HANA, extracted, chunked, and embedded for later RAG analysis.</span>
+      </div>
+    </div>
+    <div id="selected-document-files" class="selected-document-files" hidden></div>
+  </section>
+
+  <section class="document-table-section">
+    <div class="document-table-header">
+      <ui5-title id="document-table-title" level="H4">Uploaded files</ui5-title>
+      <span id="document-count-label">0 files</span>
+    </div>
+    <div class="document-table-scroll">
+      <table class="document-table">
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Status</th>
+            <th>Chunks</th>
+            <th>Uploaded</th>
+            <th aria-label="Actions"></th>
+          </tr>
+        </thead>
+        <tbody id="document-table-body"></tbody>
+      </table>
+    </div>
+  </section>
+</section>

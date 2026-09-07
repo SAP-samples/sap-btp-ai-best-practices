@@ -1,0 +1,28 @@
+<section class="assessment-page">
+  <header class="assessment-topbar">
+    <div>
+      <ui5-title id="assessment-page-title" level="H2">Assessment</ui5-title>
+      <span id="assessment-version-warning" class="version-warning">Version to submit</span>
+    </div>
+    <div class="assessment-actions">
+      <ui5-button id="score-page-button" icon="business-objects-experience">Score</ui5-button>
+      <label class="customer-class-control" for="customer-class-select">
+        <span id="customer-class-label">Company size</span>
+        <select id="customer-class-select"></select>
+      </label>
+      <label class="customer-class-control" for="nace1-select">
+        <span id="nace1-label">NACE-1 sector</span>
+        <select id="nace1-select"></select>
+      </label>
+      <ui5-button id="batch-upload-button" icon="sys-find">Analyze all questions</ui5-button>
+      <ui5-button id="reset-assessment-button" icon="reset">Reset changes</ui5-button>
+      <ui5-button id="save-draft-button" design="Emphasized" icon="sys-find">Analyze dimension</ui5-button>
+    </div>
+  </header>
+
+  <nav id="dimension-tabs" class="dimension-tabs" aria-label="Assessment dimensions"></nav>
+
+  <section id="benchmark-profile-status" class="benchmark-profile-status" aria-live="polite" hidden></section>
+  <section id="ai-job-summary" class="ai-job-summary" hidden></section>
+  <section id="questions-container" class="questions-container"></section>
+</section>

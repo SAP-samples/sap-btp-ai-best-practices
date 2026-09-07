@@ -1,0 +1,23 @@
+parameters:
+  - name: agent_context_id
+    optional: true
+
+action_groups:
+  - actions:
+      - type: agent-request
+        agent_type: remote
+        system_alias: ASSESSMENT_KNOWLEDGE_AGENT_API
+        path: /a2a/
+        body: >
+          {
+            "contextId": "<? agent_context_id ?>"
+          }
+        result_variable: apiResponse
+      - type: message
+        message:
+          type: text
+          content: "<? apiResponse.body.artifacts[0].parts[0].text ?>"
+
+result:
+  agent_result: "<? apiResponse.body.artifacts[0].parts[0].text ?>"
+  agent_context_id: "<? apiResponse.body.contextId ?>"

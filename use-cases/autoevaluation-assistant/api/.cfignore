@@ -1,0 +1,41 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python caches and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# Build outputs and package artifacts
+dist/
+build/
+*.egg-info/
+
+# Testing / coverage artifacts
+.pytest_cache/
+.pytest_result/
+.htmlcov/
+.coverage
+.coverage.*
+
+# Logs and local runtime files
+*.log
+*.sqlite3
+*.sqlite
+
+# Local environment and configuration files
+.env
+.env.*
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

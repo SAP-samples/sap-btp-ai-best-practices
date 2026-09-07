@@ -1,0 +1,59 @@
+:root {
+  --app-font-family: "72", Arial, Helvetica, sans-serif;
+  --sapFontFamily: var(--app-font-family);
+  --sapFontHeaderFamily: var(--app-font-family);
+  --sapFontBoldFamily: var(--app-font-family);
+}
+
+body {
+  margin: 0;
+  font-family: var(--app-font-family);
+}
+
+button,
+input,
+select,
+table,
+textarea {
+  font: inherit;
+}
+
+.content {
+  min-height: 400px;
+}
+
+/* Loading state */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Content transitions for page changes */
+.content {
+  transition: opacity 0s ease-in-out;
+}
+
+.language-popover-content {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 5rem;
+  padding: 0.35rem;
+}
+
+.language-popover-content button {
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: #1d2b36;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+}
+
+.language-popover-content button:hover {
+  background: #e5edf1;
+}

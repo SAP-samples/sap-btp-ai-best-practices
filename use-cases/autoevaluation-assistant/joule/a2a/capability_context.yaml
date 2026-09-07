@@ -1,0 +1,2 @@
+variables:
+  - name: agent_context_id
