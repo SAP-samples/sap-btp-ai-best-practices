@@ -1,0 +1,38 @@
+applications:
+
+  # ── Python / Flask backend ────────────────────────────────────────────────
+  - name: ibp-extractor-backend
+    path: backend
+    buildpacks:
+      - python_buildpack
+    memory: 512M
+    disk_quota: 1G
+    instances: 1
+    health-check-type: http
+    health-check-http-endpoint: /api/status
+    env:
+      FLASK_PORT: "8080"
+      FLASK_ENV: production
+      IBP_URL: "https://<your-ibp-tenant>.scmibp.ondemand.com/"
+      JOB_NAME: "<your-ibp-job-name>"
+      DOWNLOAD_DIR: /home/vcap/app/downloads
+      # ── SAP HANA Cloud credentials ───────────────────────────────────────
+      # NOTE: Do NOT commit real credentials. Provide them via
+      #   `cf set-env` or a user-provided service instance.
+      HANA_ADDRESS: "<your-hana-host>.hanacloud.ondemand.com"
+      HANA_PORT: "443"
+      HANA_USER: "<your-hana-user>"
+      HANA_PASSWORD: "<your-hana-password>"
+      HANA_ENCRYPT: "True"
+      HANA_SCHEMA: "<your-hana-schema>"
+
+  # ── Angular SPA (Nginx / staticfile buildpack) ────────────────────────────
+  - name: ibp-extractor-ui
+    path: frontend/dist/ibp-ui/browser
+    buildpacks:
+      - staticfile_buildpack
+    memory: 128M
+    disk_quota: 1G
+    instances: 1
+    env:
+      FORCE_HTTPS: "true"

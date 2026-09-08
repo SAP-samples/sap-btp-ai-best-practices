@@ -1,0 +1,5 @@
+flask==3.1.0
+flask-cors==5.0.0
+python-dotenv==1.0.1
+hdbcli==2.21.28
+requests==2.32.3
