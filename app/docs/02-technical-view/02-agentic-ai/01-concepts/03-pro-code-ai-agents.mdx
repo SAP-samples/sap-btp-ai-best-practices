@@ -191,6 +191,27 @@ SAP AI Core is a managed AI runtime that enables scalable execution of AI models
 * **.NET or Java environments:** Semantic Kernel if your team does not work in Python.
 * **Pure research / experimentation:** Smolagents for minimal boilerplate.
 
+### Design Agent Context for Token Caching
+
+**Why this matters:** ReAct agents resend their instructions, tool schemas, reference material and growing history on every model call. Prompt caching can reuse an unchanged prefix, reducing input cost.
+
+* **Put stable content first.** Place system policies, tool definitions, examples, and reusable references before changing user and tool messages.
+* **Keep the prefix deterministic.** Append new messages; avoid changing timestamps, identifiers, tool order, or earlier turns before the reusable boundary.
+* **Measure at the model call.** Compare consecutive calls using total input, cache reads, cache writes, uncached input, and output tokens when those fields are reported.
+* **Verify the economics.** A cache write saves nothing unless later calls reuse it. Prices, eligibility, controls and retention vary by model and API; a cache-read percentage is not the same as a cost-reduction percentage.
+* **Keep concepts separate.** Caching reuses repeated input processing; it does not replace context trimming, conversation memory, or checkpoint persistence.
+
+### Manage Checkpoints and Session State Deliberately
+
+**Why this matters:** A LangGraph checkpointer saves one workflow's state so it can resume after a failure, pause for approval or be inspected later. It is session state, not cross-session memory for user preferences.
+
+* **Start stateless.** Add checkpointing only when continuity, recovery, human approval, or later investigation is a real requirement.
+* **Choose storage by lifecycle.** Use process-local state only for development or disposable sessions; use durable storage when state must survive restarts or scale-out.
+* **Scope every session.** Use a stable `thread_id` as a lookup key, but enforce user and tenant authorization on the server; the identifier is not an access grant.
+* **Separate state from model context.** Keep the full checkpoint history needed for recovery, but send the model only a summary and recent relevant events as described in the [LangGraph memory guidance](https://docs.langchain.com/oss/python/langgraph/add-memory).
+* **Store long-term memory separately.** Cross-session preferences and facts belong in a deliberately governed store, not in every workflow checkpoint.
+* **Govern persisted data.** Minimize and redact stored content, exclude secrets, isolate tenants, and define encryption, retention, backup, and deletion controls. See the [LangGraph persistence guide](https://docs.langchain.com/oss/python/langgraph/persistence) and [SAP BTP data protection guidance](https://help.sap.com/docs/btp/sap-business-technology-platform/data-protection-and-privacy).
+
 ### Tool Design
 
 * One tool = one clear responsibility. Don't create a "do everything" tool. An agent with 3 focused tools (e.g., `query_orders`, `check_weather`, `send_notification`) will outperform one with a single monolithic tool.
@@ -324,6 +345,24 @@ The key takeaway is that **graph complexity is not always necessary**. A simple 
 ##### Reference Code
 
 * <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/03_procurement_workflow.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Enterprise Procurement Workflow Notebook**</TrackableLink>
+
+#### 2.4 Token Caching in a ReAct Agent
+
+This tutorial makes the cost behavior visible inside a real LangGraph tool loop. Four ordered tool operations produce five model calls, each reusing the same stable system prompt while appending assistant messages and tool results. The assistant node captures raw usage telemetry exactly where the model is invoked, so the notebook can distinguish total prompt-side volume, cache writes, cache reads, derived uncached input, and output tokens for every call and for the complete workflow.
+
+The notebook first demonstrates implicit caching through SAP Generative AI Hub's LangChain Responses API. It then compares an explicit breakpoint placed only on the stable system content, showing why the cached portion remains fixed while the appended transcript continues to grow unless a later supported boundary is added. The goal is not to promise a fixed saving, but to show how prompt structure creates reuse opportunities and how to verify the resulting price mix from the active route's telemetry.
+
+##### Reference Code
+
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/04_token_caching.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Token Caching Notebook**</TrackableLink>
+
+#### 2.5 Checkpointing and Session State
+
+This tutorial starts without an LLM so the session behavior is easy to see: it runs two turns with one `thread_id`, prints the complete saved history after each turn, and proves that another thread and a restarted in-memory saver cannot access it. It then compares that full checkpointed history with the smaller message list sent to a model after trimming, showing exactly what is omitted from the request while remaining available in the saved session. The final optional ReAct example applies the same inspection pattern to a SAP Generative AI Hub tool-calling agent.
+
+##### Reference Code
+
+* <TrackableLink href="https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/05_checkpointing_and_session_state.ipynb" target="_blank" trackingFeature="DOWNLOAD_PRO_CODE_AI_AGENTS">**SAP BTP AI Best Practices - Code-Based Agents - Checkpointing and Session State Notebook**</TrackableLink>
 
 <RelatedProjects />
 
