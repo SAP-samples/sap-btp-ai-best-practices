@@ -1,0 +1,5 @@
+schema_version: 1.4.0
+name: {{ASSISTANT_NAME}}
+capabilities:
+  - type: local
+    folder: ./joule/a2a

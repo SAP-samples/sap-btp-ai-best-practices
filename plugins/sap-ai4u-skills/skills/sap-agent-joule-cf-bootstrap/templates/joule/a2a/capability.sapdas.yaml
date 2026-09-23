@@ -1,0 +1,12 @@
+schema_version: "3.28.0"
+
+metadata:
+  display_name: {{CAPABILITY_DISPLAY_NAME}}
+  namespace: joule.ext
+  name: {{CAPABILITY_NAME}}
+  version: 1.0.0
+  description: {{AGENT_DESCRIPTION}}
+
+system_aliases:
+  {{DESTINATION_ALIAS}}:
+    destination: {{DESTINATION_ALIAS}}
