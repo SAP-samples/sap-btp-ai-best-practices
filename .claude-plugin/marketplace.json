@@ -1,0 +1,14 @@
+{
+  "name": "sap-ai4u",
+  "description": "Reusable SAP BTP AI development skills and workflows.",
+  "owner": {
+    "name": "SAP AI for You"
+  },
+  "plugins": [
+    {
+      "name": "sap-ai4u-skills",
+      "source": "./plugins/sap-ai4u-skills",
+      "description": "Curated agent skills for SAP BTP AI development and delivery workflows."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "sap-ai4u-skills",
+  "version": "0.3.0",
+  "description": "Curated agent skills for SAP BTP AI development, delivery, and platform CLI workflows.",
+  "author": {
+    "name": "SAP AI for You"
+  },
+  "homepage": "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/plugins/sap-ai4u-skills",
+  "repository": "https://github.com/SAP-samples/sap-btp-ai-best-practices",
+  "keywords": [
+    "sap",
+    "btp",
+    "generative-ai",
+    "langgraph",
+    "hana"
+  ]
+}

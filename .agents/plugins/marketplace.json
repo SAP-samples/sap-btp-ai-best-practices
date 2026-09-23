@@ -1,0 +1,20 @@
+{
+  "name": "sap-ai4u",
+  "interface": {
+    "displayName": "SAP AI4U"
+  },
+  "plugins": [
+    {
+      "name": "sap-ai4u-skills",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sap-ai4u-skills"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

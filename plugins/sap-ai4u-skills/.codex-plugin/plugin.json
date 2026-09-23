@@ -1,0 +1,34 @@
+{
+  "name": "sap-ai4u-skills",
+  "version": "0.3.0",
+  "description": "Curated agent skills for SAP BTP AI development, delivery, and platform CLI workflows.",
+  "author": {
+    "name": "SAP AI for You"
+  },
+  "homepage": "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/plugins/sap-ai4u-skills",
+  "repository": "https://github.com/SAP-samples/sap-btp-ai-best-practices",
+  "keywords": [
+    "sap",
+    "btp",
+    "generative-ai",
+    "langgraph",
+    "hana"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SAP AI4U Skills",
+    "shortDescription": "SAP BTP AI development skills for Codex.",
+    "longDescription": "Curated workflows for SAP Gen AI Hub, LangGraph, HANA, RAG, narrow AI, Joule, Cloud Foundry, and BTP CLI tasks.",
+    "developerName": "SAP AI for You",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Build a LangGraph agent on SAP BTP.",
+      "Create a HANA-backed RAG pipeline.",
+      "Add SAP Gen AI Hub token logging."
+    ]
+  }
+}
