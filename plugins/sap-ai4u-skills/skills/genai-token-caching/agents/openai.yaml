@@ -1,4 +1,0 @@
-interface:
-  display_name: "GenAI Token Caching"
-  short_description: "Optimize SAP Gen AI Hub token caching"
-  default_prompt: "Use $genai-token-caching to make this SAP Gen AI Hub agent cache-efficient and verify token usage."

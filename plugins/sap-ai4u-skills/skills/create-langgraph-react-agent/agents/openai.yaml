@@ -1,4 +1,0 @@
-interface:
-  display_name: "Create LangGraph ReAct Agent"
-  short_description: "Scaffold a portable SAP LangGraph agent"
-  default_prompt: "Use $create-langgraph-react-agent to scaffold a minimal configurable LangGraph ReAct agent for this use case."
