@@ -1,4 +1,0 @@
-interface:
-  display_name: "SAP Document AI Client"
-  short_description: "Build with the SAP Document AI client"
-  default_prompt: "Use $sap-document-ai-client to extend or integrate the SAP Document AI Python client."
