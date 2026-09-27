@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.fmi-data-count {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+/*
+ * The platform table renders cell text inside a `.fd-table__text` div that
+ * defaults to `white-space: normal`. With very long SAP fields (system status,
+ * order descriptions) that wraps into dozens of visual lines and blows the row
+ * height up to ~500px. Force single-line truncation so every row stays compact;
+ * the full value remains reachable via sort/filter and the native title
+ * tooltip, and `minimumColumnWidth` keeps columns wide enough to read (the
+ * table scrolls horizontally instead of cramming everything into view).
+ */
+:host ::ng-deep .fd-table__text {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

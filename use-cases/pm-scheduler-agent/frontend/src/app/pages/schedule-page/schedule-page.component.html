@@ -1,0 +1,519 @@
+<div class="fmi-shell">
+
+  <!-- ── Dynamic Page ──────────────────────────────────────────────── -->
+  <fd-dynamic-page
+    ariaLabel="Maintenance Schedule Recommendation"
+    class="fmi-dynamic-page"
+  >
+
+    <!-- Title row: breadcrumb + title + subtitle + global actions -->
+    <fd-dynamic-page-header
+      title="Maintenance Schedule Recommendation"
+      [subtitle]="scheduleResult()
+        ? (scheduleResult()!.plant + ' · Week of ' + scheduleResult()!.week_start)
+        : 'Set filters and click Generate Schedule'"
+    >
+      <fd-dynamic-page-breadcrumb>
+        <fd-breadcrumb>
+          <fd-breadcrumb-item>
+            <a fd-link>FMI</a>
+          </fd-breadcrumb-item>
+          <fd-breadcrumb-item>
+            <a fd-link>Maintenance</a>
+          </fd-breadcrumb-item>
+          <fd-breadcrumb-item>
+            <a fd-link>Phase 6 – Scheduling</a>
+          </fd-breadcrumb-item>
+        </fd-breadcrumb>
+      </fd-dynamic-page-breadcrumb>
+
+      <fd-dynamic-page-global-actions>
+        <div class="fmi-email-bar">
+          <input
+            class="fd-input fmi-email-input"
+            type="email"
+            placeholder="Recipient email"
+            [ngModel]="recipientEmail()"
+            (ngModelChange)="recipientEmail.set($event); emailFeedback.set(null)"
+            [disabled]="!effectiveSchedule().length"
+          />
+          <button
+            fd-button
+            [fdType]="'ghost'"
+            [disabled]="!effectiveSchedule().length || !recipientEmail().trim() || isSendingEmail()"
+            (click)="sendEmail()"
+          >
+            <fd-icon glyph="email" aria-hidden="true"></fd-icon>
+            @if (isSendingEmail()) { Sending… } @else { Send Email }
+          </button>
+        </div>
+        <button
+          fd-button
+          [fdType]="'ghost'"
+          [disabled]="!effectiveSchedule().length"
+          title="Export CSV"
+          (click)="exportCsv()"
+        >
+          <fd-icon glyph="download" aria-hidden="true"></fd-icon>
+          Export CSV
+        </button>
+      </fd-dynamic-page-global-actions>
+    </fd-dynamic-page-header>
+
+    <!-- Collapsible subheader: KPI strip (visible after schedule is generated) -->
+    <fd-dynamic-page-subheader>
+      @if (metaError()) {
+        <div class="fd-message-strip fd-message-strip--error" role="alert">
+          <span class="fd-message-strip__text">{{ metaError() }}</span>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="fd-message-strip fd-message-strip--error" role="alert">
+          <span class="fd-message-strip__text">{{ error() }}</span>
+        </div>
+      }
+
+      @if (emailFeedback()) {
+        <div
+          class="fd-message-strip"
+          [class.fd-message-strip--positive]="emailFeedback()!.type === 'success'"
+          [class.fd-message-strip--error]="emailFeedback()!.type === 'error'"
+          role="alert"
+        >
+          <span class="fd-message-strip__text">{{ emailFeedback()!.text }}</span>
+        </div>
+      }
+
+      @if (confirmFeedback()) {
+        <div
+          class="fd-message-strip"
+          [class.fd-message-strip--positive]="confirmFeedback()!.type === 'success'"
+          [class.fd-message-strip--error]="confirmFeedback()!.type === 'error'"
+          role="alert"
+        >
+          <span class="fd-message-strip__text">{{ confirmFeedback()!.text }}</span>
+        </div>
+      }
+
+      @if (isLoading()) {
+        <div class="fd-busy-indicator fd-busy-indicator--l" aria-label="Generating schedule" role="progressbar">
+          <div class="fd-busy-indicator__circle"></div>
+          <div class="fd-busy-indicator__circle"></div>
+          <div class="fd-busy-indicator__circle"></div>
+        </div>
+      }
+
+      @if (scheduleResult() && !isLoading()) {
+        <!-- KPI tiles per work center -->
+        <div class="fmi-kpi-strip">
+          @for (wc of effectiveSchedule(); track wc.work_center) {
+            <div class="fd-card fd-card--compact fmi-kpi-card">
+              <div class="fd-card__content">
+                <p class="fd-title fd-title--h6 fmi-kpi-card__title">{{ wc.work_center }}</p>
+                <p>
+                  <span
+                    class="fd-object-status"
+                    [class.fd-object-status--positive]="wc.load_pct <= 80"
+                    [class.fd-object-status--critical]="wc.load_pct > 80 && wc.load_pct <= 100"
+                    [class.fd-object-status--negative]="wc.load_pct > 100"
+                  >
+                    {{ wc.load_pct | number:'1.0-0' }}% load
+                  </span>
+                </p>
+                <p class="fmi-kpi-card__sub">
+                  {{ wc.scheduled.length }} scheduled &nbsp;·&nbsp;
+                  {{ wc.unscheduled.length }} deferred
+                </p>
+                <p class="fmi-kpi-card__sub">
+                  {{ wc.capacity_used | number:'1.1-1' }} / {{ wc.capacity_available | number:'1.1-1' }} h
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </fd-dynamic-page-subheader>
+
+    <!-- ── Tab navigation + content ───────────────────────────────── -->
+    <fd-dynamic-page-content>
+      <!-- Tab bar -->
+      <ul class="fd-tabs fd-dynamic-page__tabs" role="tablist">
+        <li role="presentation" class="fd-tabs__item">
+          <a role="tab" class="fd-tabs__link" [class.is-selected]="activeTab() === 'schedule'"
+             (click)="activeTab.set('schedule')" tabindex="0">
+            <span class="fd-tabs__tag">Schedule</span>
+          </a>
+        </li>
+        <li role="presentation" class="fd-tabs__item">
+          <a role="tab" class="fd-tabs__link" [class.is-selected]="activeTab() === 'data'"
+             (click)="activeTab.set('data')" tabindex="0">
+            <span class="fd-tabs__tag">Data</span>
+          </a>
+        </li>
+        <li role="presentation" class="fd-tabs__item">
+          <a role="tab" class="fd-tabs__link" [class.is-selected]="activeTab() === 'deferred'"
+             (click)="activeTab.set('deferred')" tabindex="0">
+            <span class="fd-tabs__tag">Deferred</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Tab panels -->
+      <div class="fd-tabs__panel" role="tabpanel">
+        @switch (activeTab()) {
+
+          @case ('schedule') {
+            <div class="fmi-tab-content">
+              <!-- Filter bar -->
+              <div class="fmi-filter-bar">
+
+                <!-- Plant -->
+                <div class="fd-form-item fmi-filter-bar__item">
+                  <label class="fd-form-label" for="plant-select">Plant</label>
+                  <div class="fd-select">
+                    <select
+                      id="plant-select"
+                      class="fd-select__control"
+                      [ngModel]="plant()"
+                      (ngModelChange)="onPlantChange($event)"
+                    >
+                      @for (p of (meta()?.plants ?? []); track p) {
+                        <option [value]="p">{{ p }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Week Start -->
+                <div class="fd-form-item fmi-filter-bar__item">
+                  <label class="fd-form-label" for="week-start">Week Start</label>
+                  <input
+                    id="week-start"
+                    class="fd-input"
+                    type="date"
+                    [ngModel]="weekStart()"
+                    (ngModelChange)="weekStart.set($event)"
+                    style="width: 160px;"
+                  />
+                </div>
+
+                <!-- Released Only -->
+                <div class="fd-form-item fmi-filter-bar__item">
+                  <span class="fd-form-label">Options</span>
+                  <fd-checkbox
+                    label="Released Only"
+                    [ngModel]="releasedOnly()"
+                    (ngModelChange)="releasedOnly.set($event)"
+                  ></fd-checkbox>
+                </div>
+
+                <!-- Priority -->
+                <div class="fd-form-item fmi-filter-bar__item">
+                  <span class="fd-form-label">Priority</span>
+                  <div class="fmi-filter-bar__checks">
+                    <fd-checkbox
+                      label="P3 Medium"
+                      [ngModel]="priorityMedium()"
+                      (ngModelChange)="priorityMedium.set($event)"
+                    ></fd-checkbox>
+                    <fd-checkbox
+                      label="P4 Low"
+                      [ngModel]="priorityLow()"
+                      (ngModelChange)="priorityLow.set($event)"
+                    ></fd-checkbox>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Work-center checkboxes -->
+              @if (availableWorkCenters().length) {
+                <div class="fmi-wc-strip">
+                  <span class="fd-form-label">Work Centers:</span>
+                  @for (wc of availableWorkCenters(); track wc) {
+                    <fd-checkbox
+                      [label]="wc"
+                      [ngModel]="wcSelections()[wc]"
+                      (ngModelChange)="setWorkCenter(wc, $event)"
+                    ></fd-checkbox>
+                  }
+                  <span class="fmi-wc-fav-actions">
+                    <button
+                      fd-button
+                      [fdType]="'ghost'"
+                      title="Save current selection as your default for this plant"
+                      (click)="saveWcFavorites()"
+                      style="font-size:12px;height:1.75rem;padding:0 0.6rem;"
+                    >
+                      <fd-icon glyph="favorite" aria-hidden="true"></fd-icon>
+                      Save Favorites
+                    </button>
+                    @if (hasFavorites()) {
+                      <button
+                        fd-button
+                        [fdType]="'ghost'"
+                        title="Clear saved favorites and show all work centers"
+                        (click)="clearWcFavorites()"
+                        style="font-size:12px;height:1.75rem;padding:0 0.6rem;color:#bb0000;"
+                      >
+                        <fd-icon glyph="delete" aria-hidden="true"></fd-icon>
+                        Clear
+                      </button>
+                      <span style="font-size:11px;color:#0a6ed1;align-self:center;">★ Favorites active</span>
+                    }
+                  </span>
+                </div>
+              }
+
+              @if (effectiveSchedule().length) {
+                <div style="margin: 0.75rem 0 0.25rem; display:flex; justify-content:flex-end;">
+                  <button
+                    fd-button
+                    [fdType]="'ghost'"
+                    (click)="openAiExplanation()"
+                  >
+                    <fd-icon glyph="ai" aria-hidden="true"></fd-icon>
+                    AI Explanation
+                  </button>
+                </div>
+              }
+
+              @if (effectiveSchedule().length) {
+                <h4 class="fmi-section-title">Scheduled Orders</h4>
+              }
+              <app-schedule-table
+                [schedule]="effectiveSchedule()"
+                [weekStart]="scheduleResult()?.week_start ?? weekStart()"
+                (basicStartChange)="onBasicStartChange($event)"
+              ></app-schedule-table>
+
+              <!-- ── Down Equipment section ──────────────────────────── -->
+              @if (downEquipmentLoading()) {
+                <div style="display:flex;align-items:center;gap:0.75rem;padding:1.5rem 0;">
+                  <div class="fd-busy-indicator" aria-label="Loading down equipment" role="progressbar">
+                    <div class="fd-busy-indicator__circle"></div>
+                    <div class="fd-busy-indicator__circle"></div>
+                    <div class="fd-busy-indicator__circle"></div>
+                  </div>
+                  <span style="font-size:13px;color:#6a7589;">Checking for opportunity orders on scheduled equipment…</span>
+                </div>
+              }
+              @if (!downEquipmentLoading() && downEquipment().length) {
+                <div class="fmi-down-equipment-section">
+                  <div class="fmi-down-equipment-header">
+                    <h4 class="fmi-section-title" style="margin:0;">Down Equipment</h4>
+                    <span style="font-size:12px;color:#6a7589;margin-left:0.5rem;">
+                      RTS P3/P4 orders on scheduled equipment — add to plan and re-generate
+                    </span>
+                  </div>
+
+                  @for (eq of downEquipment(); track eq.equipment_no) {
+                    <div class="fmi-down-eq-card">
+                      <div class="fmi-down-eq-card__title">
+                        <span style="font-weight:600;">{{ eq.equipment_no }}</span>
+                        @if (eq.equipment_desc && eq.equipment_desc !== eq.equipment_no) {
+                          <span style="color:#6a7589;"> — {{ eq.equipment_desc }}</span>
+                        }
+                        <span class="fd-object-status fd-object-status--critical" style="margin-left:0.75rem;font-size:11px;">
+                          {{ eq.orders.length }} opportunity {{ eq.orders.length === 1 ? 'order' : 'orders' }}
+                        </span>
+                      </div>
+                      <table class="fmi-down-eq-table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th>Order No</th>
+                            <th>Operation</th>
+                            <th>Type</th>
+                            <th>Priority</th>
+                            <th>Work (h)</th>
+                            <th>Basic Start</th>
+                            <th>Week</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (op of eq.orders; track op['ORDER_NO']) {
+                            <tr [class.fmi-down-eq-row--selected]="downSelectedOrders().has(op['ORDER_NO'] + '')">
+                              <td>
+                                <fd-checkbox
+                                  [ngModel]="downSelectedOrders().has(op['ORDER_NO'] + '')"
+                                  (ngModelChange)="toggleDownOrder(op['ORDER_NO'] + '')"
+                                ></fd-checkbox>
+                              </td>
+                              <td>{{ op['ORDER_NO'] }}</td>
+                              <td>{{ op['OPER_SHORT_TEXT'] }}</td>
+                              <td>{{ op['ORDER_TYPE_CODE'] }}</td>
+                              <td>{{ op['PRIORITY'] }}</td>
+                              <td>{{ op['ACTIVITY_WORK_INVOLVE'] }}</td>
+                              <td>{{ op['BASIC_START_DATE'] ? (op['BASIC_START_DATE'] + '').slice(0,10) : '—' }}</td>
+                              <td>{{ op['WEEK_BUCKET'] ?? '—' }}</td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  }
+
+                  <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+                    <button
+                      fd-button
+                      [fdType]="'emphasized'"
+                      [disabled]="downSelectedOrders().size === 0"
+                      (click)="addDownOrders()"
+                    >
+                      Add Selected to Schedule
+                    </button>
+                    <span style="font-size:12px;color:#6a7589;align-self:center;">
+                      Then click Generate Schedule to re-plan with the added orders.
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          @case ('data') {
+            <div class="fmi-tab-content">
+              <div class="fmi-opp-intro fd-message-strip fd-message-strip--information" role="note">
+                <span class="fd-message-strip__text">
+                  All maintenance order operations for the selected plant, prior to scheduling.
+                </span>
+              </div>
+              <div class="fmi-filter-bar">
+                <div class="fd-form-item fmi-filter-bar__item">
+                  <label class="fd-form-label" for="data-plant-select">Plant</label>
+                  <div class="fd-select">
+                    <select
+                      id="data-plant-select"
+                      class="fd-select__control"
+                      [ngModel]="plant()"
+                      (ngModelChange)="onPlantChange($event)"
+                    >
+                      @for (p of (meta()?.plants ?? []); track p) {
+                        <option [value]="p">{{ p }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <app-data-table [plant]="plant()"></app-data-table>
+            </div>
+          }
+
+          @case ('deferred') {
+            <div class="fmi-tab-content">
+              <app-deferred-table [schedule]="effectiveSchedule()"></app-deferred-table>
+            </div>
+          }
+
+        }
+      </div>
+    </fd-dynamic-page-content>
+
+  </fd-dynamic-page>
+
+  <!-- ── AI Explanation Modal ──────────────────────────────────── -->
+  @if (showAiModal()) {
+    <div
+      style="position:fixed;inset:0;z-index:1000;background:rgba(10,20,40,0.55);display:flex;align-items:center;justify-content:center;padding:1rem;"
+      (click)="showAiModal.set(false)"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ai-modal-title"
+        style="width:min(720px,100%);max-height:82vh;display:flex;flex-direction:column;background:#fff;border-radius:8px;box-shadow:0 16px 48px rgba(0,0,0,0.28);overflow:hidden;"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:#0a6ed1;color:#fff;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:0.6rem;">
+            <fd-icon glyph="ai" style="font-size:1.25rem;" aria-hidden="true"></fd-icon>
+            <h2 id="ai-modal-title" style="margin:0;font-size:16px;font-weight:600;">
+              AI Schedule Explanation
+            </h2>
+          </div>
+          <button
+            fd-button
+            [fdType]="'transparent'"
+            title="Close"
+            style="color:#fff;"
+            (click)="showAiModal.set(false)"
+          >
+            <fd-icon glyph="decline" aria-hidden="true"></fd-icon>
+          </button>
+        </div>
+
+        <!-- Subtitle bar -->
+        @if (scheduleResult()) {
+          <div style="padding:0.5rem 1.5rem;background:#e8f1fb;font-size:12px;color:#0a6ed1;border-bottom:1px solid #c5d8f5;flex-shrink:0;">
+            {{ scheduleResult()!.plant }} &nbsp;·&nbsp; Week of {{ scheduleResult()!.week_start }}
+          </div>
+        }
+
+        <!-- Body -->
+        <div style="padding:1.5rem;overflow-y:auto;flex:1;font-size:14px;color:#32363a;font-family:inherit;">
+          @if (isExplainingInPage()) {
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 0;gap:1rem;">
+              <div class="fd-busy-indicator fd-busy-indicator--l" aria-label="Generating explanation" role="progressbar">
+                <div class="fd-busy-indicator__circle"></div>
+                <div class="fd-busy-indicator__circle"></div>
+                <div class="fd-busy-indicator__circle"></div>
+              </div>
+              <p style="color:#6a7589;margin:0;font-size:13px;">Analyzing schedule with AI…</p>
+            </div>
+          } @else if (aiExplainError()) {
+            <div class="fd-message-strip fd-message-strip--error" role="alert">
+              <span class="fd-message-strip__text">{{ aiExplainError() }}</span>
+            </div>
+          } @else if (aiExplanationText()) {
+            <div [innerHTML]="aiExplanationHtml()"></div>
+          }
+        </div>
+
+        <!-- Footer -->
+        <div style="display:flex;justify-content:flex-end;padding:0.875rem 1.5rem;border-top:1px solid #e4e4e4;background:#fafafa;flex-shrink:0;">
+          <button fd-button (click)="showAiModal.set(false)">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ── Footer Bar ──────────────────────────────────────────────── -->
+  <div class="fmi-footer fd-bar fd-bar--footer">
+    <div class="fd-bar__right">
+      <div class="fd-bar__element">
+        <button
+          fd-button
+          [fdType]="'emphasized'"
+          [disabled]="!canGenerate()"
+          (click)="generateSchedule()"
+        >
+          @if (isLoading()) { Generating… } @else { Generate Schedule }
+        </button>
+      </div>
+      <div class="fd-bar__element">
+        <button
+          fd-button
+          [disabled]="!effectiveSchedule().length"
+          (click)="exportCsv()"
+        >
+          Export CSV
+        </button>
+      </div>
+      <div class="fd-bar__element">
+        <button
+          fd-button
+          [fdType]="'emphasized'"
+          [disabled]="!effectiveSchedule().length || isConfirming()"
+          title="Write the scheduled dates back to S/4HANA"
+          (click)="confirmSchedule()"
+        >
+          @if (isConfirming()) { Updating S/4… } @else { Confirm & Update S/4 }
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

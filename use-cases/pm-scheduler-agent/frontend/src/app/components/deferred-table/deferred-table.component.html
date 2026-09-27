@@ -1,0 +1,19 @@
+@if (rows.length === 0) {
+  <div class="fd-message-strip fd-message-strip--success" role="alert">
+    <fd-icon class="fd-message-strip__icon" glyph="message-success" aria-hidden="true"></fd-icon>
+    <span class="fd-message-strip__text">All candidate orders were scheduled. No deferred operations.</span>
+  </div>
+} @else {
+  <fdp-table [dataSource]="rows" [pageSize]="25">
+    <fdp-column name="_work_center" key="_work_center" label="Work Center" [sortable]="true" [filterable]="true"></fdp-column>
+    <fdp-column name="ORDER_NO" key="ORDER_NO" label="Order No" [sortable]="true"></fdp-column>
+    <fdp-column name="ORDER_TYPE_CODE" key="ORDER_TYPE_CODE" label="Type" [filterable]="true"></fdp-column>
+    <fdp-column name="EQUIPMENT_DESC" key="EQUIPMENT_DESC" label="Equipment" [sortable]="true"></fdp-column>
+    <fdp-column name="PRIORITY" key="PRIORITY" label="Priority" [filterable]="true" [sortable]="true"></fdp-column>
+    <fdp-column name="EQUIPMENT_CRITICALITY" key="EQUIPMENT_CRITICALITY" label="Criticality" [filterable]="true"></fdp-column>
+    <fdp-column name="ACTIVITY_WORK_INVOLVE" key="ACTIVITY_WORK_INVOLVE" label="Work (h)" [sortable]="true"></fdp-column>
+    <fdp-column name="BASIC_START_DATE" key="BASIC_START_DATE" label="Basic Start" [sortable]="true"></fdp-column>
+    <fdp-column name="LATEST_EXECTN_FINISH_DATE" key="LATEST_EXECTN_FINISH_DATE" label="Latest Finish" [sortable]="true"></fdp-column>
+    <fdp-column name="OVERDUE" key="OVERDUE" label="Status" [filterable]="true"></fdp-column>
+  </fdp-table>
+}

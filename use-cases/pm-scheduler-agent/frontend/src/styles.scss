@@ -1,0 +1,20 @@
+// ── Angular CDK overlay ───────────────────────────────────────────────────────
+@import '@angular/cdk/overlay-prebuilt.css';
+
+// ── App-level overrides ───────────────────────────────────────────────────────
+// fundamental-styles component CSS is loaded via angular.json styles array
+// (css_variables.css → sap_horizon.css → fundamental-styles.css) — do not
+// re-import individual component CSS here to avoid duplication.
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--sapFontFamily, '72', '72full', Arial, Helvetica, sans-serif);
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
