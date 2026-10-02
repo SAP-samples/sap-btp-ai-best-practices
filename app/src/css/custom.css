@@ -1249,3 +1249,34 @@ div[class*='announcementBar'] button[class*='close'] {
 .navbar__item--ai4u svg {
   display: none;
 }
+
+/* ===== Navbar Activate AI Button ===== */
+
+/* Two-class selector to out-specify the base `.navbar__item.navbar__link` rule */
+.navbar__item--activate.navbar__link {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.25rem 0 0.6rem;
+  padding: 0.42rem 1.15rem;
+  border-radius: 2rem;
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px -2px rgba(0, 112, 242, 0.45);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.navbar__item--activate.navbar__link:hover,
+.navbar__item--activate.navbar__link:focus-visible {
+  background: var(--ifm-color-primary-dark);
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -3px rgba(0, 112, 242, 0.55);
+}
+
+/* Hide the default Docusaurus external-link icon, like the ai4u link */
+.navbar__item--activate svg {
+  display: none;
+}

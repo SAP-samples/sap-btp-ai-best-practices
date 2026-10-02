@@ -178,6 +178,14 @@ const config: Config = {
           rel: "noopener noreferrer",
           className: "navbar__item--ai4u",
         },
+        {
+          href: "https://sapxm.qualtrics.com/jfe/form/SV_2ozSvl0Byxi56Ki?utm_source=btp-ai-best-practices&utm_medium=referral&utm_campaign=baip-activation&utm_content=navbar",
+          label: "Activate AI",
+          position: "left",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "navbar__item--activate",
+        },
         // { to: "/blog", label: "Blog", position: "left" },
         {
           type: "custom-user-dropdown",
