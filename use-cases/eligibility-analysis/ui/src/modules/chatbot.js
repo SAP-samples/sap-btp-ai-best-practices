@@ -3,9 +3,21 @@ import "@ui5/webcomponents/dist/Button.js";
 import "@ui5/webcomponents/dist/BusyIndicator.js";
 import "@ui5/webcomponents/dist/Icon.js";
 
+import {workspaceRequest} from "../services/workspace-api.js";
+
+import {workspaceReferences} from "../services/assistant-context.js";
+import {messageContent} from "./chat-markdown.js";
+
+let workspaceContext = {};
+/** Publish current source references only; never inject invoice content into the prompt. */
+export function setAssistantWorkspaceContext(context) {
+  workspaceContext=workspaceReferences(context);
+  window.dispatchEvent(new CustomEvent("assistant-workspace-context",{detail:workspaceContext}));
+}
+
 import { sendA2AUserMessage } from "../services/a2a.js";
 
-const DEFAULT_WELCOME = "Hello! I'm your eligibility assistant. Ask me about invoice rules, rejection reasons, or seller eligibility insights.";
+const DEFAULT_WELCOME = "Hello! Ask me about eligibility, historical patterns, credit capacity, or the assumptions behind your saved recommendation.";
 
 function newContextId() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -14,13 +26,26 @@ function newContextId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+/**
+ * Build one chat bubble, rendering Markdown only for successful assistant content.
+ * @param {unknown} content Message content.
+ * @param {string} role Message author role.
+ * @param {{isError?: boolean}} options Rendering flags.
+ * @returns {HTMLElement} Detached message element ready for insertion.
+ */
 function createMessageElement(content, role, { isError = false } = {}) {
   const message = document.createElement("div");
   message.className = `chat-message ${role}${isError ? " error" : ""}`;
 
   const body = document.createElement("div");
   body.className = "message-content";
-  body.textContent = content;
+  const rendered=messageContent(content,role,{isError});
+  if(rendered.mode==='html'){
+    body.classList.add('markdown-content');
+    body.innerHTML=rendered.value;
+  }else{
+    body.textContent=rendered.value;
+  }
   message.appendChild(body);
 
   return message;
@@ -65,7 +90,14 @@ export function initChatbot() {
 
   let isOpen = false;
   let isLoading = false;
-  let contextId = newContextId();
+  let contextId = sessionStorage.getItem("receivables-chat-context") || newContextId();
+  const contextLabel=document.createElement("div");contextLabel.className="chat-context-label";
+  messagesContainer.before(contextLabel);
+  messagesContainer.setAttribute("aria-live","polite");
+  panel.setAttribute("role","complementary");panel.setAttribute("aria-label","Receivables assistant");
+  window.addEventListener("assistant-workspace-context",event=>{
+    const scope=event.detail;contextLabel.textContent=scope.analysis_id?`Offer ${scope.analysis_id.slice(0,8)}${scope.run_id?` · Run ${scope.run_id.slice(0,8)}`:""} · ${scope.row_ids?.length||0} invoices in scope`:"General assistance · Choose an offer for contextual answers";
+  });
 
   function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -90,6 +122,7 @@ export function initChatbot() {
     panel.setAttribute("aria-hidden", "true");
     isOpen = false;
     syncAssistantToggle();
+    assistantButton?.focus();
   }
 
   function togglePanel() {
@@ -103,6 +136,7 @@ export function initChatbot() {
   function setInputEnabled(enabled) {
     input.disabled = !enabled;
     sendButton.disabled = !enabled;
+    if (clearButton) clearButton.disabled = !enabled;
   }
 
   function addMessage(content, role, options = {}) {
@@ -123,6 +157,7 @@ export function initChatbot() {
     messagesContainer.innerHTML = "";
     addMessage(DEFAULT_WELCOME, "assistant");
     contextId = newContextId();
+    sessionStorage.setItem("receivables-chat-context",contextId);
   }
 
   async function sendMessage() {
@@ -138,9 +173,10 @@ export function initChatbot() {
     setInputEnabled(false);
 
     try {
-      const response = await sendA2AUserMessage(text, { contextId });
+      const response = await sendA2AUserMessage(text, { contextId, workspaceContext:structuredClone(workspaceContext) });
       if (response?.contextId) {
         contextId = response.contextId;
+        sessionStorage.setItem("receivables-chat-context",contextId);
       }
 
       loadingEl.remove();
@@ -179,7 +215,13 @@ export function initChatbot() {
   }
 
   panel.setAttribute("aria-hidden", "true");
-  clearChat();
+  // Restore persisted complete turns; browser storage holds only the conversation pointer.
+  workspaceRequest(`/conversations/${encodeURIComponent(contextId)}`).then(saved=>{
+    if(messagesContainer.children.length)return;
+    for(const item of saved.messages)addMessage(typeof item.content==='string'?item.content:JSON.stringify(item.content),item.role);
+    if(!saved.messages.length)addMessage(DEFAULT_WELCOME,"assistant");
+  }).catch(()=>{if(!messagesContainer.children.length)addMessage(DEFAULT_WELCOME,"assistant");});
+  panel.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();closePanel();}});
 
   console.log("[Chatbot] Initialized");
 }
