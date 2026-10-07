@@ -239,13 +239,14 @@ def _first_present(row: pd.Series, columns: Tuple[str, ...]) -> Optional[str]:
     return None
 
 
-def parse_offer_file(file_content: bytes, filename: str = "offer.xlsx") -> List[OfferInvoice]:
+def parse_offer_file(file_content: bytes, filename: str = "offer.xlsx", *, strict: bool = False) -> List[OfferInvoice]:
     """
     Parse an offer Excel file and return a list of OfferInvoice objects.
 
     Args:
         file_content: The raw bytes of the Excel file
         filename: Original filename (for logging)
+        strict: Reject the entire upload when any source row fails to parse.
 
     Returns:
         List of OfferInvoice objects
@@ -257,7 +258,9 @@ def parse_offer_file(file_content: bytes, filename: str = "offer.xlsx") -> List[
 
     try:
         # Read Excel file
-        df = pd.read_excel(BytesIO(file_content), engine="openpyxl")
+        with pd.ExcelFile(BytesIO(file_content), engine="openpyxl") as workbook:
+            sheet_name = workbook.sheet_names[0]
+            df = pd.read_excel(workbook, sheet_name=sheet_name)
     except Exception as e:
         raise ValueError(f"Failed to read Excel file: {e}")
 
@@ -389,6 +392,8 @@ def parse_offer_file(file_content: bytes, filename: str = "offer.xlsx") -> List[
                 continue
 
             invoice = OfferInvoice(
+                source_sheet=sheet_name,
+                source_row_number=int(row_num),
                 programa=programa,
                 seller_id=seller_id,
                 seller_name=seller_name,
@@ -422,6 +427,8 @@ def parse_offer_file(file_content: bytes, filename: str = "offer.xlsx") -> List[
 
     if errors:
         logger.warning(f"Parsing completed with {len(errors)} errors: {errors[:5]}...")
+        if strict:
+            raise ValueError("Invalid offer rows: " + "; ".join(errors))
 
     logger.info(f"Successfully parsed {len(invoices)} invoices from {filename}")
     return invoices

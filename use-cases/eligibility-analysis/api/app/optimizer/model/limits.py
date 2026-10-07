@@ -78,7 +78,8 @@ def load_limits_config(path: str | Path) -> Dict[str, Any]:
     The config file supports explicit limits (for production use) and synthetic
     generation parameters (for prototyping when real limits are not yet available).
 
-    See ``config/limits_synthetic.yaml`` for the full schema with comments.
+    Used by scripts/validate_capacity_scenarios.py; the workspace builds limits
+    from saved credit settings instead.
     """
     source = Path(path)
     if not source.exists():
