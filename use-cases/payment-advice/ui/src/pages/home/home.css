@@ -1,0 +1,50 @@
+/* Inbox layout: wide document tables scroll within their own panel. */
+.inbox { padding:24px; background:var(--sapBackgroundColor,#f5f7fa); color:var(--sapTextColor,#172331); font:14px/1.45 "72",Arial,sans-serif; min-width:0; }
+.inbox h1 { font-size:22px; margin:0 0 6px; } .inbox h2 {font-size:16px;margin:0;} .inbox p {color:#536b84;}
+.inbox button,.inbox select,.inbox input,.inbox textarea {font:inherit;border:1px solid #b7c5d5;border-radius:6px;padding:8px 11px;background:white;color:#12304a;box-sizing:border-box;}
+.inbox button {cursor:pointer;color:#0064d9;font-weight:600;} .inbox button:hover {background:#edf5ff;} .inbox button:disabled {opacity:.5;cursor:default;}
+.inbox button.primary {background:#0070f2;color:white;border-color:#0070f2;} .inbox button:focus-visible {outline:2px solid #0070f2;outline-offset:3px;}
+.inbox button.danger {background:#bb0000;color:white;border-color:#bb0000;}.inbox button.danger:hover {background:#8d0000;border-color:#8d0000;}
+.inbox-stats {display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:14px;margin:22px 0;}
+.inbox-stats button {text-align:left;padding:16px;color:#536b84;} .inbox-stats strong {display:block;font-size:27px;color:#172331;}
+.inbox-stats button[aria-pressed=true] {box-shadow:inset 0 -3px #0070f2;}
+.inbox-card,.advice-panel {border:1px solid #dce3eb;border-radius:8px;background:var(--sapGroup_ContentBackground,white);min-width:0;}
+.inbox-toolbar {display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:16px;}
+.inbox-table-scroll {overflow-x:auto;max-width:100%;} .inbox table {border-collapse:collapse;width:100%;}
+.inbox th {text-align:left;background:#f5f7fa;color:#526b88;font-size:12px;} .inbox td,.inbox th {padding:12px 14px;border-top:1px solid #e2e7ed;vertical-align:top;}
+.email-table {table-layout:fixed;} .email-table>thead>tr>th:nth-child(1) {width:19%;}.email-table>thead>tr>th:nth-child(2) {width:23%;}.email-table>tbody>tr>td {overflow-wrap:anywhere;}
+.inbox .email-link {border:0;padding:0;background:none;text-align:left;} .email-sender {display:block;font-size:12px;color:#526b88;margin-top:5px;}
+.status-pill {display:inline-block;border:1px solid #b5c4d4;border-radius:20px;padding:3px 10px;font-size:12px;white-space:nowrap;}
+.status-ready,.status-reviewed {color:#26753b;background:#edf9f0;border-color:#77aa86;}.status-needs_review {color:#a84d00;background:#fff8ed;border-color:#e6a35d;}
+.status-failed {color:#a00;background:#fff0f0;}.expanded-email>td {background:#f6faff;padding:18px;}
+.advice-workspace {display:grid;grid-template-columns:minmax(0,3fr) minmax(330px,2fr);gap:18px;}
+.advice-panel {padding:16px;overflow:hidden;}.advice-panel label {display:block;margin:8px 0;}.advice-panel select {max-width:100%;}
+.advice-actions {display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}.advice-header {display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:15px 0;}
+.advice-header dt {font-size:12px;color:#526b88;}.advice-header dd {margin:0;overflow-wrap:anywhere;}
+.structured-list {margin:0;padding-inline-start:1.1rem;}.structured-list li {margin:0 0 .2rem;overflow-wrap:anywhere;}.structured-label {font-weight:600;margin-inline-end:.35rem;}
+.advice-lines {font-size:12px;min-width:1300px;}.advice-lines td {max-width:320px;white-space:normal;}.advice-lines .flagged {background:#fff0f5;}
+.advice-lines th {white-space:nowrap;}.advice-lines td {overflow-wrap:normal;}
+.advice-lines .flags-cell {min-width:12rem;}.advice-lines .flags-cell .structured-list li {overflow-wrap:break-word;word-break:normal;}
+.advice-lines .changed {outline:2px solid #0070f2;outline-offset:-2px;}.advice-lines td:last-child {min-width:250px;}
+.advice-tabs {display:flex;gap:5px;flex-wrap:wrap;margin-bottom:15px;}.advice-tabs button[aria-selected=true] {background:#e8f2ff;}
+.advice-panel pre {white-space:pre-wrap;overflow-wrap:anywhere;background:#f6f8fb;padding:14px;max-height:520px;overflow:auto;border-radius:6px;font:13px/1.5 monospace;}
+.advice-panel iframe {width:100%;height:520px;border:1px solid #dce3eb;}.advice-panel img {max-width:100%;max-height:520px;object-fit:contain;}
+.advice-chat-log {max-height:450px;overflow:auto;}.advice-chat-message {overflow-wrap:anywhere;margin:8px 0;padding:10px;background:#f2f5f9;border-radius:6px;}
+.advice-chat-message.user {background:#e9f3ff;}.advice-chat textarea {width:100%;resize:vertical;margin:10px 0;}
+.advice-chat-message.user {white-space:pre-wrap;}.advice-chat-message.assistant {white-space:normal;}
+.advice-chat-message.assistant > :first-child {margin-top:0;}.advice-chat-message.assistant > :last-child {margin-bottom:0;}
+.advice-chat-message.assistant :is(h1,h2,h3,h4) {font-size:1rem;margin:.8rem 0 .35rem;}
+.advice-chat-message.assistant :is(ul,ol) {padding-inline-start:1.4rem;}.advice-chat-message.assistant li {margin:.2rem 0;}
+.advice-chat-message.assistant :is(pre,table) {display:block;max-width:100%;overflow-x:auto;box-sizing:border-box;}
+.advice-chat-message.assistant table {border-collapse:collapse;}.advice-chat-message.assistant th,.advice-chat-message.assistant td {padding:.35rem .5rem;border:1px solid #dce3eb;}
+.inbox dialog {max-width:650px;width:90vw;border:1px solid #bacbdf;border-radius:12px;color:#172331;}.inbox dialog::backdrop {background:#001a3355;}
+.inbox dialog label {display:flex;flex-direction:column;gap:5px;margin:14px 0;}.inbox dialog footer {display:flex;justify-content:flex-end;gap:10px;}
+#inbox-error,#manual-error {color:#a00;white-space:pre-wrap;margin:8px 0;}
+@media(max-width:1050px) {.advice-workspace{grid-template-columns:minmax(0,1fr);}.inbox-stats{grid-template-columns:repeat(3,1fr);}.email-table{min-width:850px;}}
+.status-posted {color:#0a5c9e;background:#eaf4ff;border-color:#6aa6d9;}
+.s4-summary {font-weight:600;}.s4-ok {color:#26753b;}.s4-blocking {color:#a00;}
+.s4-issues {padding-inline-start:1.1rem;}.s4-issues .s4-blocking {color:#a00;}.s4-issues .s4-warning {color:#a84d00;}
+.s4-lines {font-size:12px;min-width:900px;}.s4-lines th {white-space:nowrap;}
+.s4-lines .s4-deduction {background:#fff8ed;}.s4-lines .s4-unresolved {background:#fff0f0;}
+.table-edit-actions {display:flex;gap:8px;margin-left:auto;}
+.advice-lines.editable td {cursor:text;}.advice-lines.editable td:focus {outline:2px solid #0070f2;outline-offset:-2px;background:white;}

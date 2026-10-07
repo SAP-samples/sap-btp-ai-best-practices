@@ -1,0 +1,131 @@
+/* Screen 2 - Deduction Rules Assistant (chat) layout. */
+
+.rules-container {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: calc(100vh - 4rem);
+  max-width: 960px;
+  box-sizing: border-box;
+  color: var(--sapTextColor, #223);
+  font-family: var(--sapFontFamily, "72", Arial, sans-serif);
+}
+
+.rules-log {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+  padding: 1rem;
+  border: 1px solid var(--sapList_BorderColor, #e5e5e5);
+  border-radius: 0.75rem;
+  background: var(--sapGroup_ContentBackground, #fff);
+}
+
+.rules-bubble {
+  min-width: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Assistant markdown content should not keep the pre-wrap of plain text. */
+.rules-assistant :is(p, ul, ol, pre, table) {
+  white-space: normal;
+  margin: 0.3rem 0;
+}
+
+.rules-assistant :is(pre, table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.rules-assistant table {
+  border-collapse: collapse;
+}
+
+.rules-assistant th,
+.rules-assistant td {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--sapList_BorderColor, #dde);
+}
+
+.rules-user {
+  align-self: flex-end;
+  max-width: 80%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.9rem;
+  background: var(--sapButton_Emphasized_Background, #0a6ed1);
+  color: var(--sapButton_Emphasized_TextColor, #fff);
+  border-bottom-right-radius: 0.2rem;
+  white-space: pre-wrap;
+}
+
+.rules-assistant {
+  align-self: stretch;
+  padding: 0.35rem 0;
+  color: var(--sapTextColor, #223);
+  white-space: normal;
+}
+
+.rules-error {
+  background: var(--sapErrorBackground, #ffeaea);
+  color: var(--sapNegativeTextColor, #b00);
+}
+
+.rules-tools {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--sapContent_LabelColor, #667);
+  font-style: italic;
+}
+
+/* Attachment chips */
+.rules-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.rules-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  background: var(--sapList_Background, #eef);
+  border: 1px solid var(--sapList_BorderColor, #dde);
+  border-radius: 1rem;
+}
+
+.rules-chip-x {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--sapContent_LabelColor, #667);
+}
+
+/* Composer */
+.rules-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.rules-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.rules-input-row > ui5-file-uploader,
+.rules-input-row > ui5-button {
+  flex: 0 0 auto;
+}

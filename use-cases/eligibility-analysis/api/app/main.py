@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 ENV_PATH = Path(__file__).resolve().parents[1] / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
 
-from .routers import eligibility, optimizer
+from .routers import workspace, lifecycle
 from .a2a import a2a_router
 from .models.common import HealthResponse
 
@@ -53,9 +53,8 @@ async def health() -> HealthResponse:
     return HealthResponse.healthy("eligibility-api")
 
 
-# Include eligibility router
-app.include_router(eligibility.router, prefix="/api", tags=["eligibility"])
-app.include_router(optimizer.router, prefix="/api", tags=["optimizer"])
+app.include_router(workspace.router, prefix="/api", tags=["workspace"])
+app.include_router(lifecycle.router, prefix="/api", tags=["lifecycle"])
 app.include_router(a2a_router, prefix="/api/a2a", tags=["a2a"])
 
 
@@ -72,3 +71,19 @@ if __name__ == "__main__":
 
     import uvicorn
     uvicorn.run("main:app", host=host, port=port, log_level="info")
+
+
+# Joule discovery and protected root transport aliases share the existing A2A agent.
+from .a2a.a2a_server import agent_card, a2a_endpoint
+app.add_api_route('/.well-known/agent.json', agent_card, methods=['GET'])
+app.add_api_route('/.well-known/agent-card.json', agent_card, methods=['GET'])
+app.add_api_route('/', a2a_endpoint, methods=['POST'])
+
+
+@app.on_event('startup')
+def recover_workspace_on_startup():
+    """Recover abandoned active runs before serving status polls in the single API worker."""
+    try:
+        workspace.get_orchestration()
+    except Exception:
+        logger.exception('Workspace startup storage initialization failed; workspace requests remain unavailable')

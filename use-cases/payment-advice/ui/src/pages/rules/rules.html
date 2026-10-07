@@ -1,0 +1,29 @@
+<div class="rules-container">
+  <ui5-title level="H3">Deduction Rules Assistant</ui5-title>
+  <ui5-text>
+    Chat to build or review a customer's deduction playbook. Ask for a customer's existing rules,
+    or attach rule documents (PDF/Word/Excel) for the agent to interpret. Confirm in the chat to
+    save the playbook to HANA.
+  </ui5-text>
+
+  <div id="rules-log" class="rules-log" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+  <div id="rules-attachments" class="rules-attachments"></div>
+
+  <div class="rules-input-row">
+    <ui5-file-uploader id="rules-file" accept=".pdf,.docx,.xlsx" multiple hide-input>
+      <ui5-button icon="attachment" design="Transparent" tooltip="Attach rule documents" accessible-name="Attach rule documents"></ui5-button>
+    </ui5-file-uploader>
+
+    <ui5-textarea
+      id="rules-input"
+      class="rules-input"
+      placeholder="Ask about a customer's rules, or describe/attach rule documents..."
+      rows="2"
+      growing
+      growing-max-rows="6"
+    ></ui5-textarea>
+
+    <ui5-button id="rules-send" design="Emphasized" icon="paper-plane" tooltip="Send message" accessible-name="Send message"></ui5-button>
+  </div>
+</div>

@@ -29,9 +29,9 @@ function extractTextFromTask(task) {
   return "";
 }
 
-export async function sendA2AUserMessage(text, { contextId, includeToolCalls = false } = {}) {
+export async function sendA2AUserMessage(text, { contextId, includeToolCalls = false, workspaceContext, messageId: suppliedMessageId } = {}) {
   const requestId = makeId("rpc");
-  const messageId = makeId("msg");
+  const messageId = suppliedMessageId || makeId("msg");
 
   const params = {
     message: {
@@ -45,9 +45,7 @@ export async function sendA2AUserMessage(text, { contextId, includeToolCalls = f
     params.message.contextId = contextId;
   }
 
-  if (includeToolCalls) {
-    params.metadata = { includeToolCalls: true };
-  }
+  params.metadata = {includeToolCalls, ...(workspaceContext ? {workspace_context:workspaceContext} : {})};
 
   const payload = {
     jsonrpc: "2.0",

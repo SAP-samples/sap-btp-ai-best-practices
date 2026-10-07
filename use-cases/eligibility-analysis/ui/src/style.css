@@ -44,6 +44,7 @@ body {
   display: flex;
   flex-direction: column;
   border-radius: 12px;
+  font-family: var(--sapFontFamily, "72", Arial, sans-serif);
 }
 
 .chatbot-panel.open {
@@ -94,6 +95,10 @@ body {
   border-radius: 0.75rem;
   line-height: 1.5;
   font-size: 0.9rem;
+}
+
+.chat-message.user,
+.chat-message.error {
   white-space: pre-wrap;
 }
 
@@ -117,6 +122,90 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.markdown-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.markdown-content > :first-child {
+  margin-top: 0;
+}
+
+.markdown-content > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: inherit;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1rem 0 0.4rem;
+}
+
+.markdown-content h1 { font-size: 1.15rem; }
+.markdown-content h2 { font-size: 1.05rem; }
+.markdown-content h3 { font-size: 0.95rem; }
+
+.markdown-content p,
+.markdown-content ul,
+.markdown-content ol,
+.markdown-content pre,
+.markdown-content table {
+  margin: 0.5rem 0;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.25rem;
+}
+
+.markdown-content li + li {
+  margin-top: 0.25rem;
+}
+
+.markdown-content a {
+  color: var(--sapLinkColor, #0064d9);
+  text-decoration: underline;
+}
+
+.markdown-content code {
+  background: var(--sapBackgroundColor, #f5f6f7);
+  border-radius: 0.2rem;
+  font-family: var(--sapFontMonospaceFamily, ui-monospace, monospace);
+  font-size: 0.82rem;
+  padding: 0.1rem 0.25rem;
+}
+
+.markdown-content pre {
+  background: var(--sapBackgroundColor, #f5f6f7);
+  border: 1px solid var(--sapList_BorderColor, #d5dadd);
+  border-radius: 0.4rem;
+  overflow-x: auto;
+  padding: 0.65rem;
+  white-space: pre;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border-bottom: 1px solid var(--sapList_BorderColor, #d5dadd);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
 }
 
 .chatbot-input {

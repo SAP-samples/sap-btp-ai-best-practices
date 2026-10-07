@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eligibility Analysis</title>
+    <title>Receivables · Invoice workspace</title>
     <link rel="stylesheet" href="/src/style.css" />
     <style>
       /* Hide entire app until JavaScript loads and UI5 components are ready */
@@ -19,13 +19,13 @@
       }
     </style>
   </head>
-  <body>
+  <body class="sapUiSizeCompact">
     <div id="app">
-      <ui5-navigation-layout id="nl1">
-        <ui5-shellbar slot="header" notifications-count="72" show-notifications>
+      <ui5-navigation-layout id="nl1" mode="Collapsed">
+        <ui5-shellbar slot="header">
           <ui5-button icon="menu2" slot="startButton" id="startButton"></ui5-button>
           <ui5-shellbar-branding slot="branding">
-            Eligibility Analysis
+            Receivables
             <img slot="logo" src="/images/SAP_logo.svg" />
           </ui5-shellbar-branding>
           <ui5-shellbar-search slot="searchField" show-clear-icon placeholder="Search Apps, Products"></ui5-shellbar-search>
@@ -39,13 +39,7 @@
 
         <ui5-side-navigation id="sn1" slot="sideContent">
           <!-- Items -->
-          <ui5-side-navigation-item text="Home" href="/home" icon="home" selected></ui5-side-navigation-item>
-          <ui5-side-navigation-group text="Eligibility" expanded>
-            <ui5-side-navigation-item text="Offer Analysis" href="/eligibility" icon="documents"></ui5-side-navigation-item>
-          </ui5-side-navigation-group>
-          <ui5-side-navigation-group text="Optimizer" expanded>
-            <ui5-side-navigation-item text="Credit Optimizer" href="/optimizer" icon="batch-payments"></ui5-side-navigation-item>
-          </ui5-side-navigation-group>
+          <ui5-side-navigation-item text="Invoice workspace" href="/workspace" icon="documents" selected></ui5-side-navigation-item>
           <!-- <ui5-side-navigation-group text="Group 1" expanded>
             <ui5-side-navigation-item text="Item 1" href="/item1" icon="locate-me" expanded>
               <ui5-side-navigation-sub-item text="Sub Item 1" href="/subitem1"></ui5-side-navigation-sub-item>
@@ -92,7 +86,7 @@
         <div class="chatbot-header">
           <h3>
             <ui5-icon name="da"></ui5-icon>
-            Eligibility Assistant
+            Receivables assistant
           </h3>
           <div class="chatbot-header-actions">
             <ui5-button id="clearChatBtn" icon="refresh" design="Transparent" tooltip="Clear chat"></ui5-button>
@@ -101,8 +95,8 @@
         </div>
         <div class="chatbot-messages" id="chatMessages"></div>
         <div class="chatbot-input">
-          <ui5-input id="chatInput" placeholder="Type your question..."></ui5-input>
-          <ui5-button id="sendChatBtn" icon="paper-plane" design="Emphasized"></ui5-button>
+          <ui5-input id="chatInput" accessible-name="Message to receivables assistant" placeholder="Type your question..."></ui5-input>
+          <ui5-button id="sendChatBtn" accessible-name="Send message" icon="paper-plane" design="Emphasized"></ui5-button>
         </div>
       </div>
     </div>
