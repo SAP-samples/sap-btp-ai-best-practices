@@ -1,6 +1,6 @@
 {
   "name": "ai4u-documentation-assistance",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Agent skills that produce delivery documentation for SAP AI applications and PoCs, starting with technical handover handbooks.",
   "author": {
     "name": "SAP AI4U"

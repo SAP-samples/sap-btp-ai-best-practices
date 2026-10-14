@@ -8,7 +8,7 @@ SAP AI applications and proofs of concept, separate from the development
 skills in `sap-ai4u-skills`. Teams install it on its own when they need
 documentation help without the full development catalog.
 
-Version 0.2.0 contains one skill: `technical-handover`.
+Version 0.3.0 contains one skill: `technical-handover`.
 
 The display name is "AI4U Documentation Assistance". The identifier is
 lowercase (`ai4u-documentation-assistance`) because Claude Code, Codex, and
