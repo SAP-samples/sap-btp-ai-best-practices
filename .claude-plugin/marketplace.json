@@ -1,0 +1,24 @@
+{
+  "name": "sap-ai4u",
+  "description": "SAP AI4U agent skills for internal development workflows.",
+  "owner": {
+    "name": "SAP AI4U"
+  },
+  "plugins": [
+    {
+      "name": "sap-ai4u-skills",
+      "source": "./plugins/sap-ai4u-skills",
+      "description": "Curated agent skills for SAP BTP AI development and delivery workflows."
+    },
+    {
+      "name": "ai4u-documentation-assistance",
+      "source": "./plugins/ai4u-documentation-assistance",
+      "description": "Delivery documentation skills for SAP AI applications and PoCs, starting with technical handover handbooks."
+    },
+    {
+      "name": "ai4u-a2a-connector",
+      "source": "./plugins/ai4u-a2a-connector",
+      "description": "MCP server and skill for discovering and talking to A2A agents registered as SAP BTP destinations."
+    }
+  ]
+}

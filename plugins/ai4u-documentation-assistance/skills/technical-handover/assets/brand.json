@@ -1,0 +1,50 @@
+{
+  "_comment": "SAP-style visual identity for the handover document and rendered images. Adjust colours/fonts here only; scripts read everything from this file. Hex values without '#'.",
+  "font": "Arial",
+  "font_mono": "Consolas",
+  "font_css": "'72', '72full', Arial, Helvetica, sans-serif",
+  "page": "A4",
+  "margins_cm": 2.2,
+  "body_size_pt": 10.5,
+  "colors": {
+    "navy": "1D2D3E",
+    "blue": "0070F2",
+    "blue_dark": "0040B0",
+    "blue_light": "EBF8FF",
+    "teal": "07838F",
+    "green": "188918",
+    "purple": "7858FF",
+    "orange": "E76500",
+    "red": "D20A0A",
+    "grey": "5B738B",
+    "text": "1D2D3E",
+    "muted": "556B82",
+    "border": "D5DADD",
+    "table_header": "1D2D3E",
+    "table_band": "F5F6F7",
+    "code_bg": "F5F6F7"
+  },
+  "callouts": {
+    "NOTE":      {"label": "Note",          "color": "0070F2", "fill": "EBF8FF"},
+    "TIP":       {"label": "Tip",           "color": "188918", "fill": "F5FAE5"},
+    "IMPORTANT": {"label": "Important",     "color": "7858FF", "fill": "F1ECFF"},
+    "WARNING":   {"label": "Warning",       "color": "E76500", "fill": "FFF3E6"},
+    "CAUTION":   {"label": "Security",      "color": "D20A0A", "fill": "FFEAF4"},
+    "GAP":       {"label": "Production gap","color": "E76500", "fill": "FFF3E6"},
+    "OPEN":      {"label": "Open question", "color": "5B738B", "fill": "F5F6F7"},
+    "EVIDENCE":  {"label": "Evidence",      "color": "07838F", "fill": "E6F6F7"}
+  },
+  "diagram_palette": {
+    "blue":   {"bar": "0070F2", "fill": "EBF8FF"},
+    "navy":   {"bar": "1D2D3E", "fill": "EEF1F4"},
+    "teal":   {"bar": "07838F", "fill": "E6F6F7"},
+    "green":  {"bar": "188918", "fill": "F0F9E8"},
+    "purple": {"bar": "7858FF", "fill": "F1ECFF"},
+    "orange": {"bar": "E76500", "fill": "FFF3E6"},
+    "red":    {"bar": "D20A0A", "fill": "FFEAF4"},
+    "grey":   {"bar": "5B738B", "fill": "F5F6F7"}
+  },
+  "logo": null,
+  "document_label": "TECHNICAL HANDOVER",
+  "update_fields_on_open": true
+}

@@ -1,0 +1,221 @@
+{
+ "type": "platform",
+ "title": "Target production architecture",
+ "subtitle": "SAP Business AI Platform reference architecture applied to the application (dashed = to be built)",
+ "subaccount": {
+  "title": "Subaccount",
+  "sub": "Cloud Foundry \u00b7 eu10 \u00b7 production space"
+ },
+ "clients": [
+  {
+   "id": "user",
+   "title": "Supply planners",
+   "sub": "Browser",
+   "icon": "users",
+   "row": 0
+  }
+ ],
+ "nodes": [
+  {
+   "id": "approuter",
+   "kind": "service",
+   "icon": "router",
+   "title": "Application Router",
+   "sub": "XSUAA login, routes",
+   "col": 0,
+   "row": 0,
+   "status": "planned",
+   "color": "blue"
+  },
+  {
+   "id": "xsuaa",
+   "kind": "service",
+   "icon": "shield",
+   "title": "Authorization & Trust Mgmt",
+   "sub": "XSUAA \u00b7 role collections",
+   "col": 0,
+   "row": 1,
+   "status": "planned",
+   "color": "green"
+  },
+  {
+   "id": "ui",
+   "title": "Optimizer UI",
+   "tech": "CF app \u00b7 Vite SPA",
+   "items": [
+    "Dataset import",
+    "Optimizer workspace",
+    "Agent chat"
+   ],
+   "col": 0,
+   "row": 2,
+   "color": "blue"
+  },
+  {
+   "id": "api",
+   "title": "Optimizer API",
+   "tech": "CF app \u00b7 Python \u00b7 FastAPI",
+   "items": [
+    "REST API & job orchestration",
+    "LangGraph ReAct agent",
+    "Pyomo/HiGHS MILP worker"
+   ],
+   "col": 1,
+   "row": 0,
+   "rowspan": 2,
+   "color": "purple"
+  },
+  {
+   "id": "dest",
+   "kind": "service",
+   "icon": "destination",
+   "title": "Destination Service",
+   "col": 2,
+   "row": 0,
+   "status": "planned",
+   "color": "teal"
+  },
+  {
+   "id": "conn",
+   "kind": "service",
+   "icon": "plug",
+   "title": "Connectivity Service",
+   "col": 3,
+   "row": 0,
+   "status": "planned",
+   "color": "teal"
+  },
+  {
+   "id": "hana",
+   "title": "SAP HANA Cloud",
+   "icon": "database",
+   "items": [
+    "Datasets & jobs",
+    "Frontier results"
+   ],
+   "col": 1,
+   "row": 2,
+   "color": "green"
+  },
+  {
+   "id": "aicore",
+   "title": "SAP AI Core",
+   "icon": "ai",
+   "sections": [
+    {
+     "title": "Orchestration",
+     "items": [
+      "Templating",
+      "Data masking",
+      "I/O filtering",
+      "Grounding"
+     ]
+    }
+   ],
+   "items": [
+    "Foundation model access"
+   ],
+   "col": 2,
+   "row": 1,
+   "rowspan": 2,
+   "colspan": 2,
+   "color": "orange"
+  }
+ ],
+ "groups": [
+  {
+   "id": "aihub",
+   "label": "Generative AI Hub",
+   "nodes": [
+    "aicore"
+   ],
+   "color": "red",
+   "tone": "white",
+   "pad": 24
+  }
+ ],
+ "external": [
+  {
+   "id": "onprem",
+   "title": "SAP ECC",
+   "sub": "on-premise \u00b7 Cloud Connector \u00b7 source and target",
+   "icon": "building",
+   "row": 0,
+   "status": "planned"
+  },
+  {
+   "id": "llm",
+   "title": "Foundation models",
+   "sub": "Partner hosted",
+   "icon": "cloud",
+   "row": 2
+  }
+ ],
+ "edges": [
+  {
+   "from": "user",
+   "to": "approuter",
+   "label": "HTTPS"
+  },
+  {
+   "from": "approuter",
+   "to": "xsuaa",
+   "label": "Trust",
+   "color": "green"
+  },
+  {
+   "from": "approuter",
+   "to": "api",
+   "label": "Destination"
+  },
+  {
+   "from": "approuter",
+   "to": "ui",
+   "from_side": "left",
+   "to_side": "left",
+   "via_x": 330
+  },
+  {
+   "from": "api",
+   "to": "hana",
+   "label": "SQL"
+  },
+  {
+   "from": "api",
+   "to": "dest"
+  },
+  {
+   "from": "dest",
+   "to": "conn"
+  },
+  {
+   "from": "conn",
+   "to": "onprem",
+   "label": "RFC / IDoc",
+   "status": "planned"
+  },
+  {
+   "from": "api",
+   "to": "aicore",
+   "label": "Harmonized API",
+   "color": "#C400C4"
+  },
+  {
+   "from": "aicore",
+   "to": "llm",
+   "label": "HTTPS"
+  }
+ ],
+ "legend": [
+  {
+   "color": "blue",
+   "label": "Existing",
+   "kind": "edge"
+  },
+  {
+   "color": "grey",
+   "style": "dashed",
+   "label": "To be built"
+  }
+ ]
+}

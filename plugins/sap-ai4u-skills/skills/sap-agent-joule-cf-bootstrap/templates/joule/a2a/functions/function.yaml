@@ -1,0 +1,32 @@
+parameters:
+  - name: agent_context_id
+    optional: true
+  - name: agent_task_id
+    optional: true
+
+action_groups:
+  - actions:
+      - type: agent-request
+        agent_type: remote
+        system_alias: {{DESTINATION_ALIAS}}
+        body: >
+          <? (agent_context_id == null || agent_context_id.isEmpty()) && (agent_task_id == null || agent_task_id.isEmpty())
+             ? null
+             : (agent_task_id == null || agent_task_id.isEmpty())
+               ? '{ "contextId": "' + agent_context_id + '" }'
+               : (agent_context_id == null || agent_context_id.isEmpty())
+                 ? '{ "taskId": "' + agent_task_id + '" }'
+                 : '{ "contextId": "' + agent_context_id + '", "taskId": "' + agent_task_id + '" }' ?>
+        result_variable: _agent_response
+  - condition: _agent_response.body != null && _agent_response.body.status != null && _agent_response.body.status.state == "input-required"
+    actions:
+      - type: message
+        message:
+          type: text
+          content: <? _agent_response.body.status.message.parts[0].text ?>
+          markdown: true
+{{COMPLETED_MESSAGE_BLOCK}}
+result:
+  agent_result: <? _agent_response.body.artifacts != null ? _agent_response.body.artifacts[0].parts[0].text : null ?>
+  agent_context_id: <? _agent_response.body.contextId ?>
+  agent_task_id: <? _agent_response.body.status.state == "input-required" ? _agent_response.body.id : null ?>

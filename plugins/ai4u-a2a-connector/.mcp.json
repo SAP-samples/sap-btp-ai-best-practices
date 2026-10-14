@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "a2a-agents": {
+      "command": "python3",
+      "args": [
+        "-B",
+        "${CLAUDE_PLUGIN_ROOT}/server/mcp_server.py"
+      ]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "ai4u-a2a-connector",
+  "version": "0.1.0",
+  "description": "MCP server and skill that let Claude discover and talk to A2A agents registered as SAP BTP destinations, using the user's btp CLI session.",
+  "author": {
+    "name": "SAP AI4U"
+  },
+  "homepage": "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/sap-ai4u-plugin",
+  "repository": "https://github.com/SAP-samples/sap-btp-ai-best-practices.git",
+  "keywords": [
+    "sap",
+    "btp",
+    "a2a",
+    "agents",
+    "mcp",
+    "destinations"
+  ]
+}

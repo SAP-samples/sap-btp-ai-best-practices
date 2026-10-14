@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ai4u-documentation-assistance",
+  "version": "0.3.0",
+  "description": "Agent skills that produce delivery documentation for SAP AI applications and PoCs, starting with technical handover handbooks.",
+  "author": {
+    "name": "SAP AI4U"
+  },
+  "homepage": "https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/sap-ai4u-plugin",
+  "repository": "https://github.com/SAP-samples/sap-btp-ai-best-practices.git",
+  "keywords": [
+    "sap",
+    "documentation",
+    "handover",
+    "docx"
+  ]
+}
