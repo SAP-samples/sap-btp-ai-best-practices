@@ -1,22 +1,37 @@
-import Heading from "@theme/Heading";
-import Layout from "@theme/Layout";
-import { type ReactNode } from "react";
+import React, { useEffect } from "react";
+import Head from "@docusaurus/Head";
 
-export default function AiGovernance(): ReactNode {
+export default function AiGovernanceRedirect(): JSX.Element {
+  const redirectUrl =
+    "https://ai4u-website.cfapps.eu10-004.hana.ondemand.com/ai-governance";
+
+  useEffect(() => {
+    window.location.href = redirectUrl;
+  }, []);
+
   return (
-    <Layout title="AI Governance">
-      <main
+    <>
+      <Head>
+        <meta httpEquiv="refresh" content={`0; url=${redirectUrl}`} />
+        <title>Redirecting to AI Governance...</title>
+      </Head>
+      <div
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "60vh",
+          minHeight: "50vh",
           textAlign: "center",
           padding: "2rem",
         }}
       >
-        <Heading as="h1">Coming Soon!</Heading>
-      </main>
-    </Layout>
+        <h1>Redirecting to AI Governance...</h1>
+        <p>
+          If you are not redirected automatically, please{" "}
+          <a href={redirectUrl}>click here</a>.
+        </p>
+      </div>
+    </>
   );
 }
