@@ -8,6 +8,7 @@ import { type ReactNode } from "react";
 
 import HomepageSections from "../components/HomepageSections";
 // import ValueProposition from "../components/ValueProposition";
+import ActivationCTA from "../components/ActivationCTA";
 import PageViewTracker from "../components/tracking/PageViewTracker";
 
 import styles from "./index.module.css";
@@ -63,6 +64,7 @@ export default function Home(): ReactNode {
       <main className={styles.main}>
         <HomepageSections />
         {/* <ValueProposition /> */}
+        <ActivationCTA utmContent="homepage-band" />
       </main>
 
       <PageViewTracker />

@@ -1,12 +1,12 @@
 import Link from "@docusaurus/Link";
+import Icon from "@site/src/components/Icon";
 import Heading from "@theme/Heading";
+import "@ui5/webcomponents-icons/dist/developer-settings.js";
+import "@ui5/webcomponents-icons/dist/idea-wall.js";
+import "@ui5/webcomponents-icons/dist/megamenu.js";
+import "@ui5/webcomponents-icons/dist/tools-opportunity.js";
 import clsx from "clsx";
 import type { ReactNode } from "react";
-import Icon from "@site/src/components/Icon";
-import "@ui5/webcomponents-icons/dist/idea-wall.js";
-import "@ui5/webcomponents-icons/dist/tools-opportunity.js";
-import "@ui5/webcomponents-icons/dist/developer-settings.js";
-import "@ui5/webcomponents-icons/dist/megamenu.js";
 import styles from "./styles.module.css";
 
 type SectionItem = {
@@ -66,7 +66,7 @@ function Section({ title, description, link, icon, color }: SectionItem) {
 export default function HomepageSections(): ReactNode {
   return (
     <section className={styles.sections}>
-      <div className="container" style={{ marginBottom: "150px" }}>
+      <div className="container">
         <div className="row">
           {/* <div className="col col--12">
             <div className={styles.taglineWrapper}>
