@@ -1,0 +1,583 @@
+---
+title: "SAP BTP Application and AI Consumption Monitoring"
+description: "A read-only monitoring pattern for SAP BAIP that combines approved portfolio data with current Cloud Foundry state, operational evidence, lifecycle events, application-defined LLM usage telemetry, and official account-level consumption. Each source answers a different operational question so that no single signal is mistaken for a complete health assessment."
+hide_title: true
+---
+
+import Link from "@docusaurus/Link";
+import IconLinkButton from "@site/src/components/IconLinkButton";
+import PageContributors from "@site/src/components/PageContributors";
+import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
+
+<PageViewTracker />
+
+<div className="hero-header">
+  <h1>SAP BTP Application and AI Consumption Monitoring</h1>
+</div>
+
+<div className="section-with-background">
+  <div className="row">
+    <div className="col col--8">
+      <h2>Steps</h2>
+      <ol className="steps-list">
+        <li>
+          <Link to="#1-overview">Overview</Link>
+        </li>
+        <li>
+          <Link to="#2-pre-requisites">Pre-requisites</Link>
+        </li>
+        <li>
+          <Link to="#3-key-choices-and-guidelines">Key Choices and Guidelines</Link>
+        </li>
+        <li>
+          <Link to="#4-implementation">Implementation</Link>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+## <span className="step-number">1</span> <span className="step-title">Overview</span>
+
+### Description
+
+Enterprise teams can operate dozens of SAP BAIP applications, APIs, agents, and published demos. The information needed to operate them is usually distributed across a portfolio catalog, Cloud Foundry, logging, event services, and consumption reporting.
+
+This Best Practice describes a read-only monitoring pattern for SAP BAIP. It combines approved portfolio data with current Cloud Foundry state, operational evidence, lifecycle events, application-defined LLM telemetry, and official SAP BAIP usage data where available. Each source answers a different operational question. The report shows the source of the evidence rather than treating every signal as proof of the same condition.
+
+For agents, a running process is only one part of the picture. It does not show whether an agent used approved tools, stayed within its assigned scope, or achieved the intended business result. This Best Practice covers monitoring evidence, not the full set of controls needed to govern an agent. Action approval, business outcomes, and risk decisions need separate owners and data. For the wider governance context, see Marco Cigaina's [Agentic AI Governance](/ai-governance).
+
+### Expected Outcome
+
+After implementing this pattern, a team can:
+
+- define a monitored application scope from a maintained inventory;
+- verify whether a mapped Cloud Foundry application has running instances;
+- investigate recent request volume, 5xx responses, latency, error signals, and crash signals;
+- retain lifecycle events separately from log-derived observations;
+- analyse model calls, tokens, cached tokens, errors, and latency by application, model, and calendar week;
+- compare operational AI telemetry with official account-level consumption at its reported granularity.
+
+<LoginWall>
+
+### Benefits
+
+- Gives application owners a consistent basis for monitoring runtime, operational evidence, and consumption.
+- Separates current platform state from historical logs and events.
+- Keeps approved inventory-to-application mappings distinct from name-based candidates.
+- Makes LLM consumption visible by application and model without presenting token totals as an invoice.
+- Establishes a safe baseline for later change detection and a reviewed daily summary.
+
+### Key Concepts
+
+- **Application inventory** defines which applications, APIs, agents, and workloads are in scope for monitoring. The inventory can be stored in [SAP HANA Cloud](https://help.sap.com/docs/hana-cloud-database), an [asset inventory and CMDB pattern](https://community.sap.com/t5/security-and-compliance-blog-posts/asset-inventory-management-foundational-to-effective-security-governance/ba-p/13768258), an IT service-management system, or another governed source. It should contain an application identifier, ownership, environment, criticality, and the approved runtime mapping where one exists.
+- **Endpoint availability check** is an optional controlled request to an approved public or internal application endpoint. A successful response shows that the endpoint was reachable for that probe. It does not prove that every business function or backend dependency is healthy.
+- **Live Cloud Foundry state** is the current state reported by the [Cloud Controller V3 API](https://v3-apidocs.cloudfoundry.org/) for a confirmed application and process mapping. It includes desired and running instances. The read-only permissions are governed by [Cloud Foundry roles](https://docs.cloudfoundry.org/concepts/roles.html).
+- **Operational evidence** is historical data from [SAP Cloud Logging](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?locale=en-US), such as requests, HTTP failures, latency, crash signals, structured application logs, and the last observed event.
+- **Lifecycle evidence** is a historical start, stop, restart, scale, or crash event retained through [SAP Alert Notification service](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/subsection-im19). It is not a replacement for the current Cloud Foundry state.
+- **LLM usage telemetry** is a versioned event emitted by an application after a controlled model call. It contains the measures that the model provider exposes, such as input, output, cache, latency, and outcome fields. An application can send this application-defined schema through the [OpenTelemetry ingestion endpoint of SAP Cloud Logging](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?locale=en-US).
+- **Official consumption** is account-level usage reported by [SAP Usage Data Management service APIs](https://help.sap.com/docs/btp/sap-business-technology-platform/monitoring-usage-information-using-apis-of-sap-usage-data-management-service?locale=en-US). It must remain visibly separate from application-level token telemetry.
+- **SAP Business AI consumption in SAP for Me** is a customer-facing commercial and product view for contracted SAP Business AI capabilities. The [Business AI tab under Finance & Legal](https://support.sap.com/content/s4m/help/finance/business-ai-tab.html) can show available and expiring AI Units, monthly consumption, product or feature charges, functional usage, tenant-level traffic, and monthly balance statements according to the customer's contract and authorisations. It is not a replacement for SAP BAIP runtime state, application logs, custom LLM telemetry, or Usage Data Management reports for BAIP services.
+- The application inventory and endpoint availability check are implementation patterns rather than standalone SAP BAIP services. The remaining concepts link to the service or API that provides the evidence. A monitoring design should document the purpose, data scope, retention, ownership, and access boundary for each source before it is connected.
+
+### Using Evidence Correctly
+
+These sources should be read together, but they are not interchangeable. An endpoint check answers whether a selected endpoint was reachable at a specific time. Cloud Foundry state answers whether the mapped process has the desired and running instances. Logs and lifecycle events describe recent behaviour and events; they do not replace a current-state query. Usage Data Management provides account-level consumption and is not a substitute for application-level model telemetry. Keeping those questions separate prevents a single signal from being interpreted as a complete health assessment.
+
+## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
+
+Use the [SAP Discovery Center AI feature overview](https://discovery-center.cloud.sap/ai-feature/4dfa3fea-c5d2-40e3-959d-317b07b6b64e/) as a commercial orientation point. The entitlement and quota owner must then confirm service availability for the selected region and account model. The following links describe the concrete service plans or prerequisites used by this pattern.
+
+### Commercial
+
+| Component | Commercial or entitlement requirement | Reference |
+| --- | --- | --- |
+| SAP BAIP global account and subaccount | A global account and a target subaccount are required. | [Create a Subaccount](https://help.sap.com/docs/btp/sap-business-technology-platform/create-subaccount) |
+| Cloud Foundry runtime | Assign a Cloud Foundry environment plan and runtime-memory quota to every monitored source landscape. | [Service Plans and Metering for Cloud Foundry Runtime](https://help.sap.com/docs/btp/sap-business-technology-platform/service-plans-and-metering-for-cloud-foundry-runtime) |
+| SAP Cloud Logging | Assign the appropriate Cloud Logging entitlement and service plan before creating the central instance. | [Cloud Logging Initial Setup](https://help.sap.com/docs/cloud-logging/cloud-logging/initial-setup) |
+| SAP Alert Notification service | Purchase or assign quota and distribute it to the target subaccount before service setup. | [Alert Notification Initial Setup](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/initial-setup) |
+| SAP HANA Cloud | Assign SAP HANA Cloud entitlement, including tools where required, to the target subaccount. | [Using SAP BAIP CLI with SAP HANA Cloud](https://help.sap.com/docs/hana-cloud/sap-hana-cloud-administration-guide/using-sap-btp-command-line-interface-btp-cli-with-sap-hana-cloud?locale=en-US) |
+| SAP Usage Data Management service | Assign the `uas` service plan that matches the required reporting scope. For global-account reporting, evaluate the `reporting-ga-admin` plan with the account administrator. | [Usage Data Management Service Plans](https://help.sap.com/docs/btp/sap-business-technology-platform/sap-usage-data-management-service-service-plans) |
+| SAP AI Core or SAP Generative AI Hub | Required only for the AI workloads that are monitored; the monitoring solution does not create or manage AI deployments. | [SAP AI Core documentation](https://help.sap.com/docs/sap-ai-core) |
+| XSUAA | Required when a monitoring user interface or API is protected with XSUAA. | [Protecting Your Application](https://help.sap.com/docs/authorization-and-trust-management-service/authorization-and-trust-management/protecting-your-application) |
+| SAP Job Scheduling service | Optional. Assign the `standard` plan only after daily email policy, recipients, and escalation are approved. | [Job Scheduling Initial Setup](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/initial-setup) |
+| SAP for Me Business AI | Reviewers need a personalised S-user and appropriate SAP for Me authorisations. Activation additionally requires administrator authorisation, the applicable entitlement or contract, and CBC access when the feature uses CBC. | [SAP for Me Access and Authorizations](https://support.sap.com/content/s4m/help/access.html) |
+
+Select the services that match your monitoring objectives, existing landscape, and the level of operational visibility you intend to establish.
+
+### Technical
+
+1. Set up a [SAP Business Technology Platform (SAP BAIP) subaccount](https://help.sap.com/docs/btp/sap-business-technology-platform/create-subaccount).
+2. Enable the [SAP BAIP, Cloud Foundry runtime](https://help.sap.com/docs/btp/sap-business-technology-platform/environments) and create the required organization and space.
+3. Create and configure [SAP Cloud Logging](https://help.sap.com/docs/cloud-logging/cloud-logging/initial-setup). For Cloud Foundry application signals, continue with [Cloud Foundry ingestion](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-cloud-foundry-runtime?locale=en-US&version=Cloud).
+4. Create and configure [SAP Alert Notification service](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/initial-setup).
+5. Configure [SAP Usage Data Management service resource-consumption APIs](https://help.sap.com/docs/btp/sap-business-technology-platform/configuration-for-using-resource-consumption-apis-in-sap-api-business-hub?locale=en-US) when official capacity-unit reporting is required.
+6. Configure [SAP Authorization and Trust Management service (XSUAA)](https://help.sap.com/docs/authorization-and-trust-management-service/authorization-and-trust-management/add-authentication-and-functional-authorization-checks-to-your-application) when the monitoring UI requires role-based access.
+7. Configure [SAP Job Scheduling service](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/initial-setup) only when the team has approved the daily notification operating model.
+8. Confirm [SAP for Me Business AI monitoring access](https://support.sap.com/content/s4m/help/finance/business-ai-tab.html) for reviewers. If activation is in scope, arrange separate administrator authorisation, entitlement or contract checks, and [CBC access](https://help.sap.com/docs/CENTRAL_BUSINESS_CONFIGURATION/ffae1b25fe4543d08db67dcbab9b288d/47dff1ba0c6240deacfb62781fa7386e.html) where required.
+
+The implementation requires a nominated owner for the monitored application inventory, runtime mappings, and notification recipients. For Cloud Foundry live-state access, use a read-only technical identity for every foundation and verify the minimal role set with the foundation administrator. For examples, use Python 3.10 or later, a local `.env` file excluded from source control, anonymised data, and redacted expected outputs.
+
+![Monitoring scope across SAP BAIP landscapes](@site/static/ai-services/application-and-ai-consumption-monitoring/images/monitoring-scope-across-sap-baip-landscapes.webp)
+
+_Figure 1. Monitoring Scope Across SAP BAIP Landscapes. A centralized monitoring approach can consolidate application health and AI consumption signals from multiple SAP BAIP subaccounts, regions, and lifecycle environments._
+
+![Application and AI monitoring architecture on SAP BAIP](@site/static/ai-services/application-and-ai-consumption-monitoring/images/application-and-ai-monitoring-architecture.webp)
+
+_Figure 2. Application and AI Monitoring Architecture on SAP BAIP. SAP BAIP services provide complementary evidence for application availability, runtime operations, lifecycle events, AI usage, official consumption, and protected centralized reporting._
+
+The first diagram shows how a centralized monitoring capability can collect read-only signals across multiple SAP BAIP subaccounts and lifecycle stages. The second diagram organizes these signals and controls into four complementary layers:
+
+1. **Scope and optional availability:** governed application inventory, approved endpoints, and controlled availability checks.
+2. **Runtime and operational evidence:** current Cloud Foundry state from the Cloud Controller V3 API, operational telemetry from SAP Cloud Logging, and lifecycle events from SAP Alert Notification service for SAP BAIP.
+3. **AI consumption:** structured `llm_usage` telemetry and official account-level consumption from SAP Usage Data Management service.
+4. **Monitoring and delivery controls:** read-only access, explicit source identification, snapshots and change detection, and optional scheduled notifications.
+
+## <span className="step-number">3</span> <span className="step-title">Key Choices and Guidelines</span>
+
+An enterprise monitoring design should establish which applications and agents are in scope, whether the expected runtime is currently running, how it has behaved during the selected period, which lifecycle changes have occurred, how much AI capacity has been consumed, at what level that consumption can be attributed, who may see the evidence, and how relevant changes are delivered to the responsible team.
+
+No single SAP BAIP service answers all of these questions. A useful design combines several sources while preserving the meaning and limits of each one. The choices in this section are organised in the same order as the implementation procedures in Section 4. Section 3 explains when and why to use each component. Section 4 explains how to configure and validate it.
+
+### 3.1 Establish the Monitored Portfolio and Its Ownership
+
+A large SAP BAIP landscape normally contains production applications, demonstrations, experiments, deployment helpers, database deployers, workers, and technical utilities. A raw runtime list does not identify which of these objects represents a business capability or who is responsible for it. Monitoring should therefore start from a governed portfolio rather than from an unfiltered application inventory.
+
+The portfolio can be maintained in [SAP HANA Cloud](https://help.sap.com/docs/hana-cloud-database), a configuration-management database, an IT service-management system, or another governed repository. The technology is less important than the record contract. Every monitored item should have a stable identifier, an owner, an environment, a criticality level, and an approved relationship to its runtime components. A user interface, API, background worker, and scheduler may belong to one business application while retaining different availability expectations.
+
+For an agent, the portfolio should also record its approved purpose, business owner, autonomy level, and permitted systems or tools. These are logical governance attributes, not required columns in a particular database. They give operators a baseline against which to review behaviour and outcomes. Where available, [SAP AI Agent Hub](https://help.sap.com/docs/leanix/ea/ai-agent-hub?version=CLOUD) provides a broader discovery and governance view of agents, LLMs, and MCP servers. The approved mapping to runtime components is still needed for the checks in this article.
+
+Names, routes, repository names, and historical records can help identify mapping candidates, but they should not silently become confirmed relationships. An inferred mapping can associate the wrong runtime with a business application and create misleading alerts. Candidate mappings should remain in a review state until the application owner confirms them.
+
+An endpoint check is an optional complement to the portfolio. It is appropriate when the organisation has an approved public or internal URL whose reachability matters to users. A successful HTTP response confirms that the selected endpoint answered that request at that time. It does not prove that every business function, downstream dependency, or authenticated user journey is healthy.
+
+### 3.2 Determine Current Cloud Foundry Runtime State
+
+For workloads deployed to the [SAP BAIP, Cloud Foundry environment](https://help.sap.com/docs/btp/sap-business-technology-platform/cloud-foundry-environment), use the [Cloud Controller V3 API](https://v3-apidocs.cloudfoundry.org/) when the operational question concerns current platform state. Cloud Controller maintains the desired state of applications and processes and exposes their actual process-instance state. This makes it the primary source for questions such as whether an application is started, how many instances are desired, and how many instances are running.
+
+The most reliable mapping key is the Cloud Foundry application GUID together with its organisation, space, and process type. Application names are not globally unique and may change. Monitoring should keep user-interface, API, worker, and scheduled components separate when they have different operational roles.
+
+Access should use a dedicated read-only identity for every Cloud Foundry foundation. [Cloud Foundry roles](https://docs.cloudfoundry.org/concepts/roles.html) define `Space Auditor` as read-only access to a space, including application status, instance counts, service bindings, resource use, and logs. A foundation-managed UAA client is preferable for unattended automation when the platform team supports one; otherwise, use the approved technical-user authentication flow and protect its credentials. The monitoring component should not contain start, stop, restart, scale, restage, bind, or delete operations.
+
+Current Cloud Foundry state and endpoint availability are complementary. A process can be `STARTED` with all desired instances running while an application route or downstream dependency fails. Conversely, an endpoint can return HTTP 200 even when the corresponding workload is hosted in another foundation that is not yet connected to the monitor. Preserve both observations instead of collapsing them into a single unexplained live/not-live flag.
+
+### 3.3 Investigate Operational Behaviour with SAP Cloud Logging
+
+[SAP Cloud Logging](https://help.sap.com/docs/cloud-logging) is the operational evidence store for logs, metrics, and traces. In a Cloud Foundry landscape, it can receive application logs and platform-generated request logs. The service is appropriate when the team needs to investigate traffic volume, HTTP failures, latency, error patterns, crash signals, traces, or the last observed event over a defined time window.
+
+Cloud Logging answers a historical question rather than a current-state question. A query covering the last 24 hours and a query covering the last seven days can produce different conclusions, so the time window and retention boundary must remain visible. Queries should include organisation and space dimensions because application names can be reused across landscapes.
+
+Cloud Logging can also hold application-defined records of an agent's tool calls, approvals, exceptions, and task results. Those records must be emitted by the application or agent runtime with a correlation ID. A Cloud Logging binding alone does not reconstruct what an agent decided or whether the business task succeeded.
+
+The absence of matching log records is not sufficient evidence that an application is stopped. It may indicate no traffic, a short query window, a missing binding, an ingestion failure, or a query that uses the wrong dimensions. Cloud Foundry state and an approved endpoint check should be examined before assigning an availability conclusion. The ingestion path, whether a direct service binding or an approved cross-landscape user-provided service, should be documented and periodically validated.
+
+### 3.4 Retain Lifecycle Events and Route Notifications
+
+[SAP Alert Notification service for SAP BAIP](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/subsection-im19) receives platform and custom events and routes them through three configuration objects. A condition selects an event property and matching rule. An action defines the destination, such as STORE, email, or webhook. A subscription connects one or more conditions to one or more actions. This separation allows the same event contract to support operational storage, team delivery, and later integrations without changing the producing application.
+
+For Cloud Foundry workloads, Alert Notification can receive application lifecycle and audit events, including start, stop, restart, scale, and crash-related events, when Cloud Controller audit-event ingestion is enabled. These events explain what changed and when. They do not prove the present state of an application, because a later event may have changed that state or an event may fall outside the retained window. Use Cloud Controller for current state and Alert Notification for the chronological record.
+
+An application can also publish a controlled summary event, for example after comparing the latest health snapshot with the previous successful snapshot. Alert Notification should route this summary; it should not become the component that calculates application health. Keep the event type stable, put the human-readable report in the event body, and retain source-specific evidence in the monitoring system rather than copying raw logs into an email.
+
+Start with a STORE action or a test recipient before enabling production delivery. For the standard email action, use a concise subject template and a plain-text payload template. The Use HTML option for this action type is obsolete; use an approved custom SMTP action when a rich HTML email is a requirement. The operating model should define recipients, escalation ownership, duplicate handling, and the difference between a Cloud Foundry lifecycle event and an alert created by a Cloud Logging monitor. See [Email Action Types](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/email-action-type?locale=en-US).
+
+Self-service email subscription is possible through the [Alert Notification Configuration API](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/configuration-management), but it is an administrative operation and should not accept an arbitrary address from the browser. Derive the recipient from the authenticated identity, restrict the feature with an XSUAA scope, create uniquely named per-recipient actions and subscriptions, and retain an audit record. A new email action still requires recipient activation. Apply limits and cleanup rules so that abandoned actions do not accumulate.
+
+### 3.5 Capture Application-Level LLM Usage Telemetry
+
+Applications that call models through [SAP AI Core](https://help.sap.com/docs/sap-ai-core) or SAP Generative AI Hub often need a more detailed operational view than account-level consumption can provide. For example, an application owner may need to analyse calls, latency, errors, input tokens, output tokens, cache use, model, and provider by application or calendar week. This attribution is only possible when the calling application emits suitable telemetry.
+
+An `llm_usage` event describes a model call, not the whole agent run. To review agent behaviour, emit separate, versioned events for tool calls, attempted actions, approval or escalation steps, and task outcomes. Link them with a correlation ID and keep sensitive payloads out of the event. The exact event set depends on the agent's risk and autonomy.
+
+A practical pattern is to emit one small, versioned `llm_usage` event after each controlled model operation and send it to SAP Cloud Logging. This is an application-defined observability pattern, not an SAP billing record. The event should identify the timestamp, schema version, application, environment, correlation ID, provider, model, outcome, latency, and the token measures exposed by that provider. Cached input, uncached input, cache reads, cache writes, visible output, reasoning output, and provider totals should remain separate when they are available.
+
+Provider response schemas differ and evolve. The normalisation rule must therefore be versioned, tested, and explicit about unavailable fields. A fallback for legacy field names must not count the same measure twice. Prompts, user content, documents, access tokens, and API keys do not belong in the event. Token trends derived from these events must be labelled as operational telemetry rather than official cost, invoice, or capacity-unit data.
+
+### 3.6 Read Official Account-Level Consumption
+
+[SAP Usage Data Management service](https://help.sap.com/docs/btp/sap-business-technology-platform/monitoring-usage-information-using-apis-of-sap-usage-data-management-service?locale=en-US) provides resource-consumption reports for SAP BAIP accounts. It is the appropriate source when the purpose is official account, directory, subaccount, service, metric, and unit reporting for resource planning, reconciliation, licence reporting, or audit support.
+
+The service complements rather than replaces application-level LLM telemetry. Usage Data Management can report official measures such as capacity units, token-related metrics, hours, calls, documents, or other service-specific units at the granularity supplied by the reporting API. It does not necessarily identify the calling application or model. Application telemetry provides that attribution but is not the commercial record.
+
+Consumption is an input to a value assessment, not a measure of value by itself. If the team needs to judge whether an agent is worth operating, define a business outcome and a baseline outside Usage Data Management. Token and capacity-unit totals cannot establish whether the agent completed a useful task.
+
+Select the [Usage Data Management service plan](https://help.sap.com/docs/btp/sap-business-technology-platform/sap-usage-data-management-service-service-plans) that matches the reporting scope. The `reporting-ga-admin` plan covers global-account reporting, while `reporting-directory` is constrained to a configured directory. The report must keep the source account, reporting period, metric name, unit, and service together. Do not add unlike units or translate token counts into currency or capacity units unless the organisation has an approved commercial model. Any forecast should be visibly labelled as an estimate and describe its method.
+
+### 3.7 Monitor Contracted SAP Business AI Consumption in SAP for Me
+
+[SAP for Me](https://me.sap.com/portfolio/businessAI) is the customer-facing place to activate entitled SAP Business AI offerings and review their commercial and functional usage. Under Portfolio & Products > Business AI, customers can request activation of eligible Base AI features, Premium features, and Per User Per Month (PUPM) packages, subject to entitlements, terms, and tenant configuration. Under [Finance & Legal > Business AI](https://support.sap.com/content/s4m/help/finance/business-ai-tab.html), authorised users can monitor AI Units and usage. Activation and consumption review are separate tasks; neither requires a new monitoring service in a BAIP subaccount.
+
+The monitoring view brings together AI Units Available, a six-month Monthly Consumption graph, and consumption by agent, feature, or PUPM package. Available units are an estimate of the units remaining after current-month consumption; the view also distinguishes included units at the start of the billing cycle and units expiring in the current or next three months. Current-month consumption remains estimated until billing is complete. Use the final monthly balance statement for reconciliation and check alerts for exhausted AI Units and package request allocations.
+
+Consumption entries answer what was charged in AI Units: agents and consumption-based features show actions or requests and charges; PUPM packages show package charges, peak assigned users, and entitled requests with a feature-level drill-down. Functional Usage of AI Features answers a different question: which capabilities were used, in how many tenants, and how many requests were made. Its Base/Premium classification and tenant detail are usage evidence, not charging data.
+
+SAP for Me complements, but does not replace, Cloud Foundry state, SAP Cloud Logging, Alert Notification, application-defined `llm_usage` telemetry, or SAP Usage Data Management reports for BAIP services. SAP for Me AI Units are not SAP AI Core capacity units or application token counts. The [customer-facing SAP for Me overview deck](https://dam.sap.com/mac/app/e/pdf/preview/embed/oLYngPK?ltr=a&rc=10&doi=SAP1323691) distinguishes available capabilities from future improvements; planned APIs and FinOps budgeting are not current features.
+
+### 3.8 Secure and Operate the Monitoring Capability
+
+[SAP Authorization and Trust Management service](https://help.sap.com/docs/authorization-and-trust-management-service/authorization-and-trust-management/what-is-sap-authorization-and-trust-management-service?locale=en-US&version=Cloud), commonly referred to as XSUAA, should protect a monitoring user interface or API when access is not already provided by an approved enterprise control. XSUAA authenticates users and enforces functional roles; it is not itself a health or consumption signal.
+
+Source credentials should be separated by service and landscape, restricted to the minimum required scope, stored only in an approved secret mechanism, and rotated without code changes. A local `.env` file is acceptable for a controlled notebook exercise when it is excluded from source control, while deployed applications should use service bindings or the organisation's approved secret store.
+
+A scheduled summary is an operating capability rather than a dashboard feature. [SAP Job Scheduling service](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/initial-setup) or an approved enterprise scheduler can trigger a protected collection endpoint. The collector should store only non-secret snapshots, compare the latest snapshot with the previous one, and notify recipients about new or worsened conditions rather than repeating the complete inventory every day. Scheduling should be enabled only after the owner, recipients, time zone, retention, retry, and escalation process have been agreed.
+
+Define who reviews agent-related signals and who may restrict or suspend an agent when its actions or outcomes depart from the approved scope. The review frequency and escalation path should reflect the impact and autonomy of the agent. An alert can start that review, but it does not enforce the agent's action boundary.
+
+## <span className="step-number">4</span> <span className="step-title">Implementation</span>
+
+The procedures in this section follow the same order as the choices in Section 3. Commands and payloads use placeholders and deliberately omit secrets. Run provisioning and binding commands with the deployment owner, then run collection with read-only identities. The planned Python notebooks should keep real values in a local `.env` file that is excluded from source control and publish only `.env.example`.
+
+### 4.1 Configure the Monitored Portfolio and Optional Endpoint Checks
+
+Begin with a maintained portfolio record. If [SAP HANA Cloud](https://help.sap.com/docs/hana-cloud-database) is selected, create a dedicated schema or table set through the database owner's change process and grant the collector only the required privileges. The same logical record can be implemented in another approved inventory system.
+
+1. Nominate the portfolio owner and agree which environments and business applications are in scope.
+2. Define a stable record containing an application ID, display name, owner, environment, criticality, runtime type, and reviewed runtime mappings. Record the mapping reviewer and review date. For an agent, also record its approved purpose, accountable business owner, autonomy level, and permitted systems or tools.
+3. Store inferred mapping candidates separately from confirmed mappings. Do not use a candidate to classify availability or send an alert.
+4. Add an endpoint only when its owner has approved the route, method, authentication policy, timeout, and expected response category. Prefer a purpose-built health endpoint when one is available.
+5. Validate the record contract with one known application before importing the wider portfolio.
+
+The following abbreviated record shows the minimum relationship between a portfolio item and a reviewed Cloud Foundry component. It is a logical example, not a mandatory HANA schema.
+
+```json
+{
+  "application_id": "APP-001",
+  "owner": "team@example.invalid",
+  "environment": "production",
+  "criticality": "high",
+  "availability_url": "https://<approved-host>/health",
+  "cf_mapping": {
+    "foundation": "<foundation>",
+    "org": "<org>",
+    "space": "<space>",
+    "app_guid": "<reviewed-app-guid>",
+    "component": "api",
+    "reviewed_on": "YYYY-MM-DD"
+  }
+}
+```
+
+A successful check should produce a timestamped observation such as `endpoint_reachable=true`, `http_status=200`, and `duration_ms=<value>`. A record without an approved mapping should produce `mapping_status=REVIEW_REQUIRED`; it should not be reported as an outage.
+
+### 4.2 Configure Read-Only Cloud Foundry State Collection
+
+Use the [Cloud Controller V3 API](https://v3-apidocs.cloudfoundry.org/) for current state and the [Cloud Foundry role model](https://docs.cloudfoundry.org/concepts/roles.html) for least-privilege access.
+
+1. Ask the foundation administrator to create or register a dedicated technical identity in the correct identity origin. Add it to the organisation and assign `Space Auditor` in every monitored space. Where the foundation supports UAA clients for automation, request a client with equivalent read-only org and space roles.
+2. Validate each foundation interactively. Use SSO for a named administrator during setup, or specify the approved identity origin for a technical user. Do not place a password on the command line or in shell history.
+
+```bash
+cf login -a https://api.cf.<landscape-domain> --sso -o <org> -s <space>
+cf login -a https://api.cf.<landscape-domain> --origin <identity-origin> -u <technical-user> -o <org> -s <space>
+```
+
+3. Resolve and store the organisation GUID, space GUID, and reviewed application GUID. Do not rely on the display name after the initial review.
+4. Obtain a bearer token through the authentication flow approved for that foundation. For unattended collection, prefer `client_credentials` when the foundation team supplies a UAA client. Never print the token.
+5. Read the application, its processes, and the process statistics. The essential requests are shown below; query filters may be added according to the [V3 API reference](https://v3-apidocs.cloudfoundry.org/).
+
+```http
+GET /v3/apps/<app-guid>
+Authorization: Bearer <access-token>
+
+GET /v3/processes?app_guids=<app-guid>
+Authorization: Bearer <access-token>
+
+GET /v3/processes/<process-guid>/stats
+Authorization: Bearer <access-token>
+```
+
+The application response supplies the desired application state, each process supplies its type and desired instance count, and the stats response supplies the state of each actual instance. A redacted result can be normalised as follows.
+
+```json
+{
+  "app_guid": "<app-guid>",
+  "app_state": "STARTED",
+  "process_type": "web",
+  "desired_instances": 1,
+  "running_instances": 1,
+  "observed_at": "YYYY-MM-DDTHH:MM:SSZ"
+}
+```
+
+Compare one API result with `cf app <app-name>` during setup. The read-only collector passes validation when the values agree and its identity cannot start, stop, scale, or restage the application.
+
+### 4.3 Configure and Query SAP Cloud Logging
+
+Follow [SAP Cloud Logging Initial Setup](https://help.sap.com/docs/cloud-logging/cloud-logging/initial-setup) to assign entitlement and create the service instance. For Cloud Foundry sources, continue with [Ingest from Cloud Foundry Runtime](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-cloud-foundry-runtime?locale=en-US&version=Cloud).
+
+1. Create the Cloud Logging instance in the selected central subaccount and confirm that ingestion is enabled. Record the service plan, region, retention, source organisations, and owner.
+2. For applications in the same supported context, bind the application to the Cloud Logging instance and restage it through the deployment process. The documented CLI operation is `cf bind-service <app-name> <service-instance>`.
+3. For an approved cross-organisation design, follow the SAP Cloud Logging procedure for a user-provided service and mTLS credentials. Do not copy service-key material into source control, documentation, or notebook output.
+4. Generate one controlled request to a test application and confirm that a corresponding record appears in the `logs-cfsyslog-*` index pattern. If OpenTelemetry ingestion is required, enable it and use the documented `logs-otel-v1-*`, `metrics-otel-v1-*`, and trace index patterns described in [OpenTelemetry ingestion](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?locale=en-US).
+5. Build read-only queries with explicit foundation, organisation, space, application, and time-window filters. Validate field names against the index mapping because field conventions can differ between ingestion paths and content packages.
+
+```http
+POST logs-cfsyslog-*/_search
+Content-Type: application/json
+Authorization: <service-key-authentication>
+
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "filter": [
+        {"range": {"@timestamp": {"gte": "now-24h", "lte": "now"}}},
+        {"term": {"<org-field>.keyword": "<org>"}},
+        {"term": {"<space-field>.keyword": "<space>"}},
+        {"term": {"<app-field>.keyword": "<app>"}}
+      ]
+    }
+  }
+}
+```
+
+The first validation result should show a non-zero `hits.total.value` for the controlled request. Operational aggregations can then add request count, 5xx count, latency percentiles, errors, crash signals, and the latest timestamp. If the result is empty, report `NO_DATA_IN_WINDOW` together with the source and time window; do not translate it into `STOPPED`.
+
+### 4.4 Configure SAP Alert Notification for Lifecycle Evidence
+
+Create the service according to [Alert Notification Initial Setup](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/initial-setup). The Cloud Foundry [application event catalogue](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/application-events) lists the available lifecycle and audit events. [Configuration Management](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/configuration-management) describes the relationship between conditions, actions, and subscriptions, while [Credential Management](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/credential-management) defines the API permissions and supported authentication methods.
+
+1. Assign the service entitlement and create one Alert Notification instance in each source context required by the design. Enable Cloud Controller audit events on the instance before expecting Cloud Foundry lifecycle events.
+
+```bash
+cf create-service alert-notification standard <ans-instance> -c '{"enableCloudControllerAuditEvents":true}'
+```
+
+2. Create conditions for the required event types, such as application start, stop, restart, scale, and crash events. Add a STORE action and connect it to a narrow test subscription. STORE allows an authorised consumer to retrieve recently matched events. The Consumer API is bounded by the service's documented retention and result limits, so use it for operational evidence rather than as a permanent audit archive.
+3. Create a service binding or service key for the consuming application according to the approved credential policy. Read the Consumer API base URL and authentication material from the binding; do not hard-code them. Use `ALERT_READ` for stored events and `ALERT_WRITE` for custom event publication. Add `CONFIGURATION_READ` and `CONFIGURATION_WRITE` only to a separately authorised configuration component.
+4. Start and stop a designated test application through the deployment owner, then read matched events through the Consumer API documented with the service.
+
+```http
+GET <consumer-api-base>/<matched-events-resource>
+Authorization: <consumer-credential>
+```
+
+The response should contain the expected event type, event timestamp, resource name or GUID, organisation or subaccount context, and space or resource-group context. Store the event ID and timestamp so that a later comparison does not report the same event twice. Finally, call Cloud Controller again to demonstrate that the lifecycle event and current state remain separate observations.
+
+To route a custom daily health summary to email, first define and test the event contract. The following sequence matches the fields in the SAP BAIP cockpit:
+
+1. Under Conditions, create `match-ai4u-daily-health`. Set Condition to `eventType`, Operator to Is Equal To, and Value to `AI4UDailyHealthReport`. Leave Mandatory clear unless the complete condition design specifically requires it.
+2. Under Actions, create an enabled action of type Email. Enter the approved recipient. Leave Use HTML clear. Set Subject Template to `{subject}` and Payload Template to `{body}` so that the application controls the readable report layout without exposing the technical envelope.
+3. Under Subscriptions, create an enabled subscription, select `match-ai4u-daily-health`, and select the email action. Leave Snooze by empty for continuous delivery.
+4. Complete the recipient activation or confirmation step. An enabled subscription cannot deliver through an email action that the recipient has not activated.
+5. Publish one controlled test event. Verify receipt, subject, message layout, and the link back to the monitoring view. If delivery fails, inspect undelivered events and their failure reason before changing the event contract.
+
+```json
+{
+  "conditions": [
+    {
+      "name": "match-ai4u-daily-health",
+      "propertyKey": "eventType",
+      "predicate": "EQUALS",
+      "propertyValue": "AI4UDailyHealthReport",
+      "mandatory": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "daily-health-to-email",
+      "type": "EMAIL",
+      "state": "ENABLED",
+      "properties": {
+        "destination": "<approved-recipient@example.com>",
+        "useHtml": "false",
+        "subjectTemplate": "{subject}",
+        "payloadTemplate": "{body}"
+      }
+    }
+  ],
+  "subscriptions": [
+    {
+      "name": "daily-health-subscription",
+      "conditions": ["match-ai4u-daily-health"],
+      "actions": ["daily-health-to-email"],
+      "state": "ENABLED"
+    }
+  ]
+}
+```
+
+For self-service subscription, use the entity-level Configuration API rather than importing a complete configuration, because import replaces the existing configuration. The Cloud Foundry endpoints are `POST /cf/configuration/v1/action` and `POST /cf/configuration/v1/subscription`; the condition can normally be shared. Derive the destination from the authenticated XSUAA email claim, use an opaque digest in object names, refuse caller-supplied addresses, and record the created names locally. Unsubscribe by disabling or deleting the recipient's subscription before deleting its action. A manual Send now operation must be clearly defined: a normal daily event is delivered to every matching active subscription, not only to the user who pressed the button.
+
+### 4.5 Add and Analyse Structured LLM Usage Telemetry
+
+Add application-level telemetry only after the application team has approved the schema and privacy review. The event can be shipped through the application's existing Cloud Foundry log stream or through the [SAP Cloud Logging OpenTelemetry endpoint](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-opentelemetry-api-endpoint?locale=en-US).
+
+1. Define a versioned event contract. Include only operational metadata and the usage fields returned by the model provider. Keep the application ID, environment, provider, model, outcome, latency, correlation ID, and timestamp stable across providers.
+2. Emit the event after the model call has completed and after the SDK response has been normalised. Do not log the prompt, response content, documents, user identifiers, credentials, or bearer tokens.
+3. Send one anonymised test call and inspect the resulting Cloud Logging record before enabling the event in production.
+4. Query `event_type = llm_usage` for the approved organisation and space. Aggregate by ISO calendar week, application, provider, and model while keeping cached, uncached, output, reasoning, and total measures separate.
+5. Reconcile every grouped view to the raw event totals for the same filters and period. Document how missing provider fields and legacy field names are treated.
+
+```json
+{
+  "event_type": "llm_usage",
+  "schema_version": "1.0",
+  "timestamp": "YYYY-MM-DDTHH:MM:SSZ",
+  "application": "<application-id>",
+  "environment": "production",
+  "provider": "<provider>",
+  "model": "<model>",
+  "outcome": "success",
+  "latency_ms": 850,
+  "input_total_tokens": 120,
+  "input_uncached_tokens": 120,
+  "cache_read_input_tokens": 0,
+  "cache_write_input_tokens": 0,
+  "output_tokens": 48,
+  "total_tokens": 168,
+  "correlation_id": "<opaque-id>"
+}
+```
+
+The validation output should show one event in the raw query and the same values in the application, model, and calendar-week aggregation. Measures that the provider does not expose should remain null or explicitly unavailable rather than being guessed as zero. Label the complete view Application telemetry, not Official consumption or Cost.
+
+If agent-action monitoring is required, define a separate event contract rather than adding tool or outcome fields to `llm_usage`. Test one correlated run and check that the model call, tool action, approval or escalation, and task outcome can be found without exposing prompts, documents, or personal data. If the application does not emit those events, mark that part of the run as not observed.
+
+### 4.6 Configure SAP Usage Data Management Reporting
+
+Use [SAP Usage Data Management service plans](https://help.sap.com/docs/btp/sap-business-technology-platform/sap-usage-data-management-service-service-plans) to select the reporting scope, and follow [Configuration for Resource Consumption APIs](https://help.sap.com/docs/btp/sap-business-technology-platform/configuration-for-using-resource-consumption-apis-in-sap-api-business-hub?locale=en-US) for service instances, tokens, and role requirements.
+
+1. At global-account or directory level, assign the appropriate `uas` entitlement to the subaccount in which the reporting client will run. Use `reporting-ga-admin` for global-account reports or `reporting-directory` with the required directory GUID for directory-scoped reports.
+2. In the Cloud Foundry space, create the approved service instance and create a service key for local validation or bind the instance to the deployed collector. Keep the service credentials outside source control.
+
+```bash
+cf create-service uas reporting-ga-admin <uas-instance>
+cf create-service-key <uas-instance> <uas-key>
+```
+
+3. Obtain an OAuth token using the grant required by the selected API. Most resource-consumption APIs use OAuth 2.0 client credentials; the `subaccountUsage` API additionally requires the password grant and the documented global-account role collections. Confirm the authentication model with the account administrator before automating.
+4. Call the required endpoint under the documented base URI `https://uas-reporting.cfapps.<landscape-domain>/reports/v1`. Use `monthlyUsage` for monthly global-account reporting or `subaccountUsage` when the daily subaccount breakdown and its additional authorisation are required. Confirm the exact query parameters in the API specification before implementation.
+
+```http
+GET /reports/v1/subaccountUsage?fromDate=YYYYMMDD&toDate=YYYYMMDD&subaccountId=<subaccount-guid>
+Authorization: Bearer <access-token>
+```
+
+5. Preserve every returned service, metric, usage value, unit, source entity, and reporting period as separate dimensions. Do not sum unlike units. If the API omits a unit for a record, display it as unavailable and retain the metric identifier.
+6. Compare one period with SAP BAIP cockpit Usage Analytics for the same scope. A valid result is a period-labelled list of official service metrics, not a single mixed total.
+
+```json
+{
+  "period": "YYYY-MM",
+  "scope": "<global-account-or-directory>",
+  "service": "<service-name>",
+  "metric": "<metric-name>",
+  "usage": 12.34,
+  "unit": "<reported-unit-or-null>",
+  "source": "SAP Usage Data Management service"
+}
+```
+
+### 4.7 Activate and Monitor SAP Business AI in SAP for Me
+
+SAP for Me is a customer portal, not a service instance in the monitoring subaccount. The steps below follow the [customer-facing SAP for Me overview, version 1.2 (September 2026)](https://dam.sap.com/mac/app/e/pdf/preview/embed/oLYngPK?ltr=a&rc=10&doi=SAP1323691). Check the live portal and linked help before activation because entitlements, offerings, and screens can change.
+
+1. Confirm a personalised S-user and relevant [SAP for Me authorisations](https://support.sap.com/content/s4m/help/access/user-admin-concept.html?locale=en-US). Activation needs administrator authorisation and the applicable product entitlement or contract; the deck identifies `S4M_ORDER` for the order/activation workflow. A reviewer needs only monitoring access. Arrange [Cloud Business Configuration (CBC)](https://help.sap.com/docs/CENTRAL_BUSINESS_CONFIGURATION/ffae1b25fe4543d08db67dcbab9b288d/47dff1ba0c6240deacfb62781fa7386e.html) access where feature setup requires it.
+2. For activation, open [Portfolio & Products > Business AI](https://me.sap.com/portfolio/businessAI). For a Base AI feature, the authorised customer administrator reviews and accepts the applicable Base AI Features terms in the portal; only then does Request Activation become available. This is an administrator action, not a monitoring setup step.
+3. For an eligible Premium feature, use Request Activation and follow the CBC workflow to select the feature and target tenant. The deck distinguishes features enabled after PUPM package activation from consumption-based features that may be activated immediately. If CBC cannot activate the feature, use the offered ticket-based route. Confirm the active tenant in SAP for Me.
+4. For a PUPM package such as Joule for Consultants, select a package marked Ready for activation, specify the number of users, and review AI Units per assigned user and the entitled request allowance. After activation the status moves to In Progress; the deck says assigned-user information should be available within 24 hours. Check the final activated status.
+5. For monitoring, open [Finance & Legal > Business AI](https://support.sap.com/content/s4m/help/finance/business-ai-tab.html). Review AI Units Available, included units for the billing cycle, units expiring this month or within three months, and the six-month Monthly Consumption trend. Record the period and mark the current month as an estimate until billing is final.
+6. In consumption detail, select the month and use search, filter, or export as needed. Review agent actions and AI Unit charges, consumption-based feature requests and charges, and PUPM package rows separately. For a package, drill down to its features and check Peak User Count, Total Requests, feature Current Usage, and AI Unit charges.
+7. Open Functional Usage of AI Features for capability name, tenant count and drill-down, AI type, Base/Premium commercial model, and request counts. This card reports usage, not charges. Do not infer AI Unit charges from it.
+8. Review notifications for exhausted or projected-to-run-out AI Units, exceeded package request allocations, and incomplete activation. Download the final monthly balance statement for reconciliation. Investigate unusual changes with the commercial owner and use BAIP monitoring evidence for technical diagnosis.
+
+![SAP for Me Finance & Legal, Business AI overview](@site/static/ai-services/application-and-ai-consumption-monitoring/images/sap-for-me-business-ai-overview.webp)
+
+_Figure 3. SAP for Me Finance & Legal > Business AI overview. Available and expiring AI Units and six-month monthly consumption. Current-month values are estimates until billing is final._
+
+![SAP for Me consumption detail for agents, features, and packages](@site/static/ai-services/application-and-ai-consumption-monitoring/images/sap-for-me-consumption-detail.webp)
+
+_Figure 4. SAP for Me consumption detail for agents, features, and packages. Requests or actions and AI Unit charges are different measures; Functional Usage is not a charging view._
+
+### 4.8 Protect the Solution and Operationalise Change Detection
+
+Protect a monitoring user interface or API according to [Protecting Your Application with XSUAA](https://help.sap.com/docs/authorization-and-trust-management-service/authorization-and-trust-management/protecting-your-application). Add scheduling only after the interactive read-only collection has been validated.
+
+1. Define separate read-only and administrative scopes in `xs-security.json`, create the XSUAA service instance, bind it to the application router and backend, and assign role collections through the approved identity provider. Test that a reader can view evidence but cannot change source configuration.
+2. Load source credentials from service bindings in Cloud Foundry. For local notebooks, provide an empty `.env.example`, keep the populated `.env` outside source control, and add `.env` to `.gitignore`.
+3. Persist a compact snapshot after each successful collection. Store the observation time, portfolio key, source status, evidence summary, selected measures, and collector version. Do not store passwords, client secrets, tokens, prompts, response content, or complete log bodies.
+4. Compare the latest snapshot with the previous successful snapshot. Classify new, worsened, improved, unchanged, and no-longer-in-scope records separately. A missing source response should become a source diagnostic rather than silently replacing the previous value.
+5. Produce a dry-run summary and have the application owners review it before enabling delivery.
+6. If scheduled operation is approved, follow [SAP Job Scheduling Initial Setup](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/initial-setup), bind the service to the collector, and create a job that calls a protected internal collection endpoint. Use the service's supported schedule format and an explicit business time zone.
+7. Route the resulting change summary through the approved Alert Notification email service. Keep the event body concise and structured, use `{subject}` and `{body}` in the email action templates, and include a link to the protected monitoring view. Test retry, recipient activation, duplicate suppression, and escalation with a non-production recipient first.
+
+```json
+{
+  "observed_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "application_id": "APP-001",
+  "change": "WORSENED",
+  "current_state": "CRITICAL",
+  "previous_state": "HEALTHY",
+  "evidence": ["cf_running_instances=0/1", "endpoint_http_status=503"]
+}
+```
+
+The implementation is ready for scheduled operation when every source can be traced independently, the reader role cannot perform source changes, snapshot comparison is deterministic, a failed collection is distinguishable from an application failure, and the dry-run message contains only actionable changes.
+
+For an agent-related alert, the owner should compare the evidence with the agent's approved purpose and action scope. Follow the agreed escalation path if the agent may have acted outside that scope. An authorised operator can then use the responsible platform's controls to restrict or suspend the agent; this monitoring pattern does not do so automatically. After the incident, review the permissions, event coverage, thresholds, and owner response.
+
+## Further Learning and Reference Material
+
+Use the official product documentation as the authority for supported behaviour, setup, security, and API contracts. The community articles below are implementation examples and should be validated against the current documentation before they are adopted.
+
+### Official Guidance and Learning
+
+| Area | Resource | Why it is useful |
+| --- | --- | --- |
+| Operations learning | [Observing Your Apps Running on SAP BAIP](https://learning.sap.com/courses/exploring-devops-with-sap-btp/observing-your-apps-running-on-sap-btp_b7da3104-1a26-499f-8f02-da0de6917dd8) | Introduces the operational tools available for observing SAP BAIP applications. |
+| Cloud Foundry learning | [Developing Applications for SAP BAIP, Cloud Foundry runtime](https://learning.sap.com/courses/developing-applications-for-sap-btp-cloud-foundry-runtime) | Provides the runtime foundation needed to understand application deployment, bindings, and operation. |
+| SAP Cloud Logging | [What Is SAP Cloud Logging?](https://help.sap.com/docs/cloud-logging/cloud-logging/what-is-sap-cloud-logging?locale=en-US) | Defines the service scope for logs, metrics, traces, dashboards, and alerting. |
+| SAP Cloud Logging | [Ingest via Cloud Foundry Runtime](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-cloud-foundry-runtime?locale=en-US&version=Cloud) | Explains how Cloud Foundry application and platform signals enter a Cloud Logging instance. |
+| Alert Notification | [SAP Alert Notification Service](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/subsection-im19) | Introduces platform and custom events and the available notification channels. |
+| Alert Notification | [Configuration Management](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/configuration-management) | Defines conditions, actions, subscriptions, configuration APIs, and import behaviour. |
+| Alert Notification | [Email Action Types](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/email-action-type?locale=en-US) | Covers recipient activation and the supported email action properties and templates. |
+| Alert Notification | [Credential Management](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/credential-management) | Describes credentials and permissions for producer, consumer, and configuration APIs. |
+| Current runtime state | [Cloud Controller V3 API](https://v3-apidocs.cloudfoundry.org/version/3.226.0/index.html) | Provides current application, process, route, and instance data for automated runtime checks. |
+| Runtime access | [Cloud Foundry Roles](https://docs.cloudfoundry.org/concepts/roles.html) | Helps select the minimum organisation and space permissions for a monitoring identity. |
+| Official consumption | [Monitoring Usage Information Using SAP Usage Data Management APIs](https://help.sap.com/docs/btp/sap-business-technology-platform/monitoring-usage-information-using-apis-of-sap-usage-data-management-service?locale=en-US) | Describes the account-level usage reports and the reporting scopes exposed by the service. |
+| Official consumption | [Configuration for Resource Consumption APIs](https://help.sap.com/docs/btp/sap-business-technology-platform/configuration-for-using-resource-consumption-apis-in-sap-api-business-hub?locale=en-US) | Covers entitlements, service plans, credentials, roles, and API enablement. |
+| Scheduled collection | [SAP Job Scheduling Service](https://help.sap.com/docs/job-scheduling/sap-job-scheduling-service/what-is-sap-job-scheduling-service?locale=en-US) | Provides managed invocation of protected collection or notification endpoints on an approved schedule. |
+| SAP for Me Business AI | [Business AI under Finance & Legal](https://support.sap.com/content/s4m/help/finance/business-ai-tab.html) | Explains AI Unit balance, consumption, product and feature detail, functional usage, and monthly balance statements. |
+| SAP for Me access | [Access and Authorizations](https://support.sap.com/content/s4m/help/access.html) | Explains personalised S-user access and SAP for Me authorisation prerequisites. |
+| SAP Business AI activation | [Business AI under Portfolio & Products](https://support.sap.com/content/s4m/help/portfolio/business-ai-tab.html) | Describes request activation and tenant or feature configuration, which are separate from consumption review. |
+| SAP for Me customer overview | [SAP Business AI: SAP for Me Overview, version 1.2](https://dam.sap.com/mac/app/e/pdf/preview/embed/oLYngPK?ltr=a&rc=10&doi=SAP1323691) | Customer-facing activation and monitoring screens; distinguish current capabilities from roadmap slides. |
+
+### SAP Community Implementation Examples
+
+| Scenario | Article | What the example demonstrates |
+| --- | --- | --- |
+| AI consumption monitoring | [Never Be Surprised by Your AI Core Bill Again: Building a Consumption Dashboard](https://community.sap.com/t5/technology-blog-posts-by-sap/never-be-surprised-by-your-ai-core-bill-again-building-a-consumption/ba-p/14392506) | Builds a practical consumption view for SAP AI Core. Use it as an implementation reference, while keeping telemetry, Capacity Units, and commercial cost as distinct measures. |
+| Consolidated AI observability | [SAP AI Core: Consolidate Logs with SAP Cloud Logging](https://community.sap.com/t5/technology-blog-posts-by-sap/sap-ai-core-consolidate-logs-with-sap-cloud-logging/ba-p/13982996) | Shows alternative ingestion paths for bringing AI Core workload logs into SAP Cloud Logging and analysing custom fields in OpenSearch Dashboards. |
+| Cloud Foundry lifecycle alerting | [Detect Application Crashes in SAP BAIP Cloud Foundry with SAP Alert Notification Service](https://community.sap.com/t5/technology-blog-posts-by-sap/detect-application-crashes-in-sap-btp-cloud-foundry-with-sap-alert/ba-p/13531980) | Demonstrates conditions, subscriptions, email delivery, and incident routing for Cloud Foundry crash events. |
+| SAP for Me Business AI | [Activating and Monitoring SAP Business AI in SAP for Me](https://community.sap.com/t5/artificial-intelligence-learning-group-blog-posts/activating-and-monitoring-sap-business-ai-in-sap-for-me-live-session-on/ba-p/14357428) | Introduces the customer-facing activation and consumption workflow. Validate the demonstrated screens against the current SAP for Me help. |
+
+### Governance context
+
+[Agentic AI Governance](/ai-governance), article, covers the agent portfolio and the goal, action space, execution, and outcome controls. This Best Practice focuses on the operational monitoring evidence and consumption part of that wider picture.
+
+[SAP AI Agent Hub](https://help.sap.com/docs/leanix/ea/ai-agent-hub?version=CLOUD), SAP Help Portal. Use it for the agent inventory, discovery, and verification approach. The Help page notes that some features are available only through the Early Adopter Care program; check current availability before treating them as an implementation prerequisite.
+
+<br />
+
+<div className="section-with-background blue">
+
+## <span className="post-article-first-title">Related Best Practices</span>
+
+<ul className="button-grid">
+  <IconLinkButton href="/ai-governance" text="AI Governance" />
+</ul>
+
+</div>
+
+<br />
+
+<div className="section-with-background gradient-violet-blue">
+
+## Contributors
+
+<PageContributors contributorIds={["andrii-rzhaksynskyi"]} />
+
+</div>
+
+</LoginWall>
