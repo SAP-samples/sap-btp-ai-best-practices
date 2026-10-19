@@ -1,5 +1,5 @@
 ---
-title: "SAP BTP Application and AI Consumption Monitoring"
+title: "SAP BAIP Application and AI Consumption Monitoring"
 description: "A read-only monitoring pattern for SAP BAIP that combines approved portfolio data with current Cloud Foundry state, operational evidence, lifecycle events, application-defined LLM usage telemetry, and official account-level consumption. Each source answers a different operational question so that no single signal is mistaken for a complete health assessment."
 hide_title: true
 ---
@@ -13,7 +13,7 @@ import PageViewTracker from "@site/src/components/tracking/PageViewTracker";
 <PageViewTracker />
 
 <div className="hero-header">
-  <h1>SAP BTP Application and AI Consumption Monitoring</h1>
+  <h1>SAP BAIP Application and AI Consumption Monitoring</h1>
 </div>
 
 <div className="section-with-background">
@@ -87,7 +87,7 @@ These sources should be read together, but they are not interchangeable. An endp
 
 ## <span className="step-number">2</span> <span className="step-title">Pre-requisites</span>
 
-Use the [SAP Discovery Center AI feature overview](https://discovery-center.cloud.sap/ai-feature/4dfa3fea-c5d2-40e3-959d-317b07b6b64e/) as a commercial orientation point. The entitlement and quota owner must then confirm service availability for the selected region and account model. The following links describe the concrete service plans or prerequisites used by this pattern.
+Use the [SAP Discovery Center](https://discovery-center.cloud.sap/ai-features/) as a commercial orientation point. The entitlement and quota owner must then confirm service availability for the selected region and account model. The following links describe the concrete service plans or prerequisites used by this pattern.
 
 ### Commercial
 
@@ -108,7 +108,7 @@ Select the services that match your monitoring objectives, existing landscape, a
 
 ### Technical
 
-1. Set up a [SAP Business Technology Platform (SAP BAIP) subaccount](https://help.sap.com/docs/btp/sap-business-technology-platform/create-subaccount).
+1. Set up a [SAP Business Technology Platform subaccount](https://help.sap.com/docs/btp/sap-business-technology-platform/create-subaccount).
 2. Enable the [SAP BAIP, Cloud Foundry runtime](https://help.sap.com/docs/btp/sap-business-technology-platform/environments) and create the required organization and space.
 3. Create and configure [SAP Cloud Logging](https://help.sap.com/docs/cloud-logging/cloud-logging/initial-setup). For Cloud Foundry application signals, continue with [Cloud Foundry ingestion](https://help.sap.com/docs/cloud-logging/cloud-logging/ingest-via-cloud-foundry-runtime?locale=en-US&version=Cloud).
 4. Create and configure [SAP Alert Notification service](https://help.sap.com/docs/alert-notification/sap-alert-notification-for-sap-btp/initial-setup).
