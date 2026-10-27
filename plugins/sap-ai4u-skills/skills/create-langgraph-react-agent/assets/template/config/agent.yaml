@@ -32,6 +32,18 @@ memory:
   lease_seconds: 300
   lock_wait_seconds: 30
 
+# Replace older history with one LLM summary before it gets expensive.
+# `model` is optional; set it (same fields as `model:` above) to use a cheaper
+# deployment for summaries. Omitted means the agent model is reused.
+summarization:
+  enabled: true
+  trigger_tokens: 60000
+  keep_messages: 6
+
+# Cap each tool result before it reaches the model and stored history.
+tool_output:
+  max_output_characters: 30000
+
 a2a:
   enabled: true
   name: Portable LangGraph Agent

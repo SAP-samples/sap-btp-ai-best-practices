@@ -7,9 +7,10 @@ from typing import Any
 
 import pytest
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.runnables import RunnableLambda
+from langchain_core.tools import tool
 from pydantic import BaseModel
 
 from template_agent.config import AgentConfig
@@ -579,3 +580,141 @@ async def test_history_drops_attachment_bytes_and_respects_cap(tmp_path: Path) -
     blocks = stored[0].content
     assert all(block.get("type") == "text" for block in blocks)
     assert "attachment omitted from history: image" in blocks[1]["text"]
+
+
+class FixedReplyModel(BaseChatModel):
+    """Return one fixed reply and record every prompt it receives."""
+
+    reply: str
+    calls: list[list[BaseMessage]] = []
+
+    @property
+    def _llm_type(self) -> str:
+        """Return the fake model identifier required by BaseChatModel."""
+
+        return "fixed-reply-test-model"
+
+    def bind_tools(self, tools: Any, **kwargs: Any) -> "FixedReplyModel":
+        """Return this fake while retaining the normal bind-tools interface."""
+
+        return self
+
+    def _generate(
+        self,
+        messages: list[BaseMessage],
+        stop: list[str] | None = None,
+        run_manager: Any = None,
+        **kwargs: Any,
+    ) -> ChatResult:
+        """Record the prompt and answer with the fixed reply."""
+
+        self.calls.append(list(messages))
+        return ChatResult(generations=[ChatGeneration(message=AIMessage(content=self.reply))])
+
+
+@pytest.mark.asyncio
+async def test_long_history_is_summarized_before_the_model_call(tmp_path: Path) -> None:
+    """History over the trigger is replaced by a summary plus recent messages."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    store = RecordingStore()
+    store.values["ctx"] = [
+        message
+        for index in range(8)
+        for message in (
+            HumanMessage(content=f"question {index} " + "x" * 2_000),
+            AIMessage(content=f"answer {index} " + "y" * 2_000),
+        )
+    ]
+    agent_model = FixedReplyModel(reply="final", calls=[])
+    summary_model = FixedReplyModel(reply="SUMMARY OF EARLIER TURNS", calls=[])
+    runtime = AgentRuntime(
+        _config(
+            skill_root,
+            summarization={"trigger_tokens": 1_000, "keep_messages": 2},
+        ),
+        agent_model,
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+        summary_model=summary_model,
+    )
+
+    result = await runtime.ainvoke("latest question", "ctx")
+
+    assert result.output_text == "final"
+    assert len(summary_model.calls) == 1
+    prompt = agent_model.calls[0]
+    assert "SUMMARY OF EARLIER TURNS" in _message_text_any(prompt[1])
+    assert len(prompt) == 1 + 1 + 2
+    stored = store.values["ctx"]
+    assert "SUMMARY OF EARLIER TURNS" in _message_text_any(stored[0])
+    assert _turns(stored)[-2:] == [("human", "latest question"), ("ai", "final")]
+
+
+@pytest.mark.asyncio
+async def test_oversized_tool_output_is_truncated_for_model_and_storage(
+    tmp_path: Path,
+) -> None:
+    """A huge tool result is capped before the model sees it and when stored."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+
+    @tool
+    def big_report() -> str:
+        """Return a very large report."""
+
+        return "z" * 5_000
+
+    class ToolThenAnswer(FixedReplyModel):
+        """Call big_report once, then answer."""
+
+        def _generate(
+            self,
+            messages: list[BaseMessage],
+            stop: list[str] | None = None,
+            run_manager: Any = None,
+            **kwargs: Any,
+        ) -> ChatResult:
+            """Request the tool first and answer after seeing its result."""
+
+            self.calls.append(list(messages))
+            if isinstance(messages[-1], ToolMessage):
+                return ChatResult(generations=[ChatGeneration(message=AIMessage(content="done"))])
+            call = {"name": "big_report", "args": {}, "id": "big-1", "type": "tool_call"}
+            return ChatResult(
+                generations=[ChatGeneration(message=AIMessage(content="", tool_calls=[call]))]
+            )
+
+    model = ToolThenAnswer(reply="", calls=[])
+    store = RecordingStore()
+    runtime = AgentRuntime(
+        _config(skill_root, tool_output={"max_output_characters": 1_000}),
+        model,
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+        extra_tools=[big_report],
+    )
+
+    await runtime.ainvoke("run the report", "ctx")
+
+    seen = model.calls[-1][-1]
+    assert isinstance(seen, ToolMessage)
+    assert len(seen.content) < 1_100
+    assert "tool output truncated: 4000 characters omitted" in seen.content
+    stored_tool = next(m for m in store.values["ctx"] if isinstance(m, ToolMessage))
+    assert stored_tool.content == seen.content
+
+
+def _message_text_any(message: BaseMessage) -> str:
+    """Return message text whether content is a string or a block list."""
+
+    if isinstance(message.content, str):
+        return message.content
+    return " ".join(
+        block.get("text", "") if isinstance(block, dict) else str(block)
+        for block in message.content
+    )

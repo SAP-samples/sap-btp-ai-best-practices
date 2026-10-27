@@ -10,12 +10,14 @@ from typing import Any
 from uuid import uuid4
 from weakref import WeakValueDictionary
 
+from langchain.agents.middleware import SummarizationMiddleware
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import (
     AIMessage,
     BaseMessage,
     HumanMessage,
     SystemMessage,
+    ToolMessage,
     trim_messages,
 )
 from langchain_core.tools import BaseTool
@@ -49,8 +51,20 @@ class AgentRuntime:
         mcp_manager: MCPManager,
         memory: ConversationStore,
         extra_tools: Sequence[BaseTool] = (),
+        summary_model: BaseChatModel | None = None,
     ) -> None:
-        """Initialize and compile one reusable agent runtime."""
+        """Initialize and compile one reusable agent runtime.
+
+        Args:
+            config: Validated agent configuration.
+            model: Chat model that drives the ReAct loop.
+            skill_loader: Discovers and loads agent skills.
+            mcp_manager: Owns MCP clients and their tools.
+            memory: Conversation store (HANA or no-op).
+            extra_tools: Optional use-case-specific LangChain tools.
+            summary_model: Optional cheaper model for history summaries;
+                defaults to ``model``.
+        """
 
         self.config = config
         self.model = model
@@ -58,6 +72,20 @@ class AgentRuntime:
         self.mcp_manager = mcp_manager
         self.memory = memory
         self.tools = [skill_loader.tool(), *extra_tools, *mcp_manager.tools]
+        summarization = config.summarization
+        # ponytail: SummarizationMiddleware is designed for create_agent; this
+        # template calls its public abefore_model hook from its own graph node.
+        # It reads only state["messages"]; revisit if a LangChain upgrade makes
+        # the hook depend on the runtime argument.
+        self.summarizer = (
+            SummarizationMiddleware(
+                model=summary_model or model,
+                trigger=("tokens", summarization.trigger_tokens),
+                keep=("messages", summarization.keep_messages),
+            )
+            if summarization.enabled
+            else None
+        )
         self.graph = self._build_graph()
         self._context_locks: WeakValueDictionary[str, asyncio.Lock] = (
             WeakValueDictionary()
@@ -89,7 +117,17 @@ class AgentRuntime:
         try:
             await asyncio.to_thread(memory.ensure)
             model = create_chat_model(config.model)
-            return cls(config, model, skill_loader, mcp_manager, memory, extra_tools)
+            summary_settings = config.summarization.model
+            summary_model = create_chat_model(summary_settings) if summary_settings else None
+            return cls(
+                config,
+                model,
+                skill_loader,
+                mcp_manager,
+                memory,
+                extra_tools,
+                summary_model,
+            )
         except Exception:
             await mcp_manager.aclose()
             memory.close()
@@ -327,7 +365,11 @@ class AgentRuntime:
         await asyncio.to_thread(self.memory.close)
 
     def _build_graph(self) -> Any:
-        """Compile START -> load_skill_node -> agent -> tools loop -> END."""
+        """Compile START -> load_skill_node -> compact_context -> agent.
+
+        ``agent`` loops through ``tools -> compact_context -> agent`` until the
+        model stops requesting tools, then ends.
+        """
 
         model_with_tools = self.model.bind_tools(self.tools)
 
@@ -343,6 +385,39 @@ class AgentRuntime:
                 ],
             }
 
+        async def compact_context(state: AgentState) -> dict[str, list[Any]]:
+            """Bound context before every model call.
+
+            Oversized tool results are truncated in place (same message id, so
+            the reducer replaces them). When history exceeds the summarization
+            trigger, older messages are replaced by one LLM summary while the
+            most recent messages, never split from their tool results, stay
+            verbatim. The compacted state is also what gets persisted.
+            """
+
+            limit = self.config.tool_output.max_output_characters
+            messages = list(state["messages"])
+            truncated: list[BaseMessage] = []
+            for index, message in enumerate(messages):
+                if not isinstance(message, ToolMessage):
+                    continue
+                text = _message_text(message)
+                if len(text) <= limit:
+                    continue
+                shortened = message.model_copy(
+                    update={
+                        "content": text[:limit]
+                        + f"\n[tool output truncated: {len(text) - limit} characters omitted]"
+                    }
+                )
+                messages[index] = shortened
+                truncated.append(shortened)
+            if self.summarizer is not None:
+                update = await self.summarizer.abefore_model({"messages": messages}, None)
+                if update:
+                    return update
+            return {"messages": truncated}
+
         async def agent_node(state: AgentState) -> dict[str, list[BaseMessage]]:
             """Invoke the bound model with the current dynamic system prompt."""
 
@@ -353,12 +428,14 @@ class AgentRuntime:
 
         builder = StateGraph(AgentState)
         builder.add_node("load_skill_node", load_skill_node)
+        builder.add_node("compact_context", compact_context)
         builder.add_node("agent", agent_node)
         builder.add_node("tools", ToolNode(self.tools, handle_tool_errors=True))
         builder.add_edge(START, "load_skill_node")
-        builder.add_edge("load_skill_node", "agent")
+        builder.add_edge("load_skill_node", "compact_context")
+        builder.add_edge("compact_context", "agent")
         builder.add_conditional_edges("agent", tools_condition)
-        builder.add_edge("tools", "agent")
+        builder.add_edge("tools", "compact_context")
         return builder.compile()
 
 
