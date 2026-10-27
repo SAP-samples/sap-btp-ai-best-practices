@@ -28,7 +28,9 @@ mcp:
 memory:
   enabled: false
   table_name: LANGGRAPH_AGENT_MEMORY
-  max_messages: 40
+  max_messages: 200
+  lease_seconds: 300
+  lock_wait_seconds: 30
 
 a2a:
   enabled: true

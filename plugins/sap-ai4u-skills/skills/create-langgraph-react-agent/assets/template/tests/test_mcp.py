@@ -10,7 +10,7 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 
 from template_agent.config import AgentConfig, MCPServerSettings, MCPSettings
 from template_agent.mcp import MCPManager
-from template_agent.memory import Conversation
+from template_agent.memory import NullConversationStore
 from template_agent.runtime import AgentRuntime
 from template_agent.skills import SkillLoader
 
@@ -54,35 +54,6 @@ class MCPReactModel(BaseChatModel):
                 ],
             )
         return ChatResult(generations=[ChatGeneration(message=response)])
-
-
-class LocalConversationStore:
-    """Provide local conversation storage for the MCP graph test."""
-
-    max_messages = 40
-
-    def __init__(self) -> None:
-        """Initialize empty in-process storage."""
-
-        self.values: dict[str, Conversation] = {}
-
-    def load(self, context_id: str) -> Conversation:
-        """Load one context's turns."""
-
-        return list(self.values.get(context_id, []))
-
-    def save(self, context_id: str, messages: Conversation) -> None:
-        """Save one context's turns."""
-
-        self.values[context_id] = list(messages)
-
-    def clear(self, context_id: str) -> None:
-        """Clear one context's turns."""
-
-        self.values.pop(context_id, None)
-
-    def close(self) -> None:
-        """Close no external resources."""
 
 
 def _stdio_settings() -> MCPSettings:
@@ -135,7 +106,7 @@ async def test_stdio_tool_runs_through_complete_react_loop(tmp_path: Path) -> No
         MCPReactModel(),
         SkillLoader(skills),
         manager,
-        LocalConversationStore(),
+        NullConversationStore(),
     )
     try:
         result = await runtime.ainvoke("Echo the test value.", "mcp-local")

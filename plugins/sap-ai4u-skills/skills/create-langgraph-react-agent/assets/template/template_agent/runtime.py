@@ -3,20 +3,28 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 from weakref import WeakValueDictionary
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    SystemMessage,
+    trim_messages,
+)
 from langchain_core.tools import BaseTool
 from langgraph.graph import MessagesState, StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from .config import AgentConfig, load_config
 from .mcp import MCPManager
-from .memory import ConversationStore, create_conversation_store
+from .memory import ContextBusyError, ConversationStore, create_conversation_store
 from .models import AgentResult, Attachment
 from .providers import create_chat_model
 from .skills import SkillLoader, catalogue_prompt
@@ -115,37 +123,83 @@ class AgentRuntime:
 
         Returns:
             Final text, optional parsed output, and this invocation's graph trace.
+
+        Raises:
+            ContextBusyError: Another instance kept the context busy for longer
+                than ``memory.lock_wait_seconds``.
+            ConcurrentUpdateError: The lease expired mid-turn and another turn
+                saved first; this turn's result was not persisted.
         """
 
         normalized_context = _validate_context_id(context_id)
         if not text.strip():
             raise ValueError("User text cannot be empty")
 
-        # A2A and other async callers can submit overlapping turns. Keep the
-        # read-run-save cycle atomic for one conversation without blocking
-        # independent contexts, and let unused locks be garbage-collected.
+        # Two layers keep the read-run-save cycle atomic for one conversation:
+        # the asyncio lock queues overlapping turns inside this process without
+        # touching HANA, and the HANA lease does the same across instances.
         async with self._context_lock(normalized_context):
-            return await self._ainvoke_serialized(
-                text,
-                normalized_context,
-                attachments,
-                response_model,
+            owner = uuid4().hex
+            await self._acquire_lease(normalized_context, owner)
+            try:
+                return await self._ainvoke_serialized(
+                    text,
+                    normalized_context,
+                    owner,
+                    attachments,
+                    response_model,
+                )
+            except BaseException:
+                # A successful save already released the lease; on any failure
+                # (including cancellation) free it so the next turn need not wait
+                # for expiry. Releasing a lease we no longer hold is a no-op, and a
+                # failed release must not hide the original error: the lease then
+                # simply expires after memory.lease_seconds.
+                with contextlib.suppress(Exception):
+                    await self._run_memory_operation(
+                        self.memory.release, normalized_context, owner
+                    )
+                raise
+
+    async def _acquire_lease(self, context_id: str, owner: str) -> None:
+        """Poll the store until ``owner`` holds the context lease.
+
+        Raises:
+            ContextBusyError: When ``memory.lock_wait_seconds`` elapses first.
+        """
+
+        settings = self.config.memory
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + settings.lock_wait_seconds
+        delay = 0.2
+        while True:
+            acquired = await self._run_memory_operation(
+                self.memory.acquire, context_id, owner, settings.lease_seconds
             )
+            if acquired:
+                return
+            remaining = deadline - loop.time()
+            if remaining <= 0:
+                raise ContextBusyError(
+                    f"Another request for conversation {context_id!r} is still running"
+                )
+            await asyncio.sleep(min(delay, remaining))
+            delay = min(delay * 2, 2.0)
 
     async def _ainvoke_serialized(
         self,
         text: str,
         context_id: str,
+        owner: str,
         attachments: Sequence[Attachment],
         response_model: type[Any] | dict[str, Any] | None,
     ) -> AgentResult:
-        """Run one invocation while the caller holds its per-context lock."""
+        """Run one invocation while the caller holds the context lock and lease."""
 
         stored = await self._run_memory_operation(self.memory.load, context_id)
-        history = [_stored_message(item) for item in stored]
         current = _human_message(text, attachments, self.config.model.provider)
         initial: AgentState = {
-            "messages": [*history, current],
+            "messages": [*stored.messages, current],
             "context_id": context_id,
             "system_prompt": self.config.base_prompt,
             "available_skills": [],
@@ -173,16 +227,36 @@ class AgentRuntime:
                     ),
                 ]
             )
-        updated = [
-            *stored,
-            {"role": "user", "content": text},
-            {"role": "assistant", "content": output_text},
-        ][-self.memory.max_messages :]
-        await self._run_memory_operation(self.memory.save, context_id, updated)
+        await self._run_memory_operation(
+            self.memory.save,
+            context_id,
+            owner,
+            stored.version,
+            self._history_to_store(messages),
+            None,
+        )
         return AgentResult(
             output_text=output_text,
             output_parsed=parsed,
             messages=messages,
+        )
+
+    def _history_to_store(self, messages: Sequence[BaseMessage]) -> list[BaseMessage]:
+        """Return the bounded, attachment-free history persisted after a turn.
+
+        The full graph state is kept, including tool calls and tool results.
+        ``trim_messages`` with ``start_on="human"`` enforces
+        ``memory.max_messages`` without leaving a tool result orphaned from the
+        AI message that requested it.
+        """
+
+        cleaned = [_without_attachment_bytes(message) for message in messages]
+        return trim_messages(
+            cleaned,
+            max_tokens=self.config.memory.max_messages,
+            token_counter=len,
+            strategy="last",
+            start_on="human",
         )
 
     def _context_lock(self, context_id: str) -> asyncio.Lock:
@@ -235,7 +309,12 @@ class AgentRuntime:
             raise
 
     async def clear_context(self, context_id: str) -> None:
-        """Delete one context's persisted HANA conversation."""
+        """Delete one context's persisted HANA conversation.
+
+        Only the in-process lock is taken: clearing is an administrative action,
+        and a turn still running elsewhere fails safely at save time because
+        its row no longer matches.
+        """
 
         normalized_context = _validate_context_id(context_id)
         async with self._context_lock(normalized_context):
@@ -297,12 +376,28 @@ def _human_message(
     return HumanMessage(content=content)
 
 
-def _stored_message(item: dict[str, str]) -> BaseMessage:
-    """Convert one validated persisted role/content mapping to a message."""
+def _without_attachment_bytes(message: BaseMessage) -> BaseMessage:
+    """Replace image/file blocks in a user message with a short text placeholder.
 
-    if item["role"] == "user":
-        return HumanMessage(content=item["content"])
-    return AIMessage(content=item["content"])
+    Attachment bytes are sent to the model for the current turn only; storing
+    them would bloat every later turn and persist user files in HANA.
+    """
+
+    if not isinstance(message, HumanMessage) or isinstance(message.content, str):
+        return message
+    blocks: list[Any] = []
+    for block in message.content:
+        if isinstance(block, dict) and block.get("type") in {"image", "file"}:
+            name = block.get("filename") or "image"
+            blocks.append(
+                {
+                    "type": "text",
+                    "text": f"[attachment omitted from history: {name}, {block.get('mime_type')}]",
+                }
+            )
+        else:
+            blocks.append(block)
+    return message.model_copy(update={"content": blocks})
 
 
 def _last_final_ai_message(messages: Sequence[BaseMessage]) -> AIMessage:

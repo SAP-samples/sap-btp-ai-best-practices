@@ -1,4 +1,4 @@
-"""Verify the graph topology, ReAct loop, structured pass, and concise memory."""
+"""Verify the graph topology, ReAct loop, structured pass, memory, and leasing."""
 
 import asyncio
 import threading
@@ -14,7 +14,12 @@ from pydantic import BaseModel
 
 from template_agent.config import AgentConfig
 from template_agent.mcp import MCPManager
-from template_agent.memory import Conversation
+from template_agent.models import Attachment
+from template_agent.memory import (
+    ConcurrentUpdateError,
+    ContextBusyError,
+    StoredConversation,
+)
 from template_agent.runtime import AgentRuntime
 from template_agent.skills import SkillLoader
 
@@ -78,27 +83,69 @@ class RecordingModel(BaseChatModel):
 
 
 class RecordingStore:
-    """Provide an in-memory ConversationStore test double."""
+    """Provide an in-memory ConversationStore double with HANA lease semantics.
 
-    max_messages = 40
+    One instance shared by two runtimes behaves like one HANA table shared by
+    two Cloud Foundry instances: leases and versions are enforced across them.
+    """
 
     def __init__(self) -> None:
-        """Initialize empty storage."""
+        """Initialize empty storage, versions, pending actions, and leases."""
 
-        self.values: dict[str, Conversation] = {}
+        self.values: dict[str, list[BaseMessage]] = {}
+        self.versions: dict[str, int] = {}
+        self.pending: dict[str, dict[str, Any] | None] = {}
+        self.leases: dict[str, str] = {}
+        self._guard = threading.Lock()
 
     def ensure(self) -> None:
         """Perform no setup."""
 
-    def load(self, context_id: str) -> Conversation:
-        """Return a defensive copy of stored turns."""
+    def acquire(self, context_id: str, owner: str, lease_seconds: int) -> bool:
+        """Grant the lease when nobody holds it."""
 
-        return list(self.values.get(context_id, []))
+        with self._guard:
+            if context_id in self.leases:
+                return False
+            self.leases[context_id] = owner
+            return True
 
-    def save(self, context_id: str, messages: Conversation) -> None:
-        """Record a defensive copy of stored turns."""
+    def load(self, context_id: str) -> StoredConversation:
+        """Return a defensive copy of stored state."""
 
-        self.values[context_id] = list(messages)
+        return StoredConversation(
+            messages=list(self.values.get(context_id, [])),
+            version=self.versions.get(context_id, 0),
+            pending_action=self.pending.get(context_id),
+        )
+
+    def save(
+        self,
+        context_id: str,
+        owner: str,
+        expected_version: int,
+        messages: list[BaseMessage],
+        pending_action: dict[str, Any] | None,
+    ) -> None:
+        """Store state only for the lease holder at the expected version."""
+
+        with self._guard:
+            if (
+                self.leases.get(context_id) != owner
+                or self.versions.get(context_id, 0) != expected_version
+            ):
+                raise ConcurrentUpdateError("stale turn")
+            self.values[context_id] = list(messages)
+            self.pending[context_id] = pending_action
+            self.versions[context_id] = expected_version + 1
+            del self.leases[context_id]
+
+    def release(self, context_id: str, owner: str) -> None:
+        """Drop the lease only if ``owner`` holds it."""
+
+        with self._guard:
+            if self.leases.get(context_id) == owner:
+                del self.leases[context_id]
 
     def clear(self, context_id: str) -> None:
         """Delete one context."""
@@ -172,15 +219,47 @@ class BlockingSaveStore(RecordingStore):
         self.release_save = threading.Event()
         self.failure = failure
 
-    def save(self, context_id: str, messages: Conversation) -> None:
+    def save(
+        self,
+        context_id: str,
+        owner: str,
+        expected_version: int,
+        messages: list[BaseMessage],
+        pending_action: dict[str, Any] | None,
+    ) -> None:
         """Block only the first turn's write until the test releases it."""
 
-        if messages[-2]["content"] == "first":
+        if messages[-2].content == "first":
             self.save_started.set()
             self.release_save.wait(timeout=5)
             if self.failure:
                 raise self.failure
-        super().save(context_id, messages)
+        super().save(context_id, owner, expected_version, messages, pending_action)
+
+
+def _turns(messages: list[BaseMessage]) -> list[tuple[str, str]]:
+    """Return (type, text) for user and final assistant messages only."""
+
+    return [
+        (message.type, message.content)
+        for message in messages
+        if message.type == "human"
+        or (message.type == "ai" and not getattr(message, "tool_calls", None))
+    ]
+
+
+def _config(skill_root: Path, **overrides: Any) -> AgentConfig:
+    """Build a minimal valid configuration with optional section overrides."""
+
+    return AgentConfig.model_validate(
+        {
+            "base_prompt": "Base prompt",
+            "model": {"provider": "openai", "name": "fake"},
+            "skills": {"directory": str(skill_root)},
+            "memory": {"enabled": False},
+            **overrides,
+        }
+    )
 
 
 def _skill(root: Path, name: str) -> None:
@@ -198,7 +277,7 @@ def _skill(root: Path, name: str) -> None:
 async def test_runtime_executes_batch_skill_react_loop_and_structured_pass(
     tmp_path: Path,
 ) -> None:
-    """Exercise the complete graph while persisting only user/final turns."""
+    """Exercise the complete graph and persist the full tool-call history."""
 
     skill_root = tmp_path / "skills"
     skill_root.mkdir()
@@ -231,10 +310,11 @@ async def test_runtime_executes_batch_skill_react_loop_and_structured_pass(
     assert result.output_text == "skills loaded"
     assert result.output_parsed == StructuredAnswer(answer="structured")
     assert any(isinstance(message, ToolMessage) for message in result.messages)
-    assert store.values["ctx"] == [
-        {"role": "user", "content": "load what you need"},
-        {"role": "assistant", "content": "skills loaded"},
-    ]
+    stored = store.values["ctx"]
+    assert [message.type for message in stored] == ["human", "ai", "tool", "ai"]
+    assert stored[1].tool_calls[0]["name"] == "load_skill"
+    assert stored[2].tool_call_id == "call-1"
+    assert store.leases == {}
     first_system = model.calls[0][0].content
     assert "alpha: alpha description" in first_system
     assert "beta: beta description" in first_system
@@ -287,11 +367,11 @@ async def test_runtime_serializes_concurrent_invocations_for_one_context(
 
     assert {first.output_text, second.output_text} == {"answer:first", "answer:second"}
     assert model.max_active_calls == 1
-    assert store.values["shared-context"] == [
-        {"role": "user", "content": "first"},
-        {"role": "assistant", "content": "answer:first"},
-        {"role": "user", "content": "second"},
-        {"role": "assistant", "content": "answer:second"},
+    assert _turns(store.values["shared-context"]) == [
+        ("human", "first"),
+        ("ai", "answer:first"),
+        ("human", "second"),
+        ("ai", "answer:second"),
     ]
 
 
@@ -338,11 +418,11 @@ async def test_runtime_holds_context_lock_until_cancelled_save_finishes(
     )
     assert isinstance(first_result, asyncio.CancelledError)
     assert second_result.output_text == "answer:second"
-    assert store.values["shared-context"] == [
-        {"role": "user", "content": "first"},
-        {"role": "assistant", "content": "answer:first"},
-        {"role": "user", "content": "second"},
-        {"role": "assistant", "content": "answer:second"},
+    assert _turns(store.values["shared-context"]) == [
+        ("human", "first"),
+        ("ai", "answer:first"),
+        ("human", "second"),
+        ("ai", "answer:second"),
     ]
 
 
@@ -384,3 +464,118 @@ async def test_runtime_wraps_storage_failure_while_cancellation_is_pending(
         await invocation
 
     assert isinstance(caught.value.__cause__, ValueError)
+
+
+@pytest.mark.asyncio
+async def test_two_runtimes_sharing_a_store_serialize_through_the_lease(
+    tmp_path: Path,
+) -> None:
+    """Two instances (separate asyncio locks) still never run one context at once."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    config = _config(skill_root, memory={"enabled": False, "lock_wait_seconds": 5})
+    store = RecordingStore()
+    model = ConcurrentModel()
+    instances = [
+        AgentRuntime(config, model, SkillLoader(skill_root), MCPManager(), store)
+        for _ in range(2)
+    ]
+
+    await asyncio.gather(
+        instances[0].ainvoke("first", "shared-context"),
+        instances[1].ainvoke("second", "shared-context"),
+    )
+
+    assert model.max_active_calls == 1
+    assert [text for kind, text in _turns(store.values["shared-context"]) if kind == "human"] in (
+        ["first", "second"],
+        ["second", "first"],
+    )
+    assert store.versions["shared-context"] == 2
+    assert store.leases == {}
+
+
+@pytest.mark.asyncio
+async def test_busy_context_fails_after_lock_wait(tmp_path: Path) -> None:
+    """A lease held elsewhere raises ContextBusyError once the wait elapses."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    store = RecordingStore()
+    store.leases["shared-context"] = "other-instance"
+    runtime = AgentRuntime(
+        _config(skill_root, memory={"enabled": False, "lock_wait_seconds": 0.3}),
+        ConcurrentModel(),
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+    )
+
+    with pytest.raises(ContextBusyError):
+        await runtime.ainvoke("hello", "shared-context")
+    assert store.leases == {"shared-context": "other-instance"}
+
+
+@pytest.mark.asyncio
+async def test_stale_turn_is_rejected_and_lease_released(tmp_path: Path) -> None:
+    """If another turn saved first, the result is not written and the lease is freed."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+
+    class ExpiringStore(RecordingStore):
+        """Simulate another instance saving after this turn's lease expired."""
+
+        def load(self, context_id: str) -> StoredConversation:
+            """Return state, then advance the version as a concurrent writer would."""
+
+            stored = super().load(context_id)
+            self.versions[context_id] = stored.version + 1
+            return stored
+
+    store = ExpiringStore()
+    runtime = AgentRuntime(
+        _config(skill_root),
+        ConcurrentModel(),
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+    )
+
+    with pytest.raises(ConcurrentUpdateError):
+        await runtime.ainvoke("hello", "ctx")
+    assert "ctx" not in store.values
+    assert store.leases == {}
+
+
+@pytest.mark.asyncio
+async def test_history_drops_attachment_bytes_and_respects_cap(tmp_path: Path) -> None:
+    """Stored user messages keep text only, and the cap restarts on a user turn."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    image = tmp_path / "pixel.png"
+    image.write_bytes(b"\x89PNG\r\n\x1a\nfake")
+    store = RecordingStore()
+    runtime = AgentRuntime(
+        _config(skill_root, memory={"enabled": False, "max_messages": 3}),
+        ConcurrentModel(),
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+    )
+
+    await runtime.ainvoke("one", "ctx")
+    result = await runtime.ainvoke("two", "ctx", attachments=[Attachment(path=image)])
+
+    assert any(
+        isinstance(block, dict) and block.get("type") == "image"
+        for block in result.messages[-2].content
+    )
+    stored = store.values["ctx"]
+    assert len(stored) == 2
+    assert stored[0].type == "human"
+    blocks = stored[0].content
+    assert all(block.get("type") == "text" for block in blocks)
+    assert "attachment omitted from history: image" in blocks[1]["text"]

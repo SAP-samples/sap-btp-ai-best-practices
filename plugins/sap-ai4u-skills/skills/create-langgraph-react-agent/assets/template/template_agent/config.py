@@ -89,13 +89,27 @@ class MCPSettings(BaseModel):
 
 
 class MemorySettings(BaseModel):
-    """Configure optional SAP HANA conversation persistence."""
+    """Configure optional SAP HANA conversation persistence and its concurrency.
+
+    Attributes:
+        enabled: Persist conversations in HANA; otherwise every turn starts empty.
+        table_name: HANA table created automatically in the runtime user's schema.
+        max_messages: Hard ceiling on stored messages. Summarization normally
+            keeps history far below it; the ceiling trims oldest turns and always
+            restarts on a user message so tool calls stay paired with results.
+        lease_seconds: Lifetime of the per-context lease that stops two instances
+            from running the same conversation. Must exceed the longest turn.
+        lock_wait_seconds: How long a turn waits for a busy context before
+            failing with ContextBusyError.
+    """
 
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool = False
     table_name: str = "LANGGRAPH_AGENT_MEMORY"
-    max_messages: int = Field(default=40, ge=2)
+    max_messages: int = Field(default=200, ge=2)
+    lease_seconds: int = Field(default=300, ge=10)
+    lock_wait_seconds: float = Field(default=30.0, ge=0)
 
     @field_validator("table_name")
     @classmethod
@@ -106,6 +120,46 @@ class MemorySettings(BaseModel):
         if not re.fullmatch(r"[A-Z][A-Z0-9_]{0,126}", normalized):
             raise ValueError(f"Unsafe HANA table identifier: {value!r}")
         return normalized
+
+
+class SummarizationSettings(BaseModel):
+    """Configure LLM summarization of long conversation history.
+
+    Attributes:
+        enabled: Summarize older messages once history exceeds ``trigger_tokens``.
+        trigger_tokens: Approximate history size that triggers summarization.
+            History is replayed on every model call, so this bounds per-call cost.
+        keep_messages: Most recent messages kept verbatim after summarizing.
+        model: Optional cheaper model for summaries; defaults to the agent model.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = True
+    trigger_tokens: int = Field(default=60_000, ge=1_000)
+    keep_messages: int = Field(default=6, ge=1)
+    model: ModelSettings | None = None
+
+
+class ToolOutputSettings(BaseModel):
+    """Bound tool results before they enter model context and stored history."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    max_output_characters: int = Field(default=30_000, ge=1_000)
+
+
+class ApprovalSettings(BaseModel):
+    """List tools that must be approved by the user before they run.
+
+    A model call to any listed tool ends the turn with a pending action stored
+    in the HANA conversation row; the user's next message approves or rejects
+    it. Requires ``memory.enabled`` so the pending action survives the turn.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    tools: list[str] = Field(default_factory=list)
 
 
 class A2ASettings(BaseModel):
@@ -153,6 +207,9 @@ class AgentConfig(BaseModel):
     skills: SkillSettings
     mcp: MCPSettings = Field(default_factory=MCPSettings)
     memory: MemorySettings = Field(default_factory=MemorySettings)
+    summarization: SummarizationSettings = Field(default_factory=SummarizationSettings)
+    tool_output: ToolOutputSettings = Field(default_factory=ToolOutputSettings)
+    approvals: ApprovalSettings = Field(default_factory=ApprovalSettings)
     a2a: A2ASettings = Field(default_factory=A2ASettings)
     recursion_limit: int = Field(default=30, ge=2)
 
