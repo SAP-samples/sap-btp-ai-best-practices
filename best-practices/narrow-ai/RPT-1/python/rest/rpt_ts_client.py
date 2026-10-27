@@ -159,3 +159,43 @@ def forecast_to_frame(
         records,
         columns=["series", "variate", "step", "timestamp", "point", "lower", "upper"],
     )
+
+
+def hierarchy_to_frame(response: dict[str, Any]) -> pd.DataFrame:
+    """Flatten the reconciled tree of a ``hierarchical_forecast`` response.
+
+    Each tree node is ``{label: [[values per step] per variate], "__children__":
+    [...]}``; leaf nodes have no ``__children__``. When ``hierarchical_levels``
+    starts with ``null`` the root label is ``""`` (the grand total).
+
+    Args:
+        response: Forecast response requested with
+            ``options.point_forecast = "hierarchical_forecast"``.
+
+    Returns:
+        DataFrame with columns ``level`` (0 = grand total), ``path`` (labels
+        joined by `` / ``, ``"total"`` for the root), ``variate``, ``step`` and
+        ``point``.
+    """
+    records = []
+
+    def walk(nodes: Sequence[dict[str, Any]], path: list[str]) -> None:
+        """Visit nodes depth-first and append one record per variate and step."""
+        for node in nodes:
+            label = next(key for key in node if key != "__children__")
+            node_path = path + [label] if label else path
+            for variate, values in enumerate(node[label]):
+                for step, value in enumerate(values):
+                    records.append(
+                        {
+                            "level": len(node_path),
+                            "path": " / ".join(node_path) or "total",
+                            "variate": variate,
+                            "step": step + 1,
+                            "point": value,
+                        }
+                    )
+            walk(node.get("__children__") or [], node_path)
+
+    walk(response.get("hierarchical_result") or [], [])
+    return pd.DataFrame(records, columns=["level", "path", "variate", "step", "point"])
