@@ -40,7 +40,7 @@ Configuration (`config/agent.yaml` of a generated agent):
 | `memory.lease_seconds` | `300` | Per-conversation lease lifetime; must exceed the longest turn |
 | `memory.lock_wait_seconds` | `30` | Wait for a busy conversation before `ContextBusyError` |
 | `summarization.enabled` | `true` | Summarize older history |
-| `summarization.trigger_tokens` | `60000` | Approximate history size that triggers a summary |
+| `summarization.trigger_tokens` | `200000` | Approximate history size that triggers a summary |
 | `summarization.keep_messages` | `6` | Recent messages kept verbatim |
 | `summarization.model` | agent model | Optional cheaper deployment for summaries |
 | `tool_output.max_output_characters` | `30000` | Cap per tool result |

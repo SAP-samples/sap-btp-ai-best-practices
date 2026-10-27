@@ -136,7 +136,7 @@ class SummarizationSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool = True
-    trigger_tokens: int = Field(default=60_000, ge=1_000)
+    trigger_tokens: int = Field(default=200_000, ge=1_000)
     keep_messages: int = Field(default=6, ge=1)
     model: ModelSettings | None = None
 

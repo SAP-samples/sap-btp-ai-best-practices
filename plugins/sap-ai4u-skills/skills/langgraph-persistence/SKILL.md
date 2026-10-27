@@ -206,7 +206,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 summarizer = SummarizationMiddleware(
     model=summary_llm,                 # a cheaper Gen AI Hub chat model is fine
-    trigger=("tokens", 60_000),
+    trigger=("tokens", 200_000),
     keep=("messages", 6),
 )
 

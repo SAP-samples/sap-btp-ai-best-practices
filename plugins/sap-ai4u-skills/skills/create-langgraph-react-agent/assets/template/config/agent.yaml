@@ -37,7 +37,7 @@ memory:
 # deployment for summaries. Omitted means the agent model is reused.
 summarization:
   enabled: true
-  trigger_tokens: 60000
+  trigger_tokens: 200000
   keep_messages: 6
 
 # Cap each tool result before it reaches the model and stored history.

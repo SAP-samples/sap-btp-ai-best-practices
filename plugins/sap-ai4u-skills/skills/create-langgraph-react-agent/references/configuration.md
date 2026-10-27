@@ -45,7 +45,7 @@ memory:
   lock_wait_seconds: 30    # then ContextBusyError
 summarization:
   enabled: true
-  trigger_tokens: 60000
+  trigger_tokens: 200000
   keep_messages: 6
   # model: {provider: openai, name: <cheaper deployment>}
 tool_output:

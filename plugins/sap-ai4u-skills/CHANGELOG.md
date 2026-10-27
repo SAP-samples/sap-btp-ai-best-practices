@@ -2,6 +2,11 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
+## Unreleased
+
+- `create-langgraph-react-agent`, `langgraph-persistence`: raise the default
+  `summarization.trigger_tokens` from 60000 to 200000.
+
 ## 0.4.0 - 2026-10-27
 
 - `create-langgraph-react-agent`: HANA memory now stores the full message

@@ -102,7 +102,7 @@ Before every model call the `compact_context` node:
 
 - truncates tool results above `tool_output.max_output_characters` (30000);
 - summarizes older messages with LangChain `SummarizationMiddleware` once the
-  history passes `summarization.trigger_tokens` (60000), keeping the last
+  history passes `summarization.trigger_tokens` (200000), keeping the last
   `summarization.keep_messages` (6) verbatim. `summarization.model` may name a
   cheaper deployment.
 
