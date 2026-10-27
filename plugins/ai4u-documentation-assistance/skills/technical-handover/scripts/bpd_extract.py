@@ -111,7 +111,7 @@ def find_panels(img: Image.Image, min_frac: float = 0.25, tol: float = 0.02) -> 
     horiz = _rules(binary, int(min_frac * w * 0.5))  # side-by-side panels can each be < half the width
     vert = [(x, y0, y1) for x, y0, y1 in _rules(binary.transpose(Image.Transpose.TRANSPOSE), int(min_frac * h))]
     if len(vert) > 200:
-        return []  # ponytail: photos and dense bitmaps give thousands of runs; framed diagrams give a handful
+        return []  # Photos and dense bitmaps give thousands of runs; framed diagrams give a handful
 
     def has_edge(y: int, xa: int, xb: int) -> bool:
         return any(abs(hy - y) <= ty and hx0 <= xa + tx and hx1 >= xb - tx for hy, hx0, hx1 in horiz)

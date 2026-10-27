@@ -96,7 +96,7 @@ class AgentRuntime:
                 f"approvals.tools lists unknown tool(s): {', '.join(sorted(unknown))}"
             )
         summarization = config.summarization
-        # ponytail: SummarizationMiddleware is designed for create_agent; this
+        # SummarizationMiddleware is designed for create_agent; this
         # template calls its public abefore_model hook from its own graph node.
         # It reads only state["messages"]; revisit if a LangChain upgrade makes
         # the hook depend on the runtime argument.

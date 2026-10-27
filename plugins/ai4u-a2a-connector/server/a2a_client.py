@@ -38,7 +38,7 @@ CARD_PATHS = ("/.well-known/agent-card.json", "/.well-known/agent.json")
 PENDING_STATES = ("input-required", "auth-required")
 
 # Discovery result for this process: lower-cased destination name -> Agent.
-# ponytail: process-lifetime cache; `list_agents(refresh=true)` rebuilds it.
+# Process-lifetime cache; `list_agents(refresh=true)` rebuilds it.
 _agents: dict[str, "Agent"] | None = None
 _scanned = 0
 

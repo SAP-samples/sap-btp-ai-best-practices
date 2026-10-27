@@ -168,7 +168,7 @@ class AgentExecutorAdapter(AgentExecutor):
             await updater.failed(message=failure)
             return
 
-        # ponytail: an approval request (result.status == "input_required") is
+        # An approval request (result.status == "input_required") is
         # returned as a completed task. The pending action lives in the HANA row
         # keyed by contextId, so the user's reply resolves it on any instance.
         # A2A input-required would make clients resend the taskId, which the
