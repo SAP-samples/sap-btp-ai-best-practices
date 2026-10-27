@@ -2,6 +2,8 @@
 
 This folder contains Python code examples for working with **SAP RPT-1**, a Relational Pretrained Transformer for tabular data hosted on SAP AI Core. You provide tabular rows with one or more cells marked as prediction targets, and the model returns predicted values for those cells based on patterns in the surrounding data.
 
+> **Newer models and features:** SAP-RPT-1.5/1.6 explanations, confidence intervals and `context_mode`, the SAP-RPT-TS time-series model, and Playground-style decisions are covered with direct REST calls in [rest/](./rest/README.md). The native SDK models used below do not expose those fields yet.
+
 The examples use the **SAP Generative AI Hub native SDK** (`gen_ai_hub.proxy.native.sap`), which provides a high-level `RPTClient` that handles authentication, deployment resolution, and request serialization internally.
 
 ## Project Structure
@@ -11,7 +13,8 @@ python/
 ├── .env.example              # Template for required environment variables
 ├── requirements.txt          # Python dependencies
 ├── RPT-1_native_sdk.ipynb    # Tutorial notebook: complete RPT-1 workflow
-└── sample_orders.csv         # Sample CSV dataset used in the notebook
+├── sample_orders.csv         # Sample CSV dataset used in the notebook
+└── rest/                     # Direct REST notebooks: RPT-1.5/1.6, SAP-RPT-TS, decisions
 ```
 
 ## Notebook Overview

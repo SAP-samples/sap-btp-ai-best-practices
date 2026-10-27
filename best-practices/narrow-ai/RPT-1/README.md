@@ -2,7 +2,8 @@
 
 This area showcases three ways to work with SAP's RPT-1 table-completion models on SAP AI Core.
 
-- [python](./python): raw HTTP requests and a custom example client for RPT-1 inference. An official Python SDK is planned; these examples serve as interim guidance.
+- [python](./python): native SAP AI SDK notebook for RPT-1 inference.
+- [python/rest](./python/rest): direct REST notebooks for the current models on SAP AI Core: SAP-RPT-1.5/1.6 (explanations, confidence intervals, deep context), SAP-RPT-TS time-series forecasting, and Playground-style decisions.
 - [Java](./Java): Java SDK example for inference-only RPT-1 predictions against an existing deployment.
 - [typescript](./typescript): TypeScript SDK example for inference-only RPT-1 predictions against an existing deployment.
 
@@ -19,5 +20,6 @@ The current Java SDK resolves the deployed model through `RptModel` and AI Core 
 
 ## When To Use Which Track
 
-- Choose [python](./python) for direct API access and as a reference for building custom wrappers. An official SAP AI SDK for Python is planned but not yet publicly available.
+- Choose [python](./python) for the native SAP AI SDK abstractions in Python.
+- Choose [python/rest](./python/rest) for features the SDKs do not model yet: SAP-RPT-1.5/1.6 explanations and `context_mode`, the `sap-rpt-ts` time-series model, and decisions.
 - Choose [Java](./Java) or [typescript](./typescript) if you want to use the official SAP AI SDK abstractions for RPT-1 inference.
