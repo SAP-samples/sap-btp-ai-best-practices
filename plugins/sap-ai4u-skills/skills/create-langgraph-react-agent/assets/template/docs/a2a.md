@@ -61,10 +61,17 @@ namespace or authorize client-supplied `contextId` values.
 `InMemoryTaskStore` is process-local, retains task prompts and answers until the
 process exits, and loses them on restart. Replace it with an authorized durable
 store only when task lookup must survive restarts. HANA conversation memory is
-separate from the A2A task store. Per-context invocation locks prevent lost turns
-inside one process, including when cancellation arrives during a blocking
-storage call; multi-process deployments need equivalent distributed coordination
-if the same HANA context can be handled by multiple workers.
+separate from the A2A task store. With HANA memory enabled, turns on one
+`contextId` are serialized inside a process by an asyncio lock and across
+instances by a HANA row lease with versioned saves. A turn that cannot get the
+lease within `memory.lock_wait_seconds` fails with "Another request for this
+conversation is still running. Retry shortly."
+
+Approval requests (`approvals.tools`) are returned as **completed** tasks whose
+text asks for approval; the client sends the answer as a new message on the same
+`contextId`. A2A `input-required` would make clients resend the `taskId`, and
+`InMemoryTaskStore` raises `TaskNotFoundError` when that task was created on
+another instance. Switch to `input-required` only with a shared task store.
 
 ## Run and discover
 

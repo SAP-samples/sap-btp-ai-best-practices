@@ -2,6 +2,28 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
+## 0.4.0 - 2026-10-27
+
+- `create-langgraph-react-agent`: HANA memory now stores the full message
+  history (tool calls and tool results) in payload format 2, migrates older
+  tables automatically, and keeps older rows readable.
+- Serialize turns on one conversation across Cloud Foundry instances with a
+  HANA row lease plus a version-fenced save (`ContextBusyError`,
+  `ConcurrentUpdateError`); new `memory.lease_seconds` and
+  `memory.lock_wait_seconds`, `memory.max_messages` default 40 -> 200.
+- Add a `compact_context` graph node: tool-output caps
+  (`tool_output.max_output_characters`) and LangChain `SummarizationMiddleware`
+  history summarization (`summarization.*`, optional cheaper model). Pin
+  `langchain==1.3.14`.
+- Add human approval of guarded tools (`approvals.tools`) as a pending action
+  in the HANA row; `AgentResult.status` reports `input_required`. A2A returns
+  approval requests as completed tasks while the task store is in-memory.
+- Rewrite `langgraph-persistence`, `langgraph-human-in-the-loop`, and
+  `langgraph-reflexion` around SAP HANA as the only production store; drop
+  `SqliteSaver`/`PostgresSaver` recommendations. Add the HANA row-lease pattern
+  to `sap-hana-sql` and update `langgraph-fundamentals`,
+  `sap-agent-joule-cf-bootstrap`, and the `sap-btp-ai` router.
+
 ## 0.3.0 - 2026-09-23
 
 - Add standalone `cf-cli`, `btp-cli`, and `joule-cli` skills for Cloud Foundry

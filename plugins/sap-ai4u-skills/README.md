@@ -19,6 +19,8 @@ README. The 0.2.1 Joule and Cloud Foundry lifecycle redesign is documented in
 `../../docs/joule-cf-lifecycle-skill.md`.
 The 0.3.0 platform CLI skills are documented in
 `../../docs/platform-cli-skills.md`.
+The 0.4.0 HANA memory, concurrency, and approval changes are documented in
+`../../docs/agent-memory-and-concurrency.md`.
 
 ## Provenance
 

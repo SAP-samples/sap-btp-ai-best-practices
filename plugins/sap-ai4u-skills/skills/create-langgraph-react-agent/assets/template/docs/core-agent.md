@@ -10,8 +10,19 @@ through tools and agent-local skills.
 
 `AgentRuntime.ainvoke()` accepts user text, a required `context_id`, optional
 image/PDF `Attachment` objects, and an optional Pydantic model or JSON Schema.
-It returns `AgentResult` containing final text, optional parsed output, and the
-LangGraph message trace.
+It returns `AgentResult` containing final text, optional parsed output, the
+LangGraph message trace, and `status` (`completed`, or `input_required` when a
+tool listed in `approvals.tools` awaits the user's approval).
+
+The graph is:
+
+```text
+START -> load_skill_node -> compact_context -> agent -> tools -> compact_context -> agent -> END
+```
+
+`compact_context` caps tool results and summarizes long history before every
+model call; the agent ends the turn early when it requests an approval-gated
+tool. Memory, concurrency, and approvals are described in `mcp-and-hana.md`.
 
 ```python
 from template_agent import AgentRuntime, Attachment
@@ -38,7 +49,8 @@ loop. This keeps tool calling independent from output-schema enforcement.
 
 ## Related files
 
-- `template_agent/runtime.py`: graph, invocation, structured-output pass.
+- `template_agent/runtime.py`: graph, invocation, compaction, approvals, structured-output pass.
+- `template_agent/memory.py`: HANA conversation store with lease and versioned saves.
 - `template_agent/providers.py`: model-supplier factory.
 - `template_agent/models.py`: public attachment/result contracts.
 - `template_agent/a2a_server.py`: A2A transport adapter and ASGI application.

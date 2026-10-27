@@ -1,6 +1,6 @@
 ---
 name: create-langgraph-react-agent
-description: Scaffold or adapt a minimal portable Python LangGraph ReAct agent for SAP Generative AI Hub use cases. Use when coding agents need to create a drop-in GPT, Gemini, or Claude agent with OpenAI Responses support, image/PDF inputs, structured output, dynamically loaded local skills, stdio/SSE/HTTP MCP tools, dual-stack A2A 1.0 and Joule-compatible 0.3 connectivity, optional SAP HANA conversation memory, a pip requirements workflow, or a small use-case-specific copy.
+description: Scaffold or adapt a minimal portable Python LangGraph ReAct agent for SAP Generative AI Hub use cases. Use when coding agents need to create a drop-in GPT, Gemini, or Claude agent with OpenAI Responses support, image/PDF inputs, structured output, dynamically loaded local skills, stdio/SSE/HTTP MCP tools, dual-stack A2A 1.0 and Joule-compatible 0.3 connectivity, optional SAP HANA conversation memory with full tool history, summarization, multi-instance-safe leasing, and human approval of guarded tools, a pip requirements workflow, or a small use-case-specific copy.
 ---
 
 # Create a LangGraph ReAct agent
@@ -29,7 +29,9 @@ bundled asset contains no such files.
    serving them, use the documented A2A `runtime_factory` so the same tools are
    present remotely.
 6. Add agent skills under `agent_skills/<skill-name>/SKILL.md`.
-7. Enable only the MCP servers and HANA memory the use case needs.
+7. Enable only the MCP servers and HANA memory the use case needs. List tools
+   that change data and need the user's explicit "yes" under `approvals.tools`
+   (requires HANA memory).
 8. Keep the default A2A listener on loopback until authenticated ingress,
    caller-scoped server contexts, and context-ID authorization are in place.
 9. Set `A2A_PUBLIC_URL` to the correct base URL for the selected environment.
@@ -59,13 +61,18 @@ custom-tool serving, memory requirements, and the Joule context handoff.
 Keep this graph unless the use case explicitly requires another topology:
 
 ```text
-START -> load_skill_node -> agent -> tools -> agent -> END
+START -> load_skill_node -> compact_context -> agent -> tools -> compact_context -> agent -> END
 ```
 
 Keep `load_skill(skill_names: list[str])` as an ordered batch operation. Each
 selected skill must load `SKILL.md` first and then all recursive UTF-8 text
 files with explicit boundaries. Keep MCP tools on the official LangChain MCP
-adapter and keep HANA memory limited to user/final-assistant conversation turns.
+adapter. HANA memory stores the full message history (tool calls and results,
+no attachment bytes), bounded by `compact_context` (tool-output cap and
+`SummarizationMiddleware`) and `memory.max_messages`. Keep the HANA lease and
+versioned save: an in-process lock does not serialize turns across Cloud
+Foundry instances. Keep approvals as the pending action in the HANA row rather
+than `interrupt()`, which needs a checkpointer this landscape does not use.
 Keep A2A as a transport adapter around `AgentRuntime.ainvoke`; do not duplicate
 the graph, tool registry, or memory implementation in the server.
 

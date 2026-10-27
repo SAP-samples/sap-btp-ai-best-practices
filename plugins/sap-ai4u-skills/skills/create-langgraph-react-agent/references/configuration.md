@@ -32,8 +32,31 @@ tool names are prefixed with the server name.
 
 Set `memory.enabled: true` to use the standard `HANA_ADDRESS`, `HANA_PORT`,
 `HANA_USER`, `HANA_PASSWORD`, and `HANA_ENCRYPT` values. Use the runtime user's
-current schema. The runtime automatically creates or validates its project-
-specific table and persists only bounded user/final-assistant JSON turns.
+current schema. The runtime automatically creates, migrates, or validates its
+table and persists the full message history (tool calls and results included,
+attachment bytes excluded).
+
+```yaml
+memory:
+  enabled: true
+  table_name: LANGGRAPH_AGENT_MEMORY
+  max_messages: 200        # hard ceiling; trimming restarts on a user turn
+  lease_seconds: 300       # must exceed the longest turn
+  lock_wait_seconds: 30    # then ContextBusyError
+summarization:
+  enabled: true
+  trigger_tokens: 60000
+  keep_messages: 6
+  # model: {provider: openai, name: <cheaper deployment>}
+tool_output:
+  max_output_characters: 30000
+approvals:
+  tools: []                # tool names that need the user's "yes" first
+```
+
+Turns on one context are serialized across instances by a HANA lease and a
+versioned save; do not replace them with an in-process lock. Approval-gated
+tools require memory. Details: `assets/template/docs/mcp-and-hana.md`.
 
 ## A2A server
 
