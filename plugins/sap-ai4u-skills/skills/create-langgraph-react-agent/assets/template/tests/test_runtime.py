@@ -718,3 +718,136 @@ def _message_text_any(message: BaseMessage) -> str:
         block.get("text", "") if isinstance(block, dict) else str(block)
         for block in message.content
     )
+
+
+class ApprovalModel(FixedReplyModel):
+    """Request the guarded tool, then answer from whatever ToolMessage arrives."""
+
+    def _generate(
+        self,
+        messages: list[BaseMessage],
+        stop: list[str] | None = None,
+        run_manager: Any = None,
+        **kwargs: Any,
+    ) -> ChatResult:
+        """Call delete_record for a new request; summarize the tool outcome after."""
+
+        self.calls.append(list(messages))
+        tool_results = [m for m in messages if isinstance(m, ToolMessage)]
+        if tool_results:
+            reply = AIMessage(content=f"outcome: {tool_results[-1].content}")
+        else:
+            call = {"name": "delete_record", "args": {"record": "42"}, "id": "del-1", "type": "tool_call"}
+            reply = AIMessage(content="I will delete record 42.", tool_calls=[call])
+        return ChatResult(generations=[ChatGeneration(message=reply)])
+
+
+def _approval_runtime(tmp_path: Path) -> tuple[AgentRuntime, RecordingStore, list[str]]:
+    """Build a runtime whose delete_record tool requires approval."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    executed: list[str] = []
+
+    @tool
+    def delete_record(record: str) -> str:
+        """Delete one record."""
+
+        executed.append(record)
+        return f"deleted {record}"
+
+    store = RecordingStore()
+    runtime = AgentRuntime(
+        _config(skill_root, approvals={"tools": ["delete_record"]}),
+        ApprovalModel(reply="", calls=[]),
+        SkillLoader(skill_root),
+        MCPManager(),
+        store,
+        extra_tools=[delete_record],
+    )
+    return runtime, store, executed
+
+
+@pytest.mark.asyncio
+async def test_guarded_tool_call_is_held_as_pending_action(tmp_path: Path) -> None:
+    """The turn ends before the tool runs and the call is stored for approval."""
+
+    runtime, store, executed = _approval_runtime(tmp_path)
+
+    result = await runtime.ainvoke("delete record 42", "ctx")
+
+    assert result.status == "input_required"
+    assert "delete_record" in result.output_text and '"record": "42"' in result.output_text
+    assert executed == []
+    assert store.pending["ctx"] == {
+        "tool_calls": [{"name": "delete_record", "args": {"record": "42"}, "id": "del-1"}]
+    }
+    assert store.values["ctx"][-1].tool_calls[0]["id"] == "del-1"
+    assert store.leases == {}
+
+
+@pytest.mark.asyncio
+async def test_approval_runs_held_call_and_clears_pending(tmp_path: Path) -> None:
+    """A 'yes' reply executes the stored call once and continues the agent."""
+
+    runtime, store, executed = _approval_runtime(tmp_path)
+    await runtime.ainvoke("delete record 42", "ctx")
+
+    result = await runtime.ainvoke("Yes!", "ctx")
+
+    assert result.status == "completed"
+    assert result.output_text == "outcome: deleted 42"
+    assert executed == ["42"]
+    assert store.pending["ctx"] is None
+    kinds = [m.type for m in store.values["ctx"]]
+    assert kinds == ["human", "ai", "tool", "human", "ai"]
+
+
+@pytest.mark.asyncio
+async def test_other_reply_rejects_held_call_with_feedback(tmp_path: Path) -> None:
+    """Any non-approval reply skips the tool and tells the model why."""
+
+    runtime, store, executed = _approval_runtime(tmp_path)
+    await runtime.ainvoke("delete record 42", "ctx")
+
+    result = await runtime.ainvoke("no, archive it instead", "ctx")
+
+    assert executed == []
+    assert "did not approve" in result.output_text
+    assert "archive it instead" in result.output_text
+    rejection = next(m for m in store.values["ctx"] if isinstance(m, ToolMessage))
+    assert rejection.status == "error"
+    assert store.pending["ctx"] is None
+
+
+def test_unknown_approval_tool_is_rejected(tmp_path: Path) -> None:
+    """A typo in approvals.tools fails at startup instead of silently not guarding."""
+
+    skill_root = tmp_path / "skills"
+    skill_root.mkdir()
+    with pytest.raises(ValueError, match="unknown tool"):
+        AgentRuntime(
+            _config(skill_root, approvals={"tools": ["delete_recrod"]}),
+            FixedReplyModel(reply="", calls=[]),
+            SkillLoader(skill_root),
+            MCPManager(),
+            RecordingStore(),
+        )
+
+
+@pytest.mark.asyncio
+async def test_create_requires_memory_for_approvals(tmp_path: Path) -> None:
+    """Pending actions need HANA memory to survive until the next message."""
+
+    (tmp_path / "skills").mkdir()
+    config_file = tmp_path / "agent.yaml"
+    config_file.write_text(
+        "base_prompt: test\n"
+        "model: {provider: openai, name: fake}\n"
+        "skills: {directory: skills}\n"
+        "memory: {enabled: false}\n"
+        "approvals: {tools: [delete_record]}\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="requires memory.enabled"):
+        await AgentRuntime.create(config_file)

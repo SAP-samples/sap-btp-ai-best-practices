@@ -37,6 +37,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 from .config import A2ASettings, load_config
+from .memory import ContextBusyError
 
 
 class RuntimeResult(Protocol):
@@ -149,6 +150,17 @@ class AgentExecutorAdapter(AgentExecutor):
         )
         try:
             result = await self._runtime_getter().ainvoke(text, context_id)
+        except ContextBusyError:
+            busy = updater.new_agent_message(
+                parts=[
+                    Part(
+                        text="Another request for this conversation is still running. "
+                        "Retry shortly."
+                    )
+                ]
+            )
+            await updater.failed(message=busy)
+            return
         except Exception:
             failure = updater.new_agent_message(
                 parts=[Part(text="Agent request failed")]
@@ -156,6 +168,12 @@ class AgentExecutorAdapter(AgentExecutor):
             await updater.failed(message=failure)
             return
 
+        # ponytail: an approval request (result.status == "input_required") is
+        # returned as a completed task. The pending action lives in the HANA row
+        # keyed by contextId, so the user's reply resolves it on any instance.
+        # A2A input-required would make clients resend the taskId, which the
+        # per-process InMemoryTaskStore cannot find on another instance; switch
+        # to updater.requires_input() once a shared task store is configured.
         await updater.add_artifact(
             parts=[Part(text=result.output_text)],
             name="agent_result",

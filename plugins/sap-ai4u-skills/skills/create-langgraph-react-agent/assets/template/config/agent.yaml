@@ -44,6 +44,13 @@ summarization:
 tool_output:
   max_output_characters: 30000
 
+# Tools that must be approved by the user before they run. A call to one of
+# them ends the turn with a pending action stored in the HANA conversation row;
+# the next message ("yes" to approve, anything else to reject with feedback)
+# resolves it on any instance. Requires memory.enabled: true.
+approvals:
+  tools: []
+
 a2a:
   enabled: true
   name: Portable LangGraph Agent

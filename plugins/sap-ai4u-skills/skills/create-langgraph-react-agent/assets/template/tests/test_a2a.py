@@ -9,6 +9,7 @@ from typing import Any
 from starlette.testclient import TestClient
 
 from template_agent.a2a_server import create_a2a_app
+from template_agent.memory import ContextBusyError
 
 
 @dataclass
@@ -290,3 +291,17 @@ def test_joule_v03_missing_task_keeps_task_not_found_code(tmp_path: Path) -> Non
     payload = response.json()
     assert payload["error"]["code"] == -32001
     assert "Task not found" in payload["error"]["message"]
+
+
+def test_busy_context_becomes_retryable_failed_task(tmp_path: Path) -> None:
+    """A context leased by another instance yields a clear retry message."""
+
+    runtime = FakeRuntime(failure=ContextBusyError("ctx busy"))
+    app = _app(tmp_path, runtime)
+
+    with TestClient(app) as client:
+        response = client.post("/", json=_joule_v03_request("overlapping turn"))
+
+    task = response.json()["result"]
+    assert task["status"]["state"] == "failed"
+    assert "still running" in response.text

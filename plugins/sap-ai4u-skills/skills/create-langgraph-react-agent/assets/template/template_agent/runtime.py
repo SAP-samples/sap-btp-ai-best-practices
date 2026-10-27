@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import json
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
@@ -21,8 +22,8 @@ from langchain_core.messages import (
     trim_messages,
 )
 from langchain_core.tools import BaseTool
-from langgraph.graph import MessagesState, StateGraph, START
-from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.graph import END, MessagesState, StateGraph, START
+from langgraph.prebuilt import ToolNode
 
 from .config import AgentConfig, load_config
 from .mcp import MCPManager
@@ -30,6 +31,22 @@ from .memory import ContextBusyError, ConversationStore, create_conversation_sto
 from .models import AgentResult, Attachment
 from .providers import create_chat_model
 from .skills import SkillLoader, catalogue_prompt
+
+# Replies that approve a pending action. Anything else rejects it and is passed
+# to the model as feedback, so an ambiguous answer never runs a guarded tool.
+_APPROVAL_REPLIES = {
+    "yes",
+    "y",
+    "ok",
+    "okay",
+    "approve",
+    "approved",
+    "confirm",
+    "confirmed",
+    "proceed",
+    "go ahead",
+    "yes please",
+}
 
 
 class AgentState(MessagesState, total=False):
@@ -72,6 +89,12 @@ class AgentRuntime:
         self.mcp_manager = mcp_manager
         self.memory = memory
         self.tools = [skill_loader.tool(), *extra_tools, *mcp_manager.tools]
+        self.approval_tools = set(config.approvals.tools)
+        unknown = self.approval_tools - {tool.name for tool in self.tools}
+        if unknown:
+            raise ValueError(
+                f"approvals.tools lists unknown tool(s): {', '.join(sorted(unknown))}"
+            )
         summarization = config.summarization
         # ponytail: SummarizationMiddleware is designed for create_agent; this
         # template calls its public abefore_model hook from its own graph node.
@@ -108,6 +131,11 @@ class AgentRuntime:
         """
 
         config = load_config(config_path)
+        if config.approvals.tools and not config.memory.enabled:
+            raise ValueError(
+                "approvals.tools requires memory.enabled so the pending action "
+                "survives until the user's next message"
+            )
         skill_loader = SkillLoader(
             config.skills.directory,
             config.skills.max_loaded_characters,
@@ -235,9 +263,16 @@ class AgentRuntime:
         """Run one invocation while the caller holds the context lock and lease."""
 
         stored = await self._run_memory_operation(self.memory.load, context_id)
+        history = list(stored.messages)
+        if stored.pending_action:
+            # The stored history ends with the AI message whose tool calls were
+            # held back. Answer every call with a ToolMessage (result or
+            # rejection) before the new user message so providers see a
+            # complete tool-call / tool-result pair.
+            history.extend(await self._resolve_pending_action(stored.pending_action, text))
         current = _human_message(text, attachments, self.config.model.provider)
         initial: AgentState = {
-            "messages": [*stored.messages, current],
+            "messages": [*history, current],
             "context_id": context_id,
             "system_prompt": self.config.base_prompt,
             "available_skills": [],
@@ -247,6 +282,30 @@ class AgentRuntime:
             {"recursion_limit": self.config.recursion_limit},
         )
         messages = list(final["messages"])
+        held = messages[-1]
+        if isinstance(held, AIMessage) and held.tool_calls:
+            # The graph stopped before a tool that needs approval. Persist the
+            # calls as the pending action and ask the user instead of answering.
+            pending = {
+                "tool_calls": [
+                    {"name": call["name"], "args": call["args"], "id": call["id"]}
+                    for call in held.tool_calls
+                ]
+            }
+            await self._run_memory_operation(
+                self.memory.save,
+                context_id,
+                owner,
+                stored.version,
+                self._history_to_store(messages),
+                pending,
+            )
+            return AgentResult(
+                output_text=_approval_request_text(held),
+                messages=messages,
+                status="input_required",
+            )
+
         last = _last_final_ai_message(messages)
         output_text = _message_text(last)
         parsed: Any | None = None
@@ -278,6 +337,50 @@ class AgentRuntime:
             output_parsed=parsed,
             messages=messages,
         )
+
+    async def _resolve_pending_action(
+        self,
+        pending: dict[str, Any],
+        reply: str,
+    ) -> list[ToolMessage]:
+        """Run or reject the held tool calls according to the user's reply.
+
+        Args:
+            pending: Stored ``{"tool_calls": [{"name", "args", "id"}, ...]}``.
+            reply: The user's message for this turn.
+
+        Returns:
+            One ToolMessage per held call, in the original order.
+        """
+
+        calls = pending.get("tool_calls", [])
+        if reply.strip().lower().rstrip(".!") not in _APPROVAL_REPLIES:
+            return [
+                ToolMessage(
+                    content=f"Not executed: the user did not approve this action and replied: {reply}",
+                    tool_call_id=call["id"],
+                    name=call["name"],
+                    status="error",
+                )
+                for call in calls
+            ]
+        tools = {tool.name: tool for tool in self.tools}
+        results: list[ToolMessage] = []
+        for call in calls:
+            tool = tools.get(call["name"])
+            try:
+                if tool is None:
+                    raise LookupError(f"tool {call['name']!r} is no longer available")
+                result = await tool.ainvoke({**call, "type": "tool_call"})
+            except Exception as exc:
+                result = ToolMessage(
+                    content=f"Error: {type(exc).__name__}: {exc}",
+                    tool_call_id=call["id"],
+                    name=call["name"],
+                    status="error",
+                )
+            results.append(result)
+        return results
 
     def _history_to_store(self, messages: Sequence[BaseMessage]) -> list[BaseMessage]:
         """Return the bounded, attachment-free history persisted after a turn.
@@ -368,7 +471,8 @@ class AgentRuntime:
         """Compile START -> load_skill_node -> compact_context -> agent.
 
         ``agent`` loops through ``tools -> compact_context -> agent`` until the
-        model stops requesting tools, then ends.
+        model stops requesting tools, then ends. A request for a tool listed in
+        ``approvals.tools`` also ends the graph, before the tool runs.
         """
 
         model_with_tools = self.model.bind_tools(self.tools)
@@ -418,6 +522,14 @@ class AgentRuntime:
                     return update
             return {"messages": truncated}
 
+        def route_after_agent(state: AgentState) -> str:
+            """Run requested tools, or end the turn when one needs approval."""
+
+            calls = getattr(state["messages"][-1], "tool_calls", None) or []
+            if not calls or any(call["name"] in self.approval_tools for call in calls):
+                return END
+            return "tools"
+
         async def agent_node(state: AgentState) -> dict[str, list[BaseMessage]]:
             """Invoke the bound model with the current dynamic system prompt."""
 
@@ -434,7 +546,7 @@ class AgentRuntime:
         builder.add_edge(START, "load_skill_node")
         builder.add_edge("load_skill_node", "compact_context")
         builder.add_edge("compact_context", "agent")
-        builder.add_conditional_edges("agent", tools_condition)
+        builder.add_conditional_edges("agent", route_after_agent, ["tools", END])
         builder.add_edge("tools", "compact_context")
         return builder.compile()
 
@@ -475,6 +587,17 @@ def _without_attachment_bytes(message: BaseMessage) -> BaseMessage:
         else:
             blocks.append(block)
     return message.model_copy(update={"content": blocks})
+
+
+def _approval_request_text(message: AIMessage) -> str:
+    """Describe held tool calls and how to approve or reject them."""
+
+    lines = [text] if (text := _message_text(message)) else []
+    lines.append("Approval required before running:")
+    for call in message.tool_calls:
+        lines.append(f"- {call['name']}({json.dumps(call['args'], ensure_ascii=False)})")
+    lines.append("Reply 'yes' to approve, or describe what to change.")
+    return "\n".join(lines)
 
 
 def _last_final_ai_message(messages: Sequence[BaseMessage]) -> AIMessage:

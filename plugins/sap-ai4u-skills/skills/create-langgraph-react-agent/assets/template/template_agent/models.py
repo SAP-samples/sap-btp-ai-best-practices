@@ -86,10 +86,20 @@ def _bedrock_document_name(value: str) -> str:
 
 
 class AgentResult(BaseModel):
-    """Contain the final text, optional structured value, and invocation trace."""
+    """Contain the final text, optional structured value, and invocation trace.
+
+    Attributes:
+        output_text: Final answer, or the approval request when status is
+            ``input_required``.
+        output_parsed: Optional structured value (never set while approval is pending).
+        messages: Graph messages produced by this invocation.
+        status: ``input_required`` when a tool call awaits the user's approval;
+            the user's next message on the same context approves or rejects it.
+    """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     output_text: str
+    status: Literal["completed", "input_required"] = "completed"
     output_parsed: Any | None = None
     messages: list[BaseMessage]
