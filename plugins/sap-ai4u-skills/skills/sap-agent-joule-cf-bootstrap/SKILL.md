@@ -113,7 +113,7 @@ At minimum:
 - consume platform credentials from `VCAP_SERVICES` or the supported service-binding library;
 - enforce bearer-token validation on the remote-agent endpoint in production;
 - avoid SQLite, in-memory task stores, or local disk for production conversation state when restarts or multiple instances must be supported;
-- use HANA or another approved durable shared store through its owning skill when persistence is required;
+- use SAP HANA through `langgraph-persistence` when persistence is required, including the lease plus versioned save that serializes turns across instances;
 - keep `.env`, local data, tests, build output, and Joule compiled output out of the CF upload.
 
 Compile and unit-test locally. Then give the user the inspected `cf` commands and stop before `cf push`.

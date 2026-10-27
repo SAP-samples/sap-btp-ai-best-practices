@@ -1,6 +1,6 @@
 ---
 name: langgraph-human-in-the-loop
-description: "INVOKE THIS SKILL when implementing human-in-the-loop patterns, pausing for approval, breakpoints, or state editing in LangGraph. Covers interrupt(), Command(resume=...), interrupt_before breakpoints, update_state, approval/validation workflows, and idempotency. Python-only, SAP Gen AI Hub."
+description: "INVOKE THIS SKILL when implementing human-in-the-loop patterns, pausing for approval, tool approval gates, breakpoints, or state editing in LangGraph. Covers production approvals across user turns stored as a pending action in SAP HANA (works across Cloud Foundry instances), plus in-process interrupt(), Command(resume=...), interrupt_before breakpoints, update_state, validation loops, and idempotency. Python-only, SAP Gen AI Hub."
 ---
 
 <overview>
@@ -16,13 +16,101 @@ LangGraph's human-in-the-loop patterns let you pause graph execution, surface da
 Co-invoke `langgraph-genai-hub-setup` for LLM initialization details.
 </overview>
 
+<choose-the-pattern>
+
+| Situation | Pattern |
+|-----------|---------|
+| Served agent (A2A/Joule/HTTP), the human answers in a **later user turn**, possibly on another CF instance | **Pending action in HANA** (next section) |
+| One process holds the run while a human answers (CLI, notebook, test) | `interrupt()` / `interrupt_before` with `InMemorySaver` |
+
+`interrupt()` needs a checkpointer to remember the paused frame. The only
+checkpointer used in this landscape is `InMemorySaver` (see
+`langgraph-persistence`): the pause lives in one process, so a resume that
+lands on another instance, or after a restart, finds nothing. For served agents
+end the turn instead and keep the pending decision in the HANA conversation row.
+
+</choose-the-pattern>
+
+---
+
+## Production: Approval Across Turns (Pending Action in HANA)
+
+Implemented in the `create-langgraph-react-agent` template; enable it with
+`approvals.tools: [tool_name, ...]` (requires `memory.enabled: true`).
+
+1. **Gate**: replace `tools_condition` with a router that ends the graph when
+   the model calls a guarded tool, before `ToolNode` runs it.
+2. **Hold**: the turn's last message is the `AIMessage` with `tool_calls`.
+   Save `{"tool_calls": [{name, args, id}]}` in the row's `PENDING_ACTION`
+   column (same leased, versioned save as the history) and answer with an
+   approval request listing each call and its arguments.
+3. **Resolve** on the next turn, before appending the new user message:
+   an exact approval reply (`yes`, `ok`, `approve`, `confirm`, `proceed`, ...)
+   runs each held call; anything else becomes an error `ToolMessage` carrying
+   the user's text as feedback. Every held call gets a `ToolMessage`, so the
+   history always contains complete call/result pairs.
+4. **Clear** the pending action in that turn's save.
+
+<ex-pending-action-gate>
+<python>
+Gate guarded tools, hold the call, and resolve it on the next turn.
+```python
+from langchain_core.messages import AIMessage, ToolMessage
+from langgraph.graph import END
+
+APPROVAL_TOOLS = {"delete_record"}
+APPROVAL_REPLIES = {"yes", "y", "ok", "approve", "approved", "confirm", "proceed", "go ahead"}
+
+def route_after_agent(state) -> str:
+    calls = getattr(state["messages"][-1], "tool_calls", None) or []
+    if not calls or any(call["name"] in APPROVAL_TOOLS for call in calls):
+        return END                      # finish the turn; nothing runs yet
+    return "tools"
+
+builder.add_conditional_edges("agent", route_after_agent, ["tools", END])
+
+# After graph.ainvoke(...):
+held = final["messages"][-1]
+if isinstance(held, AIMessage) and held.tool_calls:
+    pending = {"tool_calls": [{"name": c["name"], "args": c["args"], "id": c["id"]}
+                              for c in held.tool_calls]}
+    store.save(context_id, owner, stored.version, final["messages"], pending)
+
+# Next turn, after store.load(...):
+async def resolve(pending: dict, reply: str, tools_by_name: dict) -> list[ToolMessage]:
+    if reply.strip().lower().rstrip(".!") not in APPROVAL_REPLIES:
+        return [ToolMessage(content=f"Not executed: the user replied: {reply}",
+                            tool_call_id=c["id"], name=c["name"], status="error")
+                for c in pending["tool_calls"]]
+    return [await tools_by_name[c["name"]].ainvoke({**c, "type": "tool_call"})
+            for c in pending["tool_calls"]]
+
+history = [*stored.messages, *(await resolve(stored.pending_action, text, tools_by_name))]
+```
+</python>
+</ex-pending-action-gate>
+
+<pending-action-rules>
+
+- Decide approval **deterministically** from the reply; never ask an LLM
+  whether the user approved. Ambiguous replies reject and feed back.
+- Use the lease + version save from `langgraph-persistence`, so two instances
+  cannot both execute an approved action.
+- Over A2A, return the approval request as a **completed** task and let the
+  client send the answer as a new message on the same `contextId`. A2A
+  `input-required` makes clients resend the `taskId`, which the per-process
+  `InMemoryTaskStore` cannot find on another instance (`TaskNotFoundError`).
+  Use `input-required` only with a shared task store.
+
+</pending-action-rules>
+
 ---
 
 ## Requirements
 
-Three things are required for interrupts to work:
+These apply to the in-process `interrupt()` patterns below. Three things are required for interrupts to work:
 
-1. **Checkpointer** — compile with `checkpointer=InMemorySaver()` (dev) or `PostgresSaver` (prod)
+1. **Checkpointer** — compile with `checkpointer=InMemorySaver()` (in-process; for served agents use the pending-action pattern above)
 2. **Thread ID** — pass `{"configurable": {"thread_id": "..."}}` to every `invoke`/`stream` call
 3. **JSON-serializable payload** — the value passed to `interrupt()` must be JSON-serializable
 
@@ -179,7 +267,7 @@ Breakpoints are compile-time declarations that pause execution before specific n
 Pause before tool execution and resume after human approval.
 ```python
 from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.checkpoint.memory import MemorySaver
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import MessagesState, StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
 from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
@@ -201,7 +289,7 @@ builder.add_edge("tools", "assistant")
 
 # Compile with breakpoint BEFORE tools node
 graph = builder.compile(
-    checkpointer=MemorySaver(),
+    checkpointer=InMemorySaver(),
     interrupt_before=["tools"]
 )
 
@@ -423,6 +511,9 @@ graph.invoke(Command(resume="approve"), config)
 ### What You Should NOT Do
 
 - Use interrupts without a checkpointer — will fail
+- Use `interrupt()` to wait for a user's next message in a served agent on CF — the pause lives in one process; use the HANA pending action
+- Recommend `SqliteSaver`/`PostgresSaver` to make interrupts durable — they are not part of this landscape
+- Let an LLM decide whether a reply approved a guarded tool — match approval replies deterministically
 - Resume without the same thread_id — creates a new thread instead of resuming
 - Pass `Command(update=...)` as invoke input — graph appears stuck (use plain dict)
 - Perform non-idempotent side effects before `interrupt()` — creates duplicates on resume

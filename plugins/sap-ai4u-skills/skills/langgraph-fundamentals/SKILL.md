@@ -490,6 +490,14 @@ def chat_node(state: MessagesState):
 </python>
 </ex-message-trimming>
 
+With tool-using agents, never cut between an `AIMessage` with `tool_calls` and
+its `ToolMessage` results: providers reject a history that starts with an
+orphaned tool result. Use `langchain_core.messages.trim_messages(...,
+strategy="last", start_on="human")` for count or token limits, and LangChain's
+`SummarizationMiddleware` for summary-based compaction. See
+`langgraph-persistence` ("Bounding History Size") for a graph node that does
+both before every model call and persists the result in HANA.
+
 <fix-preserve-system-message>
 <python>
 Always preserve SystemMessage when trimming — it contains critical instructions.

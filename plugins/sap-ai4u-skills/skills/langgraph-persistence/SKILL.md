@@ -1,35 +1,57 @@
 ---
 name: langgraph-persistence
-description: "INVOKE THIS SKILL when your LangGraph needs to persist state, remember conversations, travel through history, use SQLite/Postgres checkpointers, or compose subgraphs. Covers checkpointers, thread_id, time travel, Store, subgraph composition, and subgraph persistence modes. Python-only, SAP Gen AI Hub."
+description: "INVOKE THIS SKILL when your LangGraph needs to persist state, remember conversations across turns or restarts, store memory in SAP HANA, serialize concurrent turns across Cloud Foundry instances, bound history with summarization, travel through history, or compose subgraphs. Covers the HANA conversation store, leases and versioned saves, in-process checkpointers, thread_id, time travel, Store, subgraph composition, and subgraph persistence modes. Python-only, SAP Gen AI Hub."
 ---
 
 <overview>
-LangGraph's persistence layer enables durable execution by checkpointing graph state:
+Two different things are often called "persistence" in LangGraph. Keep them apart:
 
-- **Checkpointer**: Saves/loads graph state at every super-step
-- **Thread ID**: Identifies separate checkpoint sequences (conversations)
-- **Store**: Cross-thread memory for user preferences, facts
+- **Conversation memory** — the messages of a conversation, kept between user
+  turns, process restarts, and Cloud Foundry instances. On SAP BTP this is
+  stored in **SAP HANA**.
+- **Execution checkpoints** — a LangGraph checkpointer saving graph state at
+  every super-step so a paused graph (`interrupt()`, breakpoints, time travel)
+  can resume. In this skill set checkpointers are **in-process only**
+  (`InMemorySaver`), for tests, local development, and debugging.
 
 **Two memory types:**
-- **Short-term** (checkpointer): Thread-scoped conversation history
-- **Long-term** (store): Cross-thread user preferences, facts
+- **Short-term**: one conversation's message history (HANA conversation store).
+- **Long-term**: facts shared across conversations (a HANA table; `InMemoryStore` only locally).
 
-Co-invoke `langgraph-genai-hub-setup` for LLM initialization details.
+Co-invoke `langgraph-genai-hub-setup` for LLM initialization details and
+`sap-hana-sql` for any new HANA table.
 </overview>
 
-<checkpointer-selection>
+<storage-selection>
 
-| Checkpointer | Use Case | Production Ready |
-|--------------|----------|------------------|
-| `InMemorySaver` | Testing, development | No |
-| `SqliteSaver` | Local development, small production | Partial |
-| `PostgresSaver` | Production | Yes |
+| Need | Use | Notes |
+|------|-----|-------|
+| Multi-turn conversation history in a served agent (CF, restarts, several instances) | HANA conversation store from `create-langgraph-react-agent` | Full messages incl. tool calls/results, summarization, lease + version |
+| Human approval that spans user turns in production | Pending action in the same HANA row | See `langgraph-human-in-the-loop` |
+| Cross-conversation facts or lessons | Your own HANA table (`sap-hana-sql`) | See `langgraph-reflexion` for a lessons table |
+| `interrupt()`, breakpoints, time travel inside one process | `InMemorySaver` | Tests, notebooks, local debugging only |
 
-</checkpointer-selection>
+**Not used in this landscape:**
+
+- `SqliteSaver` — a local file: not shared between CF instances and lost when a
+  container is replaced.
+- `PostgresSaver` — PostgreSQL is not part of the standard SAP BTP AI landscape
+  these skills target; HANA is.
+- `sap_cloud_sdk.agent_memory.factory.create_checkpointer` — returns
+  `InMemorySaver`/`TimedInMemorySaver` (verified in `sap-cloud-sdk` 0.62.0), so it
+  is not durable either.
+- A HANA LangGraph checkpointer — none exists (`langchain-hana` 1.2.0 ships
+  vector store, RDF graph and SPARQL QA only). Do not invent one; use the
+  conversation store and the pending-action pattern instead.
+
+</storage-selection>
 
 ---
 
-## Checkpointer Setup
+## Checkpointer Setup (In-Process: Tests and Local Development)
+
+Use this for unit tests, notebooks, and local `interrupt()` experiments. State
+lives in the Python process only.
 
 <ex-basic-persistence>
 <python>
@@ -70,75 +92,148 @@ print(len(result2["messages"]))  # 4 (previous + new)
 
 ---
 
-## SQLite Checkpointer
+## Conversation Memory in SAP HANA (Production)
 
-SQLite provides on-disk persistence that survives process restarts. Use the context manager pattern for proper connection lifecycle.
+The `create-langgraph-react-agent` template ships `template_agent/memory.py`
+(`HanaConversationStore`). Reuse it instead of writing a new store. It:
 
-<ex-sqlite-checkpointer>
+- creates the table automatically in the runtime user's `CURRENT_SCHEMA`, and
+  migrates an older role/content table with `ALTER TABLE ... ADD`;
+- stores one row per conversation (`CONTEXT_ID`) with the **full** message
+  list serialized by `messages_to_dict` — tool calls and tool results included;
+- serializes turns across instances with a row **lease** and fences every save
+  with a **version** check (see Concurrency below).
+
+The graph is compiled **without** a checkpointer. History is loaded before the
+turn, passed in as input, and the resulting state is saved after the turn.
+
+<ex-hana-conversation-memory>
 <python>
-SQLite checkpointer with cross-process persistence.
+Load-run-save one turn with the template's HANA store.
 ```python
-from langgraph.checkpoint.sqlite import SqliteSaver
+import asyncio
+from uuid import uuid4
+
+from langchain_core.messages import HumanMessage
+
+from template_agent.config import MemorySettings
+from template_agent.memory import ContextBusyError, HanaConversationStore
+
+store = HanaConversationStore(MemorySettings(enabled=True))
+store.ensure()  # create or migrate the table before serving traffic
+
+
+async def run_turn(graph, context_id: str, user_text: str, lease_seconds: int = 300):
+    """Run one turn for one conversation; safe with several app instances."""
+    owner = uuid4().hex
+    if not await asyncio.to_thread(store.acquire, context_id, owner, lease_seconds):
+        raise ContextBusyError(context_id)  # or poll with backoff, as AgentRuntime does
+    try:
+        stored = await asyncio.to_thread(store.load, context_id)
+        final = await graph.ainvoke(
+            {"messages": [*stored.messages, HumanMessage(content=user_text)]}
+        )
+        # Saves only if the version is unchanged and we still hold the lease;
+        # releases the lease in the same statement.
+        await asyncio.to_thread(
+            store.save, context_id, owner, stored.version, final["messages"], None
+        )
+        return final
+    except BaseException:
+        await asyncio.to_thread(store.release, context_id, owner)
+        raise
+```
+</python>
+</ex-hana-conversation-memory>
+
+`AgentRuntime.ainvoke` in the template already does all of this, plus an
+in-process `asyncio.Lock`, lease polling up to `memory.lock_wait_seconds`,
+attachment-byte stripping, and a `memory.max_messages` ceiling.
+
+---
+
+## Concurrency Across Instances
+
+Cloud Foundry can run several instances, and clients retry. Two turns on the
+same conversation must never run at once, or one overwrites the other.
+
+<concurrency-rules>
+
+- An `asyncio.Lock` (or any in-process lock) only protects one process. Keep it
+  to queue same-instance turns cheaply, but never rely on it alone.
+- A blind upsert (`MERGE` / `UPSERT`) after the turn is last-writer-wins: a
+  turn silently disappears.
+- Checkpointers do not help either: two concurrent invocations on one
+  `thread_id` both read the latest checkpoint and fork the history.
+- Use the HANA **lease + version** pattern:
+  1. `acquire`: `UPDATE ... SET LEASE_OWNER=?, LEASE_EXPIRES_AT=ADD_SECONDS(CURRENT_UTCTIMESTAMP, ?) WHERE CONTEXT_ID=? AND (LEASE_OWNER IS NULL OR LEASE_EXPIRES_AT < CURRENT_UTCTIMESTAMP)`, then read `LEASE_OWNER` back to confirm the winner.
+  2. Busy: wait with backoff up to a limit, then fail with a retryable error.
+  3. `save`: `UPDATE ... SET ..., VERSION = VERSION + 1, LEASE_OWNER = NULL WHERE CONTEXT_ID=? AND VERSION=? AND LEASE_OWNER=?`; zero rows means the turn is stale — raise, do not overwrite.
+  4. On any failure: release the lease (`WHERE LEASE_OWNER = ?`).
+- `lease_seconds` must exceed the longest turn. If a lease expires mid-turn,
+  the version check still prevents the stale save.
+
+</concurrency-rules>
+
+The generic SQL pattern is in `sap-hana-sql`
+(`references/hana-ddl-dml-patterns.md`, "Row Leases and Versioned Saves").
+
+---
+
+## Bounding History Size
+
+Full histories grow with every tool result and are replayed on every model call.
+Bound them **before each model call** and persist the bounded state:
+
+- Cap individual tool results (the template uses
+  `tool_output.max_output_characters`, default 30000).
+- Summarize older messages with LangChain's `SummarizationMiddleware` once the
+  history passes a token trigger; it keeps the most recent messages verbatim and
+  never splits a tool call from its result. With `create_agent` pass it as
+  middleware; in a hand-built graph call its `abefore_model` hook from a node,
+  as the template's `compact_context` node does.
+- Keep a hard message ceiling with
+  `trim_messages(..., token_counter=len, strategy="last", start_on="human")` so
+  trimming never leaves an orphaned `ToolMessage`.
+
+<ex-summarization-node>
+<python>
+Summarize long history in a hand-built graph before each model call.
+```python
+from langchain.agents.middleware import SummarizationMiddleware
 from langgraph.graph import MessagesState, StateGraph, START
 from langgraph.prebuilt import ToolNode, tools_condition
-from langchain_core.messages import HumanMessage, SystemMessage
-from gen_ai_hub.proxy.langchain.openai import ChatOpenAI
 
-def build_agent(checkpointer):
-    llm = ChatOpenAI(proxy_model_name="gpt-4.1", temperature=0.2)
-    llm_with_tools = llm.bind_tools(tools)
-    system_msg = SystemMessage(content="You are a helpful assistant.")
+summarizer = SummarizationMiddleware(
+    model=summary_llm,                 # a cheaper Gen AI Hub chat model is fine
+    trigger=("tokens", 60_000),
+    keep=("messages", 6),
+)
 
-    def assistant(state: MessagesState):
-        return {"messages": [llm_with_tools.invoke([system_msg] + state["messages"])]}
+async def compact_context(state: MessagesState) -> dict:
+    # Returns RemoveMessage(REMOVE_ALL_MESSAGES) + summary + kept messages, or None.
+    return await summarizer.abefore_model(state, None) or {}
 
-    graph = StateGraph(MessagesState)
-    graph.add_node("assistant", assistant)
-    graph.add_node("tools", ToolNode(tools=tools))
-    graph.add_edge(START, "assistant")
-    graph.add_conditional_edges("assistant", tools_condition)
-    graph.add_edge("tools", "assistant")
-    return graph.compile(checkpointer=checkpointer)
-
-# First run: create agent, do work
-db_path = "agent_memory.db"
-config = {"configurable": {"thread_id": "session-1"}}
-
-with SqliteSaver.from_conn_string(db_path) as checkpointer:
-    agent = build_agent(checkpointer)
-    agent.invoke({"messages": [HumanMessage(content="Remember: I prefer concise answers.")]}, config)
-
-# Second run (new process): memory persists!
-with SqliteSaver.from_conn_string(db_path) as checkpointer:
-    agent = build_agent(checkpointer)
-    result = agent.invoke({"messages": [HumanMessage(content="What preference did I mention?")]}, config)
-    # Agent remembers the preference from the first run
+builder = StateGraph(MessagesState)
+builder.add_node("compact_context", compact_context)
+builder.add_node("agent", agent_node)
+builder.add_edge(START, "compact_context")
+builder.add_edge("compact_context", "agent")
+builder.add_conditional_edges("agent", tools_condition)
+builder.add_node("tools", ToolNode(tools))
+builder.add_edge("tools", "compact_context")   # compact again inside long tool loops
 ```
 </python>
-</ex-sqlite-checkpointer>
+</ex-summarization-node>
 
 ---
 
-## PostgreSQL Checkpointer (Production)
+## Thread Management (In-Process Checkpointer)
 
-<ex-production-postgres>
-<python>
-Configure PostgreSQL-backed checkpointing for production deployments.
-```python
-from langgraph.checkpoint.postgres import PostgresSaver
-
-with PostgresSaver.from_conn_string(
-    "postgresql://user:pass@localhost/db"
-) as checkpointer:
-    checkpointer.setup()  # only needed on first use to create tables
-    graph = builder.compile(checkpointer=checkpointer)
-```
-</python>
-</ex-production-postgres>
-
----
-
-## Thread Management
+`thread_id` plays the role `CONTEXT_ID` plays in the HANA store. When an
+authenticated caller identity is available, namespace it
+(`f"{user_id}:{context_id}"`) so one user cannot read another user's
+conversation by guessing its identifier.
 
 <ex-separate-threads>
 <python>
@@ -159,6 +254,9 @@ graph.invoke({"messages": ["Hi from Bob"]}, bob_config)
 ---
 
 ## State History & Time Travel
+
+Time travel needs a checkpointer, so in this landscape it is a local
+debugging tool (`InMemorySaver`), not a production feature.
 
 <ex-resume-from-checkpoint>
 <python>
@@ -404,6 +502,10 @@ Note: Subgraphs added as nodes (via `add_node`) already get name-based namespace
 
 ## Long-Term Memory (Store)
 
+`InMemoryStore` is fine for local experiments. In a served agent, keep
+cross-conversation facts in a HANA table created and checked at startup
+(`sap-hana-sql`), and read/write it from a tool or node.
+
 <ex-long-term-memory-store>
 <python>
 Use a Store for cross-thread memory to share user preferences across conversations.
@@ -469,16 +571,19 @@ graph.invoke({"messages": ["What did I say?"]}, config)  # Remembers!
 
 <fix-inmemory-not-for-production>
 <python>
-Use PostgresSaver instead of InMemorySaver for production persistence.
+Keep conversation memory in HANA, not in a checkpointer, for served agents.
 ```python
-# WRONG: Data lost on process restart
-checkpointer = InMemorySaver()  # In-memory only!
+# WRONG: lost on restart, invisible to other CF instances
+graph = builder.compile(checkpointer=InMemorySaver())
 
-# CORRECT: Use persistent storage for production
-from langgraph.checkpoint.postgres import PostgresSaver
-with PostgresSaver.from_conn_string("postgresql://...") as checkpointer:
-    checkpointer.setup()  # only needed on first use to create tables
-    graph = builder.compile(checkpointer=checkpointer)
+# WRONG: a local file is neither shared nor durable on Cloud Foundry
+from langgraph.checkpoint.sqlite import SqliteSaver
+
+# CORRECT: compile without a checkpointer; load/save history in HANA per turn
+graph = builder.compile()
+stored = store.load(context_id)          # HanaConversationStore
+final = graph.invoke({"messages": [*stored.messages, HumanMessage(content=text)]})
+store.save(context_id, owner, stored.version, final["messages"], None)
 ```
 </python>
 </fix-inmemory-not-for-production>
@@ -521,7 +626,10 @@ def my_node(state, runtime: Runtime):
 <boundaries>
 ### What You Should NOT Do
 
-- Use `InMemorySaver` in production — data lost on restart; use `PostgresSaver`
+- Use `InMemorySaver`, `SqliteSaver`, or `sap_cloud_sdk create_checkpointer` for conversation memory in a served agent — use the HANA conversation store
+- Recommend `PostgresSaver` or write a custom HANA checkpointer — HANA is the production store; approvals use the pending-action pattern
+- Rely on an in-process lock to serialize turns across CF instances — use the HANA lease + version check
+- Persist only user/final-assistant text when tools matter — store the full message list and bound it with summarization
 - Forget `thread_id` — state won't persist without it
 - Expect `update_state` to bypass reducers — it passes through them; use `Overwrite` to replace
 - Run the same stateful subgraph (`checkpointer=True`) in parallel within one node — namespace conflict

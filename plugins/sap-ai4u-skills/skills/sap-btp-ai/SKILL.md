@@ -15,8 +15,8 @@ This skill routes to the right specialized skill and defines conventions shared 
 | Any LangGraph code (graphs, state, nodes, edges) | `langgraph-fundamentals` (always) + the ones below |
 | LLM initialization for LangGraph on SAP BTP | `langgraph-genai-hub-setup` |
 | Tool-calling agents, ReAct, MCP tools in LangGraph | `langgraph-agent-patterns` |
-| Checkpointers, thread memory, subgraphs, Store | `langgraph-persistence` |
-| Pausing for approval, interrupt/resume, breakpoints | `langgraph-human-in-the-loop` |
+| Conversation memory in SAP HANA, concurrent turns across CF instances, history summarization, checkpointers, subgraphs, Store | `langgraph-persistence` |
+| Tool approval across user turns (HANA pending action), interrupt/resume, breakpoints | `langgraph-human-in-the-loop` |
 | Chunking + embedding documents into HANA vector store | `vector-rag-embedding` |
 | Semantic retrieval + grounded answering from HANA vectors | `vector-rag-query` |
 | SAP Document Grounding Service (pipelines, repositories, collections) | `document-grounding` |

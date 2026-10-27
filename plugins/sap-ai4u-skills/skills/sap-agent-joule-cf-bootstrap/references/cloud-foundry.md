@@ -80,9 +80,10 @@ Decide deliberately whether discovery is public while invocation is protected. D
 Cloud Foundry restarts containers and may run multiple instances. In-memory task stores, local SQLite files, and local checkpoint directories are not shared or durable.
 
 - Use one instance only as a documented development constraint.
-- For production continuity, route persistence work to the appropriate HANA or LangGraph persistence skill and use a shared backing service.
-- Verify that `contextId` maps deterministically to the persisted LangGraph thread.
-- Verify concurrent turns for the same context are serialized or rejected safely.
+- For production continuity, keep conversation memory in SAP HANA (`langgraph-persistence`; the `create-langgraph-react-agent` template's HANA store). SQLite, `InMemorySaver`, and `sap_cloud_sdk create_checkpointer` are process-local.
+- Verify that `contextId` maps deterministically to the persisted HANA conversation row.
+- Verify concurrent turns for the same context are serialized or rejected safely across instances: an in-process `asyncio.Lock` is not enough; use the HANA lease plus versioned save.
+- Keep human approvals that span turns in the HANA row (pending action), not in `interrupt()`, and return them as completed tasks while the A2A task store is in-memory: a resent `taskId` fails with `TaskNotFoundError` on another instance.
 
 ## Manual Deployment and Management
 

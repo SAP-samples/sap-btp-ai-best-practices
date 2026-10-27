@@ -429,6 +429,58 @@ WHEN NOT MATCHED THEN
 
 Do not use PostgreSQL `ON CONFLICT`, MySQL `ON DUPLICATE KEY`, or SQLite `INSERT OR REPLACE`.
 
+### Row Leases and Versioned Saves
+
+Use this when a read-modify-write cycle on one row can take seconds or minutes
+(for example an LLM agent turn) and the app may run on several Cloud Foundry
+instances. An in-process lock does not protect across instances, and a blind
+`UPSERT`/`MERGE` at the end is last-writer-wins. Do not hold a HANA transaction
+or `SELECT ... FOR UPDATE` open for the whole cycle either: it pins a connection
+and row locks for the duration of an external call.
+
+Add a lease and a version to the row:
+
+```sql
+"VERSION" BIGINT DEFAULT 0 NOT NULL,
+"LEASE_OWNER" NVARCHAR(64),
+"LEASE_EXPIRES_AT" TIMESTAMP
+```
+
+Take the lease with a conditional update, then read it back. The read-back
+decides the winner even if two instances update the row simultaneously:
+
+```sql
+UPDATE "APP_ITEMS"
+SET "LEASE_OWNER" = ?, "LEASE_EXPIRES_AT" = ADD_SECONDS(CURRENT_UTCTIMESTAMP, ?)
+WHERE "ITEM_ID" = ?
+  AND ("LEASE_OWNER" IS NULL OR "LEASE_EXPIRES_AT" < CURRENT_UTCTIMESTAMP);
+
+SELECT "LEASE_OWNER" FROM "APP_ITEMS" WHERE "ITEM_ID" = ?;
+```
+
+If the row does not exist yet, `INSERT` it with the lease already set; a
+unique-constraint error (HANA error code 301) means another instance created
+it first and holds the lease. When the lease is busy, retry with backoff up to
+a limit, then return a retryable error to the caller.
+
+Save, bump the version, and release in one statement, fenced by both values
+read at the start:
+
+```sql
+UPDATE "APP_ITEMS"
+SET "PAYLOAD" = ?, "VERSION" = "VERSION" + 1,
+    "LEASE_OWNER" = NULL, "LEASE_EXPIRES_AT" = NULL,
+    "UPDATED_AT" = CURRENT_UTCTIMESTAMP
+WHERE "ITEM_ID" = ? AND "VERSION" = ? AND "LEASE_OWNER" = ?;
+```
+
+Check `cursor.rowcount`: `0` means the lease expired and another writer saved
+first, so raise instead of retrying the write. On any failure release with
+`UPDATE ... SET "LEASE_OWNER" = NULL ... WHERE "ITEM_ID" = ? AND "LEASE_OWNER" = ?`.
+Choose a lease longer than the slowest expected cycle. A tested Python
+implementation is `HanaConversationStore` in the `create-langgraph-react-agent`
+template (`template_agent/memory.py`).
+
 ### Generated Identity Values
 
 Do not use `IDENTITY_CURRENT()` or `IDENTITY_CURRENT('TABLE')`. On SAP HANA database, that generic function name fails with `invalid name of function or procedure: IDENTITY_CURRENT`.

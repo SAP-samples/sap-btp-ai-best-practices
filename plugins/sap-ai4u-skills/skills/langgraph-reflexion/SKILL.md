@@ -1,12 +1,12 @@
 ---
 name: langgraph-reflexion
-description: "INVOKE THIS SKILL when building iterative self-improvement agents with human feedback and persistent lessons in LangGraph. Covers the reflexion loop (act-tools-feedback-reflect-finalize), custom lesson reducers, and SQLite-backed lesson persistence. Python-only, SAP Gen AI Hub."
+description: "INVOKE THIS SKILL when building iterative self-improvement agents with human feedback and persistent lessons in LangGraph. Covers the reflexion loop (act-tools-feedback-reflect-finalize), custom lesson reducers, and SAP HANA-backed lesson persistence shared across restarts and Cloud Foundry instances. Python-only, SAP Gen AI Hub."
 ---
 
 <overview>
-Reflexion is an iterative improvement pattern where an agent acts, receives human feedback, reflects to create reusable lessons, and retries guided by those lessons. Lessons persist across runs via a checkpointer, enabling domain-specific competence bootstrapping.
+Reflexion is an iterative improvement pattern where an agent acts, receives human feedback, reflects to create reusable lessons, and retries guided by those lessons. Lessons are long-term knowledge: they persist in a SAP HANA table and are loaded into the next run, enabling domain-specific competence bootstrapping.
 
-Co-invoke `langgraph-genai-hub-setup` for LLM initialization and `langgraph-persistence` for checkpointer setup.
+Co-invoke `langgraph-genai-hub-setup` for LLM initialization, `sap-hana-sql` for the lessons table, and `langgraph-persistence` for conversation memory. The in-graph `feedback` node below uses `input()` for local runs; in a served agent, end the turn and treat the user's next message as feedback (`langgraph-human-in-the-loop`, pending-action pattern).
 </overview>
 
 ---
@@ -223,36 +223,118 @@ def build_reflexion_graph(tools, max_attempts: int = 3, checkpointer=None):
 
 ---
 
-## Persistent Lessons with SQLite
+## Persistent Lessons in SAP HANA
+
+Lessons are not graph checkpoints: they are a small, deduplicated list that
+every future run should read. Store them in their own HANA table, created
+automatically at startup in the runtime user's schema, and pass them into the
+graph as initial state. The graph itself is compiled without a checkpointer.
 
 <ex-reflexion-persistence>
 <python>
-Use SqliteSaver so lessons persist across process restarts.
+HANA lesson store: idempotent table creation, deduplicated UPSERT, bounded load.
 ```python
-from langgraph.checkpoint.sqlite import SqliteSaver
+"""Persist reflexion lessons in SAP HANA, shared by all app instances."""
+
+import hashlib
+import os
+from contextlib import closing
+
+from hdbcli import dbapi
 from langchain_core.messages import HumanMessage
 
-def run_reflexion(prompt: str, db_path: str = "reflexion.db", thread_id: str = "default"):
-    """Run reflexion agent with persistent lessons."""
-    with SqliteSaver.from_conn_string(db_path) as checkpointer:
-        app = build_reflexion_graph(
-            tools=my_tools,
-            max_attempts=3,
-            checkpointer=checkpointer,
-        )
-        config = {"configurable": {"thread_id": thread_id}}
-        initial = {"messages": [HumanMessage(content=prompt)], "attempt": 0, "lessons": [], "history": []}
-        result = app.invoke(initial, config=config)
-        return result
+LESSONS_TABLE = "AGENT_REFLEXION_LESSONS"
 
-# First run: agent learns lessons
-result1 = run_reflexion("Analyze this data", thread_id="session-1")
 
-# Second run (same thread): agent starts with previously learned lessons
-result2 = run_reflexion("Analyze different data", thread_id="session-1")
+def _connect():
+    """Open one hdbcli connection from the standard HANA_* variables.
+
+    hdbcli connections are not context managers; wrap them in closing().
+    """
+    return dbapi.connect(
+        address=os.environ["HANA_ADDRESS"],
+        port=int(os.environ["HANA_PORT"]),
+        user=os.environ["HANA_USER"],
+        password=os.environ["HANA_PASSWORD"],
+        encrypt=True,
+    )
+
+
+class HanaLessonStore:
+    """Store short lessons per scope (for example a task type) in HANA."""
+
+    def ensure(self) -> None:
+        """Create the lessons table in CURRENT_SCHEMA if it does not exist."""
+        with closing(_connect()) as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT COUNT(*) FROM SYS.TABLES "
+                "WHERE SCHEMA_NAME = CURRENT_SCHEMA AND TABLE_NAME = ?",
+                (LESSONS_TABLE,),
+            )
+            if not cur.fetchone()[0]:
+                cur.execute(f"""
+                    CREATE COLUMN TABLE "{LESSONS_TABLE}" (
+                      "SCOPE" NVARCHAR(256) NOT NULL,
+                      "LESSON_KEY" NVARCHAR(64) NOT NULL,
+                      "LESSON" NVARCHAR(1000) NOT NULL,
+                      "CREATED_AT" TIMESTAMP DEFAULT CURRENT_UTCTIMESTAMP NOT NULL,
+                      PRIMARY KEY ("SCOPE", "LESSON_KEY")
+                    )""")
+            conn.commit()
+
+    def load(self, scope: str, limit: int = 50) -> list[str]:
+        """Return the newest lessons for a scope, oldest first."""
+        with closing(_connect()) as conn:
+            cur = conn.cursor()
+            cur.execute(
+                f'SELECT "LESSON" FROM "{LESSONS_TABLE}" WHERE "SCOPE" = ? '
+                f'ORDER BY "CREATED_AT" DESC LIMIT {int(limit)}',
+                (scope,),
+            )
+            return [row[0] for row in reversed(cur.fetchall())]
+
+    def add(self, scope: str, lessons: list[str]) -> None:
+        """Insert new lessons; a repeated lesson is a no-op (primary key)."""
+        with closing(_connect()) as conn:
+            cur = conn.cursor()
+            for lesson in {l.strip() for l in lessons if l and l.strip()}:
+                key = hashlib.sha256(lesson.lower().encode()).hexdigest()
+                cur.execute(
+                    f'UPSERT "{LESSONS_TABLE}" ("SCOPE", "LESSON_KEY", "LESSON") '
+                    "VALUES (?, ?, ?) WITH PRIMARY KEY",
+                    (scope, key, lesson[:1000]),
+                )
+            conn.commit()
+
+
+lessons = HanaLessonStore()
+lessons.ensure()
+
+
+def run_reflexion(prompt: str, scope: str = "default"):
+    """Run reflexion seeded with stored lessons, then persist what it learned."""
+    app = build_reflexion_graph(tools=my_tools, max_attempts=3)  # no checkpointer
+    known = lessons.load(scope)
+    result = app.invoke({
+        "messages": [HumanMessage(content=prompt)],
+        "attempt": 0,
+        "lessons": known,
+        "history": [],
+    })
+    lessons.add(scope, [l for l in result.get("lessons", []) if l not in known])
+    return result
+
+# First run learns lessons; a later run (any instance, after restarts) starts with them.
+result1 = run_reflexion("Analyze this data", scope="data-analysis")
+result2 = run_reflexion("Analyze different data", scope="data-analysis")
 ```
 </python>
 </ex-reflexion-persistence>
+
+Choose `scope` deliberately (task type, tenant, or user). A shared scope makes
+one user's feedback shape everyone's runs; keep customer or personal data out
+of lesson text.
 
 ---
 
@@ -310,8 +392,9 @@ except Exception:
 ### What You Should NOT Do
 
 - Use reflexion for simple one-shot tasks — it adds unnecessary complexity
-- Persist lessons without a thread_id — lessons from different contexts will mix
+- Persist lessons without a deliberate scope — lessons from different tasks or tenants will mix
 - Skip the max_attempts guard — the loop can run indefinitely
 - Store verbose paragraphs as lessons — they waste context window and degrade quality
-- Expect reflexion to work without a checkpointer — lessons need persistence to be useful across runs
+- Keep lessons in a checkpointer, `SqliteSaver`, or local files — store them in a HANA table so every instance and restart sees them
+- Block a served agent on `input()` for feedback — end the turn and treat the next user message as feedback
 </boundaries>
