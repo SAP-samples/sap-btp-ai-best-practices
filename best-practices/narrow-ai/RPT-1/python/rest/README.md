@@ -24,7 +24,10 @@ rest/
   rpt_ts_client.py                 support: RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame
   rpt_decisions.py                 support: decision validation, table translation, answer parsing
   tests/test_rest_offline.py       offline checks of the support modules
-  data/OVERNIGHTSTAYS.csv          public Swiss hotel statistics (notebooks 02 and 03)
+  data/hotel_nights_2005_2026.csv  Swiss hotel nights per region and guest origin, 2005-2026 (notebook 03)
+  data/OVERNIGHTSTAYS.csv          Swiss hotel nights per region and country, 2022-2024 (notebooks 02, 03)
+  data/employee_sample.csv         2,500-row sample of the SAP HANA ML Challenge employee data (notebook 01)
+  data/banking77_10_intents.csv    banking77 customer messages, 10 intents (notebook 04)
   requirements.txt, .env.example
 ```
 
@@ -172,21 +175,23 @@ Main `options`: `confidence_interval`, `quantile_levels`, `output_quantile` (21-
 
 **Rules** (`options.rules`): list of `{"covariate", "operator", "threshold", "forecast_value"}`. For each forecast step where the numeric future covariate satisfies `value <operator> threshold` (`==`, `!=`, `>`, `>=`, `<`, `<=`), the forecast becomes `forecast_value` for all targets of the series. The covariate must be a numeric future covariate of every series in the request (else HTTP 400). Rules apply in list order, the last match wins, and ranges/quantiles are not adjusted.
 
-Findings from the live runs (13 regional series, rolling backtest over 11 cut-offs, 143 comparisons per horizon):
+Findings from the live runs: 13 regional series of hotel nights with history since 2005, rolling backtest over 24 cut-offs (forecasts starting July 2024 to June 2026), 312 comparisons per horizon:
 
 | Variant | MAPE 1 month ahead | MAPE 3 months ahead | 80% range hit rate (1 / 3 months) |
 |---|---|---|---|
-| Seasonal naive (same month last year) | 0.064 | 0.057 | - |
-| No covariates | 0.071 | 0.091 | 0.87 / 0.97 |
-| + `last_year` covariate | 0.071 | 0.082 | 0.90 / 0.99 |
-| + `last_year`, `enhanced_forecast` | 0.068 | 0.080 | 0.91 / 0.97 |
-| + `last_year`, `cross_learning` | - | 0.070 | - |
+| Seasonal naive (same month last year) | 0.047 | 0.046 | - |
+| Full history | 0.046 | 0.050 | 0.84 / 0.83 |
+| Full history + `last_year` covariate | 0.045 | 0.049 | 0.83 / 0.85 |
+| Full history + `last_year`, `enhanced_forecast` | 0.044 | 0.048 | 0.85 / 0.86 |
+| Last 24 months only | 0.058 | 0.052 | 0.89 / 0.94 |
 
-- With only 16-26 months of history and a strongly repeating yearly pattern, seasonal naive stayed ahead. Covariates known in advance and `cross_learning` closed most of the gap. Send as much history as you have and always backtest over several cut-offs: a single 3-month holdout made the model look better than the baseline.
-- A backtest fits in one request when each (cut-off, series) pair is sent as its own series; do not combine this with `cross_learning`, which would let later cut-offs leak future values into earlier ones. The client retries HTTP 429 automatically.
+- On these very regular regional totals the model is about as accurate as seasonal naive; long history matters (24 months only is clearly worse) and gives well-sized ranges. `cross_learning` made no difference here.
+- On the noisier 104 region x guest-origin series the model with the `last_year` covariate beat seasonal naive one month ahead (WAPE 5.8% vs 6.3%) and was close three months ahead (6.4% vs 6.2%).
+- With only 29 months of history (earlier version of the notebook) seasonal naive stayed clearly ahead, and a single 3-month holdout had made the model look better than it was: always backtest over several cut-offs.
+- A backtest fits in a few requests when each (cut-off, series) pair is sent as its own series; do not combine this with `cross_learning`, which would let later cut-offs leak future values into earlier ones. The client retries HTTP 429 automatically.
 - On 23 intermittent series (39% zero months), `median` forecasts summed to 45% of the real nights, `mean` to 99%; `median` had the lower monthly error. Use `mean` when totals matter.
 - **Hierarchy labels must nest explicitly.** Each level is aggregated by its own label value. With labels `{"region": r, "country": c}` and levels `[null, "region", "country"]`, the nodes under each region are cross-region country totals. Use a label that is unique within its parent, e.g. `{"region": r, "region_country": f"{r} | {c}"}`. With that, total = sum of regions and region = sum of countries exactly. `hierarchy_to_frame` flattens the tree.
-- Reconciled regional forecasts (from 1,001 country leaves) were less accurate than direct regional forecasts on one 3-month holdout (MAPE 6.8% vs 5.4%); compare before choosing.
+- Over 6 cut-offs, regional forecasts from the reconciled tree (104 region x origin leaves) were as accurate as direct regional forecasts (MAPE 5.4% vs 5.6%); with the short 2022-2024 data the reconciled version had been worse. Compare on your own data.
 
 ## 4. Decisions (notebook 04)
 
@@ -241,4 +246,7 @@ This translation is our own design based on the Playground's documented behaviou
 
 - SAP Help: [SAP-RPT-1.5](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-5), [SAP-RPT-1.6](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-6), [SAP-RPT-TS](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-ts), [SAP-RPT-TS inference request](https://help.sap.com/docs/sap-ai-core/generative-ai/inference-request-overview)
 - RPT Playground API: [Predict](https://rpt.cloud.sap/docs/api/predict), [Decisions](https://rpt.cloud.sap/docs/api/decisions)
-- Dataset: Swiss Federal Statistical Office, [hotel sector, px-x-1003020000_103](https://www.pxweb.bfs.admin.ch/pxweb/en/px-x-1003020000_103/)
+- Datasets:
+  - Swiss Federal Statistical Office (FSO), HESTA, [table px-x-1003020000_103](https://www.pxweb.bfs.admin.ch/pxweb/en/px-x-1003020000_103/): `hotel_nights_2005_2026.csv` (downloaded via the PxWeb API; 7 named guest origins, the rest summed as "Other countries") and `OVERNIGHTSTAYS.csv`. [FSO terms of use](https://www.bfs.admin.ch/bfs/en/home/fso/swiss-federal-statistical-office/terms-of-use.html): open use, source must be cited.
+  - [banking77](https://github.com/PolyAI-LDN/task-specific-datasets) by PolyAI, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): `banking77_10_intents.csv` keeps 10 of the 77 intents, original train/test split in column `split`, columns renamed to `message` and `intent`.
+  - Employee data: [SAP HANA Cloud Machine Learning Challenge](https://community.sap.com/t5/technology-blogs-by-sap/quot-i-quit-quot-how-to-predict-employee-churn-sap-hana-cloud-machine/ba-p/13560188), as used in this repository's classification best practice.
