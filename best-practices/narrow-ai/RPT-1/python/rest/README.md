@@ -5,7 +5,7 @@ Jupyter notebooks and small support modules for the current SAP RPT models on SA
 - **SAP-RPT-1.5 / SAP-RPT-1.6**: tabular classification and regression with explanations, confidence intervals and `context_mode`.
 - **SAP-RPT-1.6-large deep context**: more than 8,000 context rows with `context_mode="deep"`.
 - **SAP-RPT-TS**: time-series forecasting (`sap-rpt-ts`).
-- **Decisions**: the RPT Playground's typed-question API (`/api/systemone`) reproduced on AI Core.
+- **Decisions**: typed questions about an input (yes/no, choice, ordered scale) answered with probabilities, built on the RPT table endpoint.
 
 ## Why direct REST
 
@@ -15,11 +15,11 @@ The native SAP AI SDK (`gen_ai_hub.proxy.native.sap.RPTClient`, used in `../RPT-
 
 ```
 rest/
-  01_RPT-1.6_predict.ipynb         RPT-1.5/1.6: raw call anatomy, joint classification + regression,
+  01_RPT-1.6_predict.ipynb         RPT-1.5/1.6: raw call anatomy, joint classification + regression, holdout comparison,
                                    top_k, confidence intervals, explanations, model comparison
-  02_RPT-1.6_deep_context.ipynb    sap-rpt-1.6 vs sap-rpt-1.6-large default vs deep on 16,000 context rows
+  02_RPT-1.6_deep_context.ipynb    sap-rpt-1.6 vs sap-rpt-1.6-large default vs deep, 3 test months, ~15,000 context rows
   03_RPT-TS_forecast.ipynb         SAP-RPT-TS: request fields, rules, rolling backtest, quantiles, hierarchy
-  04_RPT_decisions.ipynb           decisions (noul / choice / score) translated to RPT tables
+  04_RPT_decisions.ipynb           decisions (noul / choice / score) as RPT tables, accuracy on banking77
   rpt_client_api.py                support: OAuth, deployment discovery, /predict for tabular RPT
   rpt_ts_client.py                 support: RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame
   rpt_decisions.py                 support: decision validation, table translation, answer parsing
@@ -129,20 +129,22 @@ response = RPTClientAPI(model_name="sap-rpt-1.6").predict_json(payload)
 
 All variants: up to 512 query rows and 10 target columns per request. Multiple targets in one request are predicted jointly.
 
+Measured on a holdout of the employee data (2,000 context rows, 500 hidden answers, `SALARY` regression and `FLIGHT_RISK` classification in one request): salary error about 8,200 (RPT-1.6) and 8,800 (RPT-1.5) against 18,200 for a median baseline; among the 50 employees ranked riskiest, 42% (RPT-1.6) and 40% (RPT-1.5) were real `Yes` cases against 9.6% at random. The large variants returned the same answers as the small ones at this context size. Numeric-looking IDs are returned as numbers, so use text IDs (`emp-29089`).
+
 ## 2. Deep context with SAP-RPT-1.6-large (notebook 02)
 
 `prediction_config.context_mode` is `"default"` or `"deep"`. Deep mode exists only for `sap-rpt-1.6-large` and is recommended only above 8,000 context rows, after trying `sap-rpt-1.6` and `sap-rpt-1.6-large` in default mode.
 
-Measured on the overnight-stays dataset (last month as 1,001 query rows, 16,016 context rows, log target with lag features):
+Measured on the overnight-stays dataset (`OVERNIGHTSTAYS.csv`), predicting each of the last three months (1,001 region x country rows each) from all earlier months (14,000-16,000 context rows), log target with lag features:
 
-| Setup | MAE (stays) | Log MAE | Latency (2 batches) |
+| Setup | Log error, average of 3 months | Typical factor off | Seconds per month (2 requests) |
 |---|---|---|---|
-| Seasonal naive (same month last year) | 357 | 0.378 | - |
-| `sap-rpt-1.6`, 2,048 sampled rows | 361 | 0.315 | ~1-2 s |
-| `sap-rpt-1.6-large`, full, default | 331 | 0.306 | ~2-3 s |
-| `sap-rpt-1.6-large`, full, deep | 325 | 0.310 | ~5 s |
+| Baseline (same month last year) | 0.403 | 1.50 | - |
+| `sap-rpt-1.6`, 2,048 sampled rows | 0.364 | 1.44 | ~1.6 |
+| `sap-rpt-1.6-large`, all rows, default | 0.341 | 1.41 | ~2.2 |
+| `sap-rpt-1.6-large`, all rows, deep | 0.343 | 1.41 | ~4.7 |
 
-The full context helped; deep mode was on par with default at about twice the latency. Keep deep mode only if it wins on your own holdout. On raw (heavy-tailed) counts RPT lost to the naive baseline; a `log1p` target and lag columns were needed.
+All setups beat the baseline in every month; all rows on `sap-rpt-1.6-large` beat the 2,048-row sample in every month; default and deep were close, deep about twice as slow. On raw (heavy-tailed) counts RPT lost to the baseline in a trial; a `log1p` target and lag columns were needed.
 
 ## 3. Time-series forecasting with SAP-RPT-TS (notebook 03)
 
@@ -195,7 +197,7 @@ Findings from the live runs: 13 regional series of hotel nights with history sin
 
 ## 4. Decisions (notebook 04)
 
-**What:** the Playground's Decision API answers typed questions about a `state` (text, JSON object or chat log) from labeled `examples`:
+**What:** answer typed questions about a `state` (a text, a JSON object or a chat log) from labeled `examples`, with a probability for every possible answer:
 
 | Question type | Example answer | Returned |
 |---|---|---|
@@ -203,29 +205,36 @@ Findings from the live runs: 13 regional series of hotel nights with history sin
 | `choice` | option name | winning option, distribution, confidence |
 | `score` | level index as string | expected level, distribution, confidence |
 
-**On AI Core there is no decision endpoint.** Sending the Playground body to an RPT-1.6 deployment's `/predict` returns HTTP 422 (`prediction_config` required; `model`, `state`, `questions`, `examples` not permitted); `/systemone`, `/decision`, `/decisions` return 404.
-
-`rpt_decisions.py` therefore translates the request into one RPT table and one joint `/predict` call:
+**How:** RPT on AI Core is a table endpoint (`/predict` requires `prediction_config` and rejects other fields with HTTP 422), so `rpt_decisions.py` translates the decision into one RPT table and one joint `/predict` call:
 
 - examples become context rows, states become query rows (`row_id` index);
 - the state becomes a `state` column (text, JSON text for lists) or one column per key (objects);
 - each question becomes a classification target with `top_k` equal to its number of options, so the full distribution is returned;
-- the response is mapped back to the Playground answer shape.
+- the response is mapped back to one answer per question.
 
 ```python
 from rpt_client_api import RPTClientAPI
 from rpt_decisions import decide
 
-result = decide(RPTClientAPI(model_name="sap-rpt-1.6"), playground_body)              # one state
-batch = decide(RPTClientAPI(model_name="sap-rpt-1.6"), playground_body, states=texts)  # up to 512 states
+result = decide(RPTClientAPI(model_name="sap-rpt-1.6"), request)              # one state
+batch = decide(RPTClientAPI(model_name="sap-rpt-1.6"), request, states=texts)  # up to 512 states
 result["answers"][0]["tone"]  # {"type": "choice", "choice": "angry", "probabilities": {...}, "confidence": 0.46}
 ```
 
-`encoding="described"` (default) uses the question `instructions` as column names and the option descriptions as cell values (`"angry: Hostile, frustrated, or threatening"`); `encoding="plain"` writes the raw keys. On the triage example the described encoding classified the overcharge complaint as `angry` where plain said `calm`. With only 5-8 examples several answers were still wrong (see the notebook), so evaluate on a few hundred labeled examples before relying on it.
+`encoding="described"` (default) uses the question `instructions` as column names and the option descriptions as cell values (`"angry: Hostile, frustrated, or threatening"`); `encoding="plain"` writes the raw keys.
 
-`validate_decision_request` enforces the documented limits before the call: 1-10 questions, 2-2,048 examples, 2-255 options, and every option must appear in at least one example.
+Measured on 400 held-out real customer messages (banking77, 10 intents, one `choice` and one derived `noul` question):
 
-This translation is our own design based on the Playground's documented behaviour, not SAP's internal implementation.
+| Examples per intent | Intent accuracy (plain / described) | Card yes/no accuracy |
+|---|---|---|
+| 2 | 0.888 / 0.880 | 0.94 / 0.92 |
+| 5 | 0.950 / 0.945 | 0.96 / 0.96 |
+| 20 | 0.960 / 0.972 | 0.98 / 0.98 |
+| 80 | 0.978 / 0.978 | 0.99 / 0.99 |
+
+Accepting only answers with confidence of at least 0.8 handled 95% of the messages automatically at 99.7% accuracy. On the small hand-written triage example the described encoding fixed a wrong tone answer; on the banking messages both encodings were equal.
+
+`validate_decision_request` enforces the limits before the call: 1-10 questions, 2-2,048 examples, 2-255 options, and every option must appear in at least one example. The request format follows the decision format of SAP's RPT Playground; the table translation is our own design.
 
 ---
 
@@ -245,7 +254,6 @@ This translation is our own design based on the Playground's documented behaviou
 ## References
 
 - SAP Help: [SAP-RPT-1.5](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-5), [SAP-RPT-1.6](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-6), [SAP-RPT-TS](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-ts), [SAP-RPT-TS inference request](https://help.sap.com/docs/sap-ai-core/generative-ai/inference-request-overview)
-- RPT Playground API: [Predict](https://rpt.cloud.sap/docs/api/predict), [Decisions](https://rpt.cloud.sap/docs/api/decisions)
 - Datasets:
   - Swiss Federal Statistical Office (FSO), HESTA, [table px-x-1003020000_103](https://www.pxweb.bfs.admin.ch/pxweb/en/px-x-1003020000_103/): `hotel_nights_2005_2026.csv` (downloaded via the PxWeb API; 7 named guest origins, the rest summed as "Other countries") and `OVERNIGHTSTAYS.csv`. [FSO terms of use](https://www.bfs.admin.ch/bfs/en/home/fso/swiss-federal-statistical-office/terms-of-use.html): open use, source must be cited.
   - [banking77](https://github.com/PolyAI-LDN/task-specific-datasets) by PolyAI, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): `banking77_10_intents.csv` keeps 10 of the 77 intents, original train/test split in column `split`, columns renamed to `message` and `intent`.
