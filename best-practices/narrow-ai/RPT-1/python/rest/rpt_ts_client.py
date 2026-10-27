@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import gzip
 import json
+import time
 from collections.abc import Sequence
 from typing import Any
 
@@ -30,6 +31,8 @@ import pandas as pd
 import requests
 
 from rpt_client_api import RPTAPIError, RPTClientAPI
+
+MAX_RATE_LIMIT_RETRIES = 5  # retries after HTTP 429 Too Many Requests
 
 
 class RPTTSClientAPI(RPTClientAPI):
@@ -72,23 +75,34 @@ class RPTTSClientAPI(RPTClientAPI):
         Raises:
             RPTAPIError: On transport failures or HTTP errors. The server's
                 ``detail`` message is included (with credentials redacted).
+                HTTP 429 (rate limit) is retried up to ``MAX_RATE_LIMIT_RETRIES``
+                times, waiting ``Retry-After`` seconds when the server sends it.
         """
         url = self.deployment_url + "/predict"
-        headers = self._headers(content_type="application/json")
-        try:
-            if compress:
-                response = self._session.post(
-                    url,
-                    headers={**headers, "Content-Encoding": "gzip"},
-                    data=gzip.compress(json.dumps(payload).encode("utf-8"), 1),
-                    timeout=self.timeout_s,
-                )
-            else:
-                response = self._session.post(
-                    url, headers=headers, json=payload, timeout=self.timeout_s
-                )
-        except requests.RequestException as exc:
-            raise RPTAPIError("RPT-TS /predict transport failed.") from exc
+        body = gzip.compress(json.dumps(payload).encode("utf-8"), 1) if compress else None
+        # ponytail: fixed retry budget for HTTP 429 only; add jitter/backoff
+        # policy if many clients share one deployment.
+        for attempt in range(MAX_RATE_LIMIT_RETRIES + 1):
+            headers = self._headers(content_type="application/json")
+            try:
+                if compress:
+                    response = self._session.post(
+                        url,
+                        headers={**headers, "Content-Encoding": "gzip"},
+                        data=body,
+                        timeout=self.timeout_s,
+                    )
+                else:
+                    response = self._session.post(
+                        url, headers=headers, json=payload, timeout=self.timeout_s
+                    )
+            except requests.RequestException as exc:
+                raise RPTAPIError("RPT-TS /predict transport failed.") from exc
+            if response.status_code != 429 or attempt == MAX_RATE_LIMIT_RETRIES:
+                break
+            # Rate limited: wait as long as the server asks (default 10 s, 20 s, ...).
+            retry_after = getattr(response, "headers", {}).get("Retry-After")
+            time.sleep(float(retry_after) if retry_after else 10.0 * (attempt + 1))
 
         # The parent parser requires the tabular ``status.code`` envelope, which
         # RPT-TS does not return, so HTTP status alone decides success here.

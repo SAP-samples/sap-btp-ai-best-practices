@@ -18,7 +18,7 @@ rest/
   01_RPT-1.6_predict.ipynb         RPT-1.5/1.6: raw call anatomy, joint classification + regression,
                                    top_k, confidence intervals, explanations, model comparison
   02_RPT-1.6_deep_context.ipynb    sap-rpt-1.6 vs sap-rpt-1.6-large default vs deep on 16,000 context rows
-  03_RPT-TS_forecast.ipynb         SAP-RPT-TS: contract, rules, backtest, quantiles, hierarchy
+  03_RPT-TS_forecast.ipynb         SAP-RPT-TS: request fields, rules, rolling backtest, quantiles, hierarchy
   04_RPT_decisions.ipynb           decisions (noul / choice / score) translated to RPT tables
   rpt_client_api.py                support: OAuth, deployment discovery, /predict for tabular RPT
   rpt_ts_client.py                 support: RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame
@@ -164,24 +164,29 @@ response = client.forecast({
 forecast_to_frame(response)
 ```
 
-**Output:** `result[series][variate][step]` (point forecast), `confidence_interval_output[series][variate][0|1][step]` (80% by default), `quantile_result` / `selected_quantile_result`, `result_timestamp`, `detected_interval`, `hierarchical_result`, `all_null_targets`, `usage` (input/output time points, the billing unit).
+**Request fields per series:** `target` (history to forecast from, `null` for missing values; a list of lists for several targets on one timeline), `timestamp` (optional, same length, evenly spaced), `past_covariates` (optional, same length as the history), `future_covariates` (optional, length `horizon`, only for values known in advance, each also present in `past_covariates`).
 
-| | AI Core `sap-rpt-ts` `/predict` | RPT Playground `/api/forecast` |
-|---|---|---|
-| Request body | `horizon`, `data[]`, `options` (strict schema) | same |
-| Response | forecast fields at top level + `usage` | wrapped in `{"forecast": ..., "delay": ms}` |
-| Status envelope | none; HTTP 400 / 422 with FastAPI `detail` | structured `ERR_FORECAST_*` codes |
-| Max horizon | 1,024 | 90 |
-| Max history per series | 8,192 points | 8,192 points |
+**Output:** `result[series][target][step]` (forecast), `confidence_interval_output[series][target][0|1][step]` (80% range by default), `quantile_result` / `selected_quantile_result`, `result_timestamp`, `detected_interval`, `hierarchical_result`, `all_null_targets`, `usage` (input/output time points, the billing unit). There is no `status.code`; errors are HTTP 400 / 422 with a `detail` message. Limits: 8,192 history points per series, horizon 1,024.
 
 Main `options`: `confidence_interval`, `quantile_levels`, `output_quantile` (21-level grid), `point_forecast` (`median` default, `mean`, `hierarchical_forecast`), `clip_min`/`clip_max`, `cross_learning`, `enhanced_forecast` (input points billed 4x), `rules`, `hierarchical_labels`, `hierarchical_levels`.
 
-Findings from the live runs:
+**Rules** (`options.rules`): list of `{"covariate", "operator", "threshold", "forecast_value"}`. For each forecast step where the numeric future covariate satisfies `value <operator> threshold` (`==`, `!=`, `>`, `>=`, `<`, `<=`), the forecast becomes `forecast_value` for all targets of the series. The covariate must be a numeric future covariate of every series in the request (else HTTP 400). Rules apply in list order, the last match wins, and ranges/quantiles are not adjusted.
 
-- On 13 regional series with 26 points of history, a 3-month forecast beat seasonal naive (MAE about 11,000 vs 14,450); with a 6-month holdout (23 points of history) it did not. Provide as much history as you have.
-- `clip_min`/`clip_max` and `rules` change only `result`, not intervals or quantiles.
+Findings from the live runs (13 regional series, rolling backtest over 11 cut-offs, 143 comparisons per horizon):
+
+| Variant | MAPE 1 month ahead | MAPE 3 months ahead | 80% range hit rate (1 / 3 months) |
+|---|---|---|---|
+| Seasonal naive (same month last year) | 0.064 | 0.057 | - |
+| No covariates | 0.071 | 0.091 | 0.87 / 0.97 |
+| + `last_year` covariate | 0.071 | 0.082 | 0.90 / 0.99 |
+| + `last_year`, `enhanced_forecast` | 0.068 | 0.080 | 0.91 / 0.97 |
+| + `last_year`, `cross_learning` | - | 0.070 | - |
+
+- With only 16-26 months of history and a strongly repeating yearly pattern, seasonal naive stayed ahead. Covariates known in advance and `cross_learning` closed most of the gap. Send as much history as you have and always backtest over several cut-offs: a single 3-month holdout made the model look better than the baseline.
+- A backtest fits in one request when each (cut-off, series) pair is sent as its own series; do not combine this with `cross_learning`, which would let later cut-offs leak future values into earlier ones. The client retries HTTP 429 automatically.
+- On 23 intermittent series (39% zero months), `median` forecasts summed to 45% of the real nights, `mean` to 99%; `median` had the lower monthly error. Use `mean` when totals matter.
 - **Hierarchy labels must nest explicitly.** Each level is aggregated by its own label value. With labels `{"region": r, "country": c}` and levels `[null, "region", "country"]`, the nodes under each region are cross-region country totals. Use a label that is unique within its parent, e.g. `{"region": r, "region_country": f"{r} | {c}"}`. With that, total = sum of regions and region = sum of countries exactly. `hierarchy_to_frame` flattens the tree.
-- Reconciled regional forecasts (from 1,001 country leaves) were less accurate than direct regional forecasts (MAPE 6.8% vs 5.4%); compare before choosing.
+- Reconciled regional forecasts (from 1,001 country leaves) were less accurate than direct regional forecasts on one 3-month holdout (MAPE 6.8% vs 5.4%); compare before choosing.
 
 ## 4. Decisions (notebook 04)
 
@@ -235,5 +240,5 @@ This translation is our own design based on the Playground's documented behaviou
 ## References
 
 - SAP Help: [SAP-RPT-1.5](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-5), [SAP-RPT-1.6](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-1-6), [SAP-RPT-TS](https://help.sap.com/docs/sap-ai-core/generative-ai/sap-rpt-ts), [SAP-RPT-TS inference request](https://help.sap.com/docs/sap-ai-core/generative-ai/inference-request-overview)
-- RPT Playground API: [Predict](https://rpt.cloud.sap/docs/api/predict), [Forecast](https://rpt.cloud.sap/docs/api/forecast), [Decisions](https://rpt.cloud.sap/docs/api/decisions)
+- RPT Playground API: [Predict](https://rpt.cloud.sap/docs/api/predict), [Decisions](https://rpt.cloud.sap/docs/api/decisions)
 - Dataset: Swiss Federal Statistical Office, [hotel sector, px-x-1003020000_103](https://www.pxweb.bfs.admin.ch/pxweb/en/px-x-1003020000_103/)
