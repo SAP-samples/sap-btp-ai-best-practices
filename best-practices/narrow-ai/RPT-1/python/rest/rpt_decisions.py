@@ -1,23 +1,22 @@
-"""Run RPT Playground-style "decisions" (typed questions) on SAP AI Core.
+"""Answer typed questions ("decisions") about an input with SAP-RPT on SAP AI Core.
 
-The RPT Playground exposes ``POST /api/systemone``: you describe a ``state``
-(text, structured object or chat log), declare typed ``questions`` and give a
-few labeled ``examples``; the answer is a probability distribution per question.
+A decision request describes a ``state`` (a text, a JSON object or a chat
+log), declares up to 10 typed ``questions`` and gives labeled ``examples``.
+The answer is a probability distribution per question.
 
-SAP AI Core has no such endpoint: an RPT-1.6 deployment rejects that body with
-HTTP 422 (``prediction_config`` missing, ``state``/``questions``/``examples``
-not permitted). This module therefore translates the decision request into a
-regular RPT table and calls ``/predict``:
+SAP AI Core exposes RPT as a table model (``/predict``), so this module
+translates the decision request into an RPT table:
 
 * one row per example (context) plus one row per state to decide (query);
 * the state becomes one or more feature columns;
 * every question becomes a classification target column, requested with
   ``top_k`` equal to its number of options so the full distribution returns;
-* the RPT response is mapped back to the Playground answer shape.
+* the RPT response is mapped back to one answer per question.
 
-The translation is our own design, not SAP's internal Playground logic.
+The request format follows the decision format of SAP's RPT Playground so
+requests can be reused; the table translation is our own design.
 
-Question types (same as the Playground):
+Question types:
     noul    yes/no            -> probability of true
     choice  multi-class       -> winning option + probabilities
     score   ordinal 0..n-1    -> expected level + probabilities
@@ -27,7 +26,7 @@ Example:
     from rpt_decisions import decide
 
     client = RPTClientAPI(model_name="sap-rpt-1.6")
-    result = decide(client, request)          # request uses the Playground body
+    result = decide(client, request)
     print(result["answers"][0]["tone"])
 """
 
@@ -86,7 +85,7 @@ def _encode(question: Mapping[str, Any], key: str, encoding: str) -> str:
 
     ``described`` puts the human-readable criteria into the value so RPT can use
     their meaning (live tests on the triage example gave better tone/priority
-    answers this way); ``plain`` writes the raw keys like the Playground body.
+    answers this way); ``plain`` writes the raw answer keys.
 
     Args:
         question: Question definition.
@@ -151,10 +150,10 @@ def _state_columns(state: Any) -> dict[str, Any]:
 
 
 def validate_decision_request(request: Mapping[str, Any]) -> None:
-    """Check a decision request against the Playground's documented rules.
+    """Check a decision request against the decision format's rules.
 
     Args:
-        request: Playground-style body with ``questions`` and ``examples``.
+        request: Decision request with ``questions`` and ``examples``.
 
     Raises:
         ValueError: With a readable message on the first rule violated:
@@ -204,7 +203,7 @@ def build_decision_payload(
     """Translate a decision request into an RPT ``/predict`` payload.
 
     Args:
-        request: Playground-style body (``state``, ``questions``, ``examples``).
+        request: Decision request (``state``, ``questions``, ``examples``).
         states: States to decide. Defaults to ``[request["state"]]``. Up to 512
             (the RPT query-row limit) are answered in one call.
         encoding: ``"described"`` (default) or ``"plain"``; see ``_encode``.
@@ -272,7 +271,7 @@ def parse_decision_answers(
     *,
     encoding: str = "described",
 ) -> list[dict[str, Any]]:
-    """Map an RPT response back to Playground-shaped answers.
+    """Map an RPT response back to one answer per question.
 
     Args:
         response: RPT ``/predict`` response for a payload from
@@ -344,8 +343,8 @@ def decide(
 
     Args:
         client: Client bound to a tabular RPT deployment (``sap-rpt-1.6``
-            mirrors the Playground default).
-        request: Playground-style decision body.
+            is the recommended default).
+        request: Decision request.
         states: Optional batch of states; defaults to ``request["state"]``.
         encoding: ``"described"`` (default) or ``"plain"``.
 
