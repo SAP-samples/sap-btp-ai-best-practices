@@ -1,15 +1,33 @@
 # SAP RPT on SAP AI Core with direct REST calls (Python)
 
-Jupyter notebooks and small support modules for the current SAP RPT models on SAP AI Core, called with plain HTTP requests:
+SAP RPT is a family of SAP models that make predictions from business tables. You show the model rows where the answer is already known, and it fills in the answer for new rows. Nothing is trained beforehand: the examples are sent with each request, and the model, pretrained by SAP on many tables, is used as it is.
 
-- **SAP-RPT-1.5 / SAP-RPT-1.6**: tabular classification and regression with explanations, confidence intervals and `context_mode`.
-- **SAP-RPT-1.6-large deep context**: more than 8,000 context rows with `context_mode="deep"`.
-- **SAP-RPT-TS**: time-series forecasting (`sap-rpt-ts`).
-- **Decisions**: typed questions about an input (yes/no, choice, ordered scale) answered with probabilities, built on the RPT table endpoint.
+The four notebooks in this folder show four uses:
 
-## Why direct REST
+| Notebook | What it does | Example in the notebook | Model |
+|---|---|---|---|
+| 01 | Fill in a missing value in a table: a category or a number | the cost center and discount of an order; an employee's salary and flight risk | SAP-RPT-1.5, SAP-RPT-1.6 |
+| 02 | The same with very large example tables (more than 8,000 rows) | hotel nights per region and guest country | SAP-RPT-1.6-large, `context_mode="deep"` |
+| 03 | Forecast the next steps of a time series, with a range of likely values | 20 years of monthly hotel nights in 13 Swiss regions | SAP-RPT-TS |
+| 04 | Answer fixed questions about a text, with a probability for each answer | "Is this message about billing?", "Which of 10 needs does this bank customer have?" | SAP-RPT-1.6 |
 
-The native SAP AI SDK (`gen_ai_hub.proxy.native.sap.RPTClient`, used in `../RPT-1_native_sdk.ipynb`) models the original RPT-1 request and response fields only. It drops the newer fields (explanations, confidence intervals, `context_mode`) and has no client for SAP-RPT-TS. These notebooks send and receive plain dictionaries, so every field of the current service contract is kept.
+Every notebook is committed with the results of a live run, so you can read it without an SAP AI Core account.
+
+## Words used on this page
+
+| Word | Meaning |
+|---|---|
+| context rows, examples | rows where the answer is known; they are sent with the request so the model can learn from them |
+| query rows | rows where the answer is missing, marked `[PREDICT]` |
+| classification, regression | predicting a category (`Yes`/`No`, a cost center) or a number (a salary, a discount) |
+| holdout | rows whose answers we know but hide from the model, so its answers can be checked |
+| baseline | a simple rule the model must beat to be useful, for example "the same as last year" |
+| confidence, confidence interval, range | how sure the model is: a probability for a category, a likely low-to-high range for a number |
+| time series, horizon | values measured at regular steps (every month); the horizon is how many future steps to forecast |
+| covariate | another value that helps explain the one you forecast, for example temperature or a planned promotion |
+| backtest | pretend to be in the past, forecast, and compare with what really happened |
+| MAPE, WAPE | average forecast error as a percentage of the actual value; WAPE gives large series more weight |
+| quantile | a value with a probability attached: the actual result should fall below the 0.9 quantile in about 9 of 10 cases |
 
 ## Files
 
@@ -19,7 +37,7 @@ rest/
                                    top_k, confidence intervals, explanations, model comparison
   02_RPT-1.6_deep_context.ipynb    sap-rpt-1.6 vs sap-rpt-1.6-large default vs deep, 3 test months, ~15,000 context rows
   03_RPT-TS_forecast.ipynb         SAP-RPT-TS: request fields, rules, rolling backtest, quantiles, hierarchy
-  04_RPT_decisions.ipynb           decisions (noul / choice / score) as RPT tables, accuracy on banking77
+  04_RPT_decisions.ipynb           decisions (yes/no, choice, ordered scale) as RPT tables, accuracy on banking77
   rpt_client_api.py                support: OAuth, deployment discovery, /predict for tabular RPT
   rpt_ts_client.py                 support: RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame
   rpt_decisions.py                 support: decision validation, table translation, answer parsing
@@ -28,6 +46,7 @@ rest/
   data/OVERNIGHTSTAYS.csv          Swiss hotel nights per region and country, 2022-2024 (notebooks 02, 03)
   data/employee_sample.csv         2,500-row sample of the SAP HANA ML Challenge employee data (notebook 01)
   data/banking77_10_intents.csv    banking77 customer messages, 10 intents (notebook 04)
+  ../sample_orders.csv             small order table shared with the other RPT examples (notebook 01)
   requirements.txt, .env.example
 ```
 
@@ -98,7 +117,7 @@ Repeat for notebooks 02-04. A notebook fails on the first HTTP or RPT error.
 
 ## 1. Tabular prediction with SAP-RPT-1.5 / 1.6 (notebook 01)
 
-**What:** fill `[PREDICT]` cells of query rows from labeled context rows sent in the same request (in-context learning, no training).
+**What:** fill the `[PREDICT]` cells of query rows. The model learns from the context rows sent in the same request; there is no training step.
 
 **Input:** `POST {deployment_url}/predict`, headers `Authorization: Bearer <token>`, `AI-Resource-Group`, JSON body:
 
@@ -129,13 +148,19 @@ response = RPTClientAPI(model_name="sap-rpt-1.6").predict_json(payload)
 
 All variants: up to 512 query rows and 10 target columns per request. Multiple targets in one request are predicted jointly.
 
-Measured on a holdout of the employee data (2,000 context rows, 500 hidden answers, `SALARY` regression and `FLIGHT_RISK` classification in one request): salary error about 8,200 (RPT-1.6) and 8,800 (RPT-1.5) against 18,200 for a median baseline; among the 50 employees ranked riskiest, 42% (RPT-1.6) and 40% (RPT-1.5) were real `Yes` cases against 9.6% at random. The large variants returned the same answers as the small ones at this context size. Numeric-looking IDs are returned as numbers, so use text IDs (`emp-29089`).
+Results on the employee data: 2,000 employees with known answers were sent as examples, and the model predicted `SALARY` (a number) and `FLIGHT_RISK` (`Yes`/`No`) for 500 other employees whose answers were hidden, both in one request.
+
+- Salary: the average error was about 8,200 with RPT-1.6 and 8,800 with RPT-1.5. Guessing the median salary for everyone gave 18,200.
+- Flight risk: among the 50 employees the model ranked most likely to leave, 42% (RPT-1.6) and 40% (RPT-1.5) really were `Yes` cases. A random pick of 50 gave 9.6%.
+- The large variants gave the same answers as the small ones at this size; they are built for much more context (section 2).
+
+The service reads number-like IDs as numbers, so an ID such as `29089` comes back as a number and no longer matches your key. Use text IDs such as `emp-29089`.
 
 ## 2. Deep context with SAP-RPT-1.6-large (notebook 02)
 
-`prediction_config.context_mode` is `"default"` or `"deep"`. Deep mode exists only for `sap-rpt-1.6-large` and is recommended only above 8,000 context rows, after trying `sap-rpt-1.6` and `sap-rpt-1.6-large` in default mode.
+`prediction_config.context_mode` is `"default"` or `"deep"`. Deep mode spends more time per request to make better use of a large context. It exists only for `sap-rpt-1.6-large` and is recommended only above 8,000 context rows, after trying `sap-rpt-1.6` and `sap-rpt-1.6-large` in default mode.
 
-Measured on the overnight-stays dataset (`OVERNIGHTSTAYS.csv`), predicting each of the last three months (1,001 region x country rows each) from all earlier months (14,000-16,000 context rows), log target with lag features:
+Test on `OVERNIGHTSTAYS.csv`: predict the hotel nights of each of the last three months in the data (1,001 region and guest-country combinations per month), using all earlier months as examples (14,000 to 16,000 rows). The baseline is "the same as twelve months ago". Lower error is better; "typical factor off" 1.41 means the estimate is typically 1.41 times too high or too low:
 
 | Setup | Log error, average of 3 months | Typical factor off | Seconds per month (2 requests) |
 |---|---|---|---|
@@ -144,11 +169,14 @@ Measured on the overnight-stays dataset (`OVERNIGHTSTAYS.csv`), predicting each 
 | `sap-rpt-1.6-large`, all rows, default | 0.341 | 1.41 | ~2.2 |
 | `sap-rpt-1.6-large`, all rows, deep | 0.343 | 1.41 | ~4.7 |
 
-All setups beat the baseline in every month; all rows on `sap-rpt-1.6-large` beat the 2,048-row sample in every month; default and deep were close, deep about twice as slow. On raw (heavy-tailed) counts RPT lost to the baseline in a trial; a `log1p` target and lag columns were needed.
+- All three RPT setups beat the baseline in every test month.
+- Sending all rows to `sap-rpt-1.6-large` beat the 2,048-row sample in every month.
+- Default and deep mode were close; deep took about twice as long.
+- Two preparation steps were needed for these results. The target is predicted as `log(1 + nights)`, so that small country groups and large regions count equally. Last month's and last year's values are copied into each row as extra columns ("lag columns"), because RPT reads each row on its own and does not see the timeline otherwise.
 
 ## 3. Time-series forecasting with SAP-RPT-TS (notebook 03)
 
-**What:** zero-shot probabilistic multi-step forecasts for one or many series, with optional past/future covariates.
+**What:** forecast several steps ahead for one or many series, with a range of likely values, without training on your data. Other values that help explain the series (covariates) can be added, both for the past and, when known in advance, for the forecast steps.
 
 **Input:** `POST {deployment_url}/predict` on the `sap-rpt-ts` deployment:
 
@@ -177,23 +205,22 @@ Main `options`: `confidence_interval`, `quantile_levels`, `output_quantile` (21-
 
 **Rules** (`options.rules`): list of `{"covariate", "operator", "threshold", "forecast_value"}`. For each forecast step where the numeric future covariate satisfies `value <operator> threshold` (`==`, `!=`, `>`, `>=`, `<`, `<=`), the forecast becomes `forecast_value` for all targets of the series. The covariate must be a numeric future covariate of every series in the request (else HTTP 400). Rules apply in list order, the last match wins, and ranges/quantiles are not adjusted.
 
-Findings from the live runs: 13 regional series of hotel nights with history since 2005, rolling backtest over 24 cut-offs (forecasts starting July 2024 to June 2026), 312 comparisons per horizon:
+Results on 13 regional series of monthly hotel nights, with history since 2005. The backtest was repeated for 24 starting points (forecasts starting July 2024 to June 2026), which gives 312 comparisons each for 1 and 3 months ahead. MAPE is the average error as a share of the actual value (0.045 = 4.5%); the 80% range should contain the actual value about 80% of the time:
 
 | Variant | MAPE 1 month ahead | MAPE 3 months ahead | 80% range hit rate (1 / 3 months) |
 |---|---|---|---|
-| Seasonal naive (same month last year) | 0.047 | 0.046 | - |
 | Full history | 0.046 | 0.050 | 0.84 / 0.83 |
 | Full history + `last_year` covariate | 0.045 | 0.049 | 0.83 / 0.85 |
 | Full history + `last_year`, `enhanced_forecast` | 0.044 | 0.048 | 0.85 / 0.86 |
-| Last 24 months only | 0.058 | 0.052 | 0.89 / 0.94 |
 
-- On these very regular regional totals the model is about as accurate as seasonal naive; long history matters (24 months only is clearly worse) and gives well-sized ranges. `cross_learning` made no difference here.
-- On the noisier 104 region x guest-origin series the model with the `last_year` covariate beat seasonal naive one month ahead (WAPE 5.8% vs 6.3%) and was close three months ahead (6.4% vs 6.2%).
-- With only 29 months of history (earlier version of the notebook) seasonal naive stayed clearly ahead, and a single 3-month holdout had made the model look better than it was: always backtest over several cut-offs.
-- A backtest fits in a few requests when each (cut-off, series) pair is sent as its own series; do not combine this with `cross_learning`, which would let later cut-offs leak future values into earlier ones. The client retries HTTP 429 automatically.
-- On 23 intermittent series (39% zero months), `median` forecasts summed to 45% of the real nights, `mean` to 99%; `median` had the lower monthly error. Use `mean` when totals matter.
-- **Hierarchy labels must nest explicitly.** Each level is aggregated by its own label value. With labels `{"region": r, "country": c}` and levels `[null, "region", "country"]`, the nodes under each region are cross-region country totals. Use a label that is unique within its parent, e.g. `{"region": r, "region_country": f"{r} | {c}"}`. With that, total = sum of regions and region = sum of countries exactly. `hierarchy_to_frame` flattens the tree.
-- Over 6 cut-offs, regional forecasts from the reconciled tree (104 region x origin leaves) were as accurate as direct regional forecasts (MAPE 5.4% vs 5.6%); with the short 2022-2024 data the reconciled version had been worse. Compare on your own data.
+- Forecasts one month ahead were off by 4.4-4.6% on average, and the 80% range held the actual value in 83-86% of cases. `cross_learning` made no difference here.
+- Send all the history you have (up to 8,192 steps per series); every variant above uses the full 20 years.
+- On the noisier region by guest-origin series (104 series, for example German guests in Ticino), adding the `last_year` covariate cut the error one month ahead from 6.4% to 5.8% (WAPE).
+- Always backtest over several starting points: one month alone can make any setup look better or worse than it is.
+- A whole backtest fits in a few requests when each (starting point, series) pair is sent as its own series. Do not combine this with `cross_learning`: it lets the model learn across all series of a request, so later starting points would leak future values into earlier ones. The client retries HTTP 429 (too many requests) automatically.
+- On 23 series with many empty months (39% of the months had zero nights), `median` forecasts added up to 45% of the real nights and `mean` forecasts to 99%; `median` was closer month by month. Use `mean` when totals matter.
+- In a hierarchy, labels must nest explicitly, because each level is aggregated by its own label value. With labels `{"region": r, "country": c}` and levels `[null, "region", "country"]`, the nodes under each region are cross-region country totals. Use a label that is unique within its parent, e.g. `{"region": r, "region_country": f"{r} | {c}"}`. With that, total = sum of regions and region = sum of countries exactly. `hierarchy_to_frame` flattens the tree.
+- Over 6 starting points, regional forecasts taken from the hierarchy (built from the 104 region by origin series and adjusted to add up) were as accurate as forecasting the 13 regions directly (MAPE 5.4% vs 5.6%). Compare on your own data.
 
 ## 4. Decisions (notebook 04)
 
@@ -201,9 +228,11 @@ Findings from the live runs: 13 regional series of hotel nights with history sin
 
 | Question type | Example answer | Returned |
 |---|---|---|
-| `noul` | `true` / `false` | probability of true |
+| `noul` (yes/no) | `true` / `false` | probability of true |
 | `choice` | option name | winning option, distribution, confidence |
 | `score` | level index as string | expected level, distribution, confidence |
+
+`noul` is the yes/no type, named as in the decision format of SAP's RPT Playground.
 
 **How:** RPT on AI Core is a table endpoint (`/predict` requires `prediction_config` and rejects other fields with HTTP 422), so `rpt_decisions.py` translates the decision into one RPT table and one joint `/predict` call:
 
@@ -223,7 +252,7 @@ result["answers"][0]["tone"]  # {"type": "choice", "choice": "angry", "probabili
 
 `encoding="described"` (default) uses the question `instructions` as column names and the option descriptions as cell values (`"angry: Hostile, frustrated, or threatening"`); `encoding="plain"` writes the raw keys.
 
-Measured on 400 held-out real customer messages (banking77, 10 intents, one `choice` and one derived `noul` question):
+Results on 400 real customer messages to a bank whose answers were hidden (banking77 dataset, 10 intents, i.e. 10 kinds of customer need). Two questions per message: which need it is (`choice`), and whether it is about the customer's card (yes/no, derived from the intent):
 
 | Examples per intent | Intent accuracy (plain / described) | Card yes/no accuracy |
 |---|---|---|
