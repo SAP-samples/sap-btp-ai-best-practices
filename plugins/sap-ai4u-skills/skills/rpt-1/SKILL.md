@@ -29,6 +29,13 @@ Read [docs/rpt-client-api.md](docs/rpt-client-api.md) before implementing a new 
 
 Batch query rows and retain an `index_column`. Multi-target predictions in one request are joint predictions and can differ from separate calls.
 
+Before scaling up, compare the models on a holdout against a simple baseline; the measured findings in the docs show where the large variants and deep mode paid off and where they did not. Use text IDs (`emp-29089`), because numeric-looking IDs come back as numbers. For heavy-tailed temporal targets, predict `log1p(target)` with lag columns.
+
+## Related Skills
+
+- `rpt-ts`: SAP-RPT-TS time-series forecasting (`sap-rpt-ts`); reuses this skill's client.
+- `rpt-decisions`: typed yes/no, choice and ordinal questions with probabilities, built on this skill's client.
+
 ## Validation
 
 Run the offline contract tests first:

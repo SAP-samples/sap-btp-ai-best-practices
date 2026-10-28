@@ -2,8 +2,16 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
-## Unreleased
+## 0.5.0 - 2026-10-28
 
+- Add `rpt-ts`: SAP-RPT-TS zero-shot time-series forecasting over AI Core REST
+  (multi-series, past/future covariates, quantiles and confidence ranges,
+  deterministic forecast rules, hierarchical reconciliation, rolling
+  backtests); reuses the `rpt-1` shared client.
+- Add `rpt-decisions`: typed yes/no, choice, and ordinal questions answered with
+  probabilities from labeled examples on SAP RPT-1.6, built on the `rpt-1`
+  client and `/predict` table endpoint. Raises the packaged catalog from 33 to
+  35 top-level skills; route both from the `sap-btp-ai` router and `rpt-1`.
 - `create-langgraph-react-agent`, `langgraph-persistence`: raise the default
   `summarization.trigger_tokens` from 60000 to 200000.
 

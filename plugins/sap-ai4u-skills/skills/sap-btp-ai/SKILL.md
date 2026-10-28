@@ -28,6 +28,8 @@ This skill routes to the right specialized skill and defines conventions shared 
 | Time-series forecasting with hana-ml PAL | `narrow-ai-time-series-forecasting` |
 | Anomaly / outlier detection with hana-ml PAL | `narrow-ai-anomaly-detection` |
 | RPT-1 tabular prediction (`RPTClient`, `[PREDICT]` rows) | `rpt-1` |
+| SAP-RPT-TS zero-shot time-series forecasting (quantiles, covariates, hierarchy) | `rpt-ts` |
+| Typed yes/no, choice, or ordinal questions with probabilities (RPT decisions) | `rpt-decisions` |
 | Logging LLM token usage to SAP Cloud Logging | `token-logger` |
 | SAP Document AI extraction | `sap-document-ai-client` |
 | Cloud Foundry org/space, app, route, service, or deployment preparation | `cf-cli` |

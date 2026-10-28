@@ -1,8 +1,9 @@
 # SAP AI4U Skills
 
-`sap-ai4u-skills` packages 33 curated skills for SAP BTP AI development and
+`sap-ai4u-skills` packages 35 curated skills for SAP BTP AI development and
 delivery. The package covers SAP Gen AI Hub, LangGraph, MCP and A2A agent
-connectivity, HANA, vector and knowledge-graph RAG, hana-ml, current RPT-1,
+connectivity, HANA, vector and knowledge-graph RAG, hana-ml, RPT-1 tabular
+prediction with SAP-RPT-TS time-series forecasting and RPT typed decisions,
 Joule, Document AI, token observability, Cloud Foundry, BTP CLI, and supporting
 project workflows.
 
