@@ -84,6 +84,7 @@ class PostTests(unittest.TestCase):
         saved = service.post(store, s4, "a1", 0)
         self.assertEqual(saved["status"], "posted")
         self.assertEqual(saved["s4"]["posted"]["key"]["PaymentAdvice"], "0425092800000001")
+        self.assertEqual(saved["s4"]["posted"]["verification"]["items_stored"], 1)
         self.assertEqual(len(s4.created), 1)
         audit = store.list("s4_posting", parent="a1")
         self.assertEqual(audit[0]["payload"]["CompanyCode"], "CA01")

@@ -6,6 +6,11 @@
  * nothing reaches the server until "Accept Changes" sends every draft as one atomic batch
  * (POST /edits). "Undo Changes" discards drafts and, when corrections were already accepted,
  * restores the values produced by extraction and interpretation (POST /revert).
+ *
+ * The first column excludes a row from the advice (field `excluded`, saved like any other edit).
+ * Excluded rows are struck through and ignored by the totals check and the S/4 posting. When
+ * exclusions leave the line total different from the payment amount, a notice offers to set the
+ * payment amount to the line total (an explicit, undoable header correction).
  */
 import { node, value, itemList, button } from "./dom.js";
 
@@ -20,12 +25,16 @@ const tableDrafts = new Map();
 /** Split flag text into one trimmed flag per non-empty line. */
 function flagList(text) { return text.split("\n").map(flag => flag.trim()).filter(Boolean); }
 /** Canonical editable text of one cell, used both for display and for change detection. */
-function cellText(line, field) { return field === "flags" ? (line.flags || []).join("\n") : value(line[field]); }
+function cellText(line, field) {
+  if (field === "excluded") return line.excluded ? "true" : "";
+  return field === "flags" ? (line.flags || []).join("\n") : value(line[field]);
+}
 /** Read what the reviewer typed, normalised the same way as cellText. */
 function typedText(cell, field) { return field === "flags" ? flagList(cell.innerText).join("\n") : cell.innerText.trim(); }
 
 /** Convert draft text to the typed value the API expects; throws on a non-numeric amount. */
 function typedValue(field, text, label) {
+  if (field === "excluded") return text === "true";
   if (field === "flags") return flagList(text);
   if (!text) return null;
   if (!amountFields.has(field)) return text;
@@ -54,6 +63,7 @@ export function renderAdviceTable(host, actions, advice, result, {editable, post
   const drafts = tableDrafts.get(advice.id) || new Map();
   const scroll = node("div", "", "inbox-table-scroll"); scroll.tabIndex = 0; scroll.setAttribute("aria-label","Extracted line items, horizontally scrollable");
   const table = node("table", "", "advice-lines" + (editable ? " editable" : "")), thead = node("thead"), headings = node("tr"), tbody = node("tbody");
+  headings.append(node("th", "Line"));
   columns.forEach(([,label]) => headings.append(node("th",label))); thead.append(headings);
 
   let accept = null, undo = null;
@@ -72,9 +82,35 @@ export function renderAdviceTable(host, actions, advice, result, {editable, post
     syncButtons();
   }
 
+  /** First cell of a row: Exclude / Include toggle (a draft until Accept Changes), or a read-only label. */
+  function exclusionCell(line, tr) {
+    const key = line.row_id + "|excluded", base = cellText(line, "excluded");
+    const current = () => (drafts.get(key)?.text ?? base) === "true";
+    const cell = node("td", "", drafts.has(key) ? "changed" : "");
+    const flagged = line.flags?.length ? "flagged" : "";
+    const paint = () => {
+      tr.className = [flagged, current() ? "excluded" : ""].filter(Boolean).join(" ");
+      cell.className = drafts.has(key) ? "changed" : "";
+    };
+    if (editable && line.row_id) {
+      const toggle = button(current() ? "Include" : "Exclude", () => {
+        const text = current() ? "" : "true";
+        if (text === base) drafts.delete(key); else drafts.set(key, {text, base});
+        if (drafts.size) tableDrafts.set(advice.id, drafts); else tableDrafts.delete(advice.id);
+        toggle.textContent = current() ? "Include" : "Exclude";
+        paint(); syncButtons();
+      }, onError);
+      toggle.setAttribute("aria-label", "Exclude or include " + (line.invoice_reference || "row"));
+      cell.append(toggle);
+    } else if (line.excluded) cell.textContent = "Excluded";
+    paint();
+    return cell;
+  }
+
   for (const line of lines) {
     const tr = node("tr", "", line.flags?.length ? "flagged" : "");
     tr.dataset.rowId = line.row_id;
+    tr.append(exclusionCell(line, tr));
     columns.forEach(([field, label]) => {
       const key = line.row_id + "|" + field, base = cellText(line, field), draft = drafts.get(key);
       const cell = node("td", "", (field === "flags" ? "flags-cell" : "") + (draft ? " changed" : ""));
@@ -93,6 +129,7 @@ export function renderAdviceTable(host, actions, advice, result, {editable, post
     tbody.append(tr);
   }
   table.append(thead,tbody); scroll.append(table);
+  if (editable) totalNotice(host, advice, result, {post, rerender, onError});
   if (editable && lines.length) host.append(node("p", "Click any cell to correct it, then Accept Changes. Undo Changes restores the original values."));
   host.append(scroll);
   if (!editable) return;
@@ -133,4 +170,27 @@ export function renderAdviceTable(host, actions, advice, result, {editable, post
   undo = button("Undo Changes", undoChanges, onError);
   group.append(accept, undo); actions.append(group);
   syncButtons();
+}
+
+/**
+ * After rows were excluded, show line total vs payment amount and offer to align the payment amount.
+ * The payment amount is what the customer paid, so it is never changed without this explicit click.
+ */
+function totalNotice(host, advice, result, {post, rerender, onError}) {
+  const lines = result?.line_items || [];
+  if (!lines.some(line => line.excluded)) return;
+  const total = lines.filter(line => !line.excluded).reduce((sum, line) => sum + (Number(line.net_amount) || 0), 0);
+  const payment = Number(result.header?.payment_amount);
+  if (!Number.isFinite(payment) || Math.abs(total - payment) < 0.005) return;
+  const rounded = Math.round(total * 100) / 100;
+  const notice = node("p", "Line total without excluded rows is " + rounded.toFixed(2) + ", payment amount is " +
+    payment.toFixed(2) + ". ", "total-notice");
+  notice.append(button("Set payment amount to " + rounded.toFixed(2), async () => {
+    if (!window.confirm("Change the payment amount from " + payment.toFixed(2) + " to " + rounded.toFixed(2) +
+      "? It must equal the amount the customer actually paid.")) return;
+    await post("/edit", {revision: advice.revision, target: "header", field: "payment_amount", value: rounded,
+      reason: "Payment amount set to the line total after excluding rows"});
+    await rerender();
+  }, onError));
+  host.append(notice);
 }

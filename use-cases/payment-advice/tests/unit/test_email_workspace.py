@@ -65,6 +65,13 @@ class WorkspaceTests(unittest.TestCase):
         self.assertEqual(original['line_items'][0]['reason_code'], '323')
         with self.assertRaises(ValueError):
             apply_edit(original, "a", "row_id", "other")
+        self.assertEqual(apply_edit(original, "a", "s4_treatment", "residual")[0]["line_items"][0]["s4_treatment"], "residual")
+        self.assertIsNone(apply_edit(original, "a", "s4_treatment", None)[0]["line_items"][0]["s4_treatment"])
+        with self.assertRaises(ValueError):
+            apply_edit(original, "a", "s4_treatment", "write_off")
+        self.assertIs(apply_edit(original, "a", "excluded", True)[0]["line_items"][0]["excluded"], True)
+        with self.assertRaises(ValueError):
+            apply_edit(original, "a", "excluded", "yes")
 
     def test_attachment_and_rollup(self):
         """Untrusted file names are sanitized and statuses reflect all advices."""

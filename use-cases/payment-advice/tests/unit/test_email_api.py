@@ -66,6 +66,24 @@ class EmailAPITests(unittest.TestCase):
         self.assertEqual(store.records, {})
         self.assertEqual(store.bytes, {})
 
+    def test_delete_email_keeps_the_s4_posting_audit(self):
+        """A posted advice's audit record outlives the email: the S/4 advice is not deleted with it."""
+        app = FastAPI()
+        app.include_router(router, prefix='/api/email-ingestion')
+        app.dependency_overrides[get_api_key] = lambda: 'test'
+        app.state.workspace = store = MemoryStore()
+        email = store.insert('email', {}, status='posted')
+        advice = store.insert('advice', {}, parent=email, status='posted')
+        store.insert('job', {}, parent=advice)
+        audit = store.insert('s4_posting', {'advice_id': advice, 'key': {'PaymentAdvice': '0426000000000001'}},
+                             parent=advice, status='posted')
+
+        with TestClient(app) as client:
+            response = client.request('DELETE', '/api/email-ingestion/inbox/' + email, json={'revision': 0})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(set(store.records), {audit})
+
     def test_delete_email_refuses_active_processing(self):
         """An in-flight worker keeps its complete workspace tree until processing finishes."""
         app = FastAPI()
@@ -100,6 +118,7 @@ class EmailAPITests(unittest.TestCase):
         self.assertEqual(deleted, 'email-1')
         self.assertEqual(len(statements), 2)
         self.assertIn('"PARENT_ID"=:parent', statements[0])
+        self.assertIn('"KIND"<>\'s4_posting\'', statements[0])
         self.assertIn('"ID"=:email', statements[1])
 
     def test_scoped_tools_cannot_read_other_customers_or_mutate(self):

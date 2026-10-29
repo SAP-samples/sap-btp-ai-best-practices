@@ -48,3 +48,9 @@
 .s4-lines .s4-deduction {background:#fff8ed;}.s4-lines .s4-unresolved {background:#fff0f0;}
 .table-edit-actions {display:flex;gap:8px;margin-left:auto;}
 .advice-lines.editable td {cursor:text;}.advice-lines.editable td:focus {outline:2px solid #0070f2;outline-offset:-2px;background:white;}
+.advice-lines tr.excluded td:not(:first-child) {text-decoration:line-through;opacity:.55;}
+.total-notice {color:#a93e00;}
+.s4-result {border:1px solid #188918;border-radius:8px;padding:0.75rem 1rem;margin:0.75rem 0;background:#f5fbf5;}
+.s4-result h4 {margin:0 0 0.5rem;font-size:1.05rem;}
+.s4-issues .inline-action {white-space:nowrap;margin-inline-start:0.25rem;padding:0.1rem 0.6rem;}
+.s4-issues .s4-info {color:#1d2d3e;}

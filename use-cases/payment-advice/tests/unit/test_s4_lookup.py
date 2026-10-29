@@ -55,6 +55,19 @@ class LookupTests(unittest.TestCase):
         self.assertEqual(len(found["8700276154"]), 1)
         self.assertTrue(found["8700276154"][0].is_cleared)
 
+    def test_reversal_document_is_skipped_and_reversed_original_is_flagged(self):
+        original = row(cleared=True, IsReversed=True, ReverseDocument="1800000028")
+        reversal = row(doc="1800000028", amount="-10596.28", cleared=True, IsReversal=True)
+        item, = find_receivables(FakeClient([original, reversal]), ["8700276154"])["8700276154"]
+        self.assertEqual((item.accounting_document, item.is_reversed, item.reverse_document),
+                         ("1400000001", True, "1800000028"))
+
+    def test_reposted_invoice_wins_over_its_reversed_original(self):
+        original = row(cleared=True, IsReversed=True, ReverseDocument="1800000028")
+        reposted = row(doc="1800000030")
+        item, = find_receivables(FakeClient([original, reposted]), ["8700276154"])["8700276154"]
+        self.assertEqual((item.accounting_document, item.is_reversed), ("1800000030", False))
+
     def test_many_references_are_chunked(self):
         client = FakeClient([])
         find_receivables(client, [f"REF{i}" for i in range(CHUNK + 1)], company_code="CA01")

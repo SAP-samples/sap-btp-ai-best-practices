@@ -46,9 +46,14 @@ def _as_number(value: Any) -> float | None:
 
 
 def _suspected_duplicates(line_items: list[dict[str, Any]]) -> list[list[int]]:
-    """Group row indexes that share the same projection key (possible duplicates)."""
+    """Group row indexes that share the same projection key (possible duplicates).
+
+    Rows the reviewer excluded are skipped; indexes stay those of the full list.
+    """
     groups: dict[tuple, list[int]] = {}
     for index, row in enumerate(line_items):
+        if row.get("excluded"):
+            continue
         key = tuple(row.get(name) for name in _DUP_KEY_FIELDS)
         if all(part is None for part in key):
             continue  # nothing distinctive extracted; skip
@@ -68,7 +73,8 @@ def verify_canonical(
 
     Args:
         header: Canonical header mapping.
-        line_items: Canonical line items.
+        line_items: Canonical line items. Rows marked ``excluded`` by the
+            reviewer count neither in the total nor as duplicates.
         tolerance: Relative tolerance for the soft total reconciliation.
         confidence_threshold: Below this, ``needs_review`` is True.
 
@@ -87,14 +93,15 @@ def verify_canonical(
             issues.append(f"missing required header field: {required}")
             confidence -= 0.25
 
+    active = [row for row in line_items if not row.get("excluded")]
     # Hard-ish: no line items at all is suspicious for an advice.
-    if not line_items:
+    if not active:
         warnings.append("no line items extracted")
         confidence -= 0.2
 
     # Soft: total reconciliation (never a hard gate).
     payment_amount = _as_number(header.get("payment_amount"))
-    nets = [n for n in (_as_number(row.get("net_amount")) for row in line_items) if n is not None]
+    nets = [n for n in (_as_number(row.get("net_amount")) for row in active) if n is not None]
     if payment_amount is not None and nets:
         total = sum(nets)
         if abs(total - payment_amount) > tolerance * max(1.0, abs(payment_amount)):
