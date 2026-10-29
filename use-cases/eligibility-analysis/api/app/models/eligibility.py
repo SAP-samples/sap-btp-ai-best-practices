@@ -4,7 +4,7 @@ Eligibility Data Models
 Pydantic models for the invoice eligibility analysis system.
 """
 
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -85,6 +85,8 @@ class OfferInvoice(BaseModel):
     Represents a single row from the offer file with all required fields.
     """
 
+    source_sheet: Optional[str] = Field(None, description="Original uploaded worksheet")
+    source_row_number: Optional[int] = Field(None, description="Physical Excel row, including header")
     programa: str = Field(..., description="Program name")
     seller_id: str = Field(..., description="Unique seller identifier")
     seller_name: str = Field(..., description="Seller name")
@@ -293,165 +295,3 @@ class NonFundedInvoice(BaseModel):
             date: lambda v: v.isoformat(),
         }
 
-
-class CustomerLogEntry(BaseModel):
-    """A single entry in the customer log database."""
-
-    id: Optional[int] = None
-    programa: Optional[str] = None
-    seller_id: str
-    seller_name: str
-    debtor_id: Optional[str] = None
-    debtor_name: Optional[str] = None
-    insurer_id: Optional[str] = None
-    doc_number: Optional[str] = None
-    fiscal_year: Optional[str] = None
-    reference_number: Optional[str] = None
-    invoice_ref: str
-    goods_services: Optional[str] = None
-    item: Optional[str] = None
-    total_invoice_amount_original: Optional[Decimal] = None
-    total_net_value_original: Optional[Decimal] = None
-    discount_percentage: Optional[Decimal] = None
-    original_currency: Optional[str] = None
-    funding_currency: Optional[str] = None
-    exchange_rate: Optional[Decimal] = None
-    despatch_date: Optional[date] = None
-    issuance_date: Optional[date] = None
-    due_date: Optional[date] = None
-    margin: Optional[Decimal] = None
-    purchase_date: Optional[date] = None
-    processed_date: datetime
-    is_eligible: bool
-    rejection_rules: Optional[List[str]] = None
-    amount: Optional[Decimal] = None
-    currency: Optional[str] = None
-
-    @computed_field
-    @property
-    def invoice_number(self) -> str:
-        """UI-compatible alias for invoice_ref."""
-        return self.invoice_ref
-
-    @computed_field
-    @property
-    def status(self) -> str:
-        """UI-compatible status field based on is_eligible."""
-        return "Funded" if self.is_eligible else "Non-Funded"
-
-    class Config:
-        """Pydantic configuration."""
-
-        json_encoders = {
-            datetime: lambda v: v.isoformat(),
-            Decimal: lambda v: str(v),
-            date: lambda v: v.isoformat(),
-        }
-
-
-class RuleRejectionStats(BaseModel):
-    """Statistics for rejections by a specific rule."""
-
-    rule_code: str
-    rule_description: str
-    count: int
-    percentage: float = Field(..., description="Percentage of total rejections")
-
-
-class CustomerLogSummary(BaseModel):
-    """Summary of historical rejection patterns for a seller."""
-
-    seller_id: str
-    seller_name: Optional[str] = None
-    total_invoices_processed: int
-    total_eligible: int
-    total_rejected: int
-    eligibility_rate: float = Field(..., description="Percentage of eligible invoices")
-    rejection_by_rule: List[RuleRejectionStats] = Field(
-        default_factory=list,
-        description="Breakdown of rejections by rule",
-    )
-    first_processed: Optional[datetime] = None
-    last_processed: Optional[datetime] = None
-
-    @computed_field
-    @property
-    def rejection_breakdown(self) -> Dict[str, int]:
-        """UI-compatible dict of {rule_code: count} for rejection statistics."""
-        return {stat.rule_code: stat.count for stat in self.rejection_by_rule}
-
-    @computed_field
-    @property
-    def total_invoices(self) -> int:
-        """UI-compatible alias for total_invoices_processed."""
-        return self.total_invoices_processed
-
-    @computed_field
-    @property
-    def funded_invoices(self) -> int:
-        """UI-compatible alias for total_eligible."""
-        return self.total_eligible
-
-    @computed_field
-    @property
-    def non_funded_invoices(self) -> int:
-        """UI-compatible alias for total_rejected."""
-        return self.total_rejected
-
-    class Config:
-        """Pydantic configuration."""
-
-        json_encoders = {
-            datetime: lambda v: v.isoformat() if v else None,
-        }
-
-
-class AnalysisRequest(BaseModel):
-    """Request parameters for eligibility analysis (when not using query params)."""
-
-    purchase_date: Optional[date] = Field(None, description="Purchase date (defaults to today)")
-    nddt: Optional[int] = Field(None, description="Minimum days to due date (R1)")
-    teih: Optional[int] = Field(None, description="Maximum tenor days (R16)")
-    isspur: Optional[int] = Field(None, description="Minimum days since issuance (R17)")
-    eligible_currencies: Optional[str] = Field(
-        None,
-        description="Comma-separated allowed currencies (R11)",
-    )
-
-
-class AnalysisResponse(BaseModel):
-    """Response from the eligibility analysis endpoint."""
-
-    success: bool
-    total_invoices: int
-    funded_count: int
-    non_funded_count: int
-    funded_invoices: List[FundedInvoice] = Field(default_factory=list)
-    non_funded_invoices: List[NonFundedInvoice] = Field(default_factory=list)
-    output_file: Optional[str] = None
-    error: Optional[str] = None
-    settings_used: Optional[Dict[str, Any]] = None
-
-    class Config:
-        """Pydantic configuration."""
-
-        json_encoders = {
-            Decimal: lambda v: str(v),
-            date: lambda v: v.isoformat(),
-        }
-
-
-class ConfigResponse(BaseModel):
-    """Response showing current configuration."""
-
-    nddt: int
-    teih: int
-    isspur: int
-    eligible_currencies: List[str]
-
-
-class SellerHistoryResponse(BaseModel):
-    """Response containing paginated seller history records."""
-
-    records: List[CustomerLogEntry] = Field(default_factory=list)
-    total: int = Field(..., description="Total number of records returned")

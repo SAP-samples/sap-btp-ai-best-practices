@@ -1,0 +1,13 @@
+schema_version: 3.27.0
+
+metadata:
+  display_name: Receivables assistant
+  namespace: joule.ext
+  name: receivables_agent
+  version: 1.0.0
+  description: >-
+    Explain saved invoice eligibility, funding plans, credit settings and lifetime assumptions.
+
+system_aliases:
+  RECEIVABLES_AGENT:
+    destination: RECEIVABLES_AGENT

@@ -22,6 +22,12 @@ The examples provided demonstrate how to:
 
 Each best practice includes code samples in multiple programming languages (TypeScript, Python, Java, CAP) to support various technology stacks and development approaches.
 
+## Plugin Marketplace
+
+The [SAP AI4U plugin marketplace](plugins/README.md) provides 33 reusable SAP
+BTP AI skills for Codex and Claude Code. See the [installation and maintenance
+guide](docs/plugin-marketplace.md).
+
 ## Requirements
 
 - SAP Business Technology Platform account
@@ -32,7 +38,7 @@ Each best practice includes code samples in multiple programming languages (Type
 1. Clone the repository:
 
    ```bash
-   git clone https://github.tools.sap/btp-ai-best-practices/sap-btp-ai-best-practices.git
+   git clone https://github.com/SAP-samples/sap-btp-ai-best-practices.git
    cd sap-btp-ai-best-practices
    ```
 
@@ -53,6 +59,7 @@ Each best practice includes code samples in multiple programming languages (Type
 ```
 sap-btp-ai-best-practices/
 ├── best-practices/               # Best practices implementations
+├── plugins/                      # SAP AI4U skills plugin
 └── use-cases/                    # End-to-end use case implementations
 ```
 

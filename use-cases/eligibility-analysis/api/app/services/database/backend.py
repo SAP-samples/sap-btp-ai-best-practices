@@ -117,8 +117,8 @@ class DictCursor:
                 self._lastrowid = None
 
     def executemany(self, sql: str, seq_of_params):
-        for params in seq_of_params:
-            self._cursor.execute(sql, params)
+        """Send one parameter batch to HANA instead of one network round trip per row."""
+        self._cursor.executemany(sql, seq_of_params)
         if self._cursor.description:
             self._columns = [desc[0] for desc in self._cursor.description]
 

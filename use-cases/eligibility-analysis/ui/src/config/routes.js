@@ -9,12 +9,8 @@
  */
 
 export const routes = [
-  // Home page (mapped to root and /home)
-  "home",
-
-  // Main application pages
-  "eligibility",
-  "optimizer"
+  "workspace",
+  {path:"/workspace/:analysisId", page:"workspace"}
 
   // Example of advanced route configuration:
   // {
@@ -28,6 +24,5 @@ export const routes = [
  * Route aliases - redirects one path to another
  */
 export const aliases = {
-  "/dashboard": "/home"
-  // Add more aliases as needed
+  // Add aliases as needed, e.g. "/dashboard": "/workspace"
 };

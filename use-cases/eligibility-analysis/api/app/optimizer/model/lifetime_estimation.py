@@ -1,9 +1,24 @@
 """
 RPT-1 lifetime estimation for multi-week invoice optimization.
 
-This module predicts expected invoice lifetime (in days) using SAP RPT-1
-regression with in-context learning. For each candidate invoice, it builds a
-relevant context window from historical lifecycle rows and calls RPT-1.
+Invoices release credit on weekly Tuesday reconciliation files (see
+reconciliation_calendar.py). Instead of regressing the lifetime in days, RPT-1 predicts
+the reconciliation offset k: how many weekly files after the due date the invoice is
+released. The calendar then turns k into a release date and a lifetime measured from the
+planned funding Wednesday.
+
+Per candidate:
+  1. Features: company code, customer, due weekday, days from funding to due date and
+     the customer's historical median k / history size (priors).
+  2. Context: the customer's own history (newest first), topped up with same company
+     code and then other rows when the customer has little history.
+  3. RPT-1 regression on k, rounded to a whole file and clipped to the observed range.
+  4. Safety margin: k = max(k_model, ceil(customer k quantile)) so that lifetimes are
+     rarely under-estimated for customers that often pay late (configurable).
+  5. release = first Tuesday on/after due + 7k; lifetime = release - funding.
+
+The validation behind this design (uncensored chronological holdout, 600 invoices) is
+documented in docs/rpt1-lifetime-diagnostics.md.
 """
 
 from __future__ import annotations
@@ -16,48 +31,75 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 import pandas as pd
 
+from .reconciliation_calendar import (
+    as_of_customer_priors,
+    customer_margin_offsets,
+    first_reconciliation_on_or_after,
+    reconciliation_offset,
+    release_timestamp,
+    to_naive,
+)
+
 logger = logging.getLogger(__name__)
 
-_PRED_TARGET_COLUMN = "TARGET_LIFETIME_DAYS"
-_INDEX_COLUMN = "INVOICE_REF"
+_PRED_TARGET_COLUMN = "TARGET_RECON_K"
+_INDEX_COLUMN = "ROW_ID"
 _FEATURE_COLUMNS = [
     "COMPANY_CODE",
     "CUSTOMER_ID",
-    "PROGRAM_ID",
-    "FUNDING_CURRENCY",
-    "ORIGINAL_CURRENCY",
-    "PURCHASE_PRICE",
-    "INVOICE_AMOUNT",
-    "ISSUANCE_DATE",
-    "DUE_DATE",
-    "TENOR_DAYS",
+    "DUE_WEEKDAY",
+    "DAYS_TO_DUE",
+    "CUST_MEDIAN_K",
+    "CUST_HISTORY_N",
 ]
+# Customer IDs look numeric; a prefix keeps them categorical for RPT-1.
+_CUSTOMER_PREFIX = "CUST_"
+# Source column aliases, first match wins (history rows and workspace candidates differ).
+_COMPANY_COLUMNS = ["Company Code", "company_code", "seller_id_external"]
+_CUSTOMER_COLUMNS = ["Customer", "debtor_id"]
+_DUE_COLUMNS = ["Due Date", "DUE DATE", "due_date"]
+_HISTORY_FUNDING_COLUMNS = ["credit_start", "Summary File Date (UTC)", "summary_file_date"]
+_HISTORY_RELEASE_COLUMNS = ["credit_release", "Reconciliation File Date (UTC)"]
+_CANDIDATE_FUNDING_COLUMNS = ["Planned Funding Date", "planned_funding_date", "credit_start",
+                              "Summary File Date (UTC)", "Summary File Date"]
 
 
 @dataclass(frozen=True)
 class LifetimeEstimationConfig:
+    """Estimator settings.
+
+    Attributes:
+        enabled: False returns candidates unchanged (status 'disabled').
+        context_min_rows: Minimum context rows per call; sparse customers are topped up.
+        context_max_rows: Maximum context rows per call (customer rows first).
+        query_batch_size: Maximum candidates per RPT-1 call (one customer per call).
+        default_lifetime_weeks: Fallback duration when RPT-1 cannot supply a value.
+        prediction_placeholder: Placeholder sent in the target column of query rows.
+        timeout_seconds, max_retries, retry_backoff_seconds: RPT-1 HTTP behaviour.
+        env_path: Optional dotenv file with AICORE_* and RPT1_MODEL_NAME.
+        max_parallel_calls: Concurrent RPT-1 calls (AI Core answers bursts with 429).
+        release_margin_quantile: Customer k quantile used as a floor for the predicted
+            k (0.75 validated); None disables the margin.
+        customer_min_rows: History rows a customer needs before its own median/quantile
+            are trusted for the margin.
+    """
     enabled: bool = True
-    context_min_rows: int = 500
+    context_min_rows: int = 100
     context_max_rows: int = 800
-    query_batch_size: int = 25
-    grouping_columns: Tuple[str, ...] = (
-        "COMPANY_CODE",
-        "CUSTOMER_ID",
-        "PROGRAM_ID",
-        "FUNDING_CURRENCY",
-        "ORIGINAL_CURRENCY",
-    )
+    query_batch_size: int = 50
     default_lifetime_weeks: int = 4
     prediction_placeholder: str = "[PREDICT]"
     timeout_seconds: int = 90
-    max_retries: int = 3
-    retry_backoff_seconds: float = 1.0
+    max_retries: int = 5
+    retry_backoff_seconds: float = 2.0
     env_path: str | None = None
     max_parallel_calls: int = 2
+    release_margin_quantile: float | None = 0.75
+    customer_min_rows: int = 5
 
 
 @dataclass(frozen=True)
@@ -66,7 +108,6 @@ class _LifetimeBatch:
     batch_indices: List[int]
     context_df: pd.DataFrame
     query_df: pd.DataFrame
-    id_to_candidate_idx: Dict[str, int]
 
 
 @dataclass(frozen=True)
@@ -75,192 +116,95 @@ class _LifetimeBatchResult:
     predicted_rows: List[Dict[str, Any]]
     context_rows: int
     query_rows: int
+    input_cells: int
+    predictions_returned: int
     api_calls: int
     error: str | None = None
 
 
-def _coalesce_columns(df: pd.DataFrame, columns: list[str]) -> pd.Series:
-    if df.empty:
-        return pd.Series([], dtype="object")
-    base = pd.Series([pd.NA] * len(df), index=df.index, dtype="object")
-    for col in columns:
-        if col in df.columns:
-            base = base.where(base.notna(), df[col])
-    return base
+def _coalesce(df: pd.DataFrame, columns: List[str]) -> pd.Series:
+    """First non-null value across the given columns (all-NA series when none exist)."""
+    result = pd.Series([pd.NA] * len(df), index=df.index, dtype="object")
+    for column in columns:
+        if column in df.columns:
+            result = result.where(result.notna(), df[column])
+    return result
 
 
-def _normalize_text(series: pd.Series) -> pd.Series:
-    normalized = series.astype("object")
-    normalized = normalized.where(pd.notna(normalized), pd.NA)
-    normalized = normalized.where(
-        normalized.isna(),
-        normalized.astype(str).str.strip(),
-    )
-    normalized = normalized.replace({"": pd.NA, "nan": pd.NA, "None": pd.NA})
-    return normalized
+def _identifier(values: pd.Series) -> pd.Series:
+    """Normalize IDs to trimmed strings; integral floats (100456220.0) lose the '.0'."""
+    def normalize(value: Any) -> Any:
+        if value is None or (isinstance(value, float) and not math.isfinite(value)) or pd.isna(value):
+            return pd.NA
+        if isinstance(value, float) and value.is_integer():
+            value = int(value)
+        text = str(value).strip()
+        return text or pd.NA
+    return values.map(normalize)
+
+
+def _base_features(df: pd.DataFrame, funding_columns: List[str]) -> pd.DataFrame:
+    """Company, customer, due date, funding date and the derived calendar features."""
+    features = pd.DataFrame(index=df.index)
+    features["COMPANY_CODE"] = _identifier(_coalesce(df, _COMPANY_COLUMNS))
+    customer = _identifier(_coalesce(df, _CUSTOMER_COLUMNS))
+    features["CUSTOMER_KEY"] = customer
+    features["CUSTOMER_ID"] = customer.map(lambda value: pd.NA if pd.isna(value) else _CUSTOMER_PREFIX + value)
+    features["DUE_AT"] = to_naive(_coalesce(df, _DUE_COLUMNS)).set_axis(df.index)
+    features["FUNDING_AT"] = to_naive(_coalesce(df, funding_columns)).set_axis(df.index)
+    features["DUE_WEEKDAY"] = features["DUE_AT"].dt.day_name()
+    features["DAYS_TO_DUE"] = ((features["DUE_AT"] - features["FUNDING_AT"]).dt.total_seconds() / 86400).round(2)
+    return features
 
 
 def _prepare_history_features(lifecycle_source_df: pd.DataFrame) -> pd.DataFrame:
+    """Turn observed lifecycles into context rows with k target and as-of priors.
+
+    Rows without company, customer, due, funding or release dates are dropped. Priors use
+    only outcomes known before each row's own funding date.
+    """
+    columns = [_INDEX_COLUMN, *_FEATURE_COLUMNS, _PRED_TARGET_COLUMN, "CUSTOMER_KEY", "FUNDING_AT", "RELEASE_DAY_FRACTION"]
     if lifecycle_source_df.empty:
-        return pd.DataFrame(columns=[_INDEX_COLUMN, *_FEATURE_COLUMNS, _PRED_TARGET_COLUMN, "CREDIT_START_DATE"])
-
-    history = pd.DataFrame(index=lifecycle_source_df.index)
-    history[_INDEX_COLUMN] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["Invoice Reference", "invoice_reference", "optimizer_row_id"])
-    ).fillna("history-row")
-    history["COMPANY_CODE"] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["Company Code", "company_code", "seller_id_external"])
-    )
-    history["CUSTOMER_ID"] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["Customer", "debtor_id"])
-    )
-    history["PROGRAM_ID"] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["PROGRAMA", "program_id"])
-    )
-    history["FUNDING_CURRENCY"] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["Funding Currency", "funding_currency"])
-    )
-    history["ORIGINAL_CURRENCY"] = _normalize_text(
-        _coalesce_columns(lifecycle_source_df, ["Currency", "ORIGINAL CURRENCY", "original_currency"])
-    )
-
-    history["PURCHASE_PRICE"] = pd.to_numeric(
-        _coalesce_columns(lifecycle_source_df, ["Purchase Price", "candidate_amount"]),
-        errors="coerce",
-    )
-    history["INVOICE_AMOUNT"] = pd.to_numeric(
-        _coalesce_columns(lifecycle_source_df, ["Amount", "invoice_amount"]),
-        errors="coerce",
-    )
-    history["ISSUANCE_DATE"] = pd.to_datetime(
-        _coalesce_columns(lifecycle_source_df, ["Issuance date", "ISSUANCE DATE", "issuance_date"]),
-        errors="coerce",
-    )
-    history["DUE_DATE"] = pd.to_datetime(
-        _coalesce_columns(lifecycle_source_df, ["Due Date", "DUE DATE", "due_date"]),
-        errors="coerce",
-    )
-    history["TENOR_DAYS"] = (history["DUE_DATE"] - history["ISSUANCE_DATE"]).dt.days
-    history["CREDIT_START_DATE"] = pd.to_datetime(
-        _coalesce_columns(lifecycle_source_df, ["credit_start", "Summary File Date (UTC)", "summary_file_date"]),
-        errors="coerce",
-    )
-    history[_PRED_TARGET_COLUMN] = pd.to_numeric(
-        _coalesce_columns(lifecycle_source_df, ["credit_duration_days"]),
-        errors="coerce",
-    )
-
-    history = history[history[_PRED_TARGET_COLUMN].notna()].copy()
-    history = history[history[_PRED_TARGET_COLUMN] > 0].copy()
-    history[_PRED_TARGET_COLUMN] = history[_PRED_TARGET_COLUMN].clip(lower=1, upper=3650)
-
-    return history.reset_index(drop=True)
+        return pd.DataFrame(columns=columns)
+    history = _base_features(lifecycle_source_df, _HISTORY_FUNDING_COLUMNS)
+    released = to_naive(_coalesce(lifecycle_source_df, _HISTORY_RELEASE_COLUMNS)).set_axis(lifecycle_source_df.index)
+    history[_PRED_TARGET_COLUMN] = reconciliation_offset(history["DUE_AT"], released)
+    history["RELEASE_DAY_FRACTION"] = (released - released.dt.normalize()).dt.total_seconds() / 86400
+    history = history.dropna(subset=["COMPANY_CODE", "CUSTOMER_KEY", "DUE_AT", "FUNDING_AT", _PRED_TARGET_COLUMN]).copy()
+    history = history[released.loc[history.index] > history["FUNDING_AT"]]
+    history["CUST_MEDIAN_K"], history["CUST_HISTORY_N"] = as_of_customer_priors(
+        history["CUSTOMER_KEY"], history["FUNDING_AT"], released.loc[history.index], history[_PRED_TARGET_COLUMN])
+    history[_INDEX_COLUMN] = [f"h_{position}" for position in range(len(history))]
+    return history[columns].reset_index(drop=True)
 
 
-def _prepare_candidate_features(candidates_df: pd.DataFrame) -> pd.DataFrame:
-    features = pd.DataFrame(index=candidates_df.index)
-    features[_INDEX_COLUMN] = _normalize_text(
-        _coalesce_columns(candidates_df, ["Invoice Reference", "invoice_reference", "optimizer_row_id"])
-    ).fillna("candidate-row")
-    features["COMPANY_CODE"] = _normalize_text(
-        _coalesce_columns(candidates_df, ["Company Code", "company_code", "seller_id_external"])
-    )
-    features["CUSTOMER_ID"] = _normalize_text(
-        _coalesce_columns(candidates_df, ["Customer", "debtor_id"])
-    )
-    features["PROGRAM_ID"] = _normalize_text(
-        _coalesce_columns(candidates_df, ["PROGRAMA", "program_id"])
-    )
-    features["FUNDING_CURRENCY"] = _normalize_text(
-        _coalesce_columns(candidates_df, ["Funding Currency", "FUNDING CURRENCY", "funding_currency"])
-    )
-    features["ORIGINAL_CURRENCY"] = _normalize_text(
-        _coalesce_columns(candidates_df, ["Currency", "ORIGINAL CURRENCY", "original_currency"])
-    )
-    features["PURCHASE_PRICE"] = pd.to_numeric(
-        _coalesce_columns(candidates_df, ["Purchase Price", "candidate_amount"]),
-        errors="coerce",
-    )
-    features["INVOICE_AMOUNT"] = pd.to_numeric(
-        _coalesce_columns(candidates_df, ["Amount", "invoice_amount"]),
-        errors="coerce",
-    )
-    features["ISSUANCE_DATE"] = pd.to_datetime(
-        _coalesce_columns(candidates_df, ["Issuance date", "ISSUANCE DATE", "issuance_date"]),
-        errors="coerce",
-    )
-    features["DUE_DATE"] = pd.to_datetime(
-        _coalesce_columns(candidates_df, ["Due Date", "DUE DATE", "due_date"]),
-        errors="coerce",
-    )
-    features["TENOR_DAYS"] = (features["DUE_DATE"] - features["ISSUANCE_DATE"]).dt.days
-
+def _prepare_candidate_features(candidates_df: pd.DataFrame, history_df: pd.DataFrame) -> pd.DataFrame:
+    """Candidate features; priors come from all admitted history of the same customer."""
+    features = _base_features(candidates_df, _CANDIDATE_FUNDING_COLUMNS)
+    stats = history_df.groupby("CUSTOMER_KEY")[_PRED_TARGET_COLUMN].agg(["median", "size"])
+    features["CUST_MEDIAN_K"] = features["CUSTOMER_KEY"].map(stats["median"]).astype("float64")
+    features["CUST_HISTORY_N"] = features["CUSTOMER_KEY"].map(stats["size"]).fillna(0).astype(int)
+    features[_INDEX_COLUMN] = [f"q_{index}" for index in range(len(features))]
     return features.reset_index(drop=True)
 
 
-def build_lifetime_payload(
-    history_features_df: pd.DataFrame,
-    candidate_feature_row: pd.Series,
-    *,
-    context_min_rows: int = 500,
-    context_max_rows: int = 800,
-) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """Build context/query payload frames for one invoice prediction."""
-    if history_features_df.empty:
-        return (
-            pd.DataFrame(columns=[_INDEX_COLUMN, *_FEATURE_COLUMNS, _PRED_TARGET_COLUMN]),
-            pd.DataFrame(columns=[_INDEX_COLUMN, *_FEATURE_COLUMNS]),
-        )
+def select_context(history_df: pd.DataFrame, customer_key: str, company_code: str, *,
+                   min_rows: int, max_rows: int) -> pd.DataFrame:
+    """Customer-first context for one customer's queries.
 
-    min_rows = max(1, int(context_min_rows))
-    max_rows = max(min_rows, int(context_max_rows))
+    Sends only the customer's own rows (newest first, at most max_rows). When the
+    customer has fewer than min_rows, the context is topped up to min_rows with rows of
+    the same company code, then any other rows, newest first. Mixing many other
+    customers into the context degraded accuracy in validation.
 
-    ranked = history_features_df.copy()
-    score = pd.Series(0.0, index=ranked.index, dtype="float64")
-
-    for col, weight in (
-        ("CUSTOMER_ID", 5.0),
-        ("COMPANY_CODE", 4.0),
-        ("PROGRAM_ID", 2.0),
-        ("FUNDING_CURRENCY", 1.0),
-        ("ORIGINAL_CURRENCY", 1.0),
-    ):
-        candidate_value = candidate_feature_row.get(col)
-        if pd.notna(candidate_value):
-            score += (ranked[col] == candidate_value).astype(float) * weight
-
-    candidate_price = pd.to_numeric(candidate_feature_row.get("PURCHASE_PRICE"), errors="coerce")
-    if pd.notna(candidate_price) and candidate_price > 0:
-        rel_diff = (ranked["PURCHASE_PRICE"] - float(candidate_price)).abs() / float(candidate_price)
-        score += (1.0 - rel_diff.fillna(1.0).clip(lower=0.0, upper=1.0))
-
-    candidate_tenor = pd.to_numeric(candidate_feature_row.get("TENOR_DAYS"), errors="coerce")
-    if pd.notna(candidate_tenor):
-        tenor_diff = (ranked["TENOR_DAYS"] - float(candidate_tenor)).abs()
-        score += (1.0 - (tenor_diff.fillna(365.0) / 365.0).clip(lower=0.0, upper=1.0))
-
-    if "CREDIT_START_DATE" in ranked.columns:
-        recency_rank = ranked["CREDIT_START_DATE"].rank(method="average", pct=True)
-        score += recency_rank.fillna(0.0) * 0.25
-
-    ranked["_rank_score"] = score
-    ranked = ranked.sort_values(["_rank_score", "CREDIT_START_DATE"], ascending=[False, False], kind="mergesort")
-
-    top = ranked.head(max_rows).copy()
-    if len(top) < min_rows and len(ranked) > len(top):
-        remainder = ranked.iloc[len(top):]
-        top = pd.concat([top, remainder.head(min_rows - len(top))], ignore_index=True)
-
-    context_df = top[[_INDEX_COLUMN, *_FEATURE_COLUMNS, _PRED_TARGET_COLUMN]].reset_index(drop=True)
-
-    query_row = {
-        _INDEX_COLUMN: candidate_feature_row.get(_INDEX_COLUMN),
-    }
-    for col in _FEATURE_COLUMNS:
-        query_row[col] = candidate_feature_row.get(col)
-    query_df = pd.DataFrame([query_row], columns=[_INDEX_COLUMN, *_FEATURE_COLUMNS])
-
-    return context_df, query_df
+    Returns:
+        Context rows with index, feature and target columns.
+    """
+    tier = (history_df["CUSTOMER_KEY"] != customer_key).astype(int) + (history_df["COMPANY_CODE"] != company_code).astype(int)
+    ordered = history_df.assign(_tier=tier).sort_values(["_tier", "FUNDING_AT"], ascending=[True, False], kind="mergesort")
+    own = int((ordered["_tier"] == 0).sum())
+    limit = min(int(max_rows), max(own, int(min_rows)))
+    return ordered.head(limit)[[_INDEX_COLUMN, *_FEATURE_COLUMNS, _PRED_TARGET_COLUMN]].reset_index(drop=True)
 
 
 def _load_rpt1_client_class() -> Any:
@@ -291,49 +235,12 @@ def _load_rpt1_client_class() -> Any:
 
 
 def _existing_lifetime_mask(df: pd.DataFrame) -> pd.Series:
-    if df.empty:
-        return pd.Series([], dtype="bool")
-    has_weeks = "expected_lifetime_weeks" in df.columns and df["expected_lifetime_weeks"].notna()
-    has_days = "expected_lifetime_days" in df.columns and df["expected_lifetime_days"].notna()
-    if isinstance(has_weeks, bool):
-        has_weeks = pd.Series([has_weeks] * len(df), index=df.index)
-    if isinstance(has_days, bool):
-        has_days = pd.Series([has_days] * len(df), index=df.index)
-    return has_weeks | has_days
-
-
-def _safe_key_value(value: Any) -> str:
-    if pd.isna(value):
-        return "<NA>"
-    return str(value)
-
-
-def _chunked(values: List[int], chunk_size: int) -> Iterable[List[int]]:
-    size = max(1, int(chunk_size))
-    for pos in range(0, len(values), size):
-        yield values[pos : pos + size]
-
-
-def _grouped_candidate_indices(
-    feature_df: pd.DataFrame,
-    candidate_indices: List[int],
-    grouping_columns: Tuple[str, ...],
-) -> List[List[int]]:
-    if not candidate_indices:
-        return []
-
-    if not grouping_columns:
-        return [candidate_indices]
-
-    groups: Dict[Tuple[str, ...], List[int]] = {}
-    for idx in candidate_indices:
-        row = feature_df.loc[idx]
-        key = tuple(_safe_key_value(row.get(col)) for col in grouping_columns)
-        groups.setdefault(key, []).append(idx)
-
-    # Largest groups first helps reduce calls for dominant cohorts.
-    ordered = sorted(groups.values(), key=lambda g: len(g), reverse=True)
-    return ordered
+    """Rows that already carry a lifetime are not re-estimated."""
+    mask = pd.Series(False, index=df.index)
+    for column in ("expected_lifetime_weeks", "expected_lifetime_days"):
+        if column in df.columns:
+            mask |= df[column].notna()
+    return mask
 
 
 def _build_candidate_batches(
@@ -343,50 +250,27 @@ def _build_candidate_batches(
     candidate_indices: List[int],
     config: LifetimeEstimationConfig,
 ) -> List[_LifetimeBatch]:
+    """One context per (customer, company code); candidates split into query batches."""
     batches: List[_LifetimeBatch] = []
-    grouped_indices = _grouped_candidate_indices(
-        feature_df,
-        candidate_indices,
-        tuple(config.grouping_columns),
-    )
-    batch_id = 0
-    for group_indices in grouped_indices:
-        for batch_indices in _chunked(group_indices, int(config.query_batch_size)):
-            if not batch_indices:
-                continue
-            representative = feature_df.loc[batch_indices[0]]
-            context_df, _ = build_lifetime_payload(
-                history_df,
-                representative,
-                context_min_rows=config.context_min_rows,
-                context_max_rows=config.context_max_rows,
-            )
-            if context_df.empty:
-                continue
-            batch_features = feature_df.loc[batch_indices, [_INDEX_COLUMN, *_FEATURE_COLUMNS]].copy()
-            query_ids = [f"q_{idx}" for idx in batch_indices]
-            id_to_candidate_idx = dict(zip(query_ids, batch_indices))
-            batch_features[_INDEX_COLUMN] = query_ids
-            query_df = batch_features.reset_index(drop=True)
-            batches.append(
-                _LifetimeBatch(
-                    batch_id=batch_id,
-                    batch_indices=list(batch_indices),
-                    context_df=context_df,
-                    query_df=query_df,
-                    id_to_candidate_idx=id_to_candidate_idx,
-                )
-            )
-            batch_id += 1
+    usable = [idx for idx in candidate_indices
+              if pd.notna(feature_df.at[idx, "CUSTOMER_KEY"]) and pd.notna(feature_df.at[idx, "DUE_AT"])]
+    groups = feature_df.loc[usable].groupby(["CUSTOMER_KEY", "COMPANY_CODE"], dropna=False, sort=False)
+    for (customer_key, company_code), group in groups:
+        context_df = select_context(history_df, customer_key, company_code,
+                                    min_rows=config.context_min_rows, max_rows=config.context_max_rows)
+        if context_df.empty:
+            continue
+        indices = group.index.tolist()
+        size = max(1, int(config.query_batch_size))
+        for start in range(0, len(indices), size):
+            batch_indices = indices[start:start + size]
+            query_df = feature_df.loc[batch_indices, [_INDEX_COLUMN, *_FEATURE_COLUMNS]].reset_index(drop=True)
+            batches.append(_LifetimeBatch(len(batches), batch_indices, context_df, query_df))
     return batches
 
 
-def _predict_batch(
-    *,
-    client: Any,
-    batch: _LifetimeBatch,
-    prediction_placeholder: str,
-) -> _LifetimeBatchResult:
+def _predict_batch(*, client: Any, batch: _LifetimeBatch, prediction_placeholder: str) -> _LifetimeBatchResult:
+    """Call RPT-1 once; return whole-file k per candidate (rounded, clipped to context range)."""
     try:
         client.fit(
             context_df=batch.context_df,
@@ -396,40 +280,38 @@ def _predict_batch(
             prediction_placeholder=prediction_placeholder,
         )
         result = client.predict(batch.query_df)
+        usage = getattr(result, "metadata", {}).get("rpt1_usage", {})
+        lowest, highest = batch.context_df[_PRED_TARGET_COLUMN].min(), batch.context_df[_PRED_TARGET_COLUMN].max()
+        id_to_candidate = dict(zip(batch.query_df[_INDEX_COLUMN], batch.batch_indices))
         predicted_rows: List[Dict[str, Any]] = []
-        if not result.predictions_df.empty:
-            for _, pred_row in result.predictions_df.iterrows():
-                query_id = str(pred_row.get(_INDEX_COLUMN, ""))
-                idx = batch.id_to_candidate_idx.get(query_id)
-                if idx is None:
-                    continue
-                raw_value = pd.to_numeric(pred_row.get(_PRED_TARGET_COLUMN), errors="coerce")
-                if pd.isna(raw_value):
-                    continue
-                confidence = pd.to_numeric(
-                    pred_row.get(f"{_PRED_TARGET_COLUMN}__confidence"),
-                    errors="coerce",
-                )
-                predicted_rows.append(
-                    {
-                        "candidate_idx": idx,
-                        "lifetime_days": max(1, int(round(float(raw_value)))),
-                        "confidence": float(confidence) if pd.notna(confidence) else pd.NA,
-                    }
-                )
+        for _, row in result.predictions_df.iterrows():
+            idx = id_to_candidate.get(str(row.get(_INDEX_COLUMN, "")))
+            raw = pd.to_numeric(row.get(_PRED_TARGET_COLUMN), errors="coerce")
+            if idx is None or pd.isna(raw):
+                continue
+            confidence = pd.to_numeric(row.get(f"{_PRED_TARGET_COLUMN}__confidence"), errors="coerce")
+            predicted_rows.append({
+                "candidate_idx": idx,
+                "recon_k": int(min(max(round(float(raw)), lowest), highest)),
+                "confidence": float(confidence) if pd.notna(confidence) else pd.NA,
+            })
         return _LifetimeBatchResult(
             batch_id=batch.batch_id,
             predicted_rows=predicted_rows,
-            context_rows=int(len(batch.context_df)),
-            query_rows=int(len(batch.query_df)),
+            context_rows=len(batch.context_df),
+            query_rows=len(batch.query_df),
+            input_cells=int(usage.get("input_cells", (len(batch.context_df) + len(batch.query_df)) * len(batch.context_df.columns))),
+            predictions_returned=int(usage.get("prediction_count", len(result.predictions_df))),
             api_calls=1,
         )
     except Exception as exc:  # pragma: no cover - runtime/network specific
         return _LifetimeBatchResult(
             batch_id=batch.batch_id,
             predicted_rows=[],
-            context_rows=int(len(batch.context_df)),
-            query_rows=int(len(batch.query_df)),
+            context_rows=len(batch.context_df),
+            query_rows=len(batch.query_df),
+            input_cells=(len(batch.context_df) + len(batch.query_df)) * len(batch.context_df.columns),
+            predictions_returned=0,
             api_calls=0,
             error=str(exc),
         )
@@ -442,18 +324,39 @@ def estimate_candidate_lifetime_with_rpt1(
     config: LifetimeEstimationConfig,
     progress_callback: Callable[[Dict[str, Any]], None] | None = None,
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """Estimate expected lifetime for invoices using RPT-1 regression."""
+    """Estimate expected invoice lifetimes with RPT-1 and the reconciliation calendar.
+
+    Args:
+        candidates_df: Invoices to estimate. Needs company code, customer and due date;
+            the funding date comes from 'Planned Funding Date' (workspace runs) or the
+            history funding columns (evaluation). Rows that already carry a lifetime are
+            left untouched.
+        lifecycle_source_df: Observed lifecycles (normalized HANA dataset rows) with
+            funding ('credit_start') and release ('credit_release') timestamps.
+        config: Estimator settings.
+        progress_callback: Optional callable receiving counters after every batch.
+
+    Returns:
+        (candidates, report). Candidates gain expected_lifetime_days (whole days,
+        >= 1), expected_lifetime_weeks, expected_lifetime_confidence,
+        expected_lifetime_source ('RPT-1' or 'fallback_default_weeks'),
+        expected_recon_k (after margin), expected_recon_k_model (RPT-1 output) and
+        expected_release_date (ISO date). The report carries call counters and errors.
+    """
     report: Dict[str, Any] = {
         "enabled": bool(config.enabled),
         "status": "skipped",
+        "target_formulation": "rpt1_reconciliation_offset_k",
+        "release_margin_quantile": config.release_margin_quantile,
         "requested_candidates": int(len(candidates_df)),
         "predicted_candidates": 0,
         "context_min_rows": int(config.context_min_rows),
         "context_max_rows": int(config.context_max_rows),
         "query_batch_size": int(config.query_batch_size),
-        "grouping_columns": list(config.grouping_columns),
         "historical_rows_available": 0,
         "api_calls": 0,
+        "rpt1_input_cells_sent": 0,
+        "rpt1_predictions_returned": 0,
         "max_context_rows_sent": 0,
         "max_query_rows_sent": 0,
         "avg_context_rows_sent": 0.0,
@@ -462,6 +365,7 @@ def estimate_candidate_lifetime_with_rpt1(
         "batches_completed": 0,
         "max_parallel_calls": int(config.max_parallel_calls),
         "retryable_error_count": 0,
+        "margin_applied_candidates": 0,
         "fallback_candidates": 0,
         "errors": [],
     }
@@ -469,7 +373,6 @@ def estimate_candidate_lifetime_with_rpt1(
     if candidates_df.empty:
         report["status"] = "no_candidates"
         return candidates_df.copy(), report
-
     if not config.enabled:
         report["status"] = "disabled"
         return candidates_df.copy(), report
@@ -481,54 +384,49 @@ def estimate_candidate_lifetime_with_rpt1(
         return candidates_df.copy(), report
 
     candidates_out = candidates_df.copy().reset_index(drop=True)
-    if "expected_lifetime_days" not in candidates_out.columns:
-        candidates_out["expected_lifetime_days"] = pd.NA
-    if "expected_lifetime_weeks" not in candidates_out.columns:
-        candidates_out["expected_lifetime_weeks"] = pd.NA
-    if "expected_lifetime_confidence" not in candidates_out.columns:
-        candidates_out["expected_lifetime_confidence"] = pd.NA
-    if "expected_lifetime_source" not in candidates_out.columns:
-        candidates_out["expected_lifetime_source"] = pd.NA
+    for column in ("expected_lifetime_days", "expected_lifetime_weeks", "expected_lifetime_confidence",
+                   "expected_lifetime_source", "expected_recon_k", "expected_recon_k_model", "expected_release_date"):
+        if column not in candidates_out.columns:
+            candidates_out[column] = pd.NA
 
     def _apply_default_lifetime_fallback(indices: List[int]) -> int:
-        if not indices:
-            return 0
+        """Four-week fallback for rows without a model value; acknowledged later by the user."""
+        weeks = max(1, int(config.default_lifetime_weeks))
         assigned = 0
-        fallback_weeks = max(1, int(config.default_lifetime_weeks))
-        fallback_days = int(fallback_weeks * 7)
         for idx in indices:
             if pd.isna(candidates_out.at[idx, "expected_lifetime_weeks"]):
-                candidates_out.at[idx, "expected_lifetime_weeks"] = fallback_weeks
+                candidates_out.at[idx, "expected_lifetime_weeks"] = weeks
                 assigned += 1
             if pd.isna(candidates_out.at[idx, "expected_lifetime_days"]):
-                candidates_out.at[idx, "expected_lifetime_days"] = fallback_days
+                candidates_out.at[idx, "expected_lifetime_days"] = weeks * 7
             if pd.isna(candidates_out.at[idx, "expected_lifetime_source"]):
                 candidates_out.at[idx, "expected_lifetime_source"] = "fallback_default_weeks"
         return assigned
 
-    feature_df = _prepare_candidate_features(candidates_out)
-    missing_mask = ~_existing_lifetime_mask(candidates_out)
-    candidate_indices = feature_df[missing_mask].index.tolist()
+    feature_df = _prepare_candidate_features(candidates_out, history_df)
+    candidate_indices = feature_df[~_existing_lifetime_mask(candidates_out)].index.tolist()
     if not candidate_indices:
         report["status"] = "already_populated"
         return candidates_out, report
 
     try:
         RPT1Client = _load_rpt1_client_class()
-    except Exception as exc:  # pragma: no cover - environment-specific
-        logger.warning("RPT-1 initialization failed, using default lifetime fallback: %s", exc)
-        report["status"] = "init_failed"
-        report["errors"].append(str(exc))
-        report["fallback_candidates"] = int(_apply_default_lifetime_fallback(candidate_indices))
-        return candidates_out, report
-
-    try:
-        _ = RPT1Client.from_env(
+        probe = RPT1Client.from_env(
             env_path=config.env_path,
             timeout_seconds=int(config.timeout_seconds),
             max_retries=int(config.max_retries),
             retry_backoff_seconds=float(config.retry_backoff_seconds),
         )
+        # Resolve the AI Core deployment once up front: a missing or ambiguous model
+        # fails here as init_failed, and worker clients reuse the cached result.
+        resolve = getattr(probe, "_resolve_deployment_url", None)
+        if callable(resolve):
+            resolve()
+            report["rpt1_model"] = {
+                "model_name": getattr(probe, "model_name", None),
+                "model_version": getattr(probe, "model_version", None),
+                "deployment_id": getattr(probe, "deployment_id", None),
+            }
     except Exception as exc:  # pragma: no cover - environment-specific
         logger.warning("RPT-1 initialization failed, using default lifetime fallback: %s", exc)
         report["status"] = "init_failed"
@@ -537,11 +435,7 @@ def estimate_candidate_lifetime_with_rpt1(
         return candidates_out, report
 
     batches = _build_candidate_batches(
-        feature_df=feature_df,
-        history_df=history_df,
-        candidate_indices=candidate_indices,
-        config=config,
-    )
+        feature_df=feature_df, history_df=history_df, candidate_indices=candidate_indices, config=config)
     report["batches_total"] = int(len(batches))
     if not batches:
         report["status"] = "no_batches"
@@ -551,25 +445,14 @@ def estimate_candidate_lifetime_with_rpt1(
     def _emit_progress_update() -> None:
         if progress_callback is None:
             return
-        progress_callback(
-            {
-                "batches_total": int(report["batches_total"]),
-                "batches_completed": int(report["batches_completed"]),
-                "api_calls": int(report["api_calls"]),
-                "predicted_candidates": int(report["predicted_candidates"]),
-                "fallback_candidates": int(report["fallback_candidates"]),
-                "retryable_errors": int(report["retryable_error_count"]),
-                "max_parallel_calls": int(report["max_parallel_calls"]),
-            }
-        )
+        progress_callback({key: int(report[key]) for key in (
+            "batches_total", "batches_completed", "api_calls", "rpt1_input_cells_sent",
+            "rpt1_predictions_returned", "predicted_candidates", "fallback_candidates",
+            "retryable_error_count", "max_parallel_calls")})
 
-    predicted = 0
-    predicted_indices: set[int] = set()
-    total_context_rows_sent = 0
-    total_query_rows_sent = 0
     thread_local = threading.local()
 
-    def _get_client() -> Any:
+    def _process_batch(batch: _LifetimeBatch) -> _LifetimeBatchResult:
         client = getattr(thread_local, "client", None)
         if client is None:
             client = RPT1Client.from_env(
@@ -579,31 +462,29 @@ def estimate_candidate_lifetime_with_rpt1(
                 retry_backoff_seconds=float(config.retry_backoff_seconds),
             )
             thread_local.client = client
-        return client
+        return _predict_batch(client=client, batch=batch, prediction_placeholder=config.prediction_placeholder)
 
-    def _process_batch(batch: _LifetimeBatch) -> _LifetimeBatchResult:
-        client = _get_client()
-        return _predict_batch(
-            client=client,
-            batch=batch,
-            prediction_placeholder=config.prediction_placeholder,
-        )
+    # Calendar inputs shared by every prediction.
+    day_fraction = float(history_df["RELEASE_DAY_FRACTION"].median())
+    margins = customer_margin_offsets(history_df["CUSTOMER_KEY"], history_df[_PRED_TARGET_COLUMN],
+                                      config.release_margin_quantile, config.customer_min_rows)
 
+    predicted_indices: set[int] = set()
+    total_context_rows_sent = 0
+    total_query_rows_sent = 0
     max_workers = max(1, int(config.max_parallel_calls))
     report["max_parallel_calls"] = max_workers
     _emit_progress_update()
 
-    if max_workers == 1:
-        results_iterable = (_process_batch(batch) for batch in batches)
-    else:
-        executor = ThreadPoolExecutor(max_workers=max_workers)
-        future_map = {executor.submit(_process_batch, batch): batch.batch_id for batch in batches}
-        results_iterable = (future.result() for future in as_completed(future_map))
-
+    executor = ThreadPoolExecutor(max_workers=max_workers)
     try:
-        for batch_result in results_iterable:
-            report["batches_completed"] = int(report["batches_completed"]) + 1
-            report["api_calls"] = int(report["api_calls"]) + int(batch_result.api_calls)
+        futures = [executor.submit(_process_batch, batch) for batch in batches]
+        for future in as_completed(futures):
+            batch_result = future.result()
+            report["batches_completed"] += 1
+            report["api_calls"] += int(batch_result.api_calls)
+            report["rpt1_input_cells_sent"] += int(batch_result.input_cells)
+            report["rpt1_predictions_returned"] += int(batch_result.predictions_returned)
             total_context_rows_sent += int(batch_result.context_rows)
             total_query_rows_sent += int(batch_result.query_rows)
             report["max_context_rows_sent"] = max(int(report["max_context_rows_sent"]), int(batch_result.context_rows))
@@ -611,37 +492,43 @@ def estimate_candidate_lifetime_with_rpt1(
 
             if batch_result.error:
                 report["errors"].append(f"batch_id={batch_result.batch_id}: {batch_result.error}")
-                upper_error = str(batch_result.error).upper()
-                if "429" in upper_error or "503" in upper_error or "502" in upper_error or "504" in upper_error:
-                    report["retryable_error_count"] = int(report["retryable_error_count"]) + 1
+                if any(code in str(batch_result.error) for code in ("429", "502", "503", "504")):
+                    report["retryable_error_count"] += 1
                 _emit_progress_update()
                 continue
 
             for pred in batch_result.predicted_rows:
                 idx = int(pred["candidate_idx"])
-                lifetime_days = int(pred["lifetime_days"])
-                lifetime_weeks = max(1, int(math.ceil(lifetime_days / 7.0)))
-                confidence = pred["confidence"]
+                features = feature_df.loc[idx]
+                model_k = int(pred["recon_k"])
+                final_k = max(model_k, margins.get(features["CUSTOMER_KEY"], model_k))
+                release = release_timestamp(pd.Series([features["DUE_AT"]]), pd.Series([final_k]), day_fraction).iloc[0]
+                funding = features["FUNDING_AT"]
+                if pd.isna(release) or pd.isna(funding):
+                    continue  # no funding date: leave the row for the fallback
+                lifetime_days = max(1, int(math.ceil((release - funding).total_seconds() / 86400)))
                 candidates_out.at[idx, "expected_lifetime_days"] = lifetime_days
-                candidates_out.at[idx, "expected_lifetime_weeks"] = lifetime_weeks
-                candidates_out.at[idx, "expected_lifetime_confidence"] = confidence
+                candidates_out.at[idx, "expected_lifetime_weeks"] = max(1, int(math.ceil(lifetime_days / 7.0)))
+                candidates_out.at[idx, "expected_lifetime_confidence"] = pred["confidence"]
                 candidates_out.at[idx, "expected_lifetime_source"] = "RPT-1"
-                predicted += 1
+                candidates_out.at[idx, "expected_recon_k"] = final_k
+                candidates_out.at[idx, "expected_recon_k_model"] = model_k
+                candidates_out.at[idx, "expected_release_date"] = release.date().isoformat()
+                report["margin_applied_candidates"] += int(final_k > model_k)
                 predicted_indices.add(idx)
 
-            report["predicted_candidates"] = int(predicted)
+            report["predicted_candidates"] = len(predicted_indices)
             _emit_progress_update()
     finally:
-        if max_workers > 1:
-            executor.shutdown(wait=True)
+        executor.shutdown(wait=True)
 
     remaining_indices = [idx for idx in candidate_indices if idx not in predicted_indices]
     report["fallback_candidates"] = int(_apply_default_lifetime_fallback(remaining_indices))
-    report["predicted_candidates"] = predicted
+    report["predicted_candidates"] = len(predicted_indices)
     _emit_progress_update()
-    if int(report["api_calls"]) > 0:
+    if report["api_calls"] > 0:
         calls = float(report["api_calls"])
         report["avg_context_rows_sent"] = total_context_rows_sent / calls
         report["avg_query_rows_sent"] = total_query_rows_sent / calls
-    report["status"] = "completed" if predicted > 0 else "no_predictions"
+    report["status"] = "completed" if predicted_indices else "no_predictions"
     return candidates_out, report

@@ -39,7 +39,6 @@ def estimate_row_count(content: Any) -> Optional[int]:
             "rows",
             "invoices",
             "entries",
-            "processes",
             "matches",
             "groups",
             "debtors",

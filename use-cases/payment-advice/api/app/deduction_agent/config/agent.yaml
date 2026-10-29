@@ -1,0 +1,33 @@
+base_prompt: >-
+  You are the UC-02 deduction-interpretation agent for payment-advice processing.
+  Your job is to enrich each line item in a UC-01 canonical payload with a business
+  interpretation: document nature, SAP reason code, residual items, and flags.
+  Always start by resolving the client with find_customers, then load the client
+  playbook with get_deduction_rules, and apply it. When a line cannot be mapped,
+  assign reason code 323 and flag it for escalation. Never auto-link chargebacks to
+  invoices across documents. Never infer invoice links from equal amounts or search
+  invoice combinations; only describe links supported by explicit source references
+  or saved evidence, and flag unresolved links for customer confirmation. Load the
+  deduction-interpretation skill for the full methodology before beginning.
+
+model:
+  provider: openai
+  name: gpt-5.4
+  temperature: null
+  max_tokens: null
+  reasoning_effort: low
+  use_responses_api: true
+
+skills:
+  directory: ../agent_skills
+  max_loaded_characters: 200000
+
+mcp:
+  servers: {}
+
+memory:
+  enabled: false
+  table_name: LANGGRAPH_AGENT_MEMORY
+  max_messages: 40
+
+recursion_limit: 30

@@ -1,0 +1,46 @@
+<main class="receivables-workspace" id="receivables-workspace">
+  <header class="ws-heading"><div><span class="ws-eyebrow">RECEIVABLES</span><h1>Invoice workspace</h1>
+    </div>
+    <div class="ws-actions"><ui5-button id="ws-saved" icon="history" design="Transparent">Saved uploads</ui5-button>
+      <ui5-button id="ws-upload" icon="upload" design="Emphasized">Invoice eligibility</ui5-button><ui5-button id="ws-upload-selection" icon="upload" design="Emphasized">Invoice recommendation</ui5-button></div></header>
+  <ui5-message-strip id="ws-message" hidden hide-close-button></ui5-message-strip>
+  <section class="ws-card ws-empty" id="ws-empty"><ui5-icon name="documents"></ui5-icon>
+    <h2>Choose an invoice workflow</h2><p>Upload an offer to assess eligibility, or an extraction of already eligible invoices for a recommendation. Eligible results can continue directly to a recommendation.</p>
+    <ui5-button id="ws-empty-upload" icon="upload" design="Emphasized">Invoice eligibility</ui5-button>
+    <ui5-button id="ws-empty-selection" icon="upload">Invoice recommendation</ui5-button>
+    <small>One file per run · Your analyses and recommendations are saved</small></section>
+  <section id="ws-analysis" hidden>
+    <div class="ws-card ws-batch"><div><ui5-icon name="excel-attachment"></ui5-icon><strong id="ws-filename"></strong><span id="ws-analysis-date"></span></div>
+      <ui5-button id="ws-rules" design="Transparent" icon="action-settings">Eligibility rules</ui5-button></div>
+    <nav class="ws-view-switch" aria-label="Workspace views"><div class="ws-view-buttons">
+      <ui5-button id="ws-view-invoices" design="Emphasized">Invoices</ui5-button>
+      <ui5-button id="ws-view-results" design="Transparent" disabled>Results</ui5-button>
+      <ui5-tag id="ws-results-ready" design="Positive" hidden>Results ready</ui5-tag>
+    </div><small>Completed recommendations stay available without interrupting invoice review.</small></nav>
+    <section id="ws-invoices-view">
+      <div class="ws-card ws-metrics" aria-label="Offer summary"><div><span>Invoices in this offer</span><strong id="ws-total">—</strong><small>Original uploaded population</small></div>
+        <div><span>Eligible</span><strong id="ws-eligible">—</strong><small>Ready for credit review</small></div>
+        <div><span>Not eligible</span><strong id="ws-rejected">—</strong><small>Review rule diagnostics</small></div>
+        <div><span>Recommendation</span><strong id="ws-plan-state">Not started</strong><small>Based on eligible invoices</small></div></div>
+      <section class="ws-card ws-invoices"><div class="ws-toolbar"><div><h2>Invoices</h2><span id="ws-selection">All eligible invoices are the default recommendation scope</span></div>
+      <div class="ws-actions"><ui5-button id="ws-credit" icon="action-settings">Credit settings</ui5-button>
+      <ui5-select id="ws-optimize-scope" accessible-name="Selection scope"><ui5-option value="all_eligible">All eligible invoices</ui5-option><ui5-option value="selected">Selected eligible invoices</ui5-option></ui5-select>
+      <ui5-button id="ws-optimize" icon="activate" design="Emphasized">Create recommendation</ui5-button>
+      <ui5-button id="ws-download" icon="download" disabled>Download</ui5-button></div></div>
+      <section class="ws-run-controls" id="ws-run-controls" aria-label="Recommendation runs" hidden>
+        <div><strong>Recommendation runs</strong><p>Reopen a saved recommendation or resume a run that needs attention.</p></div>
+        <div class="ws-actions"><label>Saved run<ui5-select id="ws-run-select" accessible-name="Saved recommendation run"><ui5-option value="">Choose a saved run</ui5-option></ui5-select></label>
+        <ui5-button id="ws-review-run" design="Emphasized" hidden>Review lifetime assumptions</ui5-button><ui5-button id="ws-cancel-run" hidden>Cancel run</ui5-button><ui5-button id="ws-retry-solve" hidden>Retry recommendation</ui5-button></div>
+      </section>
+      <div class="ws-filters"><label>Status<ui5-select id="ws-status"><ui5-option value="">All invoices</ui5-option><ui5-option value="eligible">Eligible</ui5-option><ui5-option value="not_eligible">Not eligible</ui5-option></ui5-select></label>
+        <label>Customer or reference<ui5-input id="ws-search" placeholder="Search invoices…" show-clear-icon></ui5-input></label>
+        <label>Seller<ui5-select id="ws-seller"><ui5-option value="">All sellers</ui5-option></ui5-select></label>
+        <ui5-button id="ws-go">Apply</ui5-button><ui5-button id="ws-insights" icon="business-objects-experience" design="Transparent">Eligibility Pattern Analysis</ui5-button></div>
+      <div id="ws-table"></div></section>
+    </section>
+    <section id="ws-results-view" hidden><div class="ws-card ws-results" id="ws-results"></div></section>
+  </section>
+  <div id="ws-panels"></div>
+  <ui5-dialog id="ws-saved-dialog" header-text="Saved uploads"><div class="ws-saved-list"></div><div slot="footer" class="ws-actions"><ui5-button design="Negative" data-delete-selected>Delete Selected Uploads</ui5-button><ui5-button data-close>Close</ui5-button></div></ui5-dialog>
+  <ui5-dialog id="ws-details" header-text="Invoice details"><div class="ws-detail-body"></div><ui5-button slot="footer" data-close>Close</ui5-button></ui5-dialog>
+</main>

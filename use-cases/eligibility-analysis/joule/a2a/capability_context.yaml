@@ -1,0 +1,3 @@
+variables:
+  # Capability context is shared across functions in this capability for the active Joule conversation.
+  - name: agent_context_id

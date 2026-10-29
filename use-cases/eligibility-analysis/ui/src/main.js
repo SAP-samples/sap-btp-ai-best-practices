@@ -1,3 +1,5 @@
+// Bundle UI5 locale/theme assets so date controls do not depend on runtime CDN access.
+import "@ui5/webcomponents-fiori/dist/Assets.js";
 import "@ui5/webcomponents-icons/dist/AllIcons.js";
 import "@ui5/webcomponents-icons-tnt/dist/AllIcons.js";
 import "@ui5/webcomponents-icons-business-suite/dist/AllIcons.js";

@@ -1,0 +1,22 @@
+<section class="inbox" id="inbox">
+  <header><h1>Payment Advice Extractor</h1><p>Email intake, document extraction, deduction review and S/4HANA payment advice posting.</p></header>
+  <div id="inbox-connection" role="status">Checking Gmail connection…</div>
+  <div id="inbox-error" role="alert"></div>
+  <div class="inbox-stats" id="inbox-stats" aria-label="Filter emails by status"></div>
+  <section class="inbox-card">
+    <div class="inbox-toolbar"><div><h2>Incoming emails</h2><span id="inbox-count"></span></div>
+      <div><button id="manual-open">Add manual email</button> <button id="gmail-fetch" class="primary">Fetch new emails</button></div></div>
+    <div class="inbox-table-scroll"><table class="email-table"><thead><tr><th>Customer / supplier</th><th>Subject</th><th>Payment references</th><th>Received</th><th>Attachments</th><th>Source</th><th>Status</th></tr></thead><tbody id="inbox-rows"></tbody></table></div>
+    <div class="inbox-toolbar"><button id="inbox-previous">Previous</button><button id="inbox-next">Next</button></div>
+  </section>
+  <dialog id="manual-dialog"><form id="manual-form">
+    <h2>Add manual email</h2><p>Runs the same processing pipeline as Gmail.</p>
+    <label>Sender address<input type="email" name="sender" required maxlength="320" placeholder="noreply@customer.com"></label>
+    <label>Subject<input name="subject" maxlength="1000" required></label>
+    <label>Email body<textarea name="body" rows="7" maxlength="1000000"></textarea></label>
+    <label>Customer override (optional)<select name="customer" id="manual-customer"><option value="">Automatic matching</option></select></label>
+    <label>Attachments<input type="file" name="files" multiple accept=".pdf,.xlsx,.csv,.tsv,.txt,.docx,.png,.jpg,.jpeg,.tif,.tiff"></label>
+    <p>Up to ten attachments, 25 MB each, 50 MB total. Unsupported files are reported individually.</p>
+    <div role="alert" id="manual-error"></div><footer><button type="button" id="manual-cancel">Cancel</button><button class="primary" type="submit">Add and process</button></footer>
+  </form></dialog>
+</section>

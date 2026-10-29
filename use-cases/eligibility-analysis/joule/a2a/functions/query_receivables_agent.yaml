@@ -1,0 +1,34 @@
+parameters:
+  - name: agent_context_id
+    optional: true
+
+action_groups:
+  - actions:
+      - type: agent-request
+        agent_type: remote
+        system_alias: RECEIVABLES_AGENT
+        body: >
+          {
+            "contextId": "<? agent_context_id ?>"
+          }
+        result_variable: _agent_response
+  - condition: _agent_response.body != null && _agent_response.body.status != null && _agent_response.body.status.state == "input-required"
+    actions:
+      - type: message
+        message:
+          type: text
+          content: <? _agent_response.body.status.message.parts[0].text ?>
+          markdown: true
+  - condition: _agent_response.body != null && _agent_response.body.artifacts != null && _agent_response.body.artifacts[0].parts != null
+    actions:
+      - type: message
+        message:
+          type: text
+          content: <? _agent_response.body.artifacts[0].parts[0].text ?>
+          markdown: true
+
+result:
+  # Expose a root-level result key for response_context in interpretability mode.
+  agent_result: <? _agent_response ?>
+  # Flatten the nested A2A contextId because capability_context can only read root-level function results.
+  agent_context_id: <? _agent_response.body.contextId ?>

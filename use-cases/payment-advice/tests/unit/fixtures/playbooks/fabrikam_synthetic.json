@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "_note": "SYNTHETIC TEST FIXTURE — NOT real customer rules. Placeholder SAP reason codes only. Do not use for production interpretation.",
+  "customer_key": "fabrikam",
+  "revision": 1,
+  "anchors": {
+    "codes": {
+      "0059": "R0059",
+      "0100": "R0100",
+      "0057": "R0057",
+      "0022": "R0022"
+    },
+    "description": "Fabrikam uses bracket codes in deduction_reason, e.g. 'DEFECTIVE MERCHANDISE ALLOWANCE [0059]'. Each code maps to a placeholder SAP reason code."
+  },
+  "document_nature_default": "chargeback",
+  "rules": [
+    {
+      "match": "bracket_code",
+      "codes": ["0059", "0100", "0057", "0022"],
+      "document_nature": "chargeback",
+      "action": "map_to_reason_code"
+    }
+  ]
+}
