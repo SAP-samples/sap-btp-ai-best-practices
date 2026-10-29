@@ -15,6 +15,9 @@ Items (`to_PaymentAdviceItem`, deep insert):
   book a residual. A customer other than the header account is sent as the
   alternative account (lead payer), with its company code (`AlternativeCompanyCode`;
   S/4 otherwise looks the customer up in company code "").
+- residual line (reviewer's choice, e.g. a reversed invoice the customer paid):
+  same item as a deduction, with its own sign and gross = net (the cash
+  received); S/4 books an open item.
 - deduction line: no XBLNR (it is not a payee document); the customer's
   deduction reference goes to `AssignmentReference` (18) and `DocumentItemText`
   (50) with the reason code in `PaymentDifferenceReason`; its rule-derived
@@ -26,6 +29,7 @@ Reason codes go through the demo-only `reason_aliases` (`S4_REASON_CODE_ALIASES`
 from __future__ import annotations
 
 from datetime import date, datetime, timezone
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from .client import S4Client, odata_entity, odata_str
@@ -63,8 +67,11 @@ def _item(line: dict[str, Any], derived: dict[str, Any], reason_aliases: dict[st
         if s4["customer"] != derived["customer"]:
             item.update(PaymentAdviceAltvAccount=s4["customer"], **alternative)
     else:
+        if line["kind"] == "residual":  # no invoice to take a discount from: the open item is the cash received
+            item["GrossAmountInPaymentCurrency"] = line["net"]
         item.update(AssignmentReference=line["reference"][:18],
-                    DocumentItemText=f"{line['reference']} {line['nature'].replace('_', ' ')}"[:50],
+                    DocumentItemText=f"{line['reference']} "
+                                     f"{'residual' if line['kind'] == 'residual' else line['nature'].replace('_', ' ')}"[:50],
                     PaymentDifferenceReason=reason)
         # The deduction's customer comes only from the customer's rules (e.g. region code).
         if line.get("account") and line["account"] != derived["customer"]:
@@ -126,3 +133,37 @@ def read_back(client: S4Client, key: dict[str, str]) -> dict[str, Any]:
     items = (entity.get("to_PaymentAdviceItem") or {}).get("results") or []
     return {**{k: v for k, v in entity.items() if not k.startswith("__") and k != "to_PaymentAdviceItem"},
             "items": [{k: v for k, v in item.items() if not k.startswith("__")} for item in items]}
+
+
+HEADER_CHECK_FIELDS = ("CompanyCode", "PaymentAdviceAccount", "PaymentCurrency", "PaidAmountInPaytCurrency",
+                       "PaymentAdviceHeaderText", "PaymentDate")
+
+
+def _same(sent: Any, stored: Any) -> bool:
+    """Compare a sent and a stored value: amounts numerically, accounts without leading zeros, else as text."""
+    try:
+        return Decimal(str(sent or 0)) == Decimal(str(stored or 0))
+    except InvalidOperation:
+        return str(sent or "").lstrip("0") == str(stored or "").lstrip("0")
+
+
+def compare_read_back(payload: dict[str, Any], stored: dict[str, Any]) -> dict[str, Any]:
+    """Check that S/4 stored what was sent (header fields and every item field that was sent).
+
+    Args:
+        payload: The posted deep-insert payload.
+        stored: `read_back` output (header fields plus `items`, in S/4's item order).
+
+    Returns:
+        `{"items_sent", "items_stored", "differences": [text, ...]}`; no differences means S/4
+        holds exactly what was posted.
+    """
+    sent_items, stored_items = payload.get("to_PaymentAdviceItem") or [], stored.get("items") or []
+    differences = [f"Header {field}: sent {payload.get(field)!r}, S/4 has {stored.get(field)!r}"
+                   for field in HEADER_CHECK_FIELDS if field in payload and not _same(payload.get(field), stored.get(field))]
+    if len(sent_items) != len(stored_items):
+        differences.append(f"{len(sent_items)} items sent, S/4 holds {len(stored_items)}")
+    for number, (sent, kept) in enumerate(zip(sent_items, stored_items), 1):
+        differences += [f"Item {number} {field}: sent {value!r}, S/4 has {kept.get(field)!r}"
+                        for field, value in sent.items() if not _same(value, kept.get(field))]
+    return {"items_sent": len(sent_items), "items_stored": len(stored_items), "differences": differences}

@@ -209,6 +209,30 @@ test('reprocessing keeps corrected values visible instead of replacing them with
   assert.match(text, /Previous saved result/);
 });
 
+test('Post as residual sits in the message it resolves, never on deduction lines', async () => {
+  const render = vm.runInNewContext(moduleSource('dom.js') + moduleSource('s4-panel.js') + 'renderS4Panel',
+    {document:{createElement:tag=>new Element(tag)}, window:{confirm:()=>true}, JSON});
+  const posts = [];
+  const lines = [{index:0, row_id:'r0', reference:'D-1', kind:'deduction', status:'not_found', net:'-81.09'},
+                 {index:1, row_id:'r1', reference:'INV-1', kind:'matched', status:'reversed', net:'100.00', s4_item:{}}];
+  const issues = [{severity:'blocking', code:'invoice_reversed', line:1, message:'Line 2 (INV-1) is reversed in S/4.'}];
+  const content = new Element('div');
+  render(content, {status:'reviewed', revision:4, result:{header:{}, line_items:[]}, s4:{ready:false, issues, lines, derived:{}}},
+    {post: async (path, body) => posts.push({path, body}), onError: () => {}});
+  const actions = findAll(content, element => element.tagName === 'BUTTON' && /residual/.test(element.textContent));
+  assert.deepEqual(actions.map(b => b.textContent), ['Post line 2 as residual']);
+  const message = findAll(content, element => element.tagName === 'LI' && element.children.includes(actions[0]));
+  assert.equal(message.length, 1);
+  await actions[0].listeners.click();
+  assert.deepEqual(JSON.parse(JSON.stringify(posts)), [{path:'/edit', body:{revision:4, target:'r1', field:'s4_treatment',
+    value:'residual', reason:'Post as residual in S/4'}}]);
+
+  const residual = new Element('div');
+  render(residual, {status:'needs_review', revision:5, result:{header:{}, line_items:[]},
+    s4:{ready:true, issues:[], lines:[{...lines[1], kind:'residual', status:'residual'}], derived:{}}}, {post: async () => {}, onError: () => {}});
+  assert.deepEqual(findAll(residual, element => element.tagName === 'BUTTON' && /residual/.test(element.textContent)).map(b => b.textContent), ['Undo residual']);
+});
+
 test('S/4 posting is only offered for reviewed advices with a ready check', () => {
   const ready = {ready:true, issues:[], lines:[], derived:{company_code:'CA01', customer:'0010053628', currency:'CAD', customers:['0010053628']}, payload:{}};
   const base = {result:{header:{}, line_items:[]}, revision:3};
@@ -238,7 +262,7 @@ test('table cells are editable and Accept Changes sends one typed batch for the 
   assert.equal(accept.disabled, true);
   assert.equal(undo.disabled, true);
   const row = findAll(host, element => element.dataset?.rowId === 'r1')[0];
-  const [net, reason, flags] = [6, 8, 9].map(index => row.children[index]);
+  const [net, reason, flags] = [7, 9, 10].map(index => row.children[index]);  // column 0 is the Exclude toggle
   assert.equal(net.contentEditable, 'plaintext-only');
   net.innerText = ' -12000.5 '; net.oninput();
   reason.innerText = '321'; reason.oninput();
@@ -252,6 +276,31 @@ test('table cells are editable and Accept Changes sends one typed batch for the 
     {target:'r1',field:'net_amount',value:-12000.5},
     {target:'r1',field:'reason_code',value:'321'},
     {target:'r1',field:'flags',value:[]}]});
+});
+
+test('Exclude marks a row as a draft and Accept Changes saves excluded=true', async () => {
+  const calls = [];
+  const view = controller(async (path, method, body) => {
+    calls.push({path,method,body});
+    if (path.includes('/inbox?')) return {emails:[],counts:{}};
+    if (path.endsWith('/status')) return {message:'Ready',counts:{}};
+    return {};
+  });
+  view.setDetails({email:{}, attachments:[], advices:[{
+    id:'adv4', filename:'test.txt', status:'needs_review', revision:2, corrections:[],
+    result:{header:{payment_amount:-12500},line_items:[{row_id:'r1',invoice_reference:'D-1',net_amount:-12500},
+                                                        {row_id:'r2',invoice_reference:'D-1',net_amount:-12500}]}
+  }]});
+  const host = new Element();
+  await view.workspace(host);
+  const row = findAll(host, element => element.dataset?.rowId === 'r2')[0];
+  const exclude = findAll(row, element => element.textContent === 'Exclude')[0];
+  await exclude.listeners.click();
+  assert.match(row.className, /excluded/);
+  assert.equal(exclude.textContent, 'Include');
+  await findAll(host, element => element.textContent === 'Accept Changes')[0].listeners.click();
+  const batch = calls.find(call => call.path.endsWith('/edits'));
+  assert.deepEqual(JSON.parse(JSON.stringify(batch.body)), {revision:2, edits:[{target:'r2',field:'excluded',value:true}]});
 });
 
 test('a non-numeric amount is rejected locally and Undo Changes reverts accepted corrections', async () => {
@@ -269,7 +318,7 @@ test('a non-numeric amount is rejected locally and Undo Changes reverts accepted
   const host = new Element();
   await view.workspace(host);
   const row = findAll(host, element => element.dataset?.rowId === 'r1')[0];
-  row.children[4].innerText = 'abc'; row.children[4].oninput();
+  row.children[5].innerText = 'abc'; row.children[5].oninput();
   await findAll(host, element => element.textContent === 'Accept Changes')[0].listeners.click();
   assert.equal(calls.some(call => call.path.endsWith('/edits')), false);
   await findAll(host, element => element.textContent === 'Undo Changes')[0].listeners.click();
@@ -287,6 +336,6 @@ test('posted advices render a read-only table without edit buttons', async () =>
   const host = new Element();
   await view.workspace(host);
   const row = findAll(host, element => element.dataset?.rowId === 'r1')[0];
-  assert.equal(row.children[0].contentEditable, undefined);
+  assert.equal(row.children[1].contentEditable, undefined);
   assert.equal(findAll(host, element => element.textContent === 'Accept Changes').length, 0);
 });

@@ -14,6 +14,10 @@ Line kinds:
 - `deduction`: not in S/4 and a customer deduction (chargeback, allowance,
   credit memo, or a negative/unknown line); needs a 3-character reason code.
 - `unresolved`: not in S/4 but should be (an invoice, or a positive line).
+- `residual`: the reviewer chose to post the line without an invoice
+  (`s4_treatment == "residual"`, e.g. the invoice was reversed in S/4 but the
+  customer paid it); S/4 books it as an open item on the customer. Needs a
+  3-character reason code, like a deduction.
 
 S/4 books any difference on a matched line (advice gross vs S/4 open amount,
 or net vs gross - discount - deduction) as a residual item, which needs a
@@ -69,6 +73,22 @@ def _classify(index: int, row: dict[str, Any], items: list[ReceivableItem], issu
             "reason_code": reason or None, "matched_by": None, "s4_item": None, "needs_reason": False,
             "account": pad_account(row.get("customer_account"))}
     label = f"Line {index + 1} ({reference or 'no reference'})"
+    if row.get("s4_treatment") == "residual":
+        line.update(kind="residual", status="residual")
+        if items:  # the reversed / cleared document stays visible next to the residual
+            line.update(matched_by=items[0].matched_by, s4_item=items[0].to_dict())
+        if len(reason) != 3:
+            _issue(issues, "blocking", "missing_reason_code",
+                   f"{label} is posted as a residual without a 3-character reason code.", index)
+        still_open = [i for i in items if not i.is_cleared and not i.is_reversed]
+        if still_open:
+            _issue(issues, "warning", "residual_with_open_invoice",
+                   f"{label} is open in S/4 as {still_open[0].accounting_document}/{still_open[0].fiscal_year}; "
+                   "posting it as a residual leaves that invoice open.", index)
+        if len(reference) > ASSIGNMENT_LENGTH:
+            _issue(issues, "warning", "reference_truncated",
+                   f"{label} reference exceeds {ASSIGNMENT_LENGTH} characters; the full value is kept in the item text.", index)
+        return line
     if len(items) > 1:
         line.update(kind="unresolved", status="ambiguous")
         docs = ", ".join(f"{i.company_code}/{i.accounting_document}/{i.fiscal_year}" for i in items)
@@ -76,9 +96,12 @@ def _classify(index: int, row: dict[str, Any], items: list[ReceivableItem], issu
         return line
     if items:
         item = items[0]
-        line.update(kind="matched", status="cleared" if item.is_cleared else "open",
-                    matched_by=item.matched_by, s4_item=item.to_dict())
-        if item.is_cleared:
+        status = "reversed" if item.is_reversed else "cleared" if item.is_cleared else "open"
+        line.update(kind="matched", status=status, matched_by=item.matched_by, s4_item=item.to_dict())
+        if item.is_reversed:
+            _issue(issues, "blocking", "invoice_reversed",
+                   f"{label} is reversed in S/4 (reversal document {item.reverse_document}); it cannot be paid.", index)
+        elif item.is_cleared:
             _issue(issues, "blocking", "invoice_cleared",
                    f"{label} is already cleared in S/4 (clearing document {item.clearing_document}).", index)
         if line["account"] and item.customer and line["account"] != item.customer:
@@ -144,10 +167,13 @@ def _derive(lines: list[dict[str, Any]], header: dict[str, Any], issues: list[di
                    f"The customer rules give company code {rule_code_s4}{via} but the S/4 invoices are in "
                    f"{derived['company_code']}.")
     elif rule_code_s4 and payer:
-        derived.update(company_code=rule_code_s4, currency=advice_currency)
+        # A residual line's S/4 document (e.g. the reversed invoice) still tells the currency.
+        known = sorted({line["s4_item"]["currency"] for line in lines if line["kind"] == "residual" and line["s4_item"]})
+        currency = advice_currency or (known[0] if len(known) == 1 else None)
+        derived.update(company_code=rule_code_s4, currency=currency)
         _issue(issues, "warning", "derived_from_rules",
                f"No line matched an S/4 invoice; company code {rule_code_s4} and payer {payer} come from the customer's rules.")
-        if not advice_currency:
+        if not currency:
             _issue(issues, "blocking", "missing_currency", "No S/4 invoice matched and the advice has no currency.")
     else:
         _issue(issues, "blocking", "no_invoice_resolved",
@@ -191,8 +217,9 @@ def check_advice(result: dict[str, Any], found: dict[str, list[ReceivableItem]],
     """
     header, rows = result.get("header") or {}, result.get("line_items") or []
     issues: list[dict[str, Any]] = []
+    # Rows the reviewer excluded are not posted; the others keep their table position in messages.
     lines = [_classify(i, row, found.get(normalize_reference(row.get("invoice_reference")), []), issues)
-             for i, row in enumerate(rows)]
+             for i, row in enumerate(rows) if not row.get("excluded")]
     derived = _derive(lines, header, issues, aliases or {}, customer_lookup)
     documents: dict[tuple[str, str, str], list[int]] = defaultdict(list)
     for line in lines:

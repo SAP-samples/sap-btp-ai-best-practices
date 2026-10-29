@@ -176,7 +176,8 @@ def apply_edit(payload: dict, target: str, field: str, value: Any) -> tuple[dict
     result = copy.deepcopy(payload)
     # Rule-derived fields (customer account, payer, company code) are corrected like extracted ones.
     allowed = set(HEADER_FIELD_NAMES) | set(DERIVED_HEADER_FIELD_NAMES) if target == 'header' else \
-        set(LINE_FIELD_NAMES) | set(DERIVED_LINE_FIELD_NAMES) | {'reason_code', 'document_nature', 'residual_items', 'rationale', 'flags'}
+        set(LINE_FIELD_NAMES) | set(DERIVED_LINE_FIELD_NAMES) | {'reason_code', 'document_nature', 'residual_items', 'rationale', 'flags',
+                                                                 's4_treatment', 'excluded'}
     if field not in allowed:
         raise ValueError('Unsupported editable field')
     if target == 'header':
@@ -200,11 +201,16 @@ def apply_edit(payload: dict, target: str, field: str, value: Any) -> tuple[dict
             refs = {r.get('invoice_reference') for r in result['line_items']}
             if not isinstance(value, list) or any(not isinstance(v, str) or v not in refs for v in value):
                 raise ValueError('Linked invoices must exist in this advice')
+        elif field == 'excluded':
+            if not isinstance(value, bool):
+                raise ValueError('Excluded must be true or false')
         elif field == 'flags':
             if not isinstance(value, list) or len(value) > 50 or any(not isinstance(v, str) or len(v) > 200 for v in value):
                 raise ValueError('Flags must be a list of at most 50 texts of at most 200 characters')
         elif not isinstance(value, str) or len(value) > 10000:
             raise ValueError('Value must be text of at most 10000 characters')
+        if field == 's4_treatment' and value != 'residual':
+            raise ValueError('S/4 treatment must be "residual" or empty')
         if field == 'document_nature' and value not in {'invoice', 'credit_memo', 'chargeback', 'allowance_reversal', 'unknown'}:
             raise ValueError('Invalid document nature')
     row[field] = value

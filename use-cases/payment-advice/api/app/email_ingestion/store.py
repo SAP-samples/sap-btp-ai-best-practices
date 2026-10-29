@@ -143,7 +143,12 @@ class Store:
         return self.get(record['id'], conn)
 
     def delete_email(self, email_id, revision):
-        """Atomically delete one idle email and all workspace records owned by it."""
+        """Atomically delete one idle email and all workspace records owned by it.
+
+        Exception: `s4_posting` audit records survive. They prove what was posted to
+        S/4 (the S/4 payment advice is not deleted with the email) and carry the
+        advice id, S/4 key, payload and read-back in their own payload.
+        """
         with self.engine.begin() as conn:
             self.lock_record(email_id, conn)
             email = self.get(email_id, conn)
@@ -160,7 +165,8 @@ class Store:
                     raise ValueError('Wait for processing to finish before deleting this entry')
                 locked.append(current)
             for advice in locked:
-                conn.execute(text(f'DELETE FROM "{TABLE}" WHERE "PARENT_ID"=:parent'), {'parent': advice['id']})
+                conn.execute(text(f'DELETE FROM "{TABLE}" WHERE "PARENT_ID"=:parent AND "KIND"<>\'s4_posting\''),
+                             {'parent': advice['id']})
             conn.execute(text(f'DELETE FROM "{TABLE}" WHERE "PARENT_ID"=:email OR "ID"=:email'), {'email': email_id})
         return email_id
 

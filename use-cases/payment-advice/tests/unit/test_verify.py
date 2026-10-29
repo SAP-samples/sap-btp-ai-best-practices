@@ -31,6 +31,14 @@ class Verify(unittest.TestCase):
         self.assertEqual(result.confidence, 1.0)
         self.assertEqual(result.issues, [])
 
+    def test_excluded_rows_count_neither_in_total_nor_as_duplicates(self) -> None:
+        dup = {"invoice_reference": "D", "net_amount": -25.0}
+        lines = [{"invoice_reference": "A", "net_amount": 125.0}, dict(dup), {**dup, "excluded": True}]
+        result = verify_canonical(self._header(), lines)
+        self.assertEqual((result.warnings, result.suspected_duplicate_groups), ([], []))
+        both = verify_canonical(self._header(), [lines[0], dict(dup), dict(dup), {"net_amount": 1.0, "excluded": True}])
+        self.assertEqual(both.suspected_duplicate_groups, [[1, 2]])  # indexes of the full list
+
     def test_missing_required_field_needs_review(self) -> None:
         header = self._header()
         del header["payment_reference"]

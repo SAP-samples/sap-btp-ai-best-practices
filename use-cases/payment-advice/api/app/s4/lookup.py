@@ -17,7 +17,9 @@ field:
 `matched_by` on every hit records which field matched, which is the evidence
 for the open question "accounting document or document reference ID".
 Cleared items are returned too (`is_cleared`) so validation can report "already
-paid" instead of "not found".
+paid" instead of "not found". Reversal documents are skipped: S/4 copies the
+invoice's XBLNR onto the reversal, which is never a payable item; the reversed
+original is returned with `is_reversed` so validation can say so.
 """
 from __future__ import annotations
 
@@ -33,7 +35,7 @@ MATCH_FIELDS = ("DocumentReferenceID", "AccountingDocument", "BillingDocument")
 MAX_LENGTH = {"DocumentReferenceID": 16, "AccountingDocument": 10, "BillingDocument": 10}
 SELECT = ("CompanyCode,FiscalYear,AccountingDocument,AccountingDocumentItem,Customer,DocumentReferenceID,"
           "BillingDocument,AmountInTransactionCurrency,TransactionCurrency,IsCleared,ClearingAccountingDocument,"
-          "PostingDate,NetDueDate")
+          "PostingDate,NetDueDate,IsReversal,IsReversed,ReverseDocument")
 # OR-filters grow the URL; 20 references keep it far below typical 8 KB gateway limits.
 CHUNK = 20
 
@@ -55,6 +57,8 @@ class ReceivableItem:
         currency: Transaction currency.
         is_cleared: True when the item is already cleared (paid).
         clearing_document: Clearing document number when cleared.
+        is_reversed: True when the document was reversed in S/4 (no longer payable).
+        reverse_document: Reversal document number when reversed.
     """
 
     reference: str
@@ -69,6 +73,8 @@ class ReceivableItem:
     currency: str
     is_cleared: bool
     clearing_document: str
+    is_reversed: bool = False
+    reverse_document: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-serialisable dict (amount as string, to keep cents exact)."""
@@ -90,6 +96,7 @@ def _item(reference: str, field: str, row: dict[str, Any]) -> ReceivableItem:
         customer=pad_account(row.get("Customer")) or "", document_reference=row.get("DocumentReferenceID", ""),
         amount=Decimal(str(row.get("AmountInTransactionCurrency") or "0")), currency=row.get("TransactionCurrency", ""),
         is_cleared=bool(row.get("IsCleared")) or bool(clearing), clearing_document=clearing,
+        is_reversed=bool(row.get("IsReversed")), reverse_document=str(row.get("ReverseDocument") or "").strip(),
     )
 
 
@@ -129,10 +136,14 @@ def find_receivables(client: S4Client, references: list[str], company_code: str 
             for row in rows:
                 key = (row["CompanyCode"], row["FiscalYear"], row["AccountingDocument"], row.get("AccountingDocumentItem", ""))
                 reference = pending.get(normalize_reference(row.get(field)))
-                if key in seen or reference is None:
-                    continue  # the cube can repeat a document per ledger
+                if key in seen or reference is None or row.get("IsReversal"):
+                    continue  # the cube can repeat a document per ledger; a reversal document is never payable
                 seen.add(key)
                 found[reference].append(_item(reference, field, row))
+    for reference, items in found.items():
+        # An invoice reversed and posted again keeps its reference: the live document wins.
+        if any(i.is_reversed for i in items) and not all(i.is_reversed for i in items):
+            found[reference] = [i for i in items if not i.is_reversed]
     return found
 
 

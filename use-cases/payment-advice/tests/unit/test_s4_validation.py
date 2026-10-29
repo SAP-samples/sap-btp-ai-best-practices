@@ -9,7 +9,7 @@ import unittest
 from decimal import Decimal
 
 from app.s4.lookup import ReceivableItem
-from app.s4.payment_advice import build_payload, key_path, odata_date
+from app.s4.payment_advice import build_payload, compare_read_back, key_path, odata_date
 from app.s4.validation import check_advice
 
 GOLDEN_ADVICE = {
@@ -71,6 +71,18 @@ class GoldenAdviceTests(unittest.TestCase):
         self.assertEqual(items[0]["PaymentDifferenceReason"], "060")
         self.assertEqual(check["lines"][0]["reason_code"], "316")
 
+    def test_read_back_comparison_accepts_s4_formats_and_names_differences(self):
+        payload = build_payload(GOLDEN_ADVICE, check_advice(GOLDEN_ADVICE, found()))
+        stored = {**{k: v for k, v in payload.items() if k != "to_PaymentAdviceItem"},
+                  "PaymentAdviceAccount": "10053628",  # S/4 answers without leading zeros
+                  "items": [dict(item) for item in payload["to_PaymentAdviceItem"]]}
+        self.assertEqual(compare_read_back(payload, stored), {"items_sent": 2, "items_stored": 2, "differences": []})
+        stored["items"][1]["NetPaymentAmountInPaytCurrency"] = "10000.00"
+        stored["items"].append({})
+        differences = compare_read_back(payload, stored)["differences"]
+        self.assertEqual(differences, ["2 items sent, S/4 holds 3",
+                                       "Item 2 NetPaymentAmountInPaytCurrency: sent '10384.35', S/4 has '10000.00'"])
+
     def test_key_path_and_date_literal(self):
         key = {"CompanyCode": "CA01", "PaymentAdviceAccountType": "D", "PaymentAdviceAccount": "0010053628",
                "PaymentAdvice": "0425092812000001"}
@@ -86,6 +98,15 @@ class BlockingTests(unittest.TestCase):
         self.assertIn("invoice_cleared", codes(check))
         with self.assertRaises(ValueError):
             build_payload(GOLDEN_ADVICE, check)
+
+    def test_reversed_invoice_blocks_with_its_own_issue_only(self):
+        reversed_item = ReceivableItem("8700276154", "DocumentReferenceID", "CA01", "2025", "1400000001", "001",
+                                       "0010053628", "8700276154", Decimal("10596.28"), "CAD", True, "1800000028",
+                                       is_reversed=True, reverse_document="1800000028")
+        check = check_advice(GOLDEN_ADVICE, {"8700276154": [reversed_item], "924610168612UL": []})
+        self.assertEqual(codes(check), {"invoice_reversed"})
+        self.assertEqual(check["lines"][1]["status"], "reversed")
+        self.assertEqual(check["derived"]["currency"], "CAD")
 
     def test_invoice_missing_in_s4_blocks_and_no_company_code_is_derived(self):
         check = check_advice(GOLDEN_ADVICE, {"8700276154": [], "924610168612UL": []})
@@ -110,6 +131,47 @@ class BlockingTests(unittest.TestCase):
         advice["line_items"].append(dict(advice["line_items"][1], row_id="a:3"))
         advice["header"]["payment_amount"] = 20687.61
         self.assertIn("duplicate_application", codes(check_advice(advice, found())))
+
+
+class ExcludedLineTests(unittest.TestCase):
+    """Rows the reviewer excluded are neither checked nor posted; the others keep their table numbers."""
+    def test_excluded_row_is_skipped_and_numbers_are_kept(self):
+        advice = copy.deepcopy(GOLDEN_ADVICE)
+        extra = {**advice["line_items"][0], "row_id": "a:0", "excluded": True}
+        advice["line_items"].insert(0, extra)
+        check = check_advice(advice, found())
+        self.assertTrue(check["ready"], check["issues"])
+        self.assertEqual([line["index"] for line in check["lines"]], [1, 2])
+        self.assertEqual(len(build_payload(advice, check)["to_PaymentAdviceItem"]), 2)
+
+
+class ResidualTests(unittest.TestCase):
+    """A reviewer can post a reversed or unknown invoice line as a residual open item with a reason code."""
+    def advice(self, reason="060"):
+        advice = copy.deepcopy(GOLDEN_ADVICE)
+        advice["header"].update(company_code="CA01", payer_account="10053628")
+        advice["line_items"][1].update(s4_treatment="residual", reason_code=reason)
+        return advice
+
+    def reversed_hit(self):
+        return {"8700276154": [ReceivableItem("8700276154", "DocumentReferenceID", "CA01", "2025", "1400000001", "001",
+                                              "0010053628", "8700276154", Decimal("10596.28"), "CAD", True, "1800000028",
+                                              is_reversed=True, reverse_document="1800000028")], "924610168612UL": []}
+
+    def test_reversed_invoice_posted_as_residual_is_ready_without_document(self):
+        check = check_advice(self.advice(), self.reversed_hit())
+        self.assertTrue(check["ready"], check["issues"])
+        self.assertEqual((check["lines"][1]["kind"], check["derived"]["currency"]), ("residual", "CAD"))
+        item = build_payload(self.advice(), check)["to_PaymentAdviceItem"][1]
+        self.assertEqual(item, {"Currency": "CAD", "GrossAmountInPaymentCurrency": "10384.35",
+                                "NetPaymentAmountInPaytCurrency": "10384.35", "AssignmentReference": "8700276154",
+                                "DocumentItemText": "8700276154 residual", "PaymentDifferenceReason": "060"})
+
+    def test_residual_without_reason_code_blocks(self):
+        self.assertIn("missing_reason_code", codes(check_advice(self.advice(reason=None), self.reversed_hit())))
+
+    def test_residual_on_an_open_invoice_warns(self):
+        self.assertIn("residual_with_open_invoice", codes(check_advice(self.advice(), found()), "warning"))
 
 
 class DifferenceTests(unittest.TestCase):

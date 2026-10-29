@@ -60,6 +60,8 @@ class MemoryStore:
             while descendants := {record_id for record_id, record in self.records.items() if record['parent_id'] in targets} - targets:
                 targets.update(descendants)
             for record_id in targets:
+                if self.records[record_id]['kind'] == 's4_posting':
+                    continue  # posting audit survives the email, like the HANA store
                 self.records.pop(record_id, None)
                 self.bytes.pop(record_id, None)
         return email_id

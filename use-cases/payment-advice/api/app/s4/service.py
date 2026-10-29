@@ -32,7 +32,7 @@ from ..email_ingestion.corrections import advice_record
 from ..email_ingestion.intake import refresh_email
 from .client import S4Client, S4Config, S4HTTPError, load_s4_config, odata_rows, odata_str
 from .lookup import existing_customers, find_receivables
-from .payment_advice import SERVICE, build_payload, create, read_back
+from .payment_advice import SERVICE, build_payload, compare_read_back, create, read_back
 from .validation import check_advice
 
 
@@ -97,7 +97,8 @@ def run_check(client: S4Client, advice: dict[str, Any]) -> dict[str, Any]:
     if not result or advice["status"] in {"queued", "processing", "failed"}:
         raise ValueError("The advice must finish processing before it can be checked against S/4")
     trace: list[dict[str, Any]] = []
-    found = find_receivables(client, [row.get("invoice_reference") for row in result.get("line_items") or []], trace=trace)
+    rows = [row for row in result.get("line_items") or [] if not row.get("excluded")]
+    found = find_receivables(client, [row.get("invoice_reference") for row in rows], trace=trace)
     check = check_advice(result, found, advice.get("verification"),
                          customer_lookup=lambda accounts, code: existing_customers(client, accounts, code, trace),
                          aliases=company_code_aliases())
@@ -159,9 +160,10 @@ def post(store, client: S4Client, advice_id: str, revision: int) -> dict[str, An
             raise S4PostError(exc.detail) from exc
     try:
         stored = read_back(client, key)
+        verification = compare_read_back(payload, stored)
     except S4HTTPError as exc:
-        stored = {"read_back_error": exc.detail}
-    posting = {"key": key, "posted_at": _now(), "adopted": bool(existing), "read_back": stored}
+        stored, verification = {"read_back_error": exc.detail}, None
+    posting = {"key": key, "posted_at": _now(), "adopted": bool(existing), "read_back": stored, "verification": verification}
     advice["s4"] = {**fresh, "posted": posting}
     advice["status"] = "posted"
     with store.engine.begin() as conn:
