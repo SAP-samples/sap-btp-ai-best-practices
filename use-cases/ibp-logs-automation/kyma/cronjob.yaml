@@ -1,0 +1,50 @@
+# kyma/cronjob.yaml
+# Scheduled extraction job — runs Monday–Friday at 6 AM UTC.
+# Change the schedule field to adjust timing.
+#
+# Apply:
+#   kubectl apply -f kyma/cronjob.yaml -n <your-namespace>
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ibp-extractor
+  labels:
+    app: ibp-extractor
+spec:
+  schedule: "0 6 * * 1-5"          # Mon–Fri 6:00 AM UTC — adjust as needed
+  concurrencyPolicy: Forbid          # never run two jobs at the same time
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0                # no retries — fail fast, fix the issue
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: ibp-extractor
+              image: <your-registry>/ibp-extractor-agent:latest
+              imagePullPolicy: Always
+              env:
+                - name: JOB_NAME
+                  value: "<your-ibp-job-name>"
+                - name: CF_BACKEND_URL
+                  value: "https://<your-cf-backend-host>"
+                - name: COOKIES_FILE
+                  value: "/app/cookies/session_cookies.json"
+              volumeMounts:
+                - name: cookies-volume
+                  mountPath: /app/cookies
+                  readOnly: true
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "1000m"
+          volumes:
+            - name: cookies-volume
+              secret:
+                secretName: ibp-cookies
