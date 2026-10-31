@@ -1,0 +1,71 @@
+{
+  "workspace-dataset": {
+    "title": "Published dataset",
+    "text": "The immutable uploaded snapshot used for this run. It defines the plant, materials, source eligibility, demand, production versions and calendar defaults. Only published, non-removed snapshots can start new runs."
+  },
+  "pv": {
+    "title": "Production version",
+    "text": "FIXED keeps each FINI's source production version; group members must share a feasible fixed version. OPTIMIZED lets the optimizer choose a feasible version from the source catalog for each group. A production version determines nominal lot litres; effective batch also applies the canonical factor."
+  },
+  "coverage": {
+    "title": "Coverage objective",
+    "text": "PARETO is the workspace's supported objective: sample trade-offs while minimizing both demand-weighted coverage days and Changeover. The operations anchor prioritizes Changeover; the coverage-lean end prioritizes inventory coverage. Requested point count is a sampling budget, not a guarantee of that many distinct nondominated points or a complete frontier."
+  },
+  "basis": {
+    "title": "Coverage basis",
+    "text": "BASE_GROUP = demand_days × effective batch litres / group annual demand. ADJUSTED_GROUP replaces effective batch with the sum of pallet-adjusted FINI allocations. WORST_FINI uses the highest individual pallet-adjusted coverage in each group. Demand-weighted mean uses group demand as weights. BASE_GROUP means batch-based group coverage; it does not mean the historical baseline grouping."
+  },
+  "matrix": {
+    "title": "Compatibility matrix",
+    "text": "HARD rejects AVOID exceptions as well as prohibitions. FLEXIBLE allows and reports AVOID pairs; DIAGNOSTIC additionally prioritizes reducing matrix exceptions before coverage. With a plant profile, N is forbidden in all modes including OFF. Without a profile, OFF skips matrix assessment. Common-line eligibility and group caps always apply."
+  },
+  "cap": {
+    "title": "Global member cap",
+    "text": "Maximum FINIs in one group. The quick control uses the governed base of 7: 7 selects HARD; values above 7 select BOUNDED_RELAXATION with max_excess = cap − 7. Plant/SEFI group_size_overrides or typed max_group_size constraints define other local caps. An empty extra-constraints list does not disable existing structural rules."
+  },
+  "scope": {
+    "title": "Plant / SEFI scope",
+    "text": "An empty array [] selects all eligible plant/SEFI blocks in the chosen snapshot. Otherwise use explicit objects such as {\"plant\":\"P1\",\"sefi\":\"123\"}. IDs are strings. Whole population means the modeled population under this run's production-version mode; excluded, external or out-of-scope source rows remain evidence."
+  },
+  "constraints": {
+    "title": "Typed constraints",
+    "text": "[] means no additional user constraints. Supported kinds: max_group_size (maximum), group_size_relaxation (base_limit/max_excess), must_link (materials together), cannot_link (material pair apart), fini_disposition (admission/exclusion), fixed_pv, allowed_pvs, required_lines. Each requires constraint_id and governed approval_status; scope limits application to plant/SEFI. draft/approved/rejected are review states, not solver proof. coverage_bound, freeze_assignment and volume_compatibility_override are currently deferred and rejected. Get the live constraint schema before constructing JSON. group_rule supports conditional group/member predicates; selection_bound bounds a linear sum over selected groups across one block or a plant. Unknown required inputs fail closed."
+  },
+  "budget": {
+    "title": "Execution budget",
+    "text": "frontier_points: requested global samples (2–100, default 17). block_options_per_block: retained candidate partitions explored per block (2–100, default 5), not the number of individual candidate groups. per_block_total_seconds: total solver time per block (default 120 s), shared across its solves, not a guaranteed whole-run duration. block_workers: concurrent blocks (1–16, default 2), increasing CPU/memory use. global_epsilon_exponent: spacing bias (1–10, default 2); 1 is uniform and above 1 emphasizes low-Changeover points. wall_time_seconds: overall job deadline (10–172800, default 3600). Example: 33 points, 10 block options, 120 seconds, 4 workers, exponent 2. More time cannot recover candidate groups omitted from a restricted pool. For coupled business rules, per_block_total_seconds bounds joint solver stages for the requested frontier; preprocessing is additional and wall_time_seconds remains the overall job limit."
+  },
+  "advanced-config": {
+    "title": "Complete optimizer configuration",
+    "text": "Apply advanced config writes the entire config object to the shared draft; Save draft updates quick controls. Validate the latest saved revision before launch. Nested fields are explained below. Configuration identifiers are technical JSON keys; display labels use Changeover.",
+    "fields": {
+      "scenario_id": "Human-readable scenario identifier included in evidence; not a dataset or run ID.",
+      "coverage_mode": "The workspace requires PARETO. Other engine modes are not accepted by this UI service.",
+      "coverage_basis": "BASE_GROUP, ADJUSTED_GROUP or WORST_FINI; see Coverage basis help.",
+      "pallet_formula": "MINIMUM_ONLY uses max(proportional allocation, pallet litres). WHOLE_PALLET_ROUNDING rounds up to a whole multiple of pallet litres. Recurrence always uses effective batch.",
+      "group_size": "mode HARD enforces base_limit=7 and max_excess=0. BOUNDED_RELAXATION allows positive max_excess above 7.",
+      "pv_mode": "FIXED or OPTIMIZED; see Production version help.",
+      "matrix_mode": "HARD, FLEXIBLE, DIAGNOSTIC or OFF; see Compatibility matrix help.",
+      "target_band": "lower_days and upper_days define provisional coverage diagnostics. These are not hard Pareto feasibility constraints and do not imply customer acceptance.",
+      "baseline_guardrails": "Legacy comparison-only controls: j_ch_relative_tolerance and j_ch_absolute_tolerance relax the historical Changeover benchmark in baseline-constrained modes. They do not constrain greenfield PARETO runs.",
+      "pool_limits": "exhaustive_subset_limit: threshold for exact member subsets. exhaustive_configuration_limit: threshold for exact member/PV configurations. candidate_ceiling_per_block: maximum retained configurations in a restricted pool. beam_width_per_size_scorer: retained member sets per size and scoring rule. forced_exact_configuration_ceiling: safety ceiling even for explicitly exhaustive blocks. Above the applicable thresholds the pool may be restricted, which limits proof.",
+      "solver_limits": "time_limit_seconds: solver-call limit; suite_time_limit_seconds: suite solver budget. mip_gap: accepted relative gap inside the modeled library (0.01 = 1%). threads: solver threads, with block worker controls applied by the execution path. random_seed: reproducibility seed. presolve_reduction_limit: maximum presolve reductions, -1 uses the solver default. The execution budget independently bounds block and whole-job duration.",
+      "versions": "matrix_version identifies compatibility semantics, ruleset_version identifies structural rules, schema_version identifies evidence schema. These feed fingerprints and audits; use the live supported version catalog, not invented strings. Greenfield workspace defaults to CUSTOMER_OPERATIONAL_VOLUME_FAMILIES_V1.",
+      "exhaustive_blocks": "Explicit [plant, SEFI] pairs requesting exhaustive enumeration, still subject to the forced exact configuration ceiling. This is not a full-run proof claim.",
+      "group_size_overrides": "Objects with plant, sefi and maximum: scoped caps replacing the global cap for those blocks. Each block must be unique.",
+      "demand_days": "Positive demand-day count for the source planning horizon, inherited from dataset/profile; 80 days for the Q4 workbook, 250 for the annual default.",
+      "productive_weeks": "Positive productive weeks for the same demand horizon: demand_days / profile demand_days_per_week. Default five demand days per week.",
+      "canonical_factor": "Effective batch / nominal PV lot ratio in (0,1], default 0.90. Effective batch = nominal lot × factor.",
+      "high_runner_threshold_days": "Positive cutoff in demand days. High runner coverage is <= cutoff; low is > cutoff. Default 15; no medium class.",
+      "runner_basis": "reference fixes classification from source lot size considered / daily demand without a second factor. candidate_pv is an explicit sensitivity using the chosen effective batch.",
+      "assign_filling_lines": "Creates a candidate per common eligible filling line and records the actual selected line. Enabled by selected-line rules or a line preference.",
+      "preferred_line": "Optional explicit scenario preference: maximize demand assigned to this line before comparing coverage/changeover trade-offs. Requires actual line assignment.",
+      "matrix_pairs": "Frozen profile matrix rows (positive volume_a/volume_b strings; Y, AVOID, N). N is prohibited in every mode; AVOID is allowed and disclosed except in HARD mode.",
+      "business_rules": "Approved finite group_rule predicates and selection_bound sums inherited from the profile. Scenario rules are additive and scoped by plant/SEFI; no Python code executes here."
+    }
+  },
+  "views": {
+    "title": "Dataset and result views",
+    "text": "groups: one proposed group per frontier point, with member count, PV, demand, coverage, common lines and group Changeover contribution. members: one source FINI row per point, including excluded/out-of-scope rows; selected fields are blank when unassigned. Repeated group metrics in members must not be summed as group totals. solutions: one frontier point with whole-solution KPIs. validation: structural validation findings. block_audits/global_audits: solver attempts, bounds, gaps and proof scope. matrix_pairs: package-volume compatibility evidence. fini_master: canonical source material records. production_versions: source PV lot catalog. fini_line_eligibility: plant-scoped material/line eligibility. line_corrections: FixedLine source overrides. validation_issues: extraction quality issues. pallet_resolution: source/enrichment evidence for resolved pallet litres. Search filters only the selected view; pagination is not the full population. Use server aggregates for totals."
+  }
+}
