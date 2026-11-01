@@ -12,27 +12,30 @@ For comprehensive documentation related to this code: [SAP BTP AI Best Practices
 
 This repository provides a comprehensive collection of best practices and sample implementations for AI-powered applications on SAP Business Technology Platform (BTP). It serves as a practical guide for developers looking to implement enterprise-grade AI solutions using SAP's AI services and integration with generative AI models.
 
-The examples provided demonstrate how to:
+The repository is organized into four best-practice areas plus a set of end-to-end use cases:
 
-- Securely access generative AI models
-- Implement content filtering for AI-generated outputs
-- Apply data masking for PII protection
-- Create effective prompt templates
-- Build retrieval-augmented generation (RAG) systems
+- **Generative AI** – securely access generative AI models through the generative AI hub, content filtering, data masking for PII protection, prompt templating and the prompt registry, document grounding, vector-based retrieval-augmented generation (RAG) with SAP HANA Cloud Vector Engine, and Knowledge Graph RAG
+- **Agentic AI** – code-based agents that implement the ReAct (Reasoning and Acting) pattern from scratch and with LangGraph, including multi-agent routing, an enterprise procurement workflow, token caching and checkpointed session state
+- **Narrow AI** – classical machine learning with the SAP HANA Predictive Analysis Library (anomaly detection, classification, clustering, regression, time-series forecasting) and SAP-RPT, SAP's relational foundation model for predictions on tabular business data
+- **AI Services** – SAP Document AI and SAP Translation Hub
 
-Each best practice includes code samples in multiple programming languages (TypeScript, Python, Java, CAP) to support various technology stacks and development approaches.
+Most best practices include code samples in multiple programming languages and frameworks (TypeScript, Python, Java, CAP) to support various technology stacks and development approaches.
 
 ## Requirements
 
 - SAP Business Technology Platform account
-- Access to SAP AI Core service
+- Access to the SAP AI Core service. The generative AI hub capabilities used in these samples (orchestration, foundation models, SAP-RPT) require the `extended` service plan. See [Prerequisites](./best-practices/generative-ai/Prerequisites.md) for setup steps.
+- The samples use the SAP Cloud SDK for AI in their respective languages:
+  - Python: [`sap-ai-sdk-gen`](https://pypi.org/project/sap-ai-sdk-gen/) ([source](https://github.com/SAP/ai-sdk-python))
+  - JavaScript / TypeScript: [`@sap-ai-sdk/*` packages](https://github.com/SAP/ai-sdk-js)
+  - Java: [SAP Cloud SDK for AI (Java)](https://github.com/SAP/ai-sdk-java)
 
 ## Download and Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.tools.sap/btp-ai-best-practices/sap-btp-ai-best-practices.git
+   git clone https://github.com/SAP-samples/sap-btp-ai-best-practices.git
    cd sap-btp-ai-best-practices
    ```
 
@@ -41,7 +44,7 @@ Each best practice includes code samples in multiple programming languages (Type
    For example, to run the TypeScript example for accessing generative AI models:
 
    ```bash
-   cd best-practices/access-to-generative-ai-models/typescript
+   cd best-practices/generative-ai/access-to-generative-ai-models/typescript
    npm install
    cp .env.example .env
    # Edit the .env file with your service key
@@ -53,10 +56,14 @@ Each best practice includes code samples in multiple programming languages (Type
 ```
 sap-btp-ai-best-practices/
 ├── best-practices/               # Best practices implementations
+│   ├── generative-ai/            # LLM access, orchestration modules, RAG, prompt management
+│   ├── agentic-ai/               # Code-based agents (native ReAct, LangGraph)
+│   ├── narrow-ai/                # Classical ML with SAP HANA PAL, and SAP-RPT
+│   └── ai-services/              # SAP Document AI, SAP Translation Hub
 └── use-cases/                    # End-to-end use case implementations
 ```
 
-For a detailed overview of available best practices, see the best practices directory.
+For a detailed overview of available best practices, see the [best practices directory](./best-practices/README.md). For the end-to-end applications, see [use-cases](./use-cases/README.md).
 
 ## Known Issues
 
@@ -66,7 +73,7 @@ No known issues.
 
 [Create an issue](https://github.com/SAP-samples/sap-btp-ai-best-practices/issues) in this repository if you find a bug or have questions about the content.
 
-For additional support, [ask a question in SAP Community](https://answers.sap.com/questions/ask.html).
+For additional support, ask a question in the [SAP Community](https://community.sap.com/).
 
 ## Contributing
 

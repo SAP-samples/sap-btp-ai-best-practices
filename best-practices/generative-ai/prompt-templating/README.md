@@ -1,4 +1,4 @@
-# Best Practices for Prompt Tenplating
+# Best Practices for Prompt Templating
 
 This section provides guidance and examples for using the prompt templating. Prompt templating is a method used to create structured and reusable prompts for Large Language Models (LLMs).
 

@@ -73,7 +73,7 @@ fullstack-sample/
 
 ## Usage
 
-The application will serve the `/chatWithSuport` (filter input) and `/generateParaphrase` (filter output) APIs, which uses content filtering, then sends a prompt to the AI model and logs the response. 
+The application will serve the `/chatWithSupport` (filter input) and `/generateParaphrase` (filter output) APIs, which uses content filtering, then sends a prompt to the AI model and logs the response. 
 
 For local deployment, the backend services are available at `http://localhost:4004` and the UI5 application at `http://localhost:8080`.
 
@@ -93,7 +93,7 @@ For remote deployment, access the application at the url returned during the dep
 **Filtered**
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/chatWithSuport \
+  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/chatWithSupport \
   --header "Content-Type: application/json" \
   --data '{
   "input": "I hate you!", "filterInput": true

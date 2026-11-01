@@ -9,7 +9,7 @@ Overall, the following tasks take place:
 - Training a **time series Forecasting model** for the overnight stay using **hana-ml Predictive Analysis Library** (PAL) functions
 - Explore the  **forecasted result** in a graphical report
 
-The article related to this topic is: [Narrow AI - Time Series Forecasting](https://sap.sharepoint.com/sites/210313/SitePages/Narrow%20AI%20-%20Time-series%20forecasting.aspx)
+The article related to this topic ("Narrow AI - Time Series Forecasting") is published on the [SAP BTP AI Best Practices](https://btp-ai-bp.docs.sap/) documentation site.
 
 #### References
 

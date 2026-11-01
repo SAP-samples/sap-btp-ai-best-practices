@@ -79,7 +79,7 @@ curl --request POST \
 **Unfiltered**
 ```bash
 curl --request POST \
-  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/chatWithSuport \
+  --url http://$SAMPLE_CAP_HOST$/odata/v4/orchestration/chatWithSupport \
   --header "Content-Type: application/json" \
   --data '{
   "input": "I hate you!", "filterInput": false

@@ -10,6 +10,8 @@ In order to use AI Core in SAP Business Technology Platform (BTP), you need to c
   - Click on "Create" and fill in the required details (e.g., name, plan, etc.).
   - Once created, note down the service instance name and credentials.  For the examples in this repository, the service instance name is `best-practices-aicore`, the type is `aicore` and the service plan is `extended`.  The service instance will be used to connect to the AI Core service.
 
+    > **Note:** The `extended` plan is required for the generative AI hub, including the orchestration service, foundation models and SAP-RPT models used throughout this repository.
+
   This can be done using the cloud foundry CLI:
 
   ```bash
@@ -29,7 +31,7 @@ In order to use AI Core in SAP Business Technology Platform (BTP), you need to c
 
 ## Using a Destination for AI Core
 
-There are several ways to estalish a connection to AI Core.  Most of the samples included in this repository are using either an application binding in BTP, or a service key.  
+There are several ways to establish a connection to AI Core.  Most of the samples included in this repository are using either an application binding in BTP, or a service key.  
 
 A service key is a JSON object that contains the credentials needed to connect to a service.  This is typically used for local development, or when you want to use the service in a different environment than it was created in.
 
@@ -69,7 +71,7 @@ Once the destination is created, you can use it in your application by specifyin
 
         You will need to manually create the destination service instance in the BTP cockpit or using the CLI.  The destination service instance will be used to connect to the AI Core instance.
 
-        - If using the BTP CLI, you can create the destination service instance with the following command:
+        - If using the Cloud Foundry CLI, you can create the destination service instance with the following command:
 
             ```bash
             cf create-service destination lite best-practices-destination

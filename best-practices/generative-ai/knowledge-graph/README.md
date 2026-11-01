@@ -2,9 +2,7 @@
 
 This repository collects best practices and prompt engineering examples for working with **Knowledge Graph–powered Retrieval-Augmented Generation (KG-RAG)** on **SAP BTP**, focusing on use cases involving SAP HANA Cloud and AI Core.
 
-> 📚 Related SAP AI best practice guides:
-> - [KG RAG – Overall and KG Creation](https://sap.sharepoint.com/sites/210313/SitePages/GenAI%20-%20RAG%20-%20Knowledge%20Graph%20-%20Overall%20and%20KG%20creation.aspx)
-> - [KG RAG – Query Pipeline](https://sap.sharepoint.com/sites/210313/SitePages/GenAI%20-%20RAG%20-%20Knowledge%20Graph%20-%20Query%20pipeline.aspx)
+> 📚 Related SAP AI best practice guides ("KG RAG – Overall and KG Creation" and "KG RAG – Query Pipeline") are published on the [SAP BTP AI Best Practices](https://btp-ai-bp.docs.sap/) documentation site.
 
 ## Overview
 

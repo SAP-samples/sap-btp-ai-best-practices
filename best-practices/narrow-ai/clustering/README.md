@@ -9,7 +9,7 @@ Overall, the following tasks take place:
 - Training a **KMeans model** for the iris dataset using **hana-ml Predictive Analysis Library** (PAL) functions
 - Explore the  **forecasted result** in a graphical report
 
-The article related to this topic is: [Narrow AI - Clustering [TODO: [Add link](https://sap.sharepoint.com/sites/210313/SitePages/Narrow%20AI%20-%20Clustering.aspx)]]
+The article related to this topic is published on the [SAP BTP AI Best Practices](https://btp-ai-bp.docs.sap/) documentation site.
 
 #### References
 

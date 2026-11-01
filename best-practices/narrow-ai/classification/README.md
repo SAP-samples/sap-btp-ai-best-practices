@@ -9,7 +9,7 @@ Overall, the following tasks take place:
 * Training a **classification model** for preventing employee churn using **hana-ml Predictive Analysis Library (PAL) functions**.
 * Performing **Model Evaluation** to show the model accuracy obtained.
 
-The article related to this topic is: [Narrow AI - Classification](https://sap.sharepoint.com/sites/210313/SitePages/Narrow%20AI%20-%20Classification.aspx)
+The article related to this topic ("Narrow AI - Classification") is published on the [SAP BTP AI Best Practices](https://btp-ai-bp.docs.sap/) documentation site.
 
 
 #### References
@@ -20,7 +20,7 @@ The article related to this topic is: [Narrow AI - Classification](https://sap.s
 
 This repository includes examples in multiple programming languages to demonstrate these best practices:
 
-- [Python](./python/): Python implementation for developing classification models with SAP hana-ml
+- [Python](./Python/): Python implementation for developing classification models with SAP hana-ml
 
 
 ## Getting Started
