@@ -39,7 +39,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "sap-samples", // Usually your GitHub org/user name.
+  organizationName: "SAP-samples", // Usually your GitHub org/user name.
   projectName: "sap-btp-ai-best-practices", // Usually your repo name.
   trailingSlash: false,
 
