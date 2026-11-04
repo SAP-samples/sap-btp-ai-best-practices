@@ -18,5 +18,7 @@ _site/
 Gemfile.lock
 .DS_Store
 .env
-
+.venv/
+best-practices/
+use-cases/
 .idea

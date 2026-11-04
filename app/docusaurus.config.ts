@@ -39,7 +39,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "sap-samples", // Usually your GitHub org/user name.
+  organizationName: "SAP-samples", // Usually your GitHub org/user name.
   projectName: "sap-btp-ai-best-practices", // Usually your repo name.
   trailingSlash: false,
 
@@ -177,6 +177,14 @@ const config: Config = {
           target: "_blank",
           rel: "noopener noreferrer",
           className: "navbar__item--ai4u",
+        },
+        {
+          href: "https://sapxm.qualtrics.com/jfe/form/SV_2ozSvl0Byxi56Ki?utm_source=btp-ai-best-practices&utm_medium=referral&utm_campaign=baip-activation&utm_content=navbar",
+          label: "Activate AI",
+          position: "left",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "navbar__item--activate",
         },
         // { to: "/blog", label: "Blog", position: "left" },
         {

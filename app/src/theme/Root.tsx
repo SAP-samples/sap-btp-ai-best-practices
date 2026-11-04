@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { AuthProvider } from "@site/src/authProviderBTP"; // Corrected path
 import { trackEvent } from "@site/src/lib/trackingTool/trackingUtils";
+import { TRACKING_EVENTS } from "@site/src/lib/trackingTool/config";
 
 // Default implementation, that you can customize
 // https://docusaurus.io/docs/swizzling#wrapping-global-components
@@ -22,6 +23,12 @@ export default function Root({ children }) {
       // Navbar AI4U link
       if (target.classList.contains("navbar__item--ai4u")) {
         trackEvent({ featureName: `btn-navbar:${href}` });
+        return;
+      }
+
+      // Navbar Activate AI link
+      if (target.classList.contains("navbar__item--activate")) {
+        trackEvent({ featureName: TRACKING_EVENTS.BUTTON_CLICK.ACTIVATION_QUALTRICS });
       }
     };
 
