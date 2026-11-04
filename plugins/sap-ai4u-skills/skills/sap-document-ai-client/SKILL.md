@@ -1,6 +1,6 @@
 ---
 name: sap-document-ai-client
-description: Use when building or debugging the SAP Document AI Python REST client, especially SapDoxClient schema fields, schema activation, client or document-job flows, upload options, DoxApiError handling, mocked tests, or Document AI core-client documentation.
+description: Use when building or debugging the SAP Document AI Python REST client, especially SapDoxClient schema fields, schema activation, client or document-job flows, upload options, DoxApiError handling, instant learning (ground truth, document confirmation, enableInstantLearning configuration), mocked tests, or Document AI core-client documentation.
 ---
 
 # SAP Document AI Client
@@ -13,7 +13,8 @@ Use this skill when working on the Python `dox_client` package for SAP Document 
 2. Read `references/api-workflow.md` before changing schema fields, public APIs, or tests.
 3. Use the source snapshots in `assets/source-snapshot/` only when the target repository is missing context or when porting this client pattern elsewhere.
 4. Preserve the core easy flow: create/select client, create/configure schema, upload PDF, poll/get extraction results, list/search/delete jobs.
-5. Keep automated tests mocked. Do not require live SAP credentials for the default test suite.
+5. Read `references/instant-learning.md` before implementing corrections or feedback loops: saving ground truth, confirming documents, the `enableInstantLearning` configuration, or measuring whether corrections improve later extractions.
+6. Keep automated tests mocked. Do not require live SAP credentials for the default test suite.
 
 ## Repository Anchors
 
@@ -39,6 +40,9 @@ If these files are absent, inspect `assets/source-snapshot/` for the canonical i
 - Convert `FieldDefinition`, field dictionaries, and field-name strings consistently.
 - Validate the complete schema field contract before creating a schema shell. For field names, labels, supported data types, setup payloads, full-array replacement behavior, and activation order, follow `references/api-workflow.md`.
 - Do not update `tutorial.ipynb` unless the user explicitly asks for notebook migration.
+- Instant learning: build ground truth from the job's own extraction (`ground_truth_from_job`), send the complete corrected extraction, and keep value normalization identical to what the service returns.
+- `confirm_document` is irreversible for the job. Ask the user before confirming, and default `data_for_retraining` to `False`; `True` lets SAP retrain its models on the customer's document and needs explicit consent.
+- Schema metadata updates and schema deletion need inactive versions: deactivate first, then `PUT` or `DELETE`, then reactivate if needed. See `references/api-workflow.md`.
 
 ## Testing
 

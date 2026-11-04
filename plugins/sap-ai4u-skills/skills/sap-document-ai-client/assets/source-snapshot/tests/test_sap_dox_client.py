@@ -386,3 +386,87 @@ def test_document_helpers_get_list_search_delete_and_wait():
         "order": "created desc",
     }
     assert session.requests[3]["json"] == {"value": ["job-1", "job-2"]}
+
+
+def test_configuration_get_and_set_use_scope_parameters():
+    session = FakeSession()
+    session.queue(
+        "GET",
+        "/document-information-extraction/v1/configuration/enableInstantLearning",
+        FakeResponse(200, {"results": {"enableInstantLearning": {"value": "true", "scope": "tenant"}}}),
+    )
+    session.queue(
+        "POST",
+        "/document-information-extraction/v1/configuration",
+        FakeResponse(201, {"inserted": 1, "modified": 0}),
+    )
+    client = make_client(session)
+
+    config = client.get_configuration("enableInstantLearning")
+    assert config["results"]["enableInstantLearning"]["value"] == "true"
+    assert client.set_configuration({"enableInstantLearning": True}, scope="client", client_id="c_00") == {
+        "inserted": 1,
+        "modified": 0,
+    }
+
+    assert session.requests[0]["params"] is None
+    assert session.requests[1]["params"] == {"scope": "client", "clientId": "c_00"}
+    assert session.requests[1]["json"] == {"value": {"enableInstantLearning": "true"}}
+    with pytest.raises(ValueError):
+        client.set_configuration({"enableInstantLearning": "true"}, scope="client")
+
+
+def test_instant_learning_ground_truth_confirm_and_export():
+    job = {
+        "id": "job-1",
+        "status": "DONE",
+        "extraction": {
+            "headerFields": [
+                {"name": "documentNumber", "value": "PO-1", "rawValue": "PO-1", "page": 1,
+                 "confidence": 0.7, "model": "ai", "label": "documentNumber",
+                 "coordinates": {"x": 0.1, "y": 0.1, "w": 0.1, "h": 0.01}},
+            ],
+            "lineItems": [[{"name": "quantity", "value": 2.0, "confidence": 0.9, "page": 1}]],
+        },
+    }
+    session = FakeSession()
+    session.queue(
+        "POST",
+        "/document-information-extraction/v1/document/jobs/job-1",
+        FakeResponse(201, {"status": "DONE", "message": "Ground truth / corrected values uploaded successfully"}),
+    )
+    session.queue(
+        "POST",
+        "/document-information-extraction/v1/document/jobs/job-1/confirm",
+        FakeResponse(200, {"status": "CONFIRMED", "message": "Document confirmed successfully."}),
+    )
+    session.queue(
+        "GET",
+        "/document-information-extraction/v1/document/jobs/job-1/export",
+        FakeResponse(200, {"id": "job-1"}),
+    )
+    client = make_client(session)
+
+    ground_truth = SapDoxClient.ground_truth_from_job(job)
+    assert ground_truth["headerFields"][0] == {
+        "name": "documentNumber", "value": "PO-1", "rawValue": "PO-1", "page": 1,
+        "coordinates": {"x": 0.1, "y": 0.1, "w": 0.1, "h": 0.01},
+    }
+    ground_truth["headerFields"][0].update(value="PO-2", rawValue="PO-2")
+    ground_truth["headerFields"][0].pop("coordinates")
+    assert job["extraction"]["headerFields"][0]["value"] == "PO-1"
+
+    assert client.save_ground_truth("job-1", ground_truth)["status"] == "DONE"
+    assert client.confirm_document("job-1")["status"] == "CONFIRMED"
+    assert client.export_document("job-1", client_id="c_00") == {"id": "job-1"}
+
+    assert session.requests[0]["json"] == {
+        "extraction": {
+            "headerFields": [{"name": "documentNumber", "value": "PO-2", "rawValue": "PO-2", "page": 1}],
+            "lineItems": [[{"name": "quantity", "value": 2.0, "page": 1}]],
+        }
+    }
+    assert session.requests[1]["params"] == {"dataForRetraining": "false"}
+    assert session.requests[2]["params"] == {"clientId": "c_00"}
+    with pytest.raises(ValueError):
+        client.save_ground_truth("job-1", {"headerFields": [{"name": "documentNumber"}], "lineItems": []})

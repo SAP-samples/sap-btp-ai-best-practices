@@ -7,9 +7,12 @@ API. It lets a developer authenticate with a service key, create or select a SAP
 Document AI client, create and configure a schema, upload a PDF, poll for
 extraction results, and manage uploaded document jobs.
 
-The client intentionally focuses on the easy workflow. Full administration APIs
-for configuration, enrichment-data CRUD, ground truth, confirmation, exports,
-and template CRUD are out of scope for this pass.
+It also supports instant learning: reading and setting the
+`enableInstantLearning` configuration, saving corrected values (ground truth)
+for a job, confirming the job, and exporting it. Confirmed corrections are used
+as examples for later documents with a similar layout.
+
+Enrichment-data CRUD, OCR text endpoints, and template CRUD are out of scope.
 
 ## Expected Inputs And Outputs
 
@@ -115,14 +118,33 @@ Included:
 - `POST /document/jobs`, `GET /document/jobs`, `GET /document/jobs/<id>`,
   `DELETE /document/jobs`
 - `POST /document/catalog`
+- `GET /configuration`, `GET /configuration/<key>`, `POST /configuration`
+- `POST /document/jobs/<id>` (ground truth), `POST /document/jobs/<id>/confirm`,
+  `GET /document/jobs/<id>/export`
 
 Deferred:
 
-- Configuration API
 - Enrichment Data API CRUD
-- Ground-truth save and document confirmation
-- Export and OCR text endpoints
+- OCR text endpoints
 - Template CRUD and document-template association endpoints
+
+## Instant Learning
+
+```python
+job = client.wait_for_result(client.upload_document(
+    "order.pdf", client_id="c_00", schema_id=schema_id, document_type="purchaseOrder")["id"])
+
+extraction = SapDoxClient.ground_truth_from_job(job)   # name, value, rawValue, page, coordinates
+extraction["headerFields"][0].update(value="PO-1001", rawValue="PO-1001")
+client.save_ground_truth(job["id"], extraction)         # complete corrected extraction
+client.confirm_document(job["id"])                      # irreversible; dataForRetraining=false
+```
+
+Requirements: `enableInstantLearning` is `"true"` for the tenant, instance or
+client (`get_configuration("enableInstantLearning")`), and the schema fields
+use setup type `auto` without default extractors. Deleting the confirmed job
+removes its effect. See `references/instant-learning.md` in the skill for the
+payload rules and how to measure the effect.
 
 ## How To Test
 

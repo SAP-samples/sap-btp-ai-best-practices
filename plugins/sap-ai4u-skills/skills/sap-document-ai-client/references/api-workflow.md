@@ -9,8 +9,9 @@ This skill supports the core easy flow only:
 3. Upload a PDF or supported document with schema or ad-hoc extraction fields.
 4. Poll or retrieve extraction results.
 5. List, search, and delete document jobs.
+6. Instant learning: read/set configuration, save ground truth, confirm documents, export confirmed documents (details in `references/instant-learning.md`).
 
-Deferred unless explicitly requested: Configuration API, Enrichment Data CRUD, ground truth, document confirmation, exports, OCR text endpoints, and full Template API CRUD.
+Deferred unless explicitly requested: Enrichment Data CRUD, OCR text endpoints, and full Template API CRUD.
 
 ## Public Client Surface
 
@@ -53,6 +54,15 @@ Documents:
 - `delete_jobs(job_ids)`
 - `delete_job(job_id)`
 
+Configuration and instant learning:
+
+- `get_configuration(key=None, scope=None, client_id=None)`
+- `set_configuration(values, scope="tenant", client_id=None)`
+- `ground_truth_from_job(job)` (static)
+- `save_ground_truth(job_id, extraction, enrichment=None, languages=None, country=None)`
+- `confirm_document(job_id, data_for_retraining=False)`
+- `export_document(job_id, client_id)`
+
 ## Endpoint Map
 
 - `GET /capabilities`
@@ -69,6 +79,10 @@ Documents:
 - `POST /document/jobs`, `GET /document/jobs`, `DELETE /document/jobs`
 - `GET /document/jobs/<id>`
 - `POST /document/catalog`
+- `GET /configuration`, `GET /configuration/<key>`, `POST /configuration`, `DELETE /configuration`
+- `POST /document/jobs/<id>` (save ground truth)
+- `POST /document/jobs/<id>/confirm?dataForRetraining=<bool>`
+- `GET /document/jobs/<id>/export?clientId=<client>`
 
 ## SAP Response Normalization
 
@@ -135,6 +149,17 @@ The current schema-field API has no mandatory flag. Preserve unconditional and c
 
 After the field POST succeeds, retrieve the schema version, verify the field counts, and only then call the activation endpoint.
 
+## Schema Maintenance
+
+Observed against the live service:
+
+- `PUT /schemas/<schemaId>` (name or description change) fails on an active schema with `Schema ... is in active state`. Deactivate the version, `PUT`, then reactivate (reactivate in a `finally` block so a failed update does not leave the schema inactive).
+- The `PUT /schemas/<schemaId>` body must contain `name` and `documentTypeDescription` in addition to the changed `schemaDescription`; partial bodies return HTTP 400 naming the missing field.
+- `POST /schemas` also requires `documentTypeDescription`.
+- Schema names follow the field-name rule: no whitespace (`Field name shouldn't contain spaces`). Use underscores for readable display names.
+- `DELETE /schemas` fails for schemas with an active version. Deactivate every active version first.
+- `GET /schemas/<schemaId>/versions` returns its list under the `schemas` key, possibly nested one level.
+
 ## Upload Rules
 
 Schema upload:
@@ -197,3 +222,4 @@ Minimum behavior coverage for new changes:
 - Response normalization for new list-like APIs.
 - Upload validation and multipart `options` payloads.
 - Correct official endpoint and body shape for delete/update operations.
+- Ground-truth payload shape, `dataForRetraining` query value, and configuration scope parameters for instant learning changes.

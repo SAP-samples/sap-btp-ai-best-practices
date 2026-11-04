@@ -2,12 +2,14 @@
 Reusable SAP Document Information Extraction (Document AI / DOX) client.
 
 The client reads OAuth and API endpoint information from a SAP service key and
-wraps the core REST API flow for clients, schemas, document upload, polling, and
-document catalog operations.
+wraps the core REST API flow for clients, schemas, document upload, polling,
+document catalog operations, configuration, and instant learning (ground truth
+and document confirmation).
 """
 
 from __future__ import annotations
 
+import copy
 import json
 import mimetypes
 import os
@@ -843,6 +845,168 @@ class SapDoxClient:
         if not job_id:
             raise ValueError("job_id is required")
         return self.delete_jobs(job_id)
+
+    # -------------------------
+    # Configuration and Instant Learning
+    # -------------------------
+    def get_configuration(
+        self,
+        key: Optional[str] = None,
+        *,
+        scope: Optional[str] = None,
+        client_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Read service configuration, for example `enableInstantLearning`.
+
+        Args:
+            key: One predefined configuration key, or None for all keys.
+            scope: `active` (SAP default: effective value), `tenant`, `instance`, or `client`.
+            client_id: Client for client-scope configuration.
+
+        Returns:
+            SAP payload such as `{"results": {"enableInstantLearning": {"value": "true", "scope": "tenant"}}}`.
+        """
+        params: Dict[str, Any] = {}
+        if scope is not None:
+            params["scope"] = scope
+        if client_id is not None:
+            params["clientId"] = client_id
+        path = f"/configuration/{key}" if key else "/configuration"
+        return self._request_json("GET", path, params=params or None)
+
+    def set_configuration(
+        self,
+        values: Dict[str, Any],
+        *,
+        scope: str = "tenant",
+        client_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Create or update configuration values, for example `{"enableInstantLearning": "true"}`.
+
+        Args:
+            values: Predefined keys mapped to values. SAP stores strings; booleans are sent as "true"/"false".
+            scope: `tenant`, `instance`, or `client`.
+            client_id: Required for client scope.
+
+        Returns:
+            SAP payload with `inserted` and `modified` counts.
+        """
+        if not values:
+            raise ValueError("values must contain at least one configuration key")
+        if scope == "client" and not client_id:
+            raise ValueError("client_id is required for client scope configuration")
+        payload = {"value": {k: (str(v).lower() if isinstance(v, bool) else str(v)) for k, v in values.items()}}
+        params: Dict[str, Any] = {"scope": scope}
+        if client_id is not None:
+            params["clientId"] = client_id
+        return self._request_json(
+            "POST",
+            "/configuration",
+            expected_statuses=(200, 201),
+            params=params,
+            json_payload=payload,
+        )
+
+    @staticmethod
+    def ground_truth_from_job(job: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Copy a job's extraction into a ground-truth payload that can be edited and saved.
+
+        Keeps only the attributes SAP uses for ground truth (name, value, rawValue, page, coordinates).
+
+        Args:
+            job: Payload from `get_job` or `wait_for_result`.
+
+        Returns:
+            `{"headerFields": [...], "lineItems": [[...]]}` with independent copies of every field.
+        """
+        keep = ("name", "value", "rawValue", "page", "coordinates")
+        extraction = job.get("extraction") or {}
+
+        def strip(field: Dict[str, Any]) -> Dict[str, Any]:
+            return {k: copy.deepcopy(field[k]) for k in keep if k in field}
+
+        return {
+            "headerFields": [strip(f) for f in extraction.get("headerFields", [])],
+            "lineItems": [[strip(f) for f in line] for line in extraction.get("lineItems", [])],
+        }
+
+    def save_ground_truth(
+        self,
+        job_id: str,
+        extraction: Dict[str, Any],
+        *,
+        enrichment: Optional[Dict[str, Any]] = None,
+        languages: Optional[List[str]] = None,
+        country: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Save the corrected values (ground truth) of a document job for instant learning.
+
+        Send the complete corrected extraction, not only the changed fields.
+
+        Args:
+            job_id: Job id from `upload_document`.
+            extraction: `{"headerFields": [...], "lineItems": [[...]]}`; every field needs `name` and `value`.
+            enrichment: Optional matched enrichment, e.g. `{"sender": [{"id": "..."}]}`.
+            languages: Optional language codes.
+            country: Optional country code.
+
+        Returns:
+            SAP payload, e.g. `{"status": "DONE", "message": "Ground truth / corrected values uploaded successfully"}`.
+        """
+        if not job_id:
+            raise ValueError("job_id is required")
+        fields = list(extraction.get("headerFields", [])) + [f for line in extraction.get("lineItems", []) for f in line]
+        missing = [f for f in fields if "name" not in f or "value" not in f]
+        if missing:
+            raise ValueError(f"Every ground-truth field needs 'name' and 'value': {missing[:3]}")
+        payload: Dict[str, Any] = {
+            "extraction": {
+                "headerFields": extraction.get("headerFields", []),
+                "lineItems": extraction.get("lineItems", []),
+            }
+        }
+        if enrichment is not None:
+            payload["enrichment"] = enrichment
+        if languages is not None:
+            payload["languages"] = languages
+        if country is not None:
+            payload["country"] = country
+        return self._request_json(
+            "POST",
+            f"/document/jobs/{job_id}",
+            expected_statuses=(200, 201),
+            json_payload=payload,
+        )
+
+    def confirm_document(self, job_id: str, *, data_for_retraining: bool = False) -> Dict[str, Any]:
+        """
+        Confirm a document job. Irreversible: no more ground truth can be saved afterwards.
+
+        Args:
+            job_id: Job id.
+            data_for_retraining: Also allow SAP to use the document for model retraining.
+                Not needed for instant learning; only set True with explicit consent.
+
+        Returns:
+            SAP payload, e.g. `{"status": "CONFIRMED", "message": "Document confirmed successfully."}`.
+        """
+        if not job_id:
+            raise ValueError("job_id is required")
+        return self._request_json(
+            "POST",
+            f"/document/jobs/{job_id}/confirm",
+            params={"dataForRetraining": self._bool_param(data_for_retraining)},
+        )
+
+    def export_document(self, job_id: str, client_id: str) -> Dict[str, Any]:
+        """Export a document job with its ground truth and instant learning data."""
+        if not job_id or not client_id:
+            raise ValueError("job_id and client_id are required")
+        return self._request_json("GET", f"/document/jobs/{job_id}/export", params={"clientId": client_id})
 
     # -------------------------
     # Convenience Helpers
