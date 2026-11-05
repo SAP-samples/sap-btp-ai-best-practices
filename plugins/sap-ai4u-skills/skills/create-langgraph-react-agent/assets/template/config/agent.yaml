@@ -35,6 +35,8 @@ memory:
 # Replace older history with one LLM summary before it gets expensive.
 # `model` is optional; set it (same fields as `model:` above) to use a cheaper
 # deployment for summaries. Omitted means the agent model is reused.
+# Disable when PDFs/images are attached natively: the approximate token counter
+# counts base64 file blocks as text and would summarise the documents away mid-run.
 summarization:
   enabled: true
   trigger_tokens: 200000

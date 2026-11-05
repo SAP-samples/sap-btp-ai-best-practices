@@ -45,7 +45,7 @@ memory:
   lock_wait_seconds: 30    # then ContextBusyError
 summarization:
   enabled: true
-  trigger_tokens: 200000
+  trigger_tokens: 200000   # disable with native PDF attachments (see below)
   keep_messages: 6
   # model: {provider: openai, name: <cheaper deployment>}
 tool_output:
@@ -89,6 +89,54 @@ without it, the value provides correlation but not conversation history.
 The first transport boundary accepts non-empty text parts. Local image/PDF
 attachments remain supported through `AgentRuntime.ainvoke` and the CLI; add an
 explicit A2A file policy before accepting remote file or URL parts.
+
+## Embedding in an existing application
+
+Validated in a FastAPI backend that runs many agent jobs concurrently:
+
+- **Lifecycle.** Create one `AgentRuntime` per process, lazily under an
+  `asyncio.Lock`, and call `aclose()` from the app's lifespan shutdown. Runs
+  with distinct `context_id`s share the compiled graph, model client, and tools
+  and execute in parallel; the same `context_id` is serialized.
+
+  ```python
+  _runtime: AgentRuntime | None = None
+  _lock = asyncio.Lock()
+
+  async def get_runtime() -> AgentRuntime:
+      global _runtime
+      async with _lock:
+          if _runtime is None:
+              _runtime = await AgentRuntime.create(CONFIG, extra_tools=TOOLS)
+      return _runtime
+  ```
+
+- **No A2A.** Set `a2a.enabled: false`, omit `a2a_server.py` and `__main__.py`,
+  and remove the `create_a2a_app` import from the package `__init__`; otherwise
+  importing the runtime still requires `a2a-sdk`.
+- **Native PDFs disable summarization.** `SummarizationMiddleware` estimates
+  tokens with `count_tokens_approximately`, which counts base64 `file` blocks as
+  text (about 100k tokens for a 300 KB PDF). Two or three documents cross the
+  trigger and the first message, which holds the documents, is summarised away
+  mid-run. Set `summarization.enabled: false` for attachment-heavy single-turn
+  runs, or pass a `token_counter` that skips file and image blocks.
+- **Run-scoped tool arguments.** A parameter typed
+  `context_id: Annotated[str, InjectedState("context_id")]` (from
+  `langgraph.prebuilt`) receives the run's `context_id` from `AgentState` and is
+  hidden from the model's tool schema. Use the context id as the business key
+  (for example an order id) and scope tool writes by it, so the model cannot
+  read or forge another record's key.
+- **Token usage without editing `runtime.py`.** After `ainvoke`, iterate the
+  `AIMessage`s in `result.messages`; each is one model call. Emit one usage
+  event per message (the `token-logger` skill's `extract_token_usage`) and sum
+  input, cached input, and output tokens for a per-run total. With HANA memory
+  enabled, `result.messages` also contains earlier turns; count only the
+  `AIMessage`s after the last `HumanMessage`.
+- **Compact tool schemas.** LangChain inlines nested Pydantic models in tool
+  schemas, once per referencing field. A 28-field submission model with one
+  shared value sub-model produced a 36 KB schema; a `dict[str, FieldValue]`
+  field with the allowed keys listed in its `Field(description=...)` cut it to
+  about 4 KB. Validate the keys inside the tool.
 
 ## Use-case extensions
 

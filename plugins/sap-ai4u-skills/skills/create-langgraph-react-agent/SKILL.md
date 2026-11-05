@@ -35,9 +35,21 @@ bundled asset contains no such files.
 8. Keep the default A2A listener on loopback until authenticated ingress,
    caller-scoped server contexts, and context-ID authorization are in place.
 9. Set `A2A_PUBLIC_URL` to the correct base URL for the selected environment.
+10. When images or PDFs are attached natively, set `summarization.enabled: false`
+    (the approximate token counter treats base64 file blocks as text).
 
 Read [references/configuration.md](references/configuration.md) when changing
 provider, skill, MCP, A2A, attachment, structured-output, or HANA behavior.
+
+## Embed in an existing web app
+
+To run the agent inside FastAPI or a worker pool instead of serving it, create
+one shared `AgentRuntime` lazily under an `asyncio.Lock`, close it in the
+lifespan, set `a2a.enabled: false`, and drop the `create_a2a_app` import from
+the package `__init__`. Use `InjectedState("context_id")` for tool arguments the
+model must not control, and read token usage from `result.messages`. Details in
+the "Embedding in an existing application" section of
+[references/configuration.md](references/configuration.md).
 
 ## Serve through A2A
 
