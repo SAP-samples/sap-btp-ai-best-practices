@@ -2,6 +2,11 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
+## 0.6.0 - 2026-11-05
+
+- Bump the portable Agent Plugins, Codex, and Claude Code manifests from
+  `0.5.0` to `0.6.0`.
+
 ## 0.5.0 - 2026-10-28
 
 - Add `rpt-ts`: SAP-RPT-TS zero-shot time-series forecasting over AI Core REST
