@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Literal
 
 from dotenv import load_dotenv
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel
 from tqdm import tqdm
@@ -67,12 +67,49 @@ def parse_model(value: str) -> tuple[str, str]:
     return provider, model
 
 
+async def tool_round_trip(provider: str, model_name: str) -> str:
+    """Call a tool, send its result back and return the model's final answer.
+
+    The second request is the one that carries the first answer's history (for
+    GPT on the Responses API: function call plus reasoning item). It is where SAP
+    AI Core used to answer ``404 Resource not found`` for replayed reasoning, so a
+    high reasoning effort is used to make sure a reasoning item is produced.
+    """
+
+    settings = ModelSettings(
+        provider=provider,
+        name=model_name,
+        reasoning_effort="high" if provider == "openai" else None,
+        use_responses_api=True,
+    )
+    model = create_chat_model(settings).bind_tools([add])
+    messages: list[BaseMessage] = [
+        HumanMessage(
+            # A task that needs planning: trivial prompts produce no reasoning item
+            # and would not exercise the replay path.
+            content="A warehouse ships 3 pallets of 48 cans and 5 pallets of 36 cans; 7 cans "
+            "arrive damaged. Plan the calculation first, then call the add tool exactly once "
+            "with left = all cans shipped and right = minus the damaged cans, and answer with "
+            "the number of usable cans."
+        )
+    ]
+    first = await model.ainvoke(messages)
+    if not first.tool_calls:
+        raise RuntimeError("Round trip: model did not call the add tool")
+    call = first.tool_calls[0]
+    messages += [first, ToolMessage(content=str(add.invoke(call["args"])), tool_call_id=call["id"])]
+    final = await model.ainvoke(messages)
+    if final.tool_calls or not final.text:
+        raise RuntimeError("Round trip: no final answer after the tool result")
+    return final.text
+
+
 async def smoke_one(
     provider: str,
     model_name: str,
     attachments: list[Attachment],
 ) -> dict[str, object]:
-    """Run text, tool, structured-output, and optional attachment checks."""
+    """Run text, tool, tool round-trip, structured-output, and optional attachment checks."""
 
     settings = ModelSettings(
         provider=provider,
@@ -96,6 +133,7 @@ async def smoke_one(
         content.extend(item.to_content_block(provider) for item in attachments)
         response = await model.ainvoke([HumanMessage(content=content)])
         attachment_text = str(response.content)
+    round_trip = await tool_round_trip(provider, model_name)
     if provider == "openai" and getattr(model, "use_responses_api", None) is not True:
         raise RuntimeError("OpenAI model was not configured for Responses API")
     return {
@@ -103,6 +141,7 @@ async def smoke_one(
         "model": model_name,
         "text": str(text.content),
         "tool": tool_response.tool_calls[0]["name"],
+        "tool_round_trip": round_trip,
         "structured": parsed.model_dump(mode="json") if hasattr(parsed, "model_dump") else parsed,
         "attachments": attachment_text,
     }

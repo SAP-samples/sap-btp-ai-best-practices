@@ -3,7 +3,9 @@
 ## Model suppliers
 
 - `openai`: SAP `ChatOpenAI` subclass with `proxy_model_name`, Responses API
-  enabled, and the SDK 7.2.0 chat-only `n` default removed from Responses calls.
+  enabled, `store=False`, the SDK 7.2.0 chat-only `n` default removed from
+  Responses calls, and reasoning blocks dropped from every answer (see
+  "Reasoning on SAP AI Core" below).
 - `gemini`: SAP `ChatGoogleGenerativeAI` with `proxy_model_name`.
 - `claude`: SAP `ChatBedrockConverse` with its deployment `model_name` and
   derived non-empty Bedrock `model` ID.
@@ -12,6 +14,36 @@ Keep deployment names in YAML. Verify the selected SAP AI Core resource group
 instead of guessing a fallback model. Images and PDFs enter through the common
 `Attachment` model, which applies Claude's stricter PDF document-name rules.
 Structured output is an optional second model call after the tool loop.
+
+### Reasoning on SAP AI Core
+
+GPT reasoning models on the Responses API return an encrypted `reasoning` item
+with every answer; LangChain keeps it in the `AIMessage` and sends it back with
+the next call. SAP AI Core does not accept that (tested 2026-11 with plain HTTP
+against a `gpt-6-luna` deployment, no LangChain involved):
+
+| Next call after a tool call | Result |
+|---|---|
+| reasoning item sent back (`store` true or false, any `api-version`) | `404 Resource not found` from the AI Core gateway, or a hang until it gives up |
+| previous response referenced with `previous_response_id` | 404 or hang |
+| no reasoning item, `store=false` | 200 |
+
+Symptom: runs fail with `NotFoundError: Error code: 404` after one to several
+minutes, usually on the first call that follows a reasoning-heavy tool call;
+short runs sometimes pass. It is not rate limiting (no 429, load-independent),
+and LangChain's own stateless rule does not help because AI Core always returns
+`encrypted_content`.
+
+`ResponsesCompatibleChatOpenAI` therefore removes `type == "reasoning"` content
+blocks in `_generate` / `_agenerate` (`_without_reasoning`) and the model is
+created with `store=False`. The blocks never reach the graph state, so they are
+neither replayed nor written to HANA memory or traces (with memory enabled they
+would otherwise be stored and replayed on the next turn, failing every
+multi-turn conversation). The model still sees all earlier tool calls and
+results and reasons again in each step. `scripts.live_model_smoke` includes a
+tool round trip with a planning prompt and `reasoning_effort: high`, which hangs
+or fails without this handling. Remove the overrides and `store=False` once AI
+Core accepts replayed reasoning.
 
 ## Dynamic skills
 

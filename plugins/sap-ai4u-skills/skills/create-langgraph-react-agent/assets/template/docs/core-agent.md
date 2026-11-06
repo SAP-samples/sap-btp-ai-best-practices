@@ -38,7 +38,10 @@ async with await AgentRuntime.create("config/agent.yaml") as runtime:
 
 The model factory supports SAP Gen AI Hub OpenAI Responses, Gemini, and Claude
 Bedrock Converse wrappers. For SAP AI SDK 7.2.0, the OpenAI subclass removes
-the Chat Completions-only `n` field from Responses payloads, while the Claude
+the Chat Completions-only `n` field from Responses payloads, runs with
+`store=False`, and drops encrypted reasoning blocks from every answer because
+SAP AI Core answers replayed reasoning with `404 Resource not found` (they are
+therefore never replayed or stored in memory); the Claude
 factory supplies both the SAP deployment name and its required Bedrock model
 ID. Attachment bytes use LangChain standard content blocks; Claude PDF names
 are additionally normalized to Bedrock's document-name rules. Attachment bytes

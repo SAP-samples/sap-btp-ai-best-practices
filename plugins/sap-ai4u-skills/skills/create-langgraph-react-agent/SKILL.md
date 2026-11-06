@@ -87,6 +87,9 @@ Foundry instances. Keep approvals as the pending action in the HANA row rather
 than `interrupt()`, which needs a checkpointer this landscape does not use.
 Keep A2A as a transport adapter around `AgentRuntime.ainvoke`; do not duplicate
 the graph, tool registry, or memory implementation in the server.
+Keep the reasoning handling in `providers.py` (reasoning blocks dropped,
+`store=False`): SAP AI Core answers replayed Responses API reasoning with 404 or
+hangs; see "Reasoning on SAP AI Core" in the configuration reference.
 
 ## Validate
 
@@ -100,6 +103,7 @@ Run the smallest relevant checks before handing off:
 .venv/bin/python -m pytest -q tests/test_a2a.py
 ```
 
-Use `python -m scripts.live_model_smoke`, `python -m scripts.live_hana_smoke`,
-and `python -m template_agent mcp-check` only when credentials and safe external
+Use `python -m scripts.live_model_smoke` (text, tool, tool round trip,
+structured output, attachments), `python -m scripts.live_hana_smoke`, and
+`python -m template_agent mcp-check` only when credentials and safe external
 targets are available. Never deploy the generated application automatically.

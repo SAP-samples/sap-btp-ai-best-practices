@@ -6,16 +6,49 @@ from typing import Any
 
 from gen_ai_hub.proxy.langchain.openai import ChatOpenAI as SAPChatOpenAI
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.outputs import ChatResult
 
 from .config import ModelSettings
 
 
-class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
-    """Remove a SAP-wrapper default unsupported by OpenAI Responses calls.
+def _without_reasoning(result: ChatResult) -> ChatResult:
+    """Drop Responses API reasoning blocks from the generated messages.
 
-    SAP AI SDK 7.2.0 always contributes the Chat Completions ``n`` parameter.
-    The native Responses client rejects that keyword, so it is removed only
-    after LangChain has selected and serialized a Responses API request.
+    SAP AI Core answers every request that carries a reasoning item from an
+    earlier step with ``404 Resource not found`` (or hangs), whether the item is
+    sent inline, with ``store=False`` or referenced via ``previous_response_id``.
+    The blocks only hold encrypted, unreadable content, so they are removed as
+    soon as the model answers: they never reach the agent state, are never sent
+    back and are never stored in a trace. The model still sees all earlier tool
+    calls and results and reasons again in every step.
+
+    Args:
+        result: Chat result returned by the model.
+
+    Returns:
+        The same result with ``type == "reasoning"`` content blocks removed.
+    """
+
+    for generation in result.generations:
+        message = generation.message
+        if isinstance(message.content, list):
+            message.content = [
+                block
+                for block in message.content
+                if not (isinstance(block, dict) and block.get("type") == "reasoning")
+            ]
+    return result
+
+
+class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
+    """SAP Gen AI Hub ChatOpenAI adapted to the Responses API on SAP AI Core.
+
+    - SAP AI SDK 7.2.0 always contributes the Chat Completions ``n`` parameter.
+      The native Responses client rejects that keyword, so it is removed only
+      after LangChain has selected and serialized a Responses API request.
+    - Reasoning blocks are dropped from every answer (see ``_without_reasoning``).
+      This is unconditional while AI Core rejects replayed reasoning (2026-11);
+      remove these overrides and ``store=False`` once it accepts them again.
     """
 
     def _get_request_payload(
@@ -31,6 +64,16 @@ class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
         if self._use_responses_api(payload):
             payload.pop("n", None)
         return payload
+
+    def _generate(self, *args: Any, **kwargs: Any) -> ChatResult:
+        """Generate as usual, then drop reasoning blocks from the answer."""
+
+        return _without_reasoning(super()._generate(*args, **kwargs))
+
+    async def _agenerate(self, *args: Any, **kwargs: Any) -> ChatResult:
+        """Generate as usual (async), then drop reasoning blocks from the answer."""
+
+        return _without_reasoning(await super()._agenerate(*args, **kwargs))
 
 
 def create_chat_model(settings: ModelSettings) -> BaseChatModel:
@@ -52,6 +95,10 @@ def create_chat_model(settings: ModelSettings) -> BaseChatModel:
             common["max_completion_tokens"] = settings.max_tokens
         if settings.reasoning_effort:
             common["reasoning_effort"] = settings.reasoning_effort
+        if settings.use_responses_api:
+            # Stateless calls: nothing is kept on the server, and a function call
+            # sent without its (dropped) reasoning item is accepted.
+            common["store"] = False
         return ResponsesCompatibleChatOpenAI(
             proxy_model_name=settings.name,
             use_responses_api=settings.use_responses_api,
