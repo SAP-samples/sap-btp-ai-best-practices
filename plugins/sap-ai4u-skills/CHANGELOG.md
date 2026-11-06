@@ -2,6 +2,22 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
+## 0.6.5 - 2026-11-06
+
+- `create-langgraph-react-agent`: fix GPT reasoning models on SAP AI Core. The
+  AI Core gateway answers any Responses API request that replays a reasoning
+  item from an earlier step (inline, with `store` true or false, or via
+  `previous_response_id`) with `404 Resource not found` or hangs, so agent runs
+  failed after their first reasoning-heavy tool call. `ResponsesCompatibleChatOpenAI`
+  now drops reasoning blocks from every answer and runs with `store=False`; the
+  encrypted blocks are no longer replayed or stored in HANA memory.
+- `create-langgraph-react-agent`: `scripts.live_model_smoke` adds a tool round
+  trip with a planning prompt and `reasoning_effort: high` (hangs or fails
+  without the fix); unit tests for the reasoning drop; "Reasoning on SAP AI
+  Core" section in `references/configuration.md`.
+- Bump the portable Agent Plugins, Codex, and Claude Code manifests from
+  `0.6.0` to `0.6.5`.
+
 ## 0.6.0 - 2026-11-05
 
 - Bump the portable Agent Plugins, Codex, and Claude Code manifests from
