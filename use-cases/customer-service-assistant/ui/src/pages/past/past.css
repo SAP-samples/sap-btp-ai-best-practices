@@ -1,0 +1,254 @@
+.document-request-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  color: var(--sapTextColor);
+  font-family: var(--sapFontFamily, "72", Arial, sans-serif);
+}
+
+.document-request-header,
+.review-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.document-request-subtitle,
+.fetch-summary-text,
+.review-cell-secondary {
+  color: var(--sapContent_LabelColor);
+}
+
+.summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.summary-card,
+.review-worklist,
+.expanded-panel {
+  border: 1px solid var(--sapList_BorderColor);
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.summary-card {
+  padding: 1rem;
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--sapContent_LabelColor);
+}
+
+.summary-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.review-worklist {
+  overflow: hidden;
+}
+
+.review-toolbar,
+.review-state {
+  padding: 1.25rem;
+}
+
+.review-state[hidden],
+#review-table-container[hidden] {
+  display: none !important;
+}
+
+.review-state.error {
+  color: var(--sapNegativeColor);
+}
+
+.review-table-shell {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.review-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.review-table th,
+.review-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--sapList_BorderColor);
+}
+
+.review-table th {
+  background: #f8fafc;
+  color: var(--sapContent_LabelColor);
+  font-size: 0.82rem;
+}
+
+.review-pagination {
+  border-top: 1px solid var(--sapList_BorderColor);
+  padding: 0.8rem 1rem;
+}
+
+.pagination-controls,
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pagination-status {
+  font-weight: 700;
+}
+
+.pagination-range {
+  color: var(--sapContent_LabelColor);
+}
+
+.dialog-copy {
+  max-width: 32rem;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.review-row {
+  cursor: pointer;
+}
+
+.review-row:hover,
+.review-row.is-expanded {
+  background: #f6faff;
+}
+
+.review-cell-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid #8aa5c4;
+  border-radius: 999px;
+  background: #f7fbff;
+  color: #12395b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+}
+
+.status-pill-ready_for_review,
+.status-pill-approved {
+  border-color: #4f8f64;
+  background: #effaf2;
+  color: #256f3a;
+}
+
+.status-pill-needs_human_review {
+  border-color: #e9730c;
+  background: #fff8ee;
+  color: #9c4f00;
+}
+
+.status-pill-rejected,
+.status-pill-failed {
+  border-color: #c94c4c;
+  background: #fff1f1;
+  color: #aa0808;
+}
+
+.decision-actions,
+.expanded-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.review-expanded-row td {
+  padding: 0;
+  background: #f8fbff;
+}
+
+.expanded-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.expanded-panel {
+  padding: 1rem;
+}
+
+.expanded-panel h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.email-metadata,
+.draft-fields {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.5rem 0.75rem;
+}
+
+.email-body {
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.88rem;
+}
+
+.attachment-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.attachment-line {
+  display: grid;
+  gap: 0.2rem;
+  border: 1px solid var(--sapList_BorderColor);
+  border-radius: 0.4rem;
+  padding: 0.65rem;
+}
+
+.attachment-line span,
+.validation-errors {
+  color: var(--sapContent_LabelColor);
+  font-size: 0.84rem;
+}
+
+.validation-errors {
+  color: var(--sapNegativeColor);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+  .document-request-page {
+    padding: 1rem;
+  }
+
+  .document-request-header,
+  .review-toolbar,
+  .expanded-layout {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,38 @@
+---
+applications:
+  - name: shipment-document-request-agent-api
+    path: api
+    buildpack: python_buildpack
+    stack: cflinuxfs5
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 512M
+    routes:
+      - route: shipment-document-request-agent-api.cfapps.eu10-004.hana.ondemand.com
+    services:
+      - "shipment-document-request-destination"
+    env:
+      ALLOWED_ORIGIN: https://((ui_host))
+      API_BASE_URL: ((api_route))
+      APP_ENV: production
+      API_KEY: ((api_key))
+      FETCH_MAX_DAYS: ((fetch_max_days))
+      GMAIL_MAILBOX_ID: me
+      GMAIL_DESTINATION_NAME: GMAIL_API_READONLY
+      GMAIL_DESTINATION_LEVEL: subaccount
+      GMAIL_REFRESH_TOKEN_PROPERTY: GMAIL_REFRESH_TOKEN
+      DESTINATION_SERVICE_NAME: "shipment-document-request-destination"
+      DOCUMENT_REQUEST_EXTRACTOR_MODEL: gpt-6-luna
+      DOCUMENT_REQUEST_AGENT_MODEL: gpt-6-luna
+      DOCUMENT_REQUEST_FROM_EMAIL: ((document_request_from_email))
+  - name: shipment-document-request-agent-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    stack: cflinuxfs5
+    command: npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: shipment-document-request-agent.cfapps.eu10-004.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: ((api_route))
+      VITE_APP_HOST: ((ui_host))
+      VITE_API_KEY: ((api_key))

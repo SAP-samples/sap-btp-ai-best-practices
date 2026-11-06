@@ -1,0 +1,117 @@
+From: Operations Training <operations.training@example.invalid>
+To: Service Desk <service.desk@example.invalid>,
+ Process Analyst <process.analyst@example.invalid>
+Cc: Warehouse Lead <warehouse.lead@example.invalid>
+Subject: Re: AI4U - Scenario 2 - Direct Business sales order fully picked,
+ packed and shipped - specific line request
+Date: Mon, 16 Mar 2026 09:54:00 +0000
+Message-ID: <re..ai4u.-.scenario.2.-.direct.business.sales.order.fully.picked
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============3336876787647681755=="
+
+--===============3336876787647681755==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Service Desk,
+
+Scenario 2: Direct Business sales order fully picked, packed and shipped.
+
+Type of request:
+  1. Status of line 20 of this sales order / OBD, GI date, and shipper box re=
+ference.
+
+Data's:
+
+Order Date  Order Time  COUNTRY  ROUTE_ID  SO ORDER    DOCNO     DOCTYPE  LIN=
+E  PRODUCT     BATCHNO  QTY Ordered  QTY_PACKED  DG  Pick Date         PACK_B=
+OX              STATUS_PICK  STATUS_GI
+----------  ----------  -------  --------  ----------  --------  -------  ---=
+-  ----------  -------  -----------  ----------  --  ----------------  ------=
+--------------  -----------  ---------
+15/03/2026  09:45       DE       RHE2D4    6090004185  90000785  ZODC     001=
+0  A100247-DE  B72814   1.00         1           -   16/03/2026 10:12  009875=
+00364128609231  9            9       =20
+15/03/2026  09:45       DE       RHE2D4    6090004185  90000785  ZODC     002=
+0  A100248-DE  B72815   1.00         1           -   16/03/2026 10:18  009875=
+00364128609231  9            9       =20
+
+SO ORDER    CUSTOMER REF      ORDER TYPE  ITEM  SOLD TO NAME              QTY=
+  UOM  PRODUCT     LOT     DESCRIPTION                  LINE WEIGHT KG  INVOI=
+CE     INVOICE DATE  FOREIGN AMOUNT  COMMODITY CODE  COMMODITY CODE DESCRIPTI=
+ON          COO  EXPIRY DATE  MFG DATE =20
+----------  ----------------  ----------  ----  ------------------------  ---=
+  ---  ----------  ------  ---------------------------  --------------  -----=
+-----  ------------  --------------  --------------  ------------------------=
+----------  ---  -----------  ----------
+6090004185  00948231-OD44210  ZODC        0010  ACME MEDICAL SUPPLY GMBH  1  =
+  BX   A100247-DE  B72814  ORTHO KIT LOW PROFILE 250CC  0,8             90874=
+00156  16/03/2026    172,45          90189084        Medical instruments and =
+appliances  DE   24/02/2030   25/02/2026
+6090004185  00948231-OD44210  ZODC        0020  ACME MEDICAL SUPPLY GMBH  1  =
+  BX   A100248-DE  B72815  ORTHO KIT LOW PROFILE 350CC  0,8             90874=
+00156  16/03/2026    168,90          90189084        Medical instruments and =
+appliances  DE   27/02/2030   28/02/2026
+
+Outcome:
+  1. In the above data, line 20 maps to item 0020. Pick and GI statuses are b=
+oth 9, so the line is completed. The HU shipper box reference is 009875003641=
+28609231.
+
+Let me know if any questions,
+Regards,
+Operations Training
+
+--===============3336876787647681755==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!doctype html><html><head><meta charset=3D"utf-8"><style>
+body { font-family: Arial, sans-serif; font-size: 12px; color: #222; }
+table { border-collapse: collapse; margin: 12px 0; font-size: 11px; }
+th, td { border: 1px solid #999; padding: 4px 6px; text-align: left; }
+th { background: #f0f0f0; }
+</style></head><body>
+<p>Hi Service Desk,</p>
+<p><strong>Scenario 2:</strong> Direct Business sales order fully picked, pac=
+ked and shipped.</p>
+<p><strong>Type of request:</strong> Status of line 20 of this sales order / =
+OBD, GI date, and shipper box reference.</p>
+<p><strong>Data's:</strong></p>
+<table><thead><tr><th>Order Date</th><th>Order Time</th><th>COUNTRY</th><th>R=
+OUTE_ID</th><th>SO ORDER</th><th>DOCNO</th><th>DOCTYPE</th><th>LINE</th><th>P=
+RODUCT</th><th>BATCHNO</th><th>QTY Ordered</th><th>QTY_PACKED</th><th>DG</th>=
+<th>Pick Date</th><th>PACK_BOX</th><th>STATUS_PICK</th><th>STATUS_GI</th></tr=
+></thead><tbody><tr><td>15/03/2026</td><td>09:45</td><td>DE</td><td>RHE2D4</t=
+d><td>6090004185</td><td>90000785</td><td>ZODC</td><td>0010</td><td>A100247-D=
+E</td><td>B72814</td><td>1.00</td><td>1</td><td>-</td><td>16/03/2026 10:12</t=
+d><td>00987500364128609231</td><td>9</td><td>9</td></tr><tr><td>15/03/2026</t=
+d><td>09:45</td><td>DE</td><td>RHE2D4</td><td>6090004185</td><td>90000785</td=
+><td>ZODC</td><td>0020</td><td>A100248-DE</td><td>B72815</td><td>1.00</td><td=
+>1</td><td>-</td><td>16/03/2026 10:18</td><td>00987500364128609231</td><td>9<=
+/td><td>9</td></tr></tbody></table>
+<table><thead><tr><th>SO ORDER</th><th>CUSTOMER REF</th><th>ORDER TYPE</th><t=
+h>ITEM</th><th>SOLD TO NAME</th><th>QTY</th><th>UOM</th><th>PRODUCT</th><th>L=
+OT</th><th>DESCRIPTION</th><th>LINE WEIGHT KG</th><th>INVOICE</th><th>INVOICE=
+ DATE</th><th>FOREIGN AMOUNT</th><th>COMMODITY CODE</th><th>COMMODITY CODE DE=
+SCRIPTION</th><th>COO</th><th>EXPIRY DATE</th><th>MFG DATE</th></tr></thead><=
+tbody><tr><td>6090004185</td><td>00948231-OD44210</td><td>ZODC</td><td>0010</=
+td><td>ACME MEDICAL SUPPLY GMBH</td><td>1</td><td>BX</td><td>A100247-DE</td><=
+td>B72814</td><td>ORTHO KIT LOW PROFILE 250CC</td><td>0,8</td><td>9087400156<=
+/td><td>16/03/2026</td><td>172,45</td><td>90189084</td><td>Medical instrument=
+s and appliances</td><td>DE</td><td>24/02/2030</td><td>25/02/2026</td></tr><t=
+r><td>6090004185</td><td>00948231-OD44210</td><td>ZODC</td><td>0020</td><td>A=
+CME MEDICAL SUPPLY GMBH</td><td>1</td><td>BX</td><td>A100248-DE</td><td>B7281=
+5</td><td>ORTHO KIT LOW PROFILE 350CC</td><td>0,8</td><td>9087400156</td><td>=
+16/03/2026</td><td>168,90</td><td>90189084</td><td>Medical instruments and ap=
+pliances</td><td>DE</td><td>27/02/2030</td><td>28/02/2026</td></tr></tbody></=
+table>
+<p><strong>Outcome:</strong> In the above data, line 20 maps to item 0020. Pi=
+ck and GI statuses are both 9, so the line is completed. The HU shipper box r=
+eference is 00987500364128609231.</p>
+<p>Let me know if any questions,<br>Regards,<br>Operations Training</p>
+</body></html>
+
+--===============3336876787647681755==--
