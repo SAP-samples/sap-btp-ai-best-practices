@@ -1,0 +1,224 @@
+<div class="admin-page">
+    <!-- Full-width subheader bar -->
+    <div class="admin-subheader">
+        <ui5-title level="H5">Admin Dashboard</ui5-title>
+        <ui5-tabcontainer id="admin-tabs" class="admin-tabs" content-background-design="Transparent" hidden>
+            <ui5-tab id="admin-tab-dashboard" text="Dashboard" icon="home" selected></ui5-tab>
+            <ui5-tab id="admin-tab-telemetry" text="Telemetry" icon="connected"></ui5-tab>
+        </ui5-tabcontainer>
+    </div>
+
+    <!-- Access denied state (shown if non-admin navigates here directly) -->
+    <div id="admin-denied" class="admin-denied" hidden>
+        <ui5-icon name="locked" class="denied-icon"></ui5-icon>
+        <ui5-title level="H4">Access Denied</ui5-title>
+        <ui5-text>You don't have admin privileges to view this page.</ui5-text>
+    </div>
+
+    <!-- Loading state -->
+    <div id="admin-loading" class="admin-loading">
+        <ui5-busy-indicator active size="M" delay="0"></ui5-busy-indicator>
+    </div>
+
+    <!-- Dashboard content (hidden until data loads) -->
+    <div id="admin-content" class="admin-content" hidden>
+
+        <!-- ═══ Dashboard Tab Panel ═══ -->
+        <div id="admin-panel-dashboard" class="admin-panel">
+
+        <!-- KPI cards row -->
+        <div class="admin-kpi-row">
+            <div class="kpi-card">
+                <ui5-title level="H1" id="stat-total-sessions" class="kpi-value">—</ui5-title>
+                <ui5-text class="kpi-label">Total Sessions</ui5-text>
+            </div>
+            <div class="kpi-card">
+                <ui5-title level="H1" id="stat-unique-users" class="kpi-value">—</ui5-title>
+                <ui5-text class="kpi-label">Unique Users</ui5-text>
+            </div>
+            <div class="kpi-card">
+                <ui5-title level="H1" id="stat-avg-messages" class="kpi-value">—</ui5-title>
+                <ui5-text class="kpi-label">Avg Messages / Session</ui5-text>
+            </div>
+            <div class="kpi-card">
+                <ui5-title level="H1" id="stat-completion-rate" class="kpi-value">—</ui5-title>
+                <ui5-text class="kpi-label">Completion Rate</ui5-text>
+            </div>
+        </div>
+
+        <!-- Sessions over time chart -->
+        <div class="admin-section">
+            <div class="section-header">
+                <ui5-title level="H5">Sessions Over Time</ui5-title>
+                <ui5-segmented-button id="time-range-toggle">
+                    <ui5-segmented-button-item selected>Daily</ui5-segmented-button-item>
+                    <ui5-segmented-button-item>Weekly</ui5-segmented-button-item>
+                </ui5-segmented-button>
+            </div>
+            <div id="sessions-chart" class="chart-container"></div>
+        </div>
+
+        <!-- Top companies -->
+        <div class="admin-section">
+            <ui5-title level="H5" class="section-title">Top Companies</ui5-title>
+            <div id="top-companies" class="companies-list"></div>
+            <div id="companies-empty" class="companies-empty" hidden>
+                <ui5-text>No company data available yet.</ui5-text>
+            </div>
+        </div>
+
+        <!-- Users section -->
+        <div class="admin-section section-divider" id="users-section" hidden>
+            <ui5-title level="H4" class="section-title">Users</ui5-title>
+
+            <div class="admin-kpi-row">
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-new-users" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">New Users</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-returning-users" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Returning Users</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-companies" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Companies</ui5-text>
+                </div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Engagement Distribution</ui5-title>
+                <div id="engagement-bands" class="horizontal-bars-list"></div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Top Companies (by email domain)</ui5-title>
+                <div id="top-user-companies" class="companies-list"></div>
+            </div>
+        </div>
+
+        <!-- Outcomes & Quality section -->
+        <div class="admin-section section-divider" id="outcomes-section" hidden>
+            <ui5-title level="H4" class="section-title">Outcomes &amp; Quality</ui5-title>
+
+            <div class="admin-kpi-row">
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-submissions" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Submissions</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-avg-score" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Avg Score</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-score-range" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Score Range</ui5-text>
+                </div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Score Distribution</ui5-title>
+                <div id="score-distribution" class="horizontal-bars-list"></div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">App Type Split</ui5-title>
+                <div id="app-type-split" class="admin-kpi-row"></div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Top Industries</ui5-title>
+                <div id="top-industries" class="companies-list"></div>
+            </div>
+
+            <div class="sub-section">
+                <div class="section-header">
+                    <ui5-title level="H5">Submissions (Last 30 Days)</ui5-title>
+                </div>
+                <div id="submissions-chart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- Collaboration & Events section -->
+        <div class="admin-section section-divider" id="collaboration-section" hidden>
+            <ui5-title level="H4" class="section-title">Collaboration &amp; Events</ui5-title>
+
+            <div class="admin-kpi-row">
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-shared-conversations" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Shared Conversations</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-share-members" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Share Members</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-events" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Events</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-active-events" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Active Events</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-event-members" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Event Members</ui5-text>
+                </div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Top Events by Members</ui5-title>
+                <div id="top-events" class="companies-list"></div>
+                <div id="events-empty" class="companies-empty" hidden>
+                    <ui5-text>No events data available yet.</ui5-text>
+                </div>
+            </div>
+        </div>
+
+        </div>
+        <!-- ═══ End Dashboard Tab Panel ═══ -->
+
+        <!-- ═══ Telemetry Tab Panel (SAP-hosted instance only) ═══ -->
+        <div id="admin-panel-telemetry" class="admin-panel" hidden>
+
+            <div class="admin-kpi-row">
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-installations" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Installations</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-active-installations" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Active (7 days)</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-conversations-all" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Conversations</ui5-text>
+                </div>
+                <div class="kpi-card">
+                    <ui5-title level="H1" id="stat-total-users-all" class="kpi-value">—</ui5-title>
+                    <ui5-text class="kpi-label">Total Users</ui5-text>
+                </div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Version Distribution</ui5-title>
+                <div id="telemetry-version-dist" class="companies-list"></div>
+            </div>
+
+            <div class="sub-section">
+                <div class="section-header">
+                    <ui5-title level="H5">Growth (Last 30 Days)</ui5-title>
+                </div>
+                <div id="telemetry-growth-chart" class="chart-container"></div>
+            </div>
+
+            <div class="sub-section">
+                <ui5-title level="H5" class="section-title">Installations</ui5-title>
+                <div id="telemetry-installations-list" class="companies-list"></div>
+            </div>
+
+        </div>
+        <!-- ═══ End Telemetry Tab Panel ═══ -->
+
+    </div>
+</div>

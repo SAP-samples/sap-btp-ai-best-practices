@@ -1,0 +1,52 @@
+# Python (paths work for both git and CF deployment with path: api)
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+
+# Node / npm generated artifacts (project structure: ui/*)
+node_modules/
+ui/node_modules/
+ui/dist/
+ui/.vite/
+.npm/
+ui/.npm/
+npm-debug.log*
+ui/npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files and logs
+/.env
+/.env.*
+*.log
+
+# IDE / VCS metadata
+.git/
+.github/
+.vscode/
+.idea/
+.claude/
+
+# Cache files
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tmp-tests/
+**/.tmp-tests/
+
+# Database files and local runtime state should not be deployed
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3

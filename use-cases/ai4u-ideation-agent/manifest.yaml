@@ -1,0 +1,37 @@
+---
+applications:
+    - name: ai4u-ideation-agent-api
+      path: api
+      buildpacks:
+      - python_buildpack
+      command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+      memory: 4G
+      disk_quota: 4G
+      routes:
+          - route: ai4u-ideation-agent-api.cfapps.eu10-005.hana.ondemand.com
+      services:
+          - ai4u-xsuaa
+          - ai4u-ideation-hana
+          - ai4u-ideation-agent-objectstore
+          - ai-core-internal
+      env:
+          APP_ENV: production
+          ALLOWED_ORIGIN: https://ai4u-ideation-agent.cfapps.eu10-005.hana.ondemand.com
+          API_BASE_URL: https://ai4u-ideation-agent-api.cfapps.eu10-005.hana.ondemand.com
+    - name: ai4u-ideation-agent-ui
+      path: ui
+      buildpack: nodejs_buildpack
+      command: npm start -- --port $PORT
+      memory: 4G
+      disk_quota: 1G
+      routes:
+          - route: ai4u-ideation-agent.cfapps.eu10-005.hana.ondemand.com
+      env:
+          VITE_API_BASE_URL: https://ai4u-ideation-agent-api.cfapps.eu10-005.hana.ondemand.com
+          VITE_APP_HOST: ai4u-ideation-agent.cfapps.eu10-005.hana.ondemand.com
+          VITE_XSUAA_URL: "https://ai4u-dev.authentication.eu10.hana.ondemand.com"
+          VITE_XSUAA_CLIENT_ID: ((xsuaa_client_id))
+          VITE_CDC_API_KEY: ((cdc_api_key))
+          VITE_CDC_BASE_URL: "https://accounts.us1.gigya.com"
+          NODE_MODULES_CACHE: false
+          NODE_OPTIONS: --max-old-space-size=768

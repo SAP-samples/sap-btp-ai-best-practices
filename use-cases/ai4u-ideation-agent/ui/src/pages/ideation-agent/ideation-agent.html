@@ -1,0 +1,188 @@
+<div class="chat-page-wrapper">
+    <!-- Conversation sidebar -->
+    <aside id="conversation-sidebar" class="conversation-sidebar">
+        <div class="sidebar-header">
+            <ui5-select id="workspace-select" class="workspace-select" accessible-name="Workspace">
+                <ui5-option icon="home" value="" selected>Personal Workspace</ui5-option>
+            </ui5-select>
+            <div id="workspace-event-actions" class="workspace-event-actions" hidden>
+                <ui5-button id="workspace-event-link" design="Transparent" icon="competitor" class="workspace-action-btn">Event Leaderboard</ui5-button>
+                <ui5-text id="workspace-event-rank" class="workspace-event-rank" hidden></ui5-text>
+            </div>
+            <ui5-button id="new-conversation-btn" icon="add" design="Emphasized"
+                accessible-name="New conversation">New Conversation</ui5-button>
+        </div>
+        <ui5-busy-indicator id="sidebar-busy" size="S" delay="0" class="sidebar-busy">
+            <ui5-list id="conversation-list" selection-mode="Single" no-data-text="No conversations yet"
+                class="conversation-list">
+            </ui5-list>
+        </ui5-busy-indicator>
+        <ui5-menu id="conversation-context-menu" placement="End">
+            <ui5-menu-item id="ctx-share" icon="share-2" text="Share"></ui5-menu-item>
+            <ui5-menu-item id="ctx-rename" icon="edit" text="Rename"></ui5-menu-item>
+            <ui5-menu-item id="ctx-delete" icon="delete" text="Delete"></ui5-menu-item>
+        </ui5-menu>
+    </aside>
+
+    <!-- Main chat area -->
+    <div class="chat-main">
+    <section id="chat-splash" class="splash" aria-hidden="true">
+        <div class="splash-hero">
+            <div class="splash-background"></div>
+            <div class="splash-blue-highlights"></div>
+            <div class="splash-magenta-accents"></div>
+            <div class="splash-glow"></div>
+            <div class="splash-content">
+                <div class="hero-icon-wrapper">
+                    <ui5-icon name="ai" class="hero-icon" accessible-name="AI"></ui5-icon>
+                </div>
+                <ui5-text class="hero-title">What should we build?</ui5-text>
+                <ui5-text class="hero-subtitle">About 10 questions to get there</ui5-text>
+                <div class="splash-steps">
+                    <div class="step">
+                        <div class="step-indicator"></div>
+                        <ui5-text class="step-label">Describe</ui5-text>
+                        <ui5-text class="step-desc">Your challenge</ui5-text>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step">
+                        <div class="step-indicator"></div>
+                        <ui5-text class="step-label">Challenge</ui5-text>
+                        <ui5-text class="step-desc">Your assumptions</ui5-text>
+                    </div>
+                    <div class="step-connector"></div>
+                    <div class="step">
+                        <div class="step-indicator"></div>
+                        <ui5-text class="step-label">Solution</ui5-text>
+                        <ui5-text class="step-desc">Your blueprint</ui5-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subheader bar (full width, with Research button) -->
+    <ui5-bar id="chat-subheader" design="Subheader" class="chat-subheader" style="display: none;">
+        <ui5-title slot="startContent" id="chat-subheader-title" level="H5"></ui5-title>
+        <ui5-button slot="endContent" id="research-toggle"
+            icon="business-objects-experience" design="Default"
+            tooltip="Research" accessible-name="Toggle research panel"
+            style="display: none;">Research</ui5-button>
+    </ui5-bar>
+
+    <div class="chat-container">
+        <div id="chat-timeline" class="timeline"></div>
+
+        <!-- Drag & Drop overlay -->
+        <div id="drag-overlay" class="drag-overlay" hidden>
+            <div class="drag-overlay-content">
+                <ui5-icon name="upload" class="drag-overlay-icon"></ui5-icon>
+                <ui5-text class="drag-overlay-text">Drop files here</ui5-text>
+            </div>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.tsv,.odt,.odp,.ods,.rtf,.eml,.mht,.mhtml,.txt,.md,.json,.xml,.yaml,.yml,.py,.js,.ts,.html,.css,.sql" multiple hidden />
+
+        <div class="composer-company">
+            <ui5-input id="company-input" placeholder="Company name" required show-clear-icon show-suggestions></ui5-input>
+        </div>
+        <div class="composer">
+            <div id="attachment-strip" class="attachment-strip" hidden></div>
+            <ui5-textarea id="message-input" placeholder="Describe the challenge, idea, or use case you want to make real with AI..." growing growing-max-rows="12" rows="1"></ui5-textarea>
+            <div class="composer-actions">
+                <ui5-button id="attach-button" design="Transparent" icon="attachment" tooltip="Attach files" accessible-name="Attach files"></ui5-button>
+                <ui5-button id="send-button" design="Emphasized" icon="paper-plane" tooltip="Send" accessible-name="Send"></ui5-button>
+            </div>
+        </div>
+        <ui5-text id="composer-note" class="composer-note">Powered by AI. Verify results.</ui5-text>
+    </div>
+
+    <!-- Research Drawer Backdrop -->
+    <div id="research-backdrop" class="research-backdrop" hidden></div>
+
+    <!-- Research Drawer -->
+    <aside id="research-drawer" class="research-drawer" aria-label="Research" hidden>
+        <ui5-bar design="Header" class="research-drawer-header">
+            <ui5-text slot="startContent" class="research-drawer-title">Research</ui5-text>
+            <ui5-button slot="endContent" id="research-close"
+                icon="decline" design="Transparent"
+                tooltip="Close" accessible-name="Close"></ui5-button>
+        </ui5-bar>
+        <div class="research-drawer-content">
+            <ui5-tabcontainer id="research-tabs" class="research-tabs" content-background-design="Transparent">
+                <ui5-tab id="research-tab-cse" text="CSE" icon="search" selected>
+                    <div id="research-status" class="research-status">
+                        <ui5-busy-indicator id="research-busy" active size="S" delay="0"></ui5-busy-indicator>
+                        <ui5-text class="research-status-text">Searching...</ui5-text>
+                    </div>
+                    <div id="research-cse-content" class="research-tab-content">
+                        <ui5-panel id="research-panel-company" header-text="Company" class="research-panel" hidden></ui5-panel>
+                        <ui5-panel id="research-panel-analysis" header-text="Report Analysis" collapsed class="research-panel" hidden></ui5-panel>
+                        <ui5-panel id="research-panel-stories" header-text="Customer Stories" collapsed class="research-panel" hidden></ui5-panel>
+                        <ui5-panel id="research-panel-sources" header-text="Sources" collapsed class="research-panel" hidden></ui5-panel>
+                    </div>
+                </ui5-tab>
+                <ui5-tab id="research-tab-perplexity" text="Perplexity" icon="ai">
+                    <div class="research-tab-placeholder">
+                        <ui5-icon name="ai" class="placeholder-icon"></ui5-icon>
+                        <ui5-text class="placeholder-text">Market intelligence will appear here.</ui5-text>
+                    </div>
+                </ui5-tab>
+                <ui5-tab id="research-tab-linkedin" text="LinkedIn" icon="people-connected">
+                    <div class="research-tab-placeholder">
+                        <ui5-icon name="people-connected" class="placeholder-icon"></ui5-icon>
+                        <ui5-text class="placeholder-text">LinkedIn insights coming soon.</ui5-text>
+                    </div>
+                </ui5-tab>
+            </ui5-tabcontainer>
+        </div>
+    </aside>
+    </div><!-- /.chat-main -->
+</div>
+
+<!-- Image Lightbox -->
+<div id="image-lightbox" class="image-lightbox" hidden>
+    <button id="lightbox-close" class="lightbox-close" aria-label="Close">×</button>
+    <ui5-busy-indicator id="lightbox-loader" size="L" active delay="0"></ui5-busy-indicator>
+    <img id="lightbox-img" class="lightbox-img" alt="Full-size image" />
+    <iframe id="lightbox-pdf" class="lightbox-pdf" hidden></iframe>
+</div>
+
+<!-- Share Conversation Dialog -->
+<ui5-dialog id="share-conversation-dialog" class="share-conversation-dialog">
+    <div slot="header" class="share-dialog-header">
+        <span class="share-dialog-title">Share Conversation</span>
+        <ui5-button id="share-dialog-close-btn" icon="decline" design="Transparent" tooltip="Close"></ui5-button>
+    </div>
+    <div class="share-dialog-content">
+        <div class="share-permission-row">
+            <div class="share-permission-label-group">
+                <span class="share-permission-label">Access level:</span>
+                <span class="share-permission-sublabel">Default for new members</span>
+            </div>
+            <ui5-segmented-button id="share-permission-toggle">
+                <ui5-segmented-button-item pressed data-permission="read">View only</ui5-segmented-button-item>
+                <ui5-segmented-button-item data-permission="write">Can edit</ui5-segmented-button-item>
+            </ui5-segmented-button>
+        </div>
+        <div class="share-code-display">
+            <span id="share-code-text" class="share-code-text"></span>
+            <ui5-button id="share-copy-code-btn" icon="copy" design="Transparent" tooltip="Copy code"></ui5-button>
+        </div>
+        <span class="share-link-label">Or share this link:</span>
+        <div class="share-link-display">
+            <ui5-input id="share-link-input" readonly style="width: 100%;"></ui5-input>
+            <ui5-button id="share-copy-link-btn" icon="copy" design="Transparent" tooltip="Copy link"></ui5-button>
+        </div>
+        <div id="share-members-section" class="share-members-section" hidden>
+            <span class="share-members-title">Shared with</span>
+            <div id="share-members-list" class="share-members-list"></div>
+        </div>
+        <div class="share-revoke-row">
+            <ui5-button id="share-revoke-btn" icon="stop" design="Negative" tooltip="Stop sharing">Stop Sharing</ui5-button>
+        </div>
+    </div>
+</ui5-dialog>
+<ui5-toast id="share-toast" placement="BottomCenter"></ui5-toast>
+<ui5-toast id="file-toast" placement="BottomCenter"></ui5-toast>

@@ -1,0 +1,34 @@
+# Python virtual environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tmp-tests/
+**/.tmp-tests/
+.tox/
+.nox/
+.coverage
+.coverage.*
+
+# Local environment files (configuration is applied through cf set-env)
+.env
+.env.*
+
+# Local logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Runtime-generated local state (recreated at runtime)
+ideation_agent/data/*.db
+ideation_agent/data/*.db-shm
+ideation_agent/data/*.db-wal
+
+# IDEs & OS
+.idea/
+.vscode/
+.DS_Store
