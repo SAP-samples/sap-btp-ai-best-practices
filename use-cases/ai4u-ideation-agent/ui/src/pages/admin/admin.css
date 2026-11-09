@@ -1,0 +1,298 @@
+.admin-page {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Full-width subheader bar — sticky below the shell bar */
+.admin-subheader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    min-height: 2.75rem;
+    background: var(--sapPageHeader_Background, var(--sapObjectHeader_Background));
+    border-bottom: 1px solid var(--sapGroup_ContentBorderColor);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Tab bar inside subheader — suppress its own separator (our div provides full-width one) */
+.admin-tabs[hidden] {
+    display: none;
+}
+
+.admin-tabs::part(content) {
+    display: none;
+}
+
+.admin-tabs::part(tabstrip) {
+    box-shadow: none;
+    border-bottom: none;
+}
+
+/* Tab panels */
+.admin-panel[hidden] {
+    display: none;
+}
+
+/* Loading */
+.admin-loading {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.admin-loading[hidden] {
+    display: none;
+}
+
+/* Access denied */
+.admin-denied {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--sapContent_LabelColor);
+}
+
+.admin-denied[hidden] {
+    display: none;
+}
+
+.admin-denied .denied-icon {
+    width: 3rem;
+    height: 3rem;
+    color: var(--sapNegativeColor);
+}
+
+/* Content */
+.admin-content[hidden] {
+    display: none;
+}
+
+.admin-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* KPI cards */
+.admin-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.kpi-card {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 0.75rem;
+    background: var(--sapGroup_ContentBackground);
+    text-align: center;
+}
+
+.kpi-value {
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.kpi-label {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--sapContent_LabelColor);
+}
+
+/* Sections */
+.admin-section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    margin-bottom: 0.75rem;
+}
+
+/* Chart container */
+.chart-container {
+    height: 200px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--sapGroup_ContentBorderColor);
+    position: relative;
+}
+
+.chart-bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 24px;
+    background: var(--sapButton_Emphasized_Background, #0070f2);
+    border-radius: 3px 3px 0 0;
+    min-height: 2px;
+    transition: height 0.3s ease;
+}
+
+.chart-bar:hover {
+    opacity: 0.8;
+}
+
+.chart-count {
+    font-size: 0.65rem;
+    color: var(--sapContent_LabelColor);
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.chart-label {
+    font-size: 0.6rem;
+    color: var(--sapContent_LabelColor);
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* Companies list */
+.companies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.company-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 0.5rem;
+    background: var(--sapGroup_ContentBackground);
+}
+
+.company-rank {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--sapContent_LabelColor);
+    min-width: 1.5rem;
+}
+
+.company-name {
+    flex: 1;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.company-bar-container {
+    flex: 1;
+    max-width: 200px;
+    height: 8px;
+    background: var(--sapField_BorderColor, #e0e0e0);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.company-bar {
+    height: 100%;
+    background: var(--sapButton_Emphasized_Background, #0070f2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.company-count {
+    font-size: 0.8rem;
+    color: var(--sapContent_LabelColor);
+    min-width: 2rem;
+    text-align: right;
+}
+
+.companies-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--sapContent_LabelColor);
+}
+
+.companies-empty[hidden] {
+    display: none;
+}
+
+/* Sub-section spacing */
+.sub-section {
+    margin-bottom: 1.5rem;
+}
+
+/* Horizontal bars list */
+.horizontal-bars-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Section dividers for expanded groups */
+.section-divider {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--sapGroup_ContentBorderColor);
+}
+
+.section-divider[hidden] {
+    display: none;
+}
+
+/* Remove double border when two divider sections are adjacent */
+.section-divider + .section-divider {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .admin-content {
+        padding: 1rem;
+    }
+
+    .admin-kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .chart-container {
+        height: 150px;
+    }
+
+    .company-bar-container {
+        display: none;
+    }
+}

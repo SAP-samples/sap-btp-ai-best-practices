@@ -1,0 +1,251 @@
+/* ─── Disclaimer / About Panel ─── */
+/* Right-side sliding panel inspired by SAP Customer Strategy Explorer */
+
+/* Backdrop */
+.disclaimer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
+  pointer-events: none;
+}
+
+.disclaimer-backdrop.open {
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: all;
+}
+
+/* Panel */
+.disclaimer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  width: 380px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  background: var(--sapBackgroundColor, #fff);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disclaimer-panel.open {
+  transform: translateX(0);
+}
+
+/* Header banner */
+.disclaimer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: var(--sapButton_Emphasized_Background, #0070f2);
+  flex-shrink: 0;
+}
+
+.disclaimer-panel-title {
+  font-family: var(--sapFontHeaderFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: var(--sapButton_Emphasized_TextColor, #fff);
+  letter-spacing: 0.01em;
+}
+
+/* Body (scrollable) */
+.disclaimer-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  overscroll-behavior: contain;
+}
+
+/* Footer (sticky bottom) */
+.disclaimer-panel-footer {
+  flex-shrink: 0;
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--sapGroup_ContentBorderColor, #e5e5e5);
+  display: flex;
+  justify-content: center;
+}
+
+.disclaimer-panel-footer-btn {
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--sapButton_Emphasized_Background, #0070f2);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 112, 242, 0.2);
+}
+
+.disclaimer-panel-footer-btn:hover {
+  background: var(--sapButton_Emphasized_Hover_Background, #0064d9);
+  box-shadow: 0 4px 10px rgba(0, 112, 242, 0.3);
+}
+
+.disclaimer-panel-footer-btn:active {
+  transform: scale(0.97);
+  background: var(--sapButton_Emphasized_Active_Background, #0058c0);
+}
+
+/* Intro */
+.disclaimer-panel-intro {
+  margin-bottom: 1.25rem;
+}
+
+.disclaimer-panel-heading {
+  font-family: var(--sapFontHeaderFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: var(--sapFontHeader4Size, 1.125rem);
+  font-weight: normal;
+  color: var(--sapLinkColor, #0064d9);
+  margin: 0 0 0.5rem;
+}
+
+.disclaimer-panel-subtext {
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--sapTextColor, #32363a);
+  margin: 0;
+}
+
+/* Sections (accordion) */
+.disclaimer-section {
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor, #e5e5e5);
+}
+
+.disclaimer-section:last-child {
+  border-bottom: none;
+}
+
+.disclaimer-section-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.875rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sapFontHeaderFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: var(--sapGroup_TitleTextColor, #32363a);
+  transition: color 0.15s ease;
+}
+
+.disclaimer-section-btn:hover {
+  color: var(--sapLinkColor, #0064d9);
+}
+
+.disclaimer-chevron {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--sapContent_IconColor, #5b6b7a);
+  flex-shrink: 0;
+}
+
+.disclaimer-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Section body (collapsed by default) */
+.disclaimer-section-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    padding 0.3s ease;
+  opacity: 0;
+  padding: 0;
+}
+
+.disclaimer-section-body[aria-hidden="false"] {
+  max-height: 400px;
+  opacity: 1;
+  padding: 0 0 1rem;
+}
+
+/* Bullet lists */
+.disclaimer-section-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.disclaimer-section-body li {
+  position: relative;
+  padding-left: 0.875rem;
+  margin-bottom: 0.625rem;
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--sapTextColor, #32363a);
+}
+
+.disclaimer-section-body li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--sapContent_IconColor, #5b6b7a);
+}
+
+.disclaimer-section-body li:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer-section-body li strong {
+  font-weight: 600;
+  color: var(--sapTextColor, #32363a);
+}
+
+/* Links */
+.disclaimer-section-body a {
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  color: var(--sapLinkColor, #0064d9);
+  text-decoration: none;
+  transition: text-decoration 0.1s ease;
+}
+
+.disclaimer-section-body a:hover {
+  text-decoration: underline;
+}
+
+.disclaimer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid var(--sapGroup_ContentBorderColor, #e5e5e5);
+}
+
+.disclaimer-legal-links a {
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Responsive: full-width on mobile */
+@media (max-width: 480px) {
+  .disclaimer-panel {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+

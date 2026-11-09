@@ -1,0 +1,344 @@
+.event-workspace {
+    height: 100%;
+    min-height: calc(100vh - 6rem);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Loading */
+.event-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+}
+
+.event-loading[hidden] {
+    display: none;
+}
+
+/* Join overlay */
+.event-join-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sapBackgroundColor);
+    z-index: 10;
+}
+
+.event-join-overlay[hidden] {
+    display: none;
+}
+
+.join-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 1rem;
+    background: var(--sapGroup_ContentBackground);
+    text-align: center;
+    max-width: 400px;
+}
+
+.join-card .join-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--sapContent_IconColor);
+}
+
+.join-invite-text {
+    color: var(--sapContent_LabelColor);
+    margin-bottom: 0.5rem;
+}
+
+.join-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.join-meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2rem;
+    background: color-mix(in srgb, var(--sapContent_IconColor) 8%, transparent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--sapContent_LabelColor);
+}
+
+.join-meta-badge .join-meta-icon {
+    width: 0.85rem;
+    height: 0.85rem;
+    color: var(--sapContent_IconColor);
+}
+
+.join-status-badge {
+    background: color-mix(in srgb, var(--sapPositiveColor) 12%, transparent);
+    color: var(--sapPositiveTextColor);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.7rem;
+}
+
+.join-status-badge ui5-text {
+    color: inherit;
+}
+
+.join-status-badge.ended {
+    background: color-mix(in srgb, var(--sapNegativeColor) 12%, transparent);
+    color: var(--sapNegativeTextColor);
+}
+
+/* Main workspace — single-column centered layout */
+.event-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+}
+
+.event-main[hidden] {
+    display: none;
+}
+
+/* Hero header */
+.event-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 2.5rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 1rem;
+    background: var(--sapGroup_ContentBackground);
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.event-hero-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--sapBrandColor);
+}
+
+.event-hero-title {
+    margin: 0;
+}
+
+.event-hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.event-meta-separator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--sapContent_NonInteractiveIconColor);
+}
+
+.event-member-count {
+    font-size: 0.85rem;
+    color: var(--sapContent_LabelColor);
+}
+
+.event-status-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--sapPositiveTextColor);
+}
+
+.event-status-badge.ended {
+    color: var(--sapNegativeTextColor);
+}
+
+.event-hero-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.event-hero-cta {
+    /* no extra margin when inside actions row */
+}
+
+/* Admin toolbar */
+.event-admin-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 0.75rem;
+    background: var(--sapGroup_ContentBackground);
+    width: 100%;
+    max-width: 900px;
+}
+
+.event-admin-toolbar[hidden] {
+    display: none;
+}
+
+/* Leaderboard view */
+.event-leaderboard-view {
+    width: 100%;
+    max-width: 900px;
+    border: 1px solid var(--sapGroup_ContentBorderColor);
+    border-radius: 1rem;
+    background: var(--sapGroup_ContentBackground);
+    padding: 1.25rem 1.5rem;
+}
+
+.leaderboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.leaderboard-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 3rem;
+    text-align: center;
+    color: var(--sapContent_LabelColor);
+}
+
+.leaderboard-empty[hidden] {
+    display: none;
+}
+
+.leaderboard-empty .empty-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--sapContent_NonInteractiveIconColor);
+}
+
+/* Leaderboard entry */
+/* Styles moved to shared component: ui/src/components/leaderboard-card.css */
+
+/* Back navigation */
+.event-back-nav {
+    width: 100%;
+    max-width: 900px;
+    align-self: flex-start;
+}
+
+/* Ended event banner */
+/* Members list */
+.members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.member-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--sapGroup_ContentBorderColor);
+}
+
+.member-row:last-child {
+    border-bottom: none;
+}
+
+.member-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.member-role {
+    font-size: 0.8rem;
+    color: var(--sapContent_LabelColor);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* Share dialog */
+.dialog-content {
+    padding: 1rem;
+    min-width: 320px;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+}
+
+.event-share-content {
+    text-align: center;
+}
+
+.join-code-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--sapBackgroundColor);
+    border-radius: 0.5rem;
+}
+
+.code-text {
+    font-family: monospace;
+    letter-spacing: 0.15em;
+}
+
+.share-link-label {
+    font-size: 0.85rem;
+    color: var(--sapContent_LabelColor);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.share-link-display {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .event-main {
+        padding: 1rem;
+    }
+
+    .event-hero {
+        padding: 1.5rem 1rem;
+    }
+}

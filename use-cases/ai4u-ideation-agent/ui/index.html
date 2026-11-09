@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/images/SAP_logo_square.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AI4U Ideation Agent</title>
+        <link rel="stylesheet" href="/src/styles/global.css" />
+        <style>
+            #app {
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+            #app.ready {
+                opacity: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <ui5-navigation-layout id="nl1" mode="Collapsed">
+                <ui5-shellbar slot="header">
+                    <ui5-button icon="menu2" slot="startButton" id="startButton"></ui5-button>
+                    <ui5-shellbar-branding slot="branding">
+                        AI4U Ideation Agent
+                        <img slot="logo" src="/images/SAP_logo.svg" />
+                    </ui5-shellbar-branding>
+
+                    <ui5-button slot="content" id="shellbar-leaderboard" icon="competitor" design="Transparent">Company Leaderboard</ui5-button>
+                    <ui5-shellbar-item id="shellbar-update" icon="synchronize" text="Update" style="display: none;"></ui5-shellbar-item>
+                    <ui5-shellbar-item id="shellbar-about" icon="hint" text="About"></ui5-shellbar-item>
+                    <ui5-avatar slot="profile" initials="?" color-scheme="Accent6"></ui5-avatar>
+                </ui5-shellbar>
+
+                <ui5-popover id="user-popover" placement="Bottom">
+                    <div style="padding: 1rem; min-width: 200px;">
+                        <ui5-title level="H5" id="user-popover-name"></ui5-title>
+                        <ui5-text id="user-popover-email" style="display: block; margin-top: 0.25rem; color: var(--sapContent_LabelColor);"></ui5-text>
+                        <div style="margin-top: 1rem; border-top: 1px solid var(--sapGroup_ContentBorderColor); padding-top: 0.75rem;">
+                            <ui5-button id="logout-btn" design="Transparent" icon="log">Logout</ui5-button>
+                        </div>
+                    </div>
+                </ui5-popover>
+
+                <ui5-popover id="update-popover" placement="Bottom">
+                    <div style="padding: 1rem; min-width: 240px;">
+                        <ui5-title level="H5">Update Available</ui5-title>
+                        <ui5-text style="display: block; margin-top: 0.5rem; color: var(--sapContent_LabelColor);">
+                            Current version: <strong id="update-current-version"></strong>
+                        </ui5-text>
+                        <ui5-text style="display: block; margin-top: 0.25rem; color: var(--sapContent_LabelColor);">
+                            Latest version: <strong id="update-latest-version"></strong>
+                        </ui5-text>
+                        <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--sapGroup_ContentBorderColor);">
+                            <ui5-text style="display: block; font-size: 0.8125rem; color: var(--sapContent_LabelColor);">
+                                Contact your administrator to update.
+                            </ui5-text>
+                            <a id="update-repo-link" href="https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/use-cases/ai4u-ideation-agent" target="_blank" rel="noopener" style="display: inline-block; margin-top: 0.5rem; font-size: 0.8125rem; font-family: var(--sapFontFamily); color: var(--sapLinkColor); text-decoration: none;">
+                                View on GitHub →
+                            </a>
+                        </div>
+                    </div>
+                </ui5-popover>
+
+                <ui5-side-navigation id="sn1" slot="sideContent">
+                    <ui5-side-navigation-item text="Ideation Agent" href="/" icon="business-suite/answered" selected></ui5-side-navigation-item>
+                    <ui5-side-navigation-item text="Events" href="/events" icon="calendar"></ui5-side-navigation-item>
+                    <ui5-side-navigation-item text="Canvas" href="/canvas" icon="draw-rectangle"></ui5-side-navigation-item>
+                    <ui5-side-navigation-item text="Handover Packages" href="/handover" icon="form"></ui5-side-navigation-item>
+                </ui5-side-navigation>
+
+                <div class="content">
+                    <!-- Page content loaded here -->
+                </div>
+            </ui5-navigation-layout>
+        </div>
+
+        <script type="module" src="/src/main.js"></script>
+    </body>
+</html>

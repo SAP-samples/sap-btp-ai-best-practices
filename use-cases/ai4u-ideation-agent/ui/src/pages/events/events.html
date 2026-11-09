@@ -1,0 +1,84 @@
+<div class="events-page">
+    <div class="events-header">
+        <ui5-title level="H2">Events</ui5-title>
+        <div class="events-actions">
+            <ui5-button id="create-event-btn" icon="add" design="Emphasized">Create Event</ui5-button>
+            <ui5-button id="join-event-btn" icon="enter-more" design="Default">Join with Code</ui5-button>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="events-empty" class="events-empty" hidden>
+        <ui5-icon name="calendar" class="empty-icon"></ui5-icon>
+        <ui5-title level="H4">No events yet</ui5-title>
+        <ui5-text>Create an event for your workshop, hackathon, or competition — or join one with a code.</ui5-text>
+    </div>
+
+    <!-- Active events section -->
+    <div id="events-active-section" class="events-section" hidden>
+        <ui5-title level="H5" class="section-title">Active Events</ui5-title>
+        <div id="events-active-list" class="events-list"></div>
+    </div>
+
+    <!-- Ended events section -->
+    <div id="events-ended-section" class="events-section" hidden>
+        <ui5-title level="H5" class="section-title">Ended Events</ui5-title>
+        <div id="events-ended-list" class="events-list"></div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="events-loading" class="events-loading">
+        <ui5-busy-indicator active size="M" delay="0"></ui5-busy-indicator>
+    </div>
+
+    <!-- Create Event Dialog -->
+    <ui5-dialog id="create-event-dialog" header-text="Create Event">
+        <div class="dialog-content">
+            <ui5-label for="event-name-input" required>Event Name</ui5-label>
+            <ui5-input id="event-name-input" placeholder="e.g., TechEd Hackathon 2026" style="width: 100%;"></ui5-input>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <ui5-button id="create-event-cancel" design="Transparent">Cancel</ui5-button>
+            <ui5-button id="create-event-confirm" design="Emphasized">Create</ui5-button>
+        </div>
+    </ui5-dialog>
+
+    <!-- Join Event Dialog -->
+    <ui5-dialog id="join-event-dialog" header-text="Join Event">
+        <div class="dialog-content">
+            <ui5-label for="join-code-input" required>Event Code</ui5-label>
+            <ui5-input id="join-code-input" placeholder="e.g., ABC123" maxlength="6" style="width: 100%;"></ui5-input>
+            <div id="join-event-preview" class="join-preview" hidden>
+                <ui5-card>
+                    <div class="join-preview-content">
+                        <ui5-title id="join-preview-name" level="H5"></ui5-title>
+                        <ui5-text id="join-preview-info"></ui5-text>
+                    </div>
+                </ui5-card>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <ui5-button id="join-event-cancel" design="Transparent">Cancel</ui5-button>
+            <ui5-button id="join-event-confirm" design="Emphasized" disabled>Join Event</ui5-button>
+        </div>
+    </ui5-dialog>
+
+    <!-- Event Created Success Dialog -->
+    <ui5-dialog id="event-created-dialog" header-text="Event Created!">
+        <div class="dialog-content event-created-content">
+            <ui5-text>Share this code with participants:</ui5-text>
+            <div class="join-code-display">
+                <ui5-title id="created-event-code" level="H2" class="code-text"></ui5-title>
+                <ui5-button id="copy-code-btn" icon="copy" design="Transparent" tooltip="Copy code"></ui5-button>
+            </div>
+            <ui5-text class="share-link-label">Or share this link:</ui5-text>
+            <div class="share-link-display">
+                <ui5-input id="created-event-link" readonly style="width: 100%;"></ui5-input>
+                <ui5-button id="copy-link-btn" icon="copy" design="Transparent" tooltip="Copy link"></ui5-button>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <ui5-button id="event-created-open" design="Emphasized">Open Event</ui5-button>
+        </div>
+    </ui5-dialog>
+</div>

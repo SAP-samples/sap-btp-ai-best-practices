@@ -1,0 +1,650 @@
+<div class="handover-page">
+  <!-- Header -->
+  <div class="handover-header">
+    <div class="handover-header-left">
+      <ui5-button id="handover-back-btn" icon="nav-back" design="Transparent" tooltip="Back to list"></ui5-button>
+      <div class="handover-title-wrapper" id="handover-title-wrapper">
+        <ui5-title class="handover-title" id="handover-page-title" level="H4">Handover Packages</ui5-title>
+        <ui5-icon name="edit" class="handover-title-edit-icon" id="handover-title-edit-icon"></ui5-icon>
+      </div>
+      <ui5-input id="handover-title-input" class="handover-title-input" style="display:none;" placeholder="Handover title"></ui5-input>
+    </div>
+    <div class="handover-header-right">
+      <div class="handover-progress" id="handover-progress" style="display:none;">
+        <div class="handover-progress-bar">
+          <div class="handover-progress-fill" id="handover-progress-fill"></div>
+        </div>
+        <span class="handover-progress-text" id="handover-progress-text">0%</span>
+      </div>
+      <!-- List view actions -->
+      <ui5-button id="handover-new-btn" icon="add" design="Emphasized">New Handover</ui5-button>
+      <!-- Detail view actions (hidden by default) -->
+      <div id="handover-detail-actions" class="handover-detail-actions" style="display:none;">
+        <ui5-button id="handover-export-btn" design="Default" icon="download" icon-end>Export</ui5-button>
+        <ui5-button id="handover-more-btn" icon="overflow" design="Transparent" tooltip="More actions"></ui5-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div id="handover-list-view" class="handover-list-view">
+    <div id="handover-list-empty" class="handover-empty-state" style="display: none;">
+      <ui5-icon name="document" class="handover-empty-icon"></ui5-icon>
+      <p>No handover packages yet.</p>
+      <p class="handover-empty-hint">Create one to start capturing requirements for an AI use case.</p>
+    </div>
+    <ui5-busy-indicator id="handover-list-busy" size="S" delay="0" style="display:block">
+      <div id="handover-list-cards" class="handover-list-cards"></div>
+    </ui5-busy-indicator>
+  </div>
+
+  <!-- Card overflow menu -->
+  <ui5-menu id="handover-card-menu">
+    <ui5-menu-item icon="download" text="Export">
+      <ui5-menu-item icon="attachment-zip-file" text="ZIP (with files)"></ui5-menu-item>
+      <ui5-menu-item icon="pdf-attachment" text="PDF"></ui5-menu-item>
+      <ui5-menu-item icon="attachment-text-file" text="Markdown"></ui5-menu-item>
+      <ui5-menu-item icon="syntax" text="JSON"></ui5-menu-item>
+    </ui5-menu-item>
+    <ui5-menu-item id="card-menu-duplicate" icon="duplicate" text="Duplicate"></ui5-menu-item>
+    <ui5-menu-item id="card-menu-delete" icon="delete" text="Delete"></ui5-menu-item>
+  </ui5-menu>
+
+  <!-- Export format menu (detail view) -->
+  <ui5-menu id="handover-export-menu">
+    <ui5-menu-item icon="attachment-zip-file" text="ZIP (with files)"></ui5-menu-item>
+    <ui5-menu-item icon="pdf-attachment" text="PDF"></ui5-menu-item>
+    <ui5-menu-item icon="syntax" text="Markdown"></ui5-menu-item>
+    <ui5-menu-item icon="attachment-text-file" text="JSON"></ui5-menu-item>
+  </ui5-menu>
+
+  <!-- Detail view overflow menu -->
+  <ui5-menu id="handover-detail-menu">
+    <ui5-menu-item id="detail-menu-validate" icon="accept" text="Mark as Validated"></ui5-menu-item>
+    <ui5-menu-item id="detail-menu-duplicate" icon="duplicate" text="Duplicate"></ui5-menu-item>
+    <ui5-menu-item id="detail-menu-delete" icon="delete" text="Delete"></ui5-menu-item>
+  </ui5-menu>
+
+  <!-- Detail View -->
+  <div id="handover-detail-view" class="handover-detail-view" style="display: none;">
+    <ui5-busy-indicator id="handover-detail-busy" size="M" delay="0" class="detail-busy-overlay"></ui5-busy-indicator>
+    <div class="handover-detail-layout">
+      <!-- Left: Form -->
+      <div class="handover-form-panel">
+
+        <!-- AI Pre-fill (context sources for extraction) -->
+        <div class="source-materials-card" id="source-materials-card">
+          <div class="source-materials-header">
+            <div class="source-materials-title-area">
+              <div class="source-materials-title-row">
+                <ui5-icon name="ai" class="source-materials-icon"></ui5-icon>
+                <span class="source-materials-title">Pre-fill Sources</span>
+              </div>
+              <span class="source-materials-desc">
+                Link ideation conversations, upload reference documents, or paste meeting notes. AI reads these to pre-fill the form below.
+              </span>
+            </div>
+            <div class="source-materials-actions">
+              <ui5-button id="add-context-btn" icon="add" design="Emphasized" tooltip="Add context source">Add Source</ui5-button>
+            </div>
+          </div>
+          <div id="context-sources-list" class="context-sources-list"></div>
+          <div id="context-sources-empty" class="source-materials-empty" hidden>
+            <ui5-icon name="hint" class="source-materials-empty-icon"></ui5-icon>
+            <span>No sources linked yet. Add an ideation conversation, reference document, or notes to get started.</span>
+          </div>
+          <ui5-button id="prefill-btn" icon="ai" design="Default" class="prefill-trigger-btn" tooltip="AI reads your sources and fills in the form" style="display:none;">Auto-fill form</ui5-button>
+        </div>
+
+        <!-- Section 1: Customer Context -->
+        <ui5-panel id="section-customer" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-customer">
+            <ui5-icon name="customer" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">1. Customer & Workshop Context</span>
+            <ui5-tag id="badge-section-customer" design="Neutral" class="section-badge" hide-state-icon>0/7</ui5-tag>
+          </div>
+          <p class="section-lead">Basic workshop logistics and stakeholder contacts.</p>
+          <div class="form-grid">
+            <div class="form-field required">
+              <label for="f-customer">Customer</label>
+              <ui5-input id="f-customer" placeholder="e.g., Acme Corp"></ui5-input>
+            </div>
+            <div class="form-field required">
+              <label for="f-industry">Industry</label>
+              <ui5-input id="f-industry" placeholder="e.g., Manufacturing, Retail, Financial Services"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-workshop_date">Workshop Date</label>
+              <ui5-date-picker id="f-workshop_date" placeholder="Pick a date" format-pattern="yyyy-MM-dd"></ui5-date-picker>
+            </div>
+            <div class="form-field">
+              <label for="f-workshop_format">Format</label>
+              <ui5-input id="f-workshop_format" placeholder="e.g., In-person, Virtual, Hybrid"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-advisor_name">Advisor Name</label>
+              <ui5-input id="f-advisor_name" placeholder="SAP advisor leading the workshop"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-primary_contact">Primary Contact</label>
+              <ui5-input id="f-primary_contact" placeholder="Customer sponsor or decision-maker"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-tech_contact">Technical Contact</label>
+              <ui5-input id="f-tech_contact" placeholder="Customer IT architect or developer"></ui5-input>
+            </div>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 2: Use Case -->
+        <ui5-panel id="section-usecase" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-usecase">
+            <ui5-icon name="lightbulb" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">2. Use Case Definition</span>
+            <ui5-tag id="badge-section-usecase" design="Neutral" class="section-badge" hide-state-icon>0/3</ui5-tag>
+          </div>
+          <p class="section-lead">What problem are we solving and why does it matter now?</p>
+          <div class="callout">
+            <strong>Tip:</strong> A good problem statement quantifies the pain: volume, frequency, error rate, cost.
+            The more specific you are here, the better the build team can scope and prioritize.
+          </div>
+          <div class="form-grid">
+            <div class="form-field full-width required">
+              <label for="f-usecase_title">Use Case Title</label>
+              <ui5-input id="f-usecase_title" placeholder="e.g., Invoice Processing Automation"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-priority">Priority</label>
+              <ui5-select id="f-priority">
+                <ui5-option value="">-- Select --</ui5-option>
+                <ui5-option value="high">High</ui5-option>
+                <ui5-option value="medium">Medium</ui5-option>
+                <ui5-option value="low">Low</ui5-option>
+              </ui5-select>
+            </div>
+            <div class="form-field full-width required">
+              <label for="f-problem_statement">Problem Statement</label>
+              <ui5-textarea id="f-problem_statement" rows="2" growing growing-max-rows="10" placeholder="e.g., AP team processes 500 invoices/week manually, 12% error rate, 3-day cycle time, costing ~€200k/year in labor + penalties"></ui5-textarea>
+            </div>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 3: Current Process -->
+        <ui5-panel id="section-process" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-process">
+            <ui5-icon name="process" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">3. Current Process (As-Is)</span>
+            <ui5-tag id="badge-section-process" design="Neutral" class="section-badge" hide-state-icon>0/5</ui5-tag>
+          </div>
+          <p class="section-lead">Describe how the process works today: who does it, how often, and at what scale.</p>
+          <div class="form-grid">
+            <div class="form-field full-width required">
+              <label for="f-process_name">Process Name</label>
+              <ui5-input id="f-process_name" placeholder="e.g., Purchase Order Exception Handling"></ui5-input>
+            </div>
+            <div class="form-field required">
+              <label for="f-process_freq">Frequency</label>
+              <ui5-input id="f-process_freq" placeholder="e.g., 200 transactions/day, peaks on Mondays"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-process_volume">Volume</label>
+              <ui5-input id="f-process_volume" placeholder="e.g., 1,200 invoices/week across 3 regions"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-process_team">Team</label>
+              <ui5-input id="f-process_team" placeholder="e.g., AP Shared Services Center"></ui5-input>
+            </div>
+            <div class="form-field">
+              <label for="f-process_people">People Involved</label>
+              <ui5-input id="f-process_people" placeholder="e.g., 8 FTEs + 2 supervisors"></ui5-input>
+            </div>
+          </div>
+          <!-- Inline upload: As-Is diagrams -->
+          <div class="inline-upload" data-zone="asis">
+            <div class="inline-upload-header">
+              <ui5-icon name="workflow-tasks"></ui5-icon>
+              <span>As-Is Process Diagrams</span>
+              <span class="inline-upload-hint">.png, .jpg, .svg, .pdf, .vsdx</span>
+            </div>
+            <div class="inline-upload-files" data-zone-files="asis"></div>
+            <ui5-file-uploader data-zone-upload="asis" accept=".png,.jpg,.jpeg,.svg,.pdf,.vsdx,.drawio" multiple hide-input>
+              <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+            </ui5-file-uploader>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 4: Data Sources -->
+        <ui5-panel id="section-data" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-data">
+            <ui5-icon name="database" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">4. Data Sources & Semantics</span>
+            <ui5-tag id="badge-section-data" design="Neutral" class="section-badge" hide-state-icon>0/4</ui5-tag>
+          </div>
+          <p class="section-lead">What data flows through this process? Where does it live and who owns it?</p>
+          <div class="callout">
+            Upload real or representative sample data. The build team needs this to start the POC.
+            Include files showing both normal records and known exceptions.
+          </div>
+          <div class="form-grid">
+            <div class="form-field full-width required">
+              <label for="f-data_input">Data Input</label>
+              <ui5-textarea id="f-data_input" rows="2" growing growing-max-rows="8" placeholder="e.g., Purchase orders, vendor invoices, goods receipts from SAP MM"></ui5-textarea>
+            </div>
+            <div class="form-field full-width">
+              <label for="f-data_output">Expected Output</label>
+              <ui5-textarea id="f-data_output" rows="2" growing growing-max-rows="8" placeholder="e.g., Matched invoice records, exception reports, payment proposals"></ui5-textarea>
+            </div>
+            <div class="form-field full-width">
+              <label for="f-data_usage">Data Usage Notes</label>
+              <ui5-textarea id="f-data_usage" rows="2" growing growing-max-rows="8" placeholder="e.g., Real-time access via OData, anonymized samples available, GDPR-compliant"></ui5-textarea>
+            </div>
+            <!-- Dynamic data_sources table -->
+            <div class="form-field full-width">
+              <label>Data Sources</label>
+              <div id="table-data_sources" class="step-table-container"></div>
+            </div>
+          </div>
+          <!-- Inline upload: Sample Data -->
+          <div class="inline-upload" data-zone="data">
+            <div class="inline-upload-header">
+              <ui5-icon name="database"></ui5-icon>
+              <span>Sample Data Files</span>
+              <span class="inline-upload-hint">.csv, .xlsx, .json, .xml, .txt</span>
+            </div>
+            <div class="inline-upload-files" data-zone-files="data"></div>
+            <ui5-file-uploader data-zone-upload="data" accept=".csv,.xlsx,.xls,.json,.xml,.txt,.parquet" multiple hide-input>
+              <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+            </ui5-file-uploader>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 5: Business Impact -->
+        <ui5-panel id="section-impact" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-impact">
+            <ui5-icon name="trend-up" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">5. Business Impact</span>
+            <ui5-tag id="badge-section-impact" design="Neutral" class="section-badge" hide-state-icon>0/6</ui5-tag>
+          </div>
+          <p class="section-lead">Quantify the current cost and potential value. Even rough estimates help prioritize.</p>
+          <table class="impact-table">
+            <thead>
+              <tr>
+                <th>Impact Dimension</th>
+                <th>Current State</th>
+                <th>Estimated Value with AI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="impact-label">Volume (transactions/documents per period)</td>
+                <td><input class="td-input" data-impact="volume" data-col="current" placeholder="e.g., 500/week"></td>
+                <td><input class="td-input" data-impact="volume" data-col="target" placeholder="e.g., Same volume, 95% auto-processed"></td>
+              </tr>
+              <tr>
+                <td class="impact-label">Time spent manually (hours/FTE per week)</td>
+                <td><input class="td-input" data-impact="time_spent" data-col="current" placeholder="e.g., 40 hrs/week across team"></td>
+                <td><input class="td-input" data-impact="time_spent" data-col="target" placeholder="e.g., 8 hrs/week (exceptions only)"></td>
+              </tr>
+              <tr>
+                <td class="impact-label">Error rate or exception rate (%)</td>
+                <td><input class="td-input" data-impact="error_rate" data-col="current" placeholder="e.g., 12% require rework"></td>
+                <td><input class="td-input" data-impact="error_rate" data-col="target" placeholder="e.g., < 3%"></td>
+              </tr>
+              <tr>
+                <td class="impact-label">Cost per error or exception</td>
+                <td><input class="td-input" data-impact="cost_per_error" data-col="current" placeholder="e.g., €150 per exception"></td>
+                <td><input class="td-input" data-impact="cost_per_error" data-col="target" placeholder="e.g., €50 (faster resolution)"></td>
+              </tr>
+              <tr>
+                <td class="impact-label">Total estimated annual cost/effort</td>
+                <td><input class="td-input" data-impact="annual_cost" data-col="current" placeholder="e.g., €200k/year"></td>
+                <td><input class="td-input" data-impact="annual_cost" data-col="target" placeholder="e.g., €60k/year"></td>
+              </tr>
+              <tr>
+                <td class="impact-label">Downstream consequences</td>
+                <td><input class="td-input" data-impact="downstream" data-col="current" placeholder="e.g., Late payments, vendor disputes"></td>
+                <td><input class="td-input" data-impact="downstream" data-col="target" placeholder="e.g., On-time payment, better vendor terms"></td>
+              </tr>
+            </tbody>
+          </table>
+        </ui5-panel>
+
+        <!-- Section 6: AI Capabilities -->
+        <ui5-panel id="section-ai" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-ai">
+            <ui5-icon name="ai" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">6. AI Capabilities</span>
+            <ui5-tag id="badge-section-ai" design="Neutral" class="section-badge" hide-state-icon>0 selected</ui5-tag>
+          </div>
+          <p class="section-lead">Which AI techniques apply? Select all that could contribute to the solution.</p>
+          <div class="ai-capabilities-grid" id="ai-capabilities-grid">
+            <!-- Populated dynamically -->
+          </div>
+        </ui5-panel>
+
+        <!-- Section 7: To-Be Process -->
+        <ui5-panel id="section-tobe" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-tobe">
+            <ui5-icon name="future" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">7. To-Be Process & Scope</span>
+            <ui5-tag id="badge-section-tobe" design="Neutral" class="section-badge" hide-state-icon>0/4</ui5-tag>
+          </div>
+          <p class="section-lead">Describe the target state with AI integrated. Define what's in and out of scope.</p>
+          <div class="form-grid">
+            <div class="form-field full-width required">
+              <label for="f-tobe_narrative">To-Be Narrative</label>
+              <ui5-textarea id="f-tobe_narrative" rows="2" growing growing-max-rows="12" placeholder="e.g., AI agent triages incoming invoices, auto-matches to POs, flags exceptions for human review, learns from corrections"></ui5-textarea>
+            </div>
+            <div class="form-field full-width">
+              <label for="f-in_scope">In Scope</label>
+              <ui5-textarea id="f-in_scope" rows="2" growing growing-max-rows="8" placeholder="e.g., Standard 3-way match invoices, PO-based invoices, single entity"></ui5-textarea>
+            </div>
+            <div class="form-field full-width">
+              <label for="f-out_scope">Out of Scope</label>
+              <ui5-textarea id="f-out_scope" rows="2" growing growing-max-rows="8" placeholder="e.g., Non-PO invoices, credit notes, cross-company codes"></ui5-textarea>
+            </div>
+            <div class="form-field full-width">
+              <label for="f-done_definition">Definition of Done</label>
+              <ui5-textarea id="f-done_definition" rows="2" growing growing-max-rows="8" placeholder="e.g., Demo: process 50 invoices end-to-end with <5% exception rate; sign-off by Finance Director"></ui5-textarea>
+            </div>
+          </div>
+          <!-- Inline upload: To-Be diagrams -->
+          <div class="inline-upload" data-zone="tobe">
+            <div class="inline-upload-header">
+              <ui5-icon name="future"></ui5-icon>
+              <span>To-Be Process Diagrams</span>
+              <span class="inline-upload-hint">.png, .jpg, .svg, .pdf, .vsdx</span>
+            </div>
+            <div class="inline-upload-files" data-zone-files="tobe"></div>
+            <ui5-file-uploader data-zone-upload="tobe" accept=".png,.jpg,.jpeg,.svg,.pdf,.vsdx,.drawio" multiple hide-input>
+              <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+            </ui5-file-uploader>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 8: Business Rules, Thresholds & KPIs -->
+        <ui5-panel id="section-rules" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-rules">
+            <ui5-icon name="decision" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">8. Business Rules, Thresholds & KPIs</span>
+            <ui5-tag id="badge-section-rules" design="Neutral" class="section-badge" hide-state-icon>0/5</ui5-tag>
+          </div>
+          <p class="section-lead">Capture the decision logic, thresholds, and measurable success criteria.</p>
+          <div class="callout">
+            <strong>Important:</strong> Business rules define the AI's decision boundaries.
+            Be specific about conditions and actions. Ambiguous rules lead to rework.
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">Business Rules</h4>
+            <div id="table-business_rules" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">Thresholds & Ranges</h4>
+            <div id="table-thresholds" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">Approval Workflows</h4>
+            <div id="table-approvals" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">Edge Cases & Exceptions</h4>
+            <div id="table-edge_cases" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">KPIs & Success Criteria</h4>
+            <div id="table-kpis" class="step-table-container"></div>
+          </div>
+
+          <!-- Inline upload: Policy docs -->
+          <div class="inline-upload" data-zone="logic">
+            <div class="inline-upload-header">
+              <ui5-icon name="decision"></ui5-icon>
+              <span>Policy & Rules Documentation</span>
+              <span class="inline-upload-hint">.pdf, .docx, .xlsx, .png</span>
+            </div>
+            <div class="inline-upload-files" data-zone-files="logic"></div>
+            <ui5-file-uploader data-zone-upload="logic" accept=".pdf,.docx,.xlsx,.xls,.png,.jpg,.jpeg" multiple hide-input>
+              <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+            </ui5-file-uploader>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 9: Technical Integration -->
+        <ui5-panel id="section-tech" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-tech">
+            <ui5-icon name="connected" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">9. Technical Integration</span>
+            <ui5-tag id="badge-section-tech" design="Neutral" class="section-badge" hide-state-icon>0/3</ui5-tag>
+          </div>
+          <p class="section-lead">What systems, APIs, and infrastructure are involved?</p>
+
+          <div class="table-section">
+            <h4 class="table-section-title">SAP Landscape & Components</h4>
+            <p class="table-section-hint">Tick the components deployed at the customer. Fill in version and deployment details.</p>
+            <div id="table-tech_components" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">System Integrations</h4>
+            <div id="table-integrations" class="step-table-container"></div>
+          </div>
+
+          <div class="table-section">
+            <h4 class="table-section-title">Key Contacts</h4>
+            <div id="table-contacts" class="step-table-container"></div>
+          </div>
+        </ui5-panel>
+
+        <!-- Section 10: Handover Checklist -->
+        <ui5-panel id="section-checklist" collapsed>
+          <div slot="header" class="panel-header-custom" data-panel="section-checklist">
+            <ui5-icon name="checklist-2" class="panel-header-icon"></ui5-icon>
+            <span class="panel-header-title">10. Handover Checklist</span>
+            <ui5-tag id="badge-section-checklist" design="Neutral" class="section-badge" hide-state-icon>–</ui5-tag>
+          </div>
+          <p class="section-lead">Review completeness before submitting for validation.</p>
+          <div class="checklist-columns" id="checklist-container">
+            <div>
+              <p class="checklist-group-label">Solution Advisor - Before Submitting</p>
+              <ui5-checkbox data-chk="problem_clear" text="Problem statement quantifies the pain (section 2)"></ui5-checkbox>
+              <ui5-checkbox data-chk="impact_estimated" text="Business impact estimated (section 5)"></ui5-checkbox>
+              <ui5-checkbox data-chk="asis_documented" text="As-is process documented (section 3)"></ui5-checkbox>
+              <ui5-checkbox data-chk="asis_uploaded" text="As-is process diagram uploaded (section 3)"></ui5-checkbox>
+              <ui5-checkbox data-chk="data_sources" text="Data sources identified with access info (section 4)"></ui5-checkbox>
+              <ui5-checkbox data-chk="sample_data" text="Sample data uploaded (section 4)"></ui5-checkbox>
+              <ui5-checkbox data-chk="data_io_described" text="Input/output/data usage described (section 4)"></ui5-checkbox>
+              <ui5-checkbox data-chk="ai_caps_selected" text="AI capabilities mapped (section 6)"></ui5-checkbox>
+              <ui5-checkbox data-chk="tobe_written" text="To-be narrative completed (section 7)"></ui5-checkbox>
+              <ui5-checkbox data-chk="tobe_uploaded" text="To-be diagram uploaded (section 7)"></ui5-checkbox>
+              <ui5-checkbox data-chk="scope_defined" text="In/out scope clearly defined (section 7)"></ui5-checkbox>
+              <ui5-checkbox data-chk="rules_captured" text="Business rules documented (section 8)"></ui5-checkbox>
+              <ui5-checkbox data-chk="logic_uploaded" text="Policy documentation uploaded (section 8)"></ui5-checkbox>
+              <ui5-checkbox data-chk="kpis_defined" text="KPIs with baselines defined (section 8)"></ui5-checkbox>
+              <ui5-checkbox data-chk="tech_identified" text="Technical landscape mapped (section 9)"></ui5-checkbox>
+              <ui5-checkbox data-chk="contacts_listed" text="IT contacts listed (section 9)"></ui5-checkbox>
+              <ui5-checkbox data-chk="transcript_uploaded" text="Workshop transcript uploaded (section 10)"></ui5-checkbox>
+              <ui5-checkbox data-chk="docs_attached" text="Additional documentation attached (section 10)"></ui5-checkbox>
+            </div>
+            <div>
+              <p class="checklist-group-label">Build Team - On Receipt</p>
+              <ui5-checkbox data-chk="scope_clear" text="Scope and boundaries are clear"></ui5-checkbox>
+              <ui5-checkbox data-chk="data_accessible" text="Sample data is accessible"></ui5-checkbox>
+              <ui5-checkbox data-chk="rules_unambiguous" text="Rules are unambiguous"></ui5-checkbox>
+              <ui5-checkbox data-chk="success_measurable" text="Success criteria are measurable"></ui5-checkbox>
+              <ui5-checkbox data-chk="contacts_responsive" text="Technical contacts responsive"></ui5-checkbox>
+              <ui5-checkbox data-chk="ready_to_start" text="Ready to start development"></ui5-checkbox>
+            </div>
+          </div>
+
+          <!-- Inline uploads: Transcripts + Docs -->
+          <div class="inline-upload-group">
+            <div class="inline-upload" data-zone="transcript">
+              <div class="inline-upload-header">
+                <ui5-icon name="microphone"></ui5-icon>
+                <span>Workshop Transcripts</span>
+                <span class="inline-upload-hint">.txt, .docx, .pdf, .vtt, .srt, .mp3, .mp4</span>
+              </div>
+              <div class="inline-upload-files" data-zone-files="transcript"></div>
+              <ui5-file-uploader data-zone-upload="transcript" accept=".txt,.docx,.pdf,.vtt,.srt,.mp3,.mp4,.wav" multiple hide-input>
+                <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+              </ui5-file-uploader>
+            </div>
+            <div class="inline-upload" data-zone="docs">
+              <div class="inline-upload-header">
+                <ui5-icon name="document"></ui5-icon>
+                <span>Additional Documents</span>
+                <span class="inline-upload-hint">.pdf, .docx, .pptx, .txt</span>
+              </div>
+              <div class="inline-upload-files" data-zone-files="docs"></div>
+              <ui5-file-uploader data-zone-upload="docs" accept=".pdf,.docx,.pptx,.txt,.md" multiple hide-input>
+                <ui5-button icon="upload" design="Transparent">Choose Files</ui5-button>
+              </ui5-file-uploader>
+            </div>
+          </div>
+
+          <div class="form-field full-width" style="margin-top: 1.25rem;">
+            <label for="f-open_notes">Open Questions / Notes</label>
+            <ui5-textarea id="f-open_notes" rows="2" growing growing-max-rows="10" placeholder="Any unresolved questions, assumptions, or follow-ups for the build team"></ui5-textarea>
+          </div>
+        </ui5-panel>
+      </div>
+
+      <!-- Right: Agent Assist Sidebar -->
+      <div class="handover-sidebar">
+        <!-- Agent chat area -->
+        <div class="sidebar-agent-chat">
+          <div class="sidebar-agent-header">
+            <ui5-icon name="da"></ui5-icon>
+            <span>Agent Assist</span>
+          </div>
+          <div class="agent-chat-messages" id="agent-chat-messages">
+            <div class="agent-welcome" id="agent-welcome">
+              <p class="agent-welcome-text">I can help review, complete, or refine any section. Ask me to fill gaps, summarize your sources, or improve what you have.</p>
+              <div class="agent-suggestions" id="agent-suggestions">
+                <span class="agent-suggestion" data-msg="What gaps do I have?">What gaps do I have?</span>
+                <span class="agent-suggestion" data-msg="Fill everything from context">Fill from context</span>
+                <span class="agent-suggestion" data-msg="Summarize my linked sources">Summarize sources</span>
+              </div>
+            </div>
+          </div>
+          <div id="agent-thinking" class="agent-thinking" style="display:none;">
+            <span class="agent-thinking-dot"></span>
+            <span class="agent-thinking-dot"></span>
+            <span class="agent-thinking-dot"></span>
+            <span class="agent-thinking-label">Thinking...</span>
+          </div>
+          <div class="agent-chat-input">
+            <ui5-input id="agent-chat-input" placeholder="Ask the agent..." style="flex:1;"></ui5-input>
+            <ui5-button id="agent-send-btn" icon="paper-plane" design="Emphasized" tooltip="Send"></ui5-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast for save feedback -->
+  <ui5-toast id="save-toast" placement="BottomCenter" duration="2500">Changes saved</ui5-toast>
+
+  <!-- Delete Confirmation Dialog -->
+  <ui5-dialog id="handover-delete-dialog" accessible-name="Delete Handover">
+    <ui5-bar slot="header" design="Header">
+      <ui5-icon slot="startContent" name="delete"></ui5-icon>
+      <ui5-title slot="startContent" level="H5">Delete Handover</ui5-title>
+    </ui5-bar>
+    <div style="padding: 1rem;">
+      <ui5-text>Are you sure you want to delete this handover package?</ui5-text>
+      <ui5-text style="display:block;margin-top:0.75rem;">This action cannot be undone.</ui5-text>
+    </div>
+    <ui5-bar slot="footer" design="Footer">
+      <ui5-button id="handover-delete-cancel" slot="endContent" design="Transparent">Cancel</ui5-button>
+      <ui5-button id="handover-delete-confirm" slot="endContent" design="Negative">Delete</ui5-button>
+    </ui5-bar>
+  </ui5-dialog>
+
+  <!-- Create Handover Dialog -->
+  <ui5-dialog id="create-handover-dialog" accessible-name="New Handover Package">
+    <ui5-bar slot="header" design="Header">
+      <ui5-title slot="startContent" level="H5">New Handover Package</ui5-title>
+    </ui5-bar>
+    <div class="create-dialog-content">
+      <div class="form-field">
+        <ui5-label for="create-handover-title" required show-colon>Use Case Title</ui5-label>
+        <ui5-input id="create-handover-title" placeholder="e.g., Invoice Processing Automation" style="width:100%"></ui5-input>
+      </div>
+      <div class="form-field">
+        <ui5-label for="create-handover-customer" show-colon>Customer</ui5-label>
+        <ui5-input id="create-handover-customer" placeholder="Company name" style="width:100%"></ui5-input>
+      </div>
+      <div class="form-field">
+        <ui5-label for="create-handover-conversation" show-colon>Link Ideation Conversation</ui5-label>
+        <ui5-combobox id="create-handover-conversation" placeholder="Search conversations..." filter="Contains" show-clear-icon style="width:100%">
+        </ui5-combobox>
+      </div>
+    </div>
+    <ui5-bar slot="footer" design="Footer">
+      <ui5-button id="create-handover-cancel" slot="endContent" design="Transparent">Cancel</ui5-button>
+      <ui5-button id="create-handover-confirm" slot="endContent" design="Emphasized">Create</ui5-button>
+    </ui5-bar>
+  </ui5-dialog>
+
+  <!-- Add Context Dialog -->
+  <ui5-dialog id="add-context-dialog" accessible-name="Add Context">
+    <ui5-bar slot="header" design="Header">
+      <ui5-icon slot="startContent" name="add-document"></ui5-icon>
+      <ui5-title slot="startContent" level="H5">Add Context</ui5-title>
+    </ui5-bar>
+    <div class="create-dialog-content">
+      <!-- Section 1: Link Ideation Conversation -->
+      <div class="form-field">
+        <div class="context-section-header">
+          <ui5-icon name="activity-individual"></ui5-icon>
+          <ui5-label for="context-conversation-select">Link Ideation Conversation</ui5-label>
+        </div>
+        <ui5-combobox id="context-conversation-select" placeholder="Search conversations..." filter="Contains" show-clear-icon style="width:100%">
+        </ui5-combobox>
+      </div>
+
+      <div class="context-dialog-divider"><span>or</span></div>
+
+      <!-- Section 2: Upload File -->
+      <div class="form-field">
+        <div class="context-section-header">
+          <ui5-icon name="attachment"></ui5-icon>
+          <ui5-label>Upload File</ui5-label>
+        </div>
+        <div id="context-file-zone" class="context-file-zone">
+          <div id="context-file-chip" class="context-file-chip" style="display:none;"></div>
+          <div id="context-file-prompt" class="context-file-prompt">
+            <ui5-icon name="upload"></ui5-icon>
+            <span>Drop file here or</span>
+            <ui5-file-uploader id="context-file-input" hide-input accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.txt,.md,.csv,.json,.xml,.yaml,.yml,.png,.jpg,.jpeg,.gif,.svg,.rtf,.vtt,.srt">
+              <ui5-link>Choose File</ui5-link>
+            </ui5-file-uploader>
+          </div>
+        </div>
+        <span class="context-file-hint">.pdf, .docx, .xlsx, .txt, .csv, .md, .png, .jpg …</span>
+      </div>
+
+      <div class="context-dialog-divider"><span>or</span></div>
+
+      <!-- Section 3: Description (Manual Text) -->
+      <div class="form-field">
+        <div class="context-section-header">
+          <ui5-icon name="edit"></ui5-icon>
+          <ui5-label for="context-manual-text">Description</ui5-label>
+        </div>
+        <ui5-textarea id="context-manual-text" placeholder="Type or paste any relevant context: meeting notes, requirements, transcripts..." rows="4" growing growing-max-rows="10" style="width:100%"></ui5-textarea>
+        <span class="context-file-hint">AI extracts relevant fields from the text.</span>
+      </div>
+    </div>
+    <ui5-bar slot="footer" design="Footer">
+      <ui5-button id="context-dialog-cancel" slot="endContent" design="Transparent">Cancel</ui5-button>
+      <ui5-button id="context-dialog-confirm" slot="endContent" design="Emphasized">Add & Extract</ui5-button>
+    </ui5-bar>
+  </ui5-dialog>
+</div>

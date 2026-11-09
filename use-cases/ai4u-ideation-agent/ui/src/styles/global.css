@@ -1,0 +1,31 @@
+@font-face {
+  font-family: "72";
+  src: url("/fonts/72-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+}
+
+.content {
+  min-height: 400px;
+}
+
+#shellbar-update.has-update {
+  position: relative;
+}
+
+#shellbar-update.has-update::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background: var(--sapIndicationColor_1, #e00);
+  border-radius: 50%;
+  pointer-events: none;
+}

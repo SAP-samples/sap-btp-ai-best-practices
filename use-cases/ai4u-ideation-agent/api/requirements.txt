@@ -1,0 +1,31 @@
+fastapi
+uvicorn[standard]
+httpx
+mcp>=1.9.2,<2.0.0
+requests
+beautifulsoup4
+python-dotenv
+sap-ai-sdk-gen[all]
+aioboto3
+langgraph>=0.2.39
+langchain>=0.2.14
+langchain-core>=0.2.41
+langchain-mcp-adapters
+pydantic
+
+# File reading capabilities
+pypdf
+python-docx
+
+# PDF export generation
+fpdf2>=2.8
+
+# Image processing (multimodal file upload)
+Pillow>=10.0.0
+
+# Auth (XSUAA JWT validation)
+PyJWT>=2.8.0
+cryptography>=41.0.0
+
+# HANA Cloud persistence
+hdbcli>=2.18.0

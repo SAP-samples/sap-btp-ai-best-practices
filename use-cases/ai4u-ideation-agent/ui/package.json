@@ -1,0 +1,26 @@
+{
+  "name": "ai4u-ideation-agent-ui",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@panzoom/panzoom": "^4.6.2",
+    "@ui5/webcomponents": "^2.12.0",
+    "@ui5/webcomponents-fiori": "^2.12.0",
+    "@ui5/webcomponents-icons": "^2.12.0",
+    "@ui5/webcomponents-icons-business-suite": "^2.12.0",
+    "@ui5/webcomponents-icons-tnt": "^2.12.0",
+    "dayjs": "^1.11.11",
+    "marked": "^12.0.0",
+    "vite": "^7.0.4"
+  }
+}
