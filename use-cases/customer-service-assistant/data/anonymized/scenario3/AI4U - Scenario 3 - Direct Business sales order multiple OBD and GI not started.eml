@@ -1,0 +1,338 @@
+From: Operations Training <operations.training@example.invalid>
+To: Service Desk <service.desk@example.invalid>,
+ Process Analyst <process.analyst@example.invalid>
+Cc: Warehouse Lead <warehouse.lead@example.invalid>
+Subject: AI4U - Scenario 3 - Direct Business sales order multiple OBD and GI
+ not started
+Date: Sun, 19 Apr 2026 10:12:00 +0000
+Message-ID: <ai4u.-.scenario.3.-.direct.business.sales.order.multiple.obd.and.gi.not.started@example.invalid>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============7789176528444511409=="
+
+--===============7789176528444511409==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Service Desk,
+
+Scenario 3: AI4U - Scenario 3 - Direct Business sales order multiple OBD and =
+GI not started
+
+Type of request:
+  1. Provide status of sales order 6090005272
+  2. Is there Back order in my sales order?
+  3. Can you share documents? Not possible to share DN / PL / Invoice as GI i=
+s not yet completed.
+
+Data's:
+
+Order Date  Order Time  COUNTRY  ROUTE_ID  SO ORDER    DOCNO     DOCTYPE  LIN=
+E  PRODUCT  BATCHNO  QTY ORDERED  STATUSPICK  QTY PACKED  DG  Pick Date      =
+   PACK_BOX  STATUS_GI
+----------  ----------  -------  --------  ----------  --------  -------  ---=
+-  -------  -------  -----------  ----------  ----------  --  ---------------=
+-  --------  ---------
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     001=
+0  P510206  L674281  3            PICKED      -           -   19/04/2026 07:3=
+4  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     002=
+0  P510208  L674209  3            PICKED      -           -   19/04/2026 06:3=
+3  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     003=
+0  P510258  L674161  1            PICKED      -           -   19/04/2026 07:4=
+4  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     004=
+0  P510005  L683961  2            PICKED      -           -   19/04/2026 07:2=
+8  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     005=
+0  P510105  L681336  2            PICKED      -           -   19/04/2026 06:3=
+6  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     007=
+0  P510205  L674659  6            PICKED      -           -   19/04/2026 06:1=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     011=
+0  P510202  L681429  1            PICKED      -           -   19/04/2026 06:3=
+6  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     012=
+0  P510352  L691781  1            PICKED      -           -   19/04/2026 07:3=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     013=
+0  P510153  L698351  1            PICKED      -           -   19/04/2026 07:4=
+9  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     014=
+0  P510209  L694530  2            PICKED      -           -   19/04/2026 07:3=
+2  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     015=
+0  P510309  L677107  2            PICKED      -           -   19/04/2026 07:3=
+3  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     017=
+0  TPRX570  L696627  2            PICKED      -           -   19/04/2026 07:4=
+4  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     018=
+0  TPRX680  L694574  2            PICKED      -           -   19/04/2026 07:5=
+0  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     019=
+0  TPRX765  L686387  2            PICKED      -           -   19/04/2026 07:2=
+9  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     020=
+0  TMPX405  L694460  1            PICKED      -           -   19/04/2026 06:5=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     021=
+0  TMPX440  L686449  2            PICKED      -           -   19/04/2026 06:5=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     023=
+0  P514200  L691835  2            PICKED      -           -   19/04/2026 07:4=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     033=
+0  P511751  L677114  1            PICKED      -           -   19/04/2026 07:3=
+0  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     034=
+0  P512751  L698460  4            PICKED      -           -   19/04/2026 06:3=
+2  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     035=
+0  P513001  L705380  3            PICKED      -           -   19/04/2026 06:1=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     037=
+0  P513751  L705378  1            PICKED      -           -   19/04/2026 06:5=
+6  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     039=
+0  P515501  L669063  2            PICKED      -           -   19/04/2026 07:4=
+6  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     040=
+0  RSZ3004  L696580  1            PICKED      -           -   19/04/2026 07:4=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     041=
+0  P510255  L679064  6            PICKED      -           -   19/04/2026 06:1=
+6  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     042=
+0  P513501  L705399  9            PICKED      -           -   19/04/2026 06:3=
+2  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     043=
+0  P510152  L681420  6            PICKED      -           -   19/04/2026 06:3=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     044=
+0  P510155  L688875  4            PICKED      -           -   19/04/2026 06:3=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     045=
+0  P514500  L703427  8            PICKED      -           -   19/04/2026 06:3=
+9  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     046=
+0  P514375  L691746  12           PICKED      -           -   19/04/2026 06:4=
+1  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     047=
+0  P514425  L698340  8            PICKED      -           -   19/04/2026 06:4=
+4  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     048=
+0  P510102  L672278  5            PICKED      -           -   19/04/2026 07:3=
+8  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     049=
+0  P514400  L694490  20           PICKED      -           -   19/04/2026 06:5=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     050=
+0  P514001  L703446  5            PICKED      -           -   19/04/2026 06:4=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     051=
+0  P514350  L694579  10           PICKED      -           -   19/04/2026 06:5=
+1  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     052=
+0  P514450  L698382  5            PICKED      -           -   19/04/2026 06:5=
+3  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     053=
+0  P514550  L684054  8            PICKED      -           -   19/04/2026 07:2=
+9  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     054=
+0  TPRX325  L684060  2            PICKED      -           -   19/04/2026 07:4=
+3  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     055=
+0  P514225  L691836  4            PICKED      -           -   19/04/2026 07:3=
+5  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     056=
+0  TMPX490  L696545  4            PICKED      -           -   19/04/2026 07:3=
+7  -         1       =20
+18/04/2026  15:45       PL       WAW1D2    6090005272  90001542  ZODC     057=
+0  P514650  L633237  4            PICKED      -           -   19/04/2026 07:4=
+2  -         1       =20
+19/04/2026  06:25       PL       WAW1D2    6090005272  90001591  ZODC     001=
+0  P514501  -        3            TO PICK     -           -   -              =
+   -         1       =20
+
+Outcome:
+  1. Two outbound deliveries have been created because some material was back=
+ ordered during first OBD creation.
+  2. OBD 90001542 has picking completed for all listed lines, but GI status 1=
+ means goods issue is not started.
+  3. OBD 90001591 is still TO PICK and should be planned for the same-day rou=
+te.
+  4. Back order lines are those not yet relevant to a completed warehouse tas=
+k. No documents can be shared until GI is completed.
+
+Let me know if any questions,
+Regards,
+Operations Training
+
+--===============7789176528444511409==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!doctype html><html><head><meta charset=3D"utf-8"><style>
+body { font-family: Arial, sans-serif; font-size: 12px; color: #222; }
+table { border-collapse: collapse; margin: 12px 0; font-size: 10px; }
+th, td { border: 1px solid #999; padding: 3px 5px; text-align: left; }
+th { background: #f0f0f0; }
+</style></head><body>
+<p>Hi Service Desk,</p>
+<p><strong>Scenario 3:</strong> AI4U - Scenario 3 - Direct Business sales ord=
+er multiple OBD and GI not started</p>
+<p><strong>Type of request:</strong></p>
+<ol><li>Provide status of sales order 6090005272</li><li>Is there Back order =
+in my sales order?</li><li>Can you share documents? Not possible because GI i=
+s not yet completed.</li></ol>
+<p><strong>Data's:</strong></p>
+<table><thead><tr><th>Order Date</th><th>Order Time</th><th>COUNTRY</th><th>R=
+OUTE_ID</th><th>SO ORDER</th><th>DOCNO</th><th>DOCTYPE</th><th>LINE</th><th>P=
+RODUCT</th><th>BATCHNO</th><th>QTY ORDERED</th><th>STATUSPICK</th><th>QTY PAC=
+KED</th><th>DG</th><th>Pick Date</th><th>PACK_BOX</th><th>STATUS_GI</th></tr>=
+</thead><tbody><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td=
+><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0010</td><td>P510206</t=
+d><td>L674281</td><td>3</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026=
+ 07:34</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>=
+PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>00=
+20</td><td>P510208</td><td>L674209</td><td>3</td><td>PICKED</td><td>-</td><td=
+>-</td><td>19/04/2026 06:33</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</=
+td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</t=
+d><td>ZODC</td><td>0030</td><td>P510258</td><td>L674161</td><td>1</td><td>PIC=
+KED</td><td>-</td><td>-</td><td>19/04/2026 07:44</td><td>-</td><td>1</td></tr=
+><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>609000527=
+2</td><td>90001542</td><td>ZODC</td><td>0040</td><td>P510005</td><td>L683961<=
+/td><td>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:28</td><td=
+>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW=
+1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0050</td><td>P51=
+0105</td><td>L681336</td><td>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/=
+04/2026 06:36</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</=
+td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td=
+><td>0070</td><td>P510205</td><td>L674659</td><td>6</td><td>PICKED</td><td>-<=
+/td><td>-</td><td>19/04/2026 06:15</td><td>-</td><td>1</td></tr><tr><td>18/04=
+/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>9000=
+1542</td><td>ZODC</td><td>0110</td><td>P510202</td><td>L681429</td><td>1</td>=
+<td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:36</td><td>-</td><td>1</=
+td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>60=
+90005272</td><td>90001542</td><td>ZODC</td><td>0120</td><td>P510352</td><td>L=
+691781</td><td>1</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:35<=
+/td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td>=
+<td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0130</td>=
+<td>P510153</td><td>L698351</td><td>1</td><td>PICKED</td><td>-</td><td>-</td>=
+<td>19/04/2026 07:49</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>=
+15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>Z=
+ODC</td><td>0140</td><td>P510209</td><td>L694530</td><td>2</td><td>PICKED</td=
+><td>-</td><td>-</td><td>19/04/2026 07:32</td><td>-</td><td>1</td></tr><tr><t=
+d>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><=
+td>90001542</td><td>ZODC</td><td>0150</td><td>P510309</td><td>L677107</td><td=
+>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:33</td><td>-</td>=
+<td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td=
+><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0170</td><td>TPRX570</t=
+d><td>L696627</td><td>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026=
+ 07:44</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>=
+PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>01=
+80</td><td>TPRX680</td><td>L694574</td><td>2</td><td>PICKED</td><td>-</td><td=
+>-</td><td>19/04/2026 07:50</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</=
+td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</t=
+d><td>ZODC</td><td>0190</td><td>TPRX765</td><td>L686387</td><td>2</td><td>PIC=
+KED</td><td>-</td><td>-</td><td>19/04/2026 07:29</td><td>-</td><td>1</td></tr=
+><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>609000527=
+2</td><td>90001542</td><td>ZODC</td><td>0200</td><td>TMPX405</td><td>L694460<=
+/td><td>1</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:57</td><td=
+>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW=
+1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0210</td><td>TMP=
+X440</td><td>L686449</td><td>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/=
+04/2026 06:57</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</=
+td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td=
+><td>0230</td><td>P514200</td><td>L691835</td><td>2</td><td>PICKED</td><td>-<=
+/td><td>-</td><td>19/04/2026 07:47</td><td>-</td><td>1</td></tr><tr><td>18/04=
+/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>9000=
+1542</td><td>ZODC</td><td>0330</td><td>P511751</td><td>L677114</td><td>1</td>=
+<td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:30</td><td>-</td><td>1</=
+td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>60=
+90005272</td><td>90001542</td><td>ZODC</td><td>0340</td><td>P512751</td><td>L=
+698460</td><td>4</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:32<=
+/td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td>=
+<td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0350</td>=
+<td>P513001</td><td>L705380</td><td>3</td><td>PICKED</td><td>-</td><td>-</td>=
+<td>19/04/2026 06:17</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>=
+15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>Z=
+ODC</td><td>0370</td><td>P513751</td><td>L705378</td><td>1</td><td>PICKED</td=
+><td>-</td><td>-</td><td>19/04/2026 06:56</td><td>-</td><td>1</td></tr><tr><t=
+d>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><=
+td>90001542</td><td>ZODC</td><td>0390</td><td>P515501</td><td>L669063</td><td=
+>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:46</td><td>-</td>=
+<td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td=
+><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0400</td><td>RSZ3004</t=
+d><td>L696580</td><td>1</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026=
+ 07:45</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>=
+PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>04=
+10</td><td>P510255</td><td>L679064</td><td>6</td><td>PICKED</td><td>-</td><td=
+>-</td><td>19/04/2026 06:16</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</=
+td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</t=
+d><td>ZODC</td><td>0420</td><td>P513501</td><td>L705399</td><td>9</td><td>PIC=
+KED</td><td>-</td><td>-</td><td>19/04/2026 06:32</td><td>-</td><td>1</td></tr=
+><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>609000527=
+2</td><td>90001542</td><td>ZODC</td><td>0430</td><td>P510152</td><td>L681420<=
+/td><td>6</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:35</td><td=
+>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW=
+1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0440</td><td>P51=
+0155</td><td>L688875</td><td>4</td><td>PICKED</td><td>-</td><td>-</td><td>19/=
+04/2026 06:37</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</=
+td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td=
+><td>0450</td><td>P514500</td><td>L703427</td><td>8</td><td>PICKED</td><td>-<=
+/td><td>-</td><td>19/04/2026 06:39</td><td>-</td><td>1</td></tr><tr><td>18/04=
+/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>9000=
+1542</td><td>ZODC</td><td>0460</td><td>P514375</td><td>L691746</td><td>12</td=
+><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:41</td><td>-</td><td>1<=
+/td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6=
+090005272</td><td>90001542</td><td>ZODC</td><td>0470</td><td>P514425</td><td>=
+L698340</td><td>8</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:44=
+</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td=
+><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0480</td=
+><td>P510102</td><td>L672278</td><td>5</td><td>PICKED</td><td>-</td><td>-</td=
+><td>19/04/2026 07:38</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td=
+>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>=
+ZODC</td><td>0490</td><td>P514400</td><td>L694490</td><td>20</td><td>PICKED</=
+td><td>-</td><td>-</td><td>19/04/2026 06:55</td><td>-</td><td>1</td></tr><tr>=
+<td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td=
+><td>90001542</td><td>ZODC</td><td>0500</td><td>P514001</td><td>L703446</td><=
+td>5</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 06:45</td><td>-</t=
+d><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</=
+td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0510</td><td>P514350<=
+/td><td>L694579</td><td>10</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2=
+026 06:51</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><=
+td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td=
+>0520</td><td>P514450</td><td>L698382</td><td>5</td><td>PICKED</td><td>-</td>=
+<td>-</td><td>19/04/2026 06:53</td><td>-</td><td>1</td></tr><tr><td>18/04/202=
+6</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542=
+</td><td>ZODC</td><td>0530</td><td>P514550</td><td>L684054</td><td>8</td><td>=
+PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:29</td><td>-</td><td>1</td><=
+/tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>609000=
+5272</td><td>90001542</td><td>ZODC</td><td>0540</td><td>TPRX325</td><td>L6840=
+60</td><td>2</td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:43</td>=
+<td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:45</td><td>PL</td><td>=
+WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC</td><td>0550</td><td>=
+P514225</td><td>L691836</td><td>4</td><td>PICKED</td><td>-</td><td>-</td><td>=
+19/04/2026 07:35</td><td>-</td><td>1</td></tr><tr><td>18/04/2026</td><td>15:4=
+5</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>90001542</td><td>ZODC<=
+/td><td>0560</td><td>TMPX490</td><td>L696545</td><td>4</td><td>PICKED</td><td=
+>-</td><td>-</td><td>19/04/2026 07:37</td><td>-</td><td>1</td></tr><tr><td>18=
+/04/2026</td><td>15:45</td><td>PL</td><td>WAW1D2</td><td>6090005272</td><td>9=
+0001542</td><td>ZODC</td><td>0570</td><td>P514650</td><td>L633237</td><td>4</=
+td><td>PICKED</td><td>-</td><td>-</td><td>19/04/2026 07:42</td><td>-</td><td>=
+1</td></tr><tr><td>19/04/2026</td><td>06:25</td><td>PL</td><td>WAW1D2</td><td=
+>6090005272</td><td>90001591</td><td>ZODC</td><td>0010</td><td>P514501</td><t=
+d>-</td><td>3</td><td>TO PICK</td><td>-</td><td>-</td><td>-</td><td>-</td><td=
+>1</td></tr></tbody></table>
+<p><strong>Outcome:</strong> Two outbound deliveries were created. OBD 900015=
+42 is picked but GI is not started. OBD 90001591 is still to pick. No DN, PL,=
+ or invoice can be shared until GI completes.</p>
+<p>Let me know if any questions,<br>Regards,<br>Operations Training</p>
+</body></html>
+
+--===============7789176528444511409==--
