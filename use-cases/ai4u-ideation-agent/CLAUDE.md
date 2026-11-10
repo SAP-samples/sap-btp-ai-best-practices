@@ -82,9 +82,7 @@ Run `python -m ideation_agent.tests.test_provocateur_4way -v` for the 4-way comp
 | Agent system prompt (Process Architect) | `api/ideation_agent/system_prompt.py` |
 | Agent state | `api/ideation_agent/state.py` |
 | LLM usage observability | `api/app/observability/llm_usage_logging.py` |
-| Telemetry HANA store (receiver) | `api/app/services/hana_telemetry.py` |
-| Telemetry receiver endpoint | `api/app/routers/telemetry.py` |
-| Version check + telemetry client | `api/app/services/version_check.py` |
+| Version check service | `api/app/services/version_check.py` |
 | Frontend auth service | `ui/src/services/auth.js` |
 | Frontend CDC service | `ui/src/services/cdc.js` |
 | Login page | `ui/src/pages/login/login.js` |
@@ -93,7 +91,7 @@ Run `python -m ideation_agent.tests.test_provocateur_4way -v` for the 4-way comp
 
 ## Feature Flags
 
-All optional features are disabled by default and gated by environment variables:
+Optional features are controlled by environment variables:
 
 | Feature | Gate | Function |
 |---------|------|----------|
@@ -101,7 +99,6 @@ All optional features are disabled by default and gated by environment variables
 | CDC Auth | `CDC_API_KEY` presence | `cdc_enabled()` in `app/auth.py` |
 | Perplexity Research | `IDEATION_PERPLEXITY_SKILL_ENABLED=true` | `perplexity_enabled()` in `tools/perplexity_research.py` |
 | LinkedIn Research | `IDEATION_LINKEDIN_SKILL_ENABLED=true` | `linkedin_enabled()` in `tools/linkedin_research.py` |
-| Telemetry Receiver | `INSTALLATION_ID=sap-hosted-primary` | Conditional router in `app/main.py` |
-| Update Check + Telemetry | `UPDATE_CHECK_ENABLED=true` (default) | `check_for_update()` in `app/services/version_check.py` |
+| Update Check | `UPDATE_CHECK_ENABLED=true` (default) | `check_for_update()` in `app/services/version_check.py` |
 
-Note: The telemetry receiver endpoint (`GET /api/telemetry/version`) is **unauthenticated** — customer instances call it without SAP auth tokens. It's only registered when `INSTALLATION_ID=sap-hosted-primary`.
+Successful version checks are cached for one hour. Set `UPDATE_CHECK_ENABLED=false` to disable upstream version checks.
