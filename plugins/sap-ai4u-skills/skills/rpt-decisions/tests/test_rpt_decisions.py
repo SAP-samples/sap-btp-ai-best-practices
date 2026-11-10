@@ -1,29 +1,24 @@
-"""Offline checks for the RPT decisions asset (no network calls).
+"""Offline contract checks for the direct decisions client, without credentials.
 
-Covers request validation, table translation (described and plain encodings,
-structured and chat states), and answer parsing. The shared client module comes
-from the sibling ``rpt-1`` skill.
-
-Run from the skill folder or anywhere else:
+Run from the skill folder or from any directory:
     python tests/test_rpt_decisions.py
     python -I tests/test_rpt_decisions.py
 """
-
 from __future__ import annotations
 
 import sys
+import json
+import importlib.util
+import time
 from pathlib import Path
+import pandas as pd
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SKILL_ROOT / "assets"))
-sys.path.insert(0, str(SKILL_ROOT.parent / "rpt-1" / "assets"))  # shared rpt_client_api
-
-from rpt_decisions import (  # noqa: E402
-    PLACEHOLDER,
-    build_decision_payload,
-    parse_decision_answers,
-    validate_decision_request,
-)
+sys.path.insert(0, str(SKILL_ROOT.parent / "rpt-1" / "assets"))
+from rpt_client_api import RPTAPIError
+import rpt_decisions_client
+from rpt_decisions_client import RPTDecisionsClientAPI, answers_to_frame, most_likely
 
 TRIAGE = {
     "state": "Charged twice, fix it!",
@@ -53,68 +48,172 @@ def expect_error(error_type, call, fragment):
     raise AssertionError(f"{error_type.__name__} not raised")
 
 
-def test_decision_validation():
-    """The documented decision rules fail early with readable messages."""
-    validate_decision_request(TRIAGE)
-    missing_label = {**TRIAGE, "examples": [
-        {"state": "a", "answers": {"billing": False, "tone": "calm", "priority": "0"}},
-        {"state": "b", "answers": {"billing": True, "tone": "calm", "priority": "1"}},
-    ]}
-    expect_error(ValueError, lambda: validate_decision_request(missing_label), "never appear")
-    expect_error(ValueError, lambda: validate_decision_request({**TRIAGE, "examples": TRIAGE["examples"][:1]}),
-                 "2-2,048 examples")
-    unknown = {**TRIAGE, "questions": {"x": {"type": "rank", "instructions": "?"}}}
-    expect_error(ValueError, lambda: validate_decision_request(unknown), "unsupported type")
+class FakeResponse:
+    """Minimal stand-in for ``requests.Response``."""
+
+    def __init__(self, status_code, payload, headers=None):
+        """Initialize HTTP status, payload and optional fake response headers."""
+        self.status_code = status_code
+        self.ok = status_code < 400
+        self._payload = payload
+        self.text = str(payload)
+        self.headers = headers or {}
+
+    def json(self):
+        """Return the prepared JSON payload with no transport or parsing."""
+        return self._payload
 
 
-def test_decision_payload_described_and_plain():
-    """Examples become context rows, states become [PREDICT] query rows."""
-    payload = build_decision_payload(TRIAGE)
-    rows = payload["rows"]
-    assert [row["row_id"] for row in rows] == ["example-0", "example-1", "query-0"]
-    assert rows[1]["What is the tone?"] == "angry: Hostile"
-    assert rows[1]["Is this about billing?"] == "yes" and rows[0]["How urgent?"] == "low"
-    assert rows[2]["What is the tone?"] == PLACEHOLDER
-    targets = {t["name"]: t["top_k"] for t in payload["prediction_config"]["target_columns"]}
-    assert targets == {"Is this about billing?": 2, "What is the tone?": 2, "How urgent?": 2}
+class FakeSession:
+    """Session whose ``post`` returns prepared responses and records the calls.
 
-    plain = build_decision_payload(TRIAGE, encoding="plain")
-    assert plain["rows"][1] == {"row_id": "example-1", "state": "Refund me now",
-                                "billing": "true", "tone": "angry", "priority": "1"}
+    A single response is returned for every call; a list is returned in order,
+    and its last entry is repeated once the list is used up. A callable is
+    called with the request JSON and its return value is used.
+    """
 
+    def __init__(self, response):
+        """Initialize a session with a response, sequence or JSON callback."""
+        self.response = response
+        self.calls = []
 
-def test_decision_structured_and_chat_states():
-    """Dict states become columns, list states become JSON text."""
-    request = {**TRIAGE, "examples": [
-        {"state": {"channel": "mail", "text": "Great"}, "answers": TRIAGE["examples"][0]["answers"]},
-        {"state": {"channel": "chat", "text": "Refund"}, "answers": TRIAGE["examples"][1]["answers"]},
-    ]}
-    rows = build_decision_payload(request, [{"channel": "mail", "text": "?"}])["rows"]
-    assert rows[2]["channel"] == "mail" and "state" not in rows[2]
-    chat = build_decision_payload(TRIAGE, [[{"role": "user", "text": "hi"}]])["rows"][2]
-    assert chat["state"] == '[{"role": "user", "text": "hi"}]'
-    clash = {**request, "examples": [{"state": {"row_id": "x"}, "answers": e["answers"]} for e in request["examples"]]}
-    expect_error(ValueError, lambda: build_decision_payload(clash), "clash")
+    def post(self, url, **kwargs):
+        """Record URL/options and return the next configured fake response."""
+        self.calls.append((url, kwargs))
+        if callable(self.response):
+            return self.response(kwargs.get("json"))
+        if isinstance(self.response, list):
+            return self.response[min(len(self.calls), len(self.response)) - 1]
+        return self.response
 
 
-def test_decision_answer_parsing():
-    """RPT candidates map back to Playground answers; missing options get 0."""
-    response = {"predictions": [
-        {"row_id": "query-1",
-         "Is this about billing?": [{"prediction": "no", "confidence": 0.8}],
-         "What is the tone?": [{"prediction": "calm: Polite", "confidence": 1.0}],
-         "How urgent?": [{"prediction": "low", "confidence": 1.0}]},
-        {"row_id": "query-0",
-         "Is this about billing?": [{"prediction": "yes", "confidence": 0.7}, {"prediction": "no", "confidence": 0.3}],
-         "What is the tone?": [{"prediction": "angry: Hostile", "confidence": 0.6},
-                               {"prediction": "calm: Polite", "confidence": 0.4}],
-         "How urgent?": [{"prediction": "high", "confidence": 0.75}, {"prediction": "low", "confidence": 0.25}]},
-    ]}
-    first, second = parse_decision_answers(response, TRIAGE)
-    assert first["billing"] == {"type": "noul", "noul": 0.7}
-    assert first["tone"]["choice"] == "angry" and first["tone"]["probabilities"] == {"calm": 0.4, "angry": 0.6}
-    assert first["priority"]["score"] == 0.75 and first["priority"]["legend"] == {"0": "low", "1": "high"}
-    assert second["billing"]["noul"] == 0.0  # "yes" not returned
+def offline_client(response, client_class=RPTDecisionsClientAPI):
+    """Build a client without OAuth or discovery, using a fake session."""
+    client = object.__new__(client_class)
+    client.model_name, client.timeout_s, client.resource_group = "offline-model", 5, "default"
+    client.deployment_url = "https://example.invalid/deployments/d1"
+    client._client_id, client._client_secret = "client-id-123", "secret-456"
+    client._token, client._token_expires_at = "token-789", time.monotonic() + 3600
+    client._session = FakeSession(response)
+    return client
+
+
+ANSWERS = {
+    "billing": {"type": "noul", "noul": 0.85},
+    "tone": {"type": "choice", "choice": "calm", "confidence": 0.415,
+             "probabilities": {"angry": 0.28, "calm": 0.61, "neutral": 0.11}},
+    "priority": {"type": "score", "score": 0.77, "confidence": 0.0,
+                 "legend": {"0": "can wait", "1": "this week", "2": "today"},
+                 "probabilities": {"0": 0.54, "1": 0.15, "2": 0.31}},
+}
+
+
+def test_decide_route_and_body():
+    """decide posts the request unchanged to /systemone and returns the body."""
+    client = offline_client(FakeResponse(200, {"answers": ANSWERS, "usage": {}}), RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
+    url, kwargs = client._session.calls[0]
+    assert url.endswith("/systemone") and kwargs["json"] == TRIAGE
+    assert kwargs["headers"]["Authorization"] == "Bearer token-789"
+
+
+def test_decide_retries_rate_limit():
+    """HTTP 429 is retried, waiting Retry-After seconds."""
+    responses = [FakeResponse(429, {"error": "TooManyRequest"}, {"Retry-After": "0"}),
+                 FakeResponse(200, {"answers": ANSWERS})]
+    client = offline_client(responses, RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
+    assert len(client._session.calls) == 2
+
+
+def test_decide_retries_transient_upstream_error():
+    """A transient upstream HTTP 500 is retried without changing the request."""
+    responses = [FakeResponse(500, {"message": "Temporary upstream failure"}, {"Retry-After": "0"}),
+                 FakeResponse(200, {"answers": ANSWERS})]
+    client = offline_client(responses, RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
+    assert len(client._session.calls) == 2
+    assert all(kwargs["json"] == TRIAGE for _, kwargs in client._session.calls)
+
+
+def test_decide_error_is_redacted():
+    """Validation errors raise with the server detail and credentials redacted."""
+    detail = [{"loc": ["examples"], "msg": "examples must contain at least 2 entries token-789"}]
+    client = offline_client(FakeResponse(422, {"detail": detail, "status": {"code": 2}}), RPTDecisionsClientAPI)
+    try:
+        client.decide(TRIAGE)
+    except rpt_decisions_client.RPTAPIError as error:
+        assert error.http_status == 422 and "at least 2 entries" in str(error)
+        assert "token-789" not in str(error) and "token-789" not in str(error.response_payload)
+    else:
+        raise AssertionError("RPTAPIError not raised")
+    gateway = offline_client(FakeResponse(400, {"error": "BadRequest", "message": "Subpath 'predict' is not allowed"}),
+                                RPTDecisionsClientAPI)
+    expect_error(RPTAPIError, lambda: gateway.decide(TRIAGE), "is not allowed")
+
+
+def test_decide_many_keeps_order():
+    """decide_many sends one request per state and returns results in input order."""
+    def echo(body):
+        """Answer with the state's length so each result can be traced back."""
+        return FakeResponse(200, {"answers": {"billing": {"type": "noul", "noul": len(body["state"]) / 100}}})
+
+    client = offline_client(echo, RPTDecisionsClientAPI)
+    states = ["a" * n for n in range(1, 21)]
+    results = client.decide_many(TRIAGE, states, max_concurrency=4, progress=False)
+    assert [r["answers"]["billing"]["noul"] for r in results] == [n / 100 for n in range(1, 21)]
+    assert len(client._session.calls) == 20
+    assert all(set(kwargs["json"]) == {"state", "questions", "examples"} for _, kwargs in client._session.calls)
+
+
+def test_answers_to_frame_and_most_likely():
+    """Answers are flattened to one row per state; most_likely picks one label."""
+    frame = answers_to_frame([{"answers": ANSWERS}], index=["msg-1"])
+    row = frame.loc["msg-1"].to_dict()
+    assert row == {"billing": 0.85, "tone": "calm", "tone_confidence": 0.415,
+                   "priority": 0.77, "priority_level": "0", "priority_confidence": 0.0}
+    assert most_likely(ANSWERS["billing"]) is True and most_likely(ANSWERS["tone"]) == "calm"
+
+
+def test_missing_confidence_is_not_derived():
+    """Absent server confidence remains missing even with full probabilities."""
+    answers = {key: {k: v for k, v in answer.items() if k != "confidence"}
+               for key, answer in ANSWERS.items()}
+    frame = answers_to_frame([{"answers": answers}])
+    assert pd.isna(frame.loc[0, "tone_confidence"])
+    assert pd.isna(frame.loc[0, "priority_confidence"])
+
+
+def test_bundled_examples_cover_declared_labels():
+    """All bundled synthetic requests have complete labels and valid type shapes."""
+    fixtures = json.loads((SKILL_ROOT / "assets" / "decision_examples.json").read_text())
+    for name in ["triage", "ticket_routing", "chat_triage"]:
+        request = fixtures[name]
+        assert 2 <= len(request["examples"]) <= 2048
+        assert 1 <= len(request["questions"]) <= 10
+        for key, question in request["questions"].items():
+            assert question["instructions"]
+            labels = [example["answers"][key] for example in request["examples"]]
+            if question["type"] == "noul":
+                assert all(isinstance(label, bool) for label in labels)
+                assert set(labels) == {True, False}
+            elif question["type"] == "choice":
+                assert set(labels) == set(question["criteria"])
+            else:
+                assert set(labels) == {str(i) for i in range(len(question["criteria"]))}
+    assert len(fixtures["triage"]["examples"]) == 18
+
+
+def test_live_summary_preserves_confidence():
+    """The live reporter separates zero/missing confidence from winning probability."""
+    spec = importlib.util.spec_from_file_location("live_decisions_probe", SKILL_ROOT / "scripts" / "live_test_rpt_decisions.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    summary = module.summarize({"answers": ANSWERS})
+    assert summary["priority"]["endpoint_confidence"] == 0.0
+    assert summary["priority"]["winning_probability"] == 0.54
+    assert abs(summary["priority"]["weighted_score"] - 0.77) < 1e-9
+    assert "endpoint_confidence" not in summary["billing"]
 
 
 if __name__ == "__main__":

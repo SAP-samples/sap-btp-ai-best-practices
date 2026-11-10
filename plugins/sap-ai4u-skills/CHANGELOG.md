@@ -2,6 +2,15 @@
 
 All notable changes to `sap-ai4u-skills` are recorded here.
 
+## Unreleased
+
+- `rpt-decisions`: replace the local `/predict` translator with the verified
+  `sap-rpt-decisions` `/systemone` client, ordered per-state requests, endpoint
+  confidence preservation and bounded rate-limit/upstream retries.
+- Document typed answers, score uncertainty, policy design, held-out results,
+  deployment limits and HANA persistence. Add complete synthetic fixtures,
+  dependency/environment templates, offline contract checks and a live probe.
+
 ## 0.6.5 - 2026-11-06
 
 - `create-langgraph-react-agent`: fix GPT reasoning models on SAP AI Core. The

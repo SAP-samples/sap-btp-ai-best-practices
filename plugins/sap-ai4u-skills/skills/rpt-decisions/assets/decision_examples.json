@@ -1,0 +1,509 @@
+{
+  "triage": {
+    "state": "Thank you for helping: our whole department cannot sign in and work has stopped. Please restore access today.",
+    "questions": {
+      "billing": {
+        "type": "noul",
+        "instructions": "Is this message about billing?"
+      },
+      "priority": {
+        "type": "score",
+        "instructions": "Apply this support policy: can wait for feedback or future ideas with no action needed; this week for routine information or a single invoice correction without blocked work; today for blocked access, an outage, repeated incorrect charges, or an explicit deadline today. Tone alone does not determine priority.",
+        "criteria": [
+          "can wait",
+          "this week",
+          "today"
+        ]
+      },
+      "request_kind": {
+        "type": "choice",
+        "instructions": "What kind of request is this?",
+        "criteria": {
+          "feedback": "Feedback or future product suggestions without current support action",
+          "billing": "Invoices, fees, charges or payments",
+          "technical": "Product operation, documentation, access or outages"
+        }
+      }
+    },
+    "examples": [
+      {
+        "state": "Love the new feature, thank you! No action needed.",
+        "answers": {
+          "billing": false,
+          "priority": "0",
+          "request_kind": "feedback"
+        }
+      },
+      {
+        "state": "Thanks for considering a dashboard improvement for next year.",
+        "answers": {
+          "billing": false,
+          "priority": "0",
+          "request_kind": "feedback"
+        }
+      },
+      {
+        "state": "Feedback only: the menu could be shorter in a future release.",
+        "answers": {
+          "billing": false,
+          "priority": "0",
+          "request_kind": "feedback"
+        }
+      },
+      {
+        "state": "For your roadmap: a yearly invoice summary would be useful someday.",
+        "answers": {
+          "billing": true,
+          "priority": "0",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "I hate the new colors. Just feedback, no support action needed.",
+        "answers": {
+          "billing": false,
+          "priority": "0",
+          "request_kind": "feedback"
+        }
+      },
+      {
+        "state": "Your invoice layout is awful. Change it in a future release, no rush.",
+        "answers": {
+          "billing": true,
+          "priority": "0",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "Could you kindly send last month's invoice when you have time this week?",
+        "answers": {
+          "billing": true,
+          "priority": "1",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "Thank you for checking a single incorrect charge on my last bill this week; my account still works.",
+        "answers": {
+          "billing": true,
+          "priority": "1",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "Where can I download last year's invoices?",
+        "answers": {
+          "billing": true,
+          "priority": "1",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "When is the next release? Please reply sometime this week.",
+        "answers": {
+          "billing": false,
+          "priority": "1",
+          "request_kind": "technical"
+        }
+      },
+      {
+        "state": "This one bill is wrong, $99 instead of $49. Fix it this week; nothing is blocked.",
+        "answers": {
+          "billing": true,
+          "priority": "1",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "I am frustrated by your documentation. Send the guide this week, no deadline today.",
+        "answers": {
+          "billing": false,
+          "priority": "1",
+          "request_kind": "technical"
+        }
+      },
+      {
+        "state": "Please help today: all users are blocked from signing in. Thank you.",
+        "answers": {
+          "billing": false,
+          "priority": "2",
+          "request_kind": "technical"
+        }
+      },
+      {
+        "state": "Could you please reverse repeated duplicate charges today? Thank you.",
+        "answers": {
+          "billing": true,
+          "priority": "2",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "Production is unavailable for every user; work is blocked now.",
+        "answers": {
+          "billing": false,
+          "priority": "2",
+          "request_kind": "technical"
+        }
+      },
+      {
+        "state": "The invoice must be corrected before the payment deadline at 3pm today.",
+        "answers": {
+          "billing": true,
+          "priority": "2",
+          "request_kind": "billing"
+        }
+      },
+      {
+        "state": "My account is locked AGAIN and I cannot work. Fix access today!",
+        "answers": {
+          "billing": false,
+          "priority": "2",
+          "request_kind": "technical"
+        }
+      },
+      {
+        "state": "You billed me three times AGAIN. Reverse these repeated charges today!",
+        "answers": {
+          "billing": true,
+          "priority": "2",
+          "request_kind": "billing"
+        }
+      }
+    ]
+  },
+  "new_messages": [
+    "Could you please send a copy of my February invoice sometime this week? Thank you.",
+    "Nice update! I just wanted to share positive feedback, no action needed.",
+    "Please correct my invoice before today's payment cutoff in two hours.",
+    "Our whole department cannot sign in and all work has stopped. Help now."
+  ],
+  "ticket_routing": {
+    "questions": {
+      "escalate": {
+        "type": "noul",
+        "instructions": "Does blocked work affecting many users require a supervisor now?",
+        "criteria": {
+          "true": "Critical issue: work blocked for many users",
+          "false": "Routine request: work continues"
+        }
+      },
+      "team": {
+        "type": "choice",
+        "instructions": "Which team owns the ticket?",
+        "criteria": {
+          "billing": "Invoices, charges and payments",
+          "technical": "Errors, outages and access problems",
+          "sales": "Pricing, licenses and contracts"
+        }
+      }
+    },
+    "examples": [
+      {
+        "state": {
+          "channel": "email",
+          "affected_users": 1,
+          "work_blocked": false,
+          "message": "Please resend my invoice this week."
+        },
+        "answers": {
+          "escalate": false,
+          "team": "billing"
+        }
+      },
+      {
+        "state": {
+          "channel": "chat",
+          "affected_users": 1,
+          "work_blocked": false,
+          "message": "One fee needs checking, no payment deadline."
+        },
+        "answers": {
+          "escalate": false,
+          "team": "billing"
+        }
+      },
+      {
+        "state": {
+          "channel": "phone",
+          "affected_users": 80,
+          "work_blocked": true,
+          "message": "Incorrect invoices block payments for all departments today."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "billing"
+        }
+      },
+      {
+        "state": {
+          "channel": "email",
+          "affected_users": 25,
+          "work_blocked": true,
+          "message": "Repeated charges have frozen customer accounts; payment processing stopped."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "billing"
+        }
+      },
+      {
+        "state": {
+          "channel": "chat",
+          "affected_users": 1,
+          "work_blocked": false,
+          "message": "How do I change the report date format?"
+        },
+        "answers": {
+          "escalate": false,
+          "team": "technical"
+        }
+      },
+      {
+        "state": {
+          "channel": "email",
+          "affected_users": 1,
+          "work_blocked": false,
+          "message": "One user needs help with a setting, other work continues."
+        },
+        "answers": {
+          "escalate": false,
+          "team": "technical"
+        }
+      },
+      {
+        "state": {
+          "channel": "phone",
+          "affected_users": 200,
+          "work_blocked": true,
+          "message": "Production outage, nobody can sign in and work is stopped."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "technical"
+        }
+      },
+      {
+        "state": {
+          "channel": "chat",
+          "affected_users": 50,
+          "work_blocked": true,
+          "message": "The portal is unavailable for all users, business operations blocked."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "technical"
+        }
+      },
+      {
+        "state": {
+          "channel": "email",
+          "affected_users": 1,
+          "work_blocked": false,
+          "message": "Please send a price list for next quarter."
+        },
+        "answers": {
+          "escalate": false,
+          "team": "sales"
+        }
+      },
+      {
+        "state": {
+          "channel": "phone",
+          "affected_users": 3,
+          "work_blocked": false,
+          "message": "We are comparing subscription plans, no urgent deadline."
+        },
+        "answers": {
+          "escalate": false,
+          "team": "sales"
+        }
+      },
+      {
+        "state": {
+          "channel": "chat",
+          "affected_users": 100,
+          "work_blocked": true,
+          "message": "License renewal failed, all users blocked from working today."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "sales"
+        }
+      },
+      {
+        "state": {
+          "channel": "phone",
+          "affected_users": 60,
+          "work_blocked": true,
+          "message": "Contract activation failed and the entire team cannot work."
+        },
+        "answers": {
+          "escalate": true,
+          "team": "sales"
+        }
+      }
+    ]
+  },
+  "tickets": [
+    {
+      "channel": "email",
+      "affected_users": 150,
+      "work_blocked": true,
+      "message": "Nobody can access the portal; all staff are unable to work."
+    },
+    {
+      "channel": "phone",
+      "affected_users": 1,
+      "work_blocked": false,
+      "message": "Please send pricing for a new license contract for next quarter; no access issue and work continues."
+    }
+  ],
+  "chat_triage": {
+    "questions": {
+      "topic": {
+        "type": "choice",
+        "instructions": "What is the customer asking for help with in this conversation?",
+        "criteria": {
+          "access": "Login, passwords, permissions and account access",
+          "billing": "Invoices, charges, payments and refunds",
+          "export": "Downloading or exporting reports and files"
+        }
+      }
+    },
+    "examples": [
+      {
+        "state": [
+          "Customer: Cannot log in",
+          "Agent: Reset access",
+          "Customer: I can log in now"
+        ],
+        "answers": {
+          "topic": "access"
+        }
+      },
+      {
+        "state": [
+          "Customer: Password reset fails",
+          "Agent: Sent a reset link",
+          "Customer: The link still fails"
+        ],
+        "answers": {
+          "topic": "access"
+        }
+      },
+      {
+        "state": [
+          "Customer: Portal access denied",
+          "Agent: Updated permissions",
+          "Customer: Portal opens now"
+        ],
+        "answers": {
+          "topic": "access"
+        }
+      },
+      {
+        "state": [
+          "Customer: Account locked",
+          "Agent: Unlocked it",
+          "Customer: Account still locked"
+        ],
+        "answers": {
+          "topic": "access"
+        }
+      },
+      {
+        "state": [
+          "Customer: Invoice missing",
+          "Agent: Emailed a copy",
+          "Customer: Invoice received"
+        ],
+        "answers": {
+          "topic": "billing"
+        }
+      },
+      {
+        "state": [
+          "Customer: Wrong charge",
+          "Agent: Forwarded to billing",
+          "Customer: Charge still wrong"
+        ],
+        "answers": {
+          "topic": "billing"
+        }
+      },
+      {
+        "state": [
+          "Customer: Refund missing",
+          "Agent: Processed refund",
+          "Customer: Refund arrived"
+        ],
+        "answers": {
+          "topic": "billing"
+        }
+      },
+      {
+        "state": [
+          "Customer: Duplicate payment",
+          "Agent: Investigating payment",
+          "Customer: Still waiting"
+        ],
+        "answers": {
+          "topic": "billing"
+        }
+      },
+      {
+        "state": [
+          "Customer: Report export fails",
+          "Agent: Changed export setting",
+          "Customer: File downloaded"
+        ],
+        "answers": {
+          "topic": "export"
+        }
+      },
+      {
+        "state": [
+          "Customer: CSV download missing",
+          "Agent: Try another browser",
+          "Customer: Download still fails"
+        ],
+        "answers": {
+          "topic": "export"
+        }
+      },
+      {
+        "state": [
+          "Customer: PDF export blank",
+          "Agent: Fixed rendering",
+          "Customer: PDF is correct"
+        ],
+        "answers": {
+          "topic": "export"
+        }
+      },
+      {
+        "state": [
+          "Customer: Export button disabled",
+          "Agent: Updated report settings",
+          "Customer: Export still disabled"
+        ],
+        "answers": {
+          "topic": "export"
+        }
+      }
+    ]
+  },
+  "conversations": [
+    [
+      "Customer: I cannot sign in to my account.",
+      "Agent: I reset your access.",
+      "Customer: Sign-in works now, thank you."
+    ],
+    [
+      "Customer: The payment was charged twice.",
+      "Agent: I asked billing to investigate.",
+      "Customer: The duplicate charge is still there."
+    ]
+  ]
+}
