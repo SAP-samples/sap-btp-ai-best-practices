@@ -1,0 +1,14 @@
+{
+  "female": [
+    "Maya", "Amara", "Sofia", "Elena", "Priya", "Mei", "Laura", "Nadia", "Chloe", "Isabel",
+    "Hana", "Carla", "Grace", "Julia", "Leila", "Monica", "Ana", "Yuki", "Sara", "Olivia",
+    "Fatima", "Ingrid", "Lucia", "Aisha", "Emma", "Rosa", "Tara", "Nora", "Claudia", "Mia",
+    "Zara", "Alice", "Kimberly", "Ines", "Lena", "Valeria", "Asha", "Camille", "Eva", "Rachel"
+  ],
+  "male": [
+    "Jordan", "Lucas", "Daniel", "Arjun", "Kenji", "George", "Mateo", "Omar", "Ethan", "Noah",
+    "David", "Rafael", "Samuel", "Ian", "Marco", "Kwame", "Hiroshi", "Victor", "Leon", "Adrian",
+    "Tomas", "Felix", "Jim", "Ravi", "Luis", "Andre", "Martin", "Paul", "Diego", "Henry",
+    "Chen", "Elias", "Jonas", "Malik", "Oscar", "Simon", "Hugo", "Peter", "Nikhil", "Evan"
+  ]
+}

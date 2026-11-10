@@ -1,0 +1,296 @@
+{
+ "personas": [
+  {
+   "file": "p01.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p02.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p03.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p04.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p05.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p06.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p07.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p08.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p09.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p10.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p11.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p12.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p13.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p14.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p15.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p16.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p17.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p18.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p19.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p20.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p21.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p22.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p23.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p24.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p25.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p26.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p27.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p28.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p29.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p30.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p31.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p32.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p33.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p34.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p35.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p36.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p37.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p38.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p39.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p40.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p41.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p42.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p43.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p44.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p45.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p46.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p47.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p48.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p49.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p50.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p51.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p52.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p53.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p54.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p55.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p56.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p57.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p58.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p59.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p60.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p61.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p62.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p63.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p64.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p65.webp",
+   "gender": "female"
+  },
+  {
+   "file": "p66.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p67.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p68.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p69.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p70.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p71.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p72.webp",
+   "gender": "male"
+  },
+  {
+   "file": "p73.webp",
+   "gender": "female"
+  }
+ ]
+}

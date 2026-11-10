@@ -1,0 +1,25 @@
+{
+  "title": "AI-Powered Claims Validation",
+  "subtitle": "Powered by SAP Business AI Platform (BAIP)",
+  "app_name": "Claims Validation Agent",
+  "screenshot": null,
+  "left_persona": {
+    "name": "Maya",
+    "role": "AR Claims Specialist",
+    "photo": "p04.webp",
+    "caption": "Determine whether the claim is valid by reconciling payment, claim details, shipment evidence, delivery records, and financial impact."
+  },
+  "right_persona": {
+    "name": "Jordan",
+    "role": "Finance / Operations Reviewer",
+    "photo": "p03.webp",
+    "caption": "Provides the reviewer with the decisive evidence and a clear recommended next step."
+  },
+  "challenge": "As an AR claims specialist, I need to turn a customer deduction into a defensible decision. Today, claim details can be buried in remittance advice, payment records, invoices, and shipping documents. Manually reconciling these sources takes time, delays cross-functional review, and can lead to inconsistent outcomes.",
+  "solution": "The Claims Validation Agent brings claim and supporting-document context into one review workspace. It generates an evidence-based assessment that helps the reviewer approve, reject, or investigate with confidence.",
+  "benefits": [
+    "Reduce manual reconciliation across claim, invoice reference, BOL, and POD evidence.",
+    "Improve confidence with explicit validation of quantities, locations, delivery exceptions, and signatures.",
+    "Create a defensible record with supporting documents, structured analysis results, and reviewer actions."
+  ]
+}
