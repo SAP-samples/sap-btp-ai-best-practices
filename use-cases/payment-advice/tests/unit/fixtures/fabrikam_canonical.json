@@ -1,0 +1,206 @@
+{
+  "header": {},
+  "line_items": [
+    {
+      "customer_document_reference": "3082333679",
+      "invoice_reference": "8916712122",
+      "customer_account_reference": "6400",
+      "invoice_date": "2025-11-13",
+      "gross_amount": -5.3,
+      "discount_amount": 0,
+      "net_amount": -5.3,
+      "deduction_reason": "DEFECTIVE MERCHANDISE ALLOWANCE [0059]"
+    },
+    {
+      "customer_document_reference": "3082333679",
+      "invoice_reference": "8916712122",
+      "customer_account_reference": "6400",
+      "invoice_date": "2025-11-13",
+      "gross_amount": -79.48,
+      "discount_amount": 0,
+      "net_amount": -79.48,
+      "deduction_reason": "QUANTITY DISCOUNT [0057]"
+    },
+    {
+      "customer_document_reference": "3082333679",
+      "invoice_reference": "8916712122",
+      "customer_account_reference": "6400",
+      "invoice_date": "2025-10-31",
+      "gross_amount": 5298.52,
+      "discount_amount": 105.97,
+      "net_amount": 5192.55
+    },
+    {
+      "customer_document_reference": "1932534461",
+      "invoice_reference": "8916169020",
+      "customer_account_reference": "7395",
+      "invoice_date": "2025-11-27",
+      "gross_amount": -57.06,
+      "discount_amount": 0,
+      "net_amount": -57.06,
+      "deduction_reason": "PRICE DIFFERENCE AS DOCUMENTED [0100]"
+    },
+    {
+      "customer_document_reference": "1932534461",
+      "invoice_reference": "8916169020",
+      "customer_account_reference": "7395",
+      "invoice_date": "2025-10-31",
+      "gross_amount": 3566.15,
+      "discount_amount": 71.32,
+      "net_amount": 3494.83
+    },
+    {
+      "customer_document_reference": "5834369043",
+      "invoice_reference": "8916669854",
+      "customer_account_reference": "6324",
+      "invoice_date": "2025-11-17",
+      "gross_amount": -1.34,
+      "discount_amount": 0,
+      "net_amount": -1.34,
+      "deduction_reason": "QUANTITY DISCOUNT [0057]"
+    },
+    {
+      "customer_document_reference": "5834369043",
+      "invoice_reference": "8916669854",
+      "customer_account_reference": "6324",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 89.14,
+      "discount_amount": 0.89,
+      "net_amount": 88.25
+    },
+    {
+      "customer_document_reference": "2232215495",
+      "invoice_reference": "8916945616",
+      "customer_account_reference": "7524",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 52.64,
+      "discount_amount": 0.53,
+      "net_amount": 52.11
+    },
+    {
+      "customer_document_reference": "7482110043",
+      "invoice_reference": "8916155621",
+      "customer_account_reference": "7640",
+      "invoice_date": "2025-05-12",
+      "gross_amount": -46.89,
+      "discount_amount": 0,
+      "net_amount": -46.89,
+      "deduction_reason": "PRICE DIFFERENCE AS DOCUMENTED [0100]"
+    },
+    {
+      "customer_document_reference": "7482110043",
+      "invoice_reference": "8916155621",
+      "customer_account_reference": "7640",
+      "invoice_date": "2025-05-12",
+      "gross_amount": -23.28,
+      "discount_amount": 0,
+      "net_amount": -23.28,
+      "deduction_reason": "MERCHANDISE BILLED NOT SHIPPED [0022]"
+    },
+    {
+      "customer_document_reference": "7482110043",
+      "invoice_reference": "8916155621",
+      "customer_account_reference": "7640",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 2954,
+      "discount_amount": 59.08,
+      "net_amount": 2894.92
+    },
+    {
+      "customer_document_reference": "2533050140",
+      "invoice_reference": "8916508221",
+      "customer_account_reference": "6535",
+      "invoice_date": "2025-11-18",
+      "gross_amount": -23.16,
+      "discount_amount": 0,
+      "net_amount": -23.16,
+      "deduction_reason": "QUANTITY DISCOUNT [0057]"
+    },
+    {
+      "customer_document_reference": "2533050140",
+      "invoice_reference": "8916508221",
+      "customer_account_reference": "6535",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 1543.74,
+      "discount_amount": 15.44,
+      "net_amount": 1528.3
+    },
+    {
+      "customer_document_reference": "6182544146",
+      "invoice_reference": "8916351422",
+      "customer_account_reference": "6203",
+      "invoice_date": "2025-11-17",
+      "gross_amount": -1.34,
+      "discount_amount": 0,
+      "net_amount": -1.34,
+      "deduction_reason": "QUANTITY DISCOUNT [0057]"
+    },
+    {
+      "customer_document_reference": "6182544146",
+      "invoice_reference": "8916351422",
+      "customer_account_reference": "6203",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 89.14,
+      "discount_amount": 0.89,
+      "net_amount": 88.25
+    },
+    {
+      "customer_document_reference": "6582226206",
+      "invoice_reference": "8916940281",
+      "customer_account_reference": "6875",
+      "invoice_date": "2025-11-14",
+      "gross_amount": -1.81,
+      "discount_amount": 0,
+      "net_amount": -1.81,
+      "deduction_reason": "DEFECTIVE MERCHANDISE ALLOWANCE [0059]"
+    },
+    {
+      "customer_document_reference": "6582226206",
+      "invoice_reference": "8916940281",
+      "customer_account_reference": "6875",
+      "invoice_date": "2025-11-14",
+      "gross_amount": -27.09,
+      "discount_amount": 0,
+      "net_amount": -27.09,
+      "deduction_reason": "QUANTITY DISCOUNT [0057]"
+    },
+    {
+      "customer_document_reference": "6582226206",
+      "invoice_reference": "8916940281",
+      "customer_account_reference": "6875",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 1805.95,
+      "discount_amount": 36.12,
+      "net_amount": 1769.83
+    },
+    {
+      "customer_document_reference": "1632254857",
+      "invoice_reference": "8916500552",
+      "customer_account_reference": "6017",
+      "invoice_date": "2025-05-12",
+      "gross_amount": -29.1,
+      "discount_amount": 0,
+      "net_amount": -29.1,
+      "deduction_reason": "PRICE DIFFERENCE AS DOCUMENTED [0100]"
+    },
+    {
+      "customer_document_reference": "1632254857",
+      "invoice_reference": "8916500552",
+      "customer_account_reference": "6017",
+      "invoice_date": "2025-05-12",
+      "gross_amount": -56.2,
+      "discount_amount": 0,
+      "net_amount": -56.2,
+      "deduction_reason": "MERCHANDISE BILLED NOT SHIPPED [0022]"
+    },
+    {
+      "customer_document_reference": "1632254857",
+      "invoice_reference": "8916500552",
+      "customer_account_reference": "6017",
+      "invoice_date": "2025-08-11",
+      "gross_amount": 1870.13,
+      "discount_amount": 37.4,
+      "net_amount": 1832.73
+    }
+  ]
+}

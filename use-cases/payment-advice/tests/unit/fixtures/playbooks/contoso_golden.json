@@ -1,0 +1,70 @@
+{
+  "playbook_text": "Contoso payment advices are PDF files received from PAYMENTS@CONTOSO.COM and normally named CA01_CONTOSO*. Resolve the customer account from column Rg, then determine the reason code from the invoice-number rules in priority order. Use reason code 323 when no specific rule matches. The supplied material does not define the SAP business descriptions of the reason codes, so those meanings require confirmation.",
+  "anchors": {
+    "source_scope": {
+      "document_formats": ["PDF"],
+      "sender_patterns": ["PAYMENTS@CONTOSO.COM"],
+      "filename_patterns": ["CA01_CONTOSO*"]
+    },
+    "default_customer_account": "10053628",
+    "customer_account_rules": [
+      {"priority": 1, "field": "Rg", "operator": "equals", "value": "N", "customer_account": "10059152"},
+      {"priority": 2, "field": "Rg", "operator": "equals", "value": "Q", "customer_account": "10059661"},
+      {"priority": 3, "field": "Rg", "operator": "equals", "value": "A", "customer_account": "10059152"},
+      {"priority": 4, "field": "Rg", "operator": "equals", "value": "L", "customer_account": "10055214"},
+      {"priority": 5, "field": "Rg", "operator": "equals", "value": "O", "customer_account": "10058745"},
+      {"priority": 6, "field": "Rg", "operator": "equals", "value": "W", "customer_account": "10053628"},
+      {"priority": 7, "field": "Rg", "operator": "equals", "value": "S", "customer_account": "10053867"}
+    ],
+    "field_mappings": [
+      {"target_field": "advice_number", "source_field": "current_date", "transformation": "concatenate CONTOSO and current date"},
+      {"target_field": "payer", "source_field": "constant", "transformation": "10053628"},
+      {"target_field": "payee", "source_field": "constant", "transformation": "CA01"},
+      {"target_field": "payment_currency", "source_field": "constant", "transformation": "CAD"},
+      {"target_field": "invoice_currency", "source_field": "constant", "transformation": "CAD"},
+      {"target_field": "total_payment", "source_field": "Grand Total - Net Value", "transformation": "copy"},
+      {"target_field": "invoice_amount", "source_field": "Gross", "transformation": "copy"},
+      {"target_field": "payment_amount", "source_field": "Net", "transformation": "copy"},
+      {"target_field": "cash_discount", "source_field": "Discount", "transformation": "copy"},
+      {"target_field": "invoice_date", "source_field": "Invoice Date", "transformation": "copy"},
+      {"target_field": "invoice_reference", "source_field": "Your Invoice No", "transformation": "copy"},
+      {"target_field": "market_name", "source_field": "Rg", "transformation": "map with customer_account_rules"}
+    ],
+    "deduction_rules": [
+      {"priority": 1, "field": "invoice_number", "operator": "starts_with", "value": "248", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 2, "field": "invoice_number", "operator": "starts_with", "value": "5108", "reason_code": "321", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 3, "field": "invoice_number", "operator": "starts_with", "value": "24610", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 4, "field": "invoice_number", "operator": "starts_with", "value": "234610", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 5, "field": "invoice_number", "operator": "starts_with", "value": "294610", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 6, "field": "invoice_number", "operator": "starts_with", "value": "504610", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 7, "field": "invoice_number", "operator": "contains", "value": "-202", "reason_code": "319", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 8, "field": "invoice_number", "operator": "ends_with", "value": "UL", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 9, "field": "invoice_number", "operator": "starts_with", "value": "OTIF", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 10, "field": "invoice_number", "operator": "starts_with", "value": "PRATL", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 11, "field": "invoice_number", "operator": "starts_with", "value": "PRONT", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 12, "field": "invoice_number", "operator": "starts_with", "value": "PRWBU", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 13, "field": "invoice_number", "operator": "starts_with", "value": "REPLEN", "reason_code": "316", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 14, "field": "invoice_number", "operator": "starts_with", "value": "WEEK END", "reason_code": "319", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 15, "field": "invoice_number", "operator": "starts_with", "value": "MR", "reason_code": "319", "action": "assign reason code", "description": "Documented Contoso invoice-number rule"},
+      {"priority": 16, "field": "invoice_number", "operator": "ends_with", "value": "FS1", "reason_code": "323", "action": "assign reason code and retain escalation semantics", "description": "Explicit documented fallback-like suffix rule"}
+    ],
+    "default_rule": {
+      "reason_code": "323",
+      "action": "assign reason code and flag for confirmation",
+      "description": "All other invoice numbers"
+    },
+    "processing_notes": [
+      "Create the advice number by concatenating CONTOSO and the current date.",
+      "Determine both customer account number and market name from column Rg."
+    ],
+    "evidence": [
+      {"source_name": "Documentation_conversion_rules_CA01_CONTOSO.docx", "locator": "Special Features", "fact": "Defines customer-account and reason-code rules."},
+      {"source_name": "Documentation_conversion_rules_CA01_CONTOSO.docx", "locator": "Header Record", "fact": "Defines constants, total payment, currency, and company code."},
+      {"source_name": "Documentation_conversion_rules_CA01_CONTOSO.docx", "locator": "Item Record", "fact": "Defines field mappings and repeats the reason-code rules."},
+      {"source_name": "Special Features.docx", "locator": "Special Features", "fact": "Independently repeats the customer-account and reason-code rules."}
+    ],
+    "open_questions": [
+      "Confirm the SAP business meanings of reason codes 316, 319, 321, and 323 against the authoritative customer configuration."
+    ]
+  }
+}

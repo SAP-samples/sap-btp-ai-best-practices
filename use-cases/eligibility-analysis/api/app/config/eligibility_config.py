@@ -6,7 +6,6 @@ All threshold values are configurable via environment variables with sensible de
 """
 
 import os
-from pathlib import Path
 from typing import List
 
 
@@ -61,19 +60,5 @@ class EligibilitySettings:
 
 
 # Database and output paths
-def get_database_path() -> Path:
-    """Get the path to the SQLite database for customer logs."""
-    data_dir = Path(__file__).resolve().parent.parent / "data"
-    data_dir.mkdir(parents=True, exist_ok=True)
-    return data_dir / "customer_logs.db"
-
-
-def get_output_directory() -> Path:
-    """Get the directory for generated Excel output files."""
-    output_dir = Path(__file__).resolve().parent.parent / "data" / "output"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    return output_dir
-
-
 # Default settings instance (can be overridden per request)
 default_settings = EligibilitySettings()

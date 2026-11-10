@@ -42,7 +42,7 @@ class PageRouter {
   async registerRoutes() {
     try {
       // Register root route to home
-      router("/", () => this.loadPage("home"));
+      router("/", () => this.loadPage("workspace"));
 
       // Register routes from configuration
       routes.forEach((route) => {
@@ -64,8 +64,8 @@ class PageRouter {
       });
     } catch (error) {
       console.error("Error registering routes:", error);
-      // Fallback to a basic home route
-      router("/", () => this.loadPage("home"));
+      // Fallback to the workspace route
+      router("/", () => this.loadPage("workspace"));
     }
   }
 
@@ -90,11 +90,14 @@ class PageRouter {
       // Now load HTML after JS has registered all icons/components
       const htmlContent = await this.loadHTML(pageName);
 
+      // Release route-owned requests and listeners before removing their DOM.
+      this.currentLifecycle?.destroy?.();
+      this.currentLifecycle = null;
       // Update content container
       this.contentContainer.innerHTML = htmlContent;
 
       // Phase 2: Execute the initialization function now that DOM exists
-      await this.executeJSInit(jsModule, pageName);
+      this.currentLifecycle = await this.executeJSInit(jsModule, pageName, ctx);
 
       // Brief pause to ensure styles are applied, then show content
       await new Promise((resolve) => setTimeout(resolve, 50));
@@ -160,14 +163,14 @@ class PageRouter {
     }
   }
 
-  async executeJSInit(jsModule, pageName) {
+  async executeJSInit(jsModule, pageName, ctx) {
     if (!jsModule) return;
 
     try {
       if (jsModule.default && typeof jsModule.default === "function") {
-        jsModule.default();
+        return await jsModule.default(ctx);
       } else if (jsModule.init && typeof jsModule.init === "function") {
-        jsModule.init();
+        return await jsModule.init(ctx);
       }
     } catch (error) {
       console.warn(`⚠️ Error initializing JS for ${pageName}:`, error.message);
@@ -194,8 +197,8 @@ class PageRouter {
       <div style="padding: 2rem; text-align: center;">
         <ui5-title level="H2">Page Not Found</ui5-title>
         <ui5-text>The requested page could not be found.</ui5-text>
-        <ui5-button style="margin-top: 1rem;" onclick="pageRouter.navigate('/home')">
-          Go to Home
+        <ui5-button style="margin-top: 1rem;" onclick="pageRouter.navigate('/workspace')">
+          Go to Workspace
         </ui5-button>
       </div>
     `;

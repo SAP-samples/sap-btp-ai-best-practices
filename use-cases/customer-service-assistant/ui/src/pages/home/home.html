@@ -1,0 +1,73 @@
+<div class="document-request-page">
+  <div class="document-request-header">
+    <div>
+      <ui5-title level="H2">Shipment Document Requests</ui5-title>
+      <ui5-text class="document-request-subtitle">Review Gmail document requests resolved against HANA shipment documents.</ui5-text>
+    </div>
+    <div class="fetch-actions">
+      <ui5-button id="fetch-emails-button" design="Emphasized">Fetch new emails</ui5-button>
+      <ui5-button id="seed-scenarios-button" design="Default">Load scenario emails</ui5-button>
+    </div>
+  </div>
+
+  <section class="manual-email-panel">
+    <div class="manual-email-grid">
+      <div>
+        <ui5-label for="manual-email-from">From</ui5-label>
+        <ui5-input id="manual-email-from" class="manual-email-field" placeholder="Customer <customer@example.com>"></ui5-input>
+      </div>
+      <div>
+        <ui5-label for="manual-email-subject">Subject</ui5-label>
+        <ui5-input id="manual-email-subject" class="manual-email-field" placeholder="Order 5030000237 status"></ui5-input>
+      </div>
+    </div>
+    <div>
+      <ui5-label for="manual-email-body">Body</ui5-label>
+      <ui5-textarea id="manual-email-body" class="manual-email-body" rows="5" placeholder="Write the customer request here"></ui5-textarea>
+    </div>
+    <div class="manual-email-actions">
+      <ui5-button id="process-manual-email-button" design="Emphasized">Process email</ui5-button>
+      <ui5-text id="manual-email-status" class="fetch-summary-text"></ui5-text>
+    </div>
+  </section>
+
+  <div id="summary-grid" class="summary-grid"></div>
+  <ui5-text id="fetch-summary-text" class="fetch-summary-text"></ui5-text>
+
+  <section class="review-worklist">
+    <div class="review-toolbar">
+      <div>
+        <ui5-title level="H4">Incoming Emails</ui5-title>
+        <ui5-text id="review-toolbar-text"></ui5-text>
+      </div>
+    </div>
+
+    <div id="review-error" class="review-state" hidden></div>
+
+    <div id="review-loading" class="review-state">
+      <ui5-busy-indicator active size="M"></ui5-busy-indicator>
+      <ui5-text>Loading document request drafts...</ui5-text>
+    </div>
+
+    <div id="review-table-container" hidden>
+      <div class="review-table-shell">
+        <table class="review-table">
+          <thead>
+            <tr>
+              <th>Requester</th>
+              <th>Country</th>
+              <th>Draft subject</th>
+              <th>Attachments</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="review-table-body"></tbody>
+        </table>
+      </div>
+      <div id="review-pagination" class="review-pagination"></div>
+    </div>
+  </section>
+
+  <ui5-toast id="review-toast"></ui5-toast>
+</div>

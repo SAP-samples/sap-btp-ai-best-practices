@@ -1,0 +1,26 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+httpx>=0.28.0
+requests>=2.32.0
+python-dotenv>=1.2.2
+sap-ai-sdk-gen[all]>=7.2.0
+# LangChain / LangGraph stack (used by the UC-02 embedded agent scaffold)
+langchain-core>=0.3.20
+langgraph>=1.2.10
+langchain-mcp-adapters>=0.3.1
+mcp>=1.29.0
+pydantic>=2.13.4
+sqlalchemy>=2.0.0
+sqlalchemy-hana>=2.0.0
+hdbcli>=2.29.25
+PyYAML>=6.0
+pandas>=2.2.0
+openpyxl>=3.1.0
+pypdf>=4.0.0
+tqdm>=4.70.0
+fpdf2>=2.8.0
+python-multipart>=0.0.9
+# Fix numpy compatibility issues
+numpy
+PyJWT>=2.10.1
+cryptography>=43.0.0

@@ -1,0 +1,97 @@
+/* ============================================================
+   AI4U Ideation Agent — Privacy Page
+   ============================================================ */
+
+.privacy-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+  color: var(--sapTextColor, #1d2d3e);
+  line-height: 1.6;
+}
+
+.privacy-page h1 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  color: var(--sapGroup_TitleTextColor, #1d2d3e);
+}
+
+.privacy-page h2 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--sapGroup_TitleTextColor, #1d2d3e);
+}
+
+.privacy-page h3 {
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--sapGroup_TitleTextColor, #1d2d3e);
+}
+
+.privacy-page h4 {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--sapGroup_TitleTextColor, #1d2d3e);
+}
+
+.privacy-page p {
+  margin: 0.75rem 0;
+}
+
+.privacy-page ul,
+.privacy-page ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.privacy-page li {
+  margin-bottom: 0.5rem;
+}
+
+.privacy-page a {
+  color: var(--sapLinkColor, #0064d9);
+  text-decoration: none;
+}
+
+.privacy-page a:hover {
+  text-decoration: underline;
+}
+
+.privacy-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.privacy-page th,
+.privacy-page td {
+  border: 1px solid var(--sapGroup_ContentBorderColor, #e5e5e5);
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+}
+
+.privacy-page th {
+  background: var(--sapList_HeaderBackground, #f5f6f7);
+  font-weight: 600;
+  color: var(--sapGroup_TitleTextColor, #1d2d3e);
+}
+
+.privacy-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--sapLinkColor, #0064d9);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.privacy-page__back:hover {
+  text-decoration: underline;
+}

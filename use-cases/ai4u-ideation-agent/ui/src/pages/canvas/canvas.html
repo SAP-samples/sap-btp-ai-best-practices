@@ -1,0 +1,54 @@
+<div class="canvas-page">
+    <aside class="canvas-sidebar" id="canvas-sidebar">
+        <div class="sidebar-header">
+            <ui5-select id="canvas-workspace-select" class="workspace-select" accessible-name="Workspace">
+                <ui5-option icon="person-placeholder" value="__personal__" selected>My Submissions</ui5-option>
+            </ui5-select>
+        </div>
+        <ui5-busy-indicator id="canvas-sidebar-busy" size="S" delay="0" class="sidebar-busy">
+            <div id="canvas-entry-list" class="canvas-entry-list"></div>
+        </ui5-busy-indicator>
+    </aside>
+
+    <div class="canvas-main">
+        <div class="canvas-toolbar">
+            <div class="canvas-toolbar-left">
+                <ui5-title level="H4" class="canvas-title">Value vs Feasibility Analysis</ui5-title>
+            </div>
+            <div class="canvas-toolbar-center">
+                <ui5-button id="canvas-add-tile-btn" icon="add" design="Emphasized">Add Tile</ui5-button>
+                <ui5-button id="canvas-add-note-btn" icon="notes" design="Default">Add Note</ui5-button>
+            </div>
+            <div class="canvas-toolbar-right">
+                <div id="canvas-presence" class="canvas-presence"></div>
+                <ui5-button id="canvas-zoom-out-btn" icon="zoom-out" design="Transparent" tooltip="Zoom out"></ui5-button>
+                <span id="canvas-zoom-label" class="canvas-zoom-label">100%</span>
+                <ui5-button id="canvas-zoom-in-btn" icon="zoom-in" design="Transparent" tooltip="Zoom in"></ui5-button>
+                <ui5-button id="canvas-reset-btn" icon="home" design="Transparent" tooltip="Reset view"></ui5-button>
+            </div>
+        </div>
+
+        <div class="canvas-viewport" id="canvas-viewport">
+            <div class="canvas-board" id="canvas-board">
+                <!-- Tiles placed here by dragging from sidebar -->
+            </div>
+            <ui5-busy-indicator id="canvas-board-busy" size="M" delay="0" class="canvas-board-busy"></ui5-busy-indicator>
+        </div>
+    </div>
+</div>
+
+<!-- Edit dialog for user-added blank tiles -->
+<ui5-dialog id="canvas-tile-dialog" header-text="Edit Tile">
+    <div class="dialog-content">
+        <ui5-label for="canvas-tile-title-input">Title</ui5-label>
+        <ui5-input id="canvas-tile-title-input" placeholder="Tile title" style="width: 100%;"></ui5-input>
+        <ui5-label for="canvas-tile-body-input" style="margin-top: 0.75rem; display: block;">Content</ui5-label>
+        <ui5-textarea id="canvas-tile-body-input" placeholder="Add some notes..." rows="5" style="width: 100%;"></ui5-textarea>
+    </div>
+    <div slot="footer" class="dialog-footer">
+        <ui5-button id="canvas-tile-delete-btn" design="Negative" icon="delete">Delete</ui5-button>
+        <div style="flex: 1;"></div>
+        <ui5-button id="canvas-tile-cancel-btn" design="Transparent">Cancel</ui5-button>
+        <ui5-button id="canvas-tile-save-btn" design="Emphasized">Save</ui5-button>
+    </div>
+</ui5-dialog>

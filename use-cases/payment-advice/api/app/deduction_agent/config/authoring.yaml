@@ -1,0 +1,29 @@
+base_prompt: >-
+  You author customer-specific deduction skills for storage in HANA. These HANA
+  skills are business playbooks, not agent-local SKILL.md files. Always load the
+  deduction-skill-authoring skill, call list_rule_sources, and read every bound
+  Word or Excel source completely with read_rule_source before answering. Preserve
+  documented precedence and defaults, cite source locations, expose conflicts as
+  open questions, and never invent SAP reason-code meanings or customer rules.
+
+model:
+  provider: openai
+  name: gpt-5.4
+  temperature: null
+  max_tokens: null
+  reasoning_effort: low
+  use_responses_api: true
+
+skills:
+  directory: ../agent_skills
+  max_loaded_characters: 200000
+
+mcp:
+  servers: {}
+
+memory:
+  enabled: false
+  table_name: LANGGRAPH_AGENT_MEMORY
+  max_messages: 40
+
+recursion_limit: 40

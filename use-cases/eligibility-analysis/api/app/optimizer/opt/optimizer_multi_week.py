@@ -28,12 +28,14 @@ except ImportError:  # pragma: no cover
 
 @dataclass(frozen=True)
 class MultiWeekOptimizerSettings:
+    """Configure solver limits and explicitly opt new runs into the Monday calendar."""
     max_time_seconds: int = 60
     random_seed: int = 0
     num_search_workers: int = 1
     horizon_weeks: int = 8
     attempt_cap: int = 1
     default_lifetime_weeks: int = 4
+    calendar_version: str = "legacy"
 
 
 @dataclass(frozen=True)
@@ -142,7 +144,14 @@ def optimize_multi_week(
         raise ImportError("OR-Tools is not installed. Install 'ortools' to run multi-week optimizer.")
 
     settings = settings or MultiWeekOptimizerSettings()
-    weeks = _coerce_week_starts(week_starts)
+    if settings.calendar_version == "monday-v1":
+        weeks = [pd.Timestamp(week).normalize() for week in week_starts]
+        if any(week.weekday() != 0 for week in weeks):
+            raise ValueError("monday-v1 requires explicit Monday week starts")
+    elif settings.calendar_version == "legacy":
+        weeks = _coerce_week_starts(week_starts)
+    else:
+        raise ValueError("Unknown planning calendar version")
     if not weeks:
         raise ValueError("week_starts cannot be empty")
 
@@ -178,7 +187,9 @@ def optimize_multi_week(
         offer_dates = pd.to_datetime(data["offer_file_date"], errors="coerce")
     else:
         offer_dates = pd.Series([pd.NaT] * len(data), index=data.index)
-    offer_weeks = offer_dates.dt.to_period("W-MON").dt.start_time
+    # New runs may never fund before the actual offer date. Legacy requests keep
+    # their original period normalization for compatibility with saved results.
+    offer_weeks = offer_dates if settings.calendar_version == "monday-v1" else offer_dates.dt.to_period("W-MON").dt.start_time
     lifetime_weeks = [
         _lifetime_weeks_for_row(row, settings.default_lifetime_weeks)
         for _, row in data.iterrows()
@@ -312,7 +323,8 @@ def optimize_multi_week(
         status_tie = solver.Solve(model)
         if status_tie in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             solution = {key: int(solver.Value(var)) for key, var in x.items()}
-            solve_status = solver.StatusName(status_tie)
+            # A tie-break proof cannot upgrade a time-limited primary objective.
+            solve_status = solver.StatusName(status if settings.calendar_version == "monday-v1" else status_tie)
         else:
             solution = first_solution
             solve_status = solver.StatusName(status)

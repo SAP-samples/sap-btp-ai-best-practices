@@ -1,3 +1,4 @@
+"""RPT-1 lifetime estimator: reconciliation-offset target, customer context and margin."""
 import unittest
 from unittest.mock import patch
 
@@ -5,170 +6,132 @@ import pandas as pd
 
 from app.optimizer.model.lifetime_estimation import (
     LifetimeEstimationConfig,
-    build_lifetime_payload,
+    _prepare_history_features,
     estimate_candidate_lifetime_with_rpt1,
+    select_context,
 )
 
 
-class TestLifetimePayloadBuilder(unittest.TestCase):
-    def test_context_size_respects_bounds(self) -> None:
-        row_count = 1200
-        history_df = pd.DataFrame(
-            {
-                "INVOICE_REF": [f"H-{i}" for i in range(row_count)],
-                "COMPANY_CODE": ["C1" if i % 2 == 0 else "C2" for i in range(row_count)],
-                "CUSTOMER_ID": ["U1" if i % 5 == 0 else f"U{i % 17}" for i in range(row_count)],
-                "PROGRAM_ID": ["P1" if i % 7 == 0 else "P2" for i in range(row_count)],
-                "FUNDING_CURRENCY": ["EUR"] * row_count,
-                "ORIGINAL_CURRENCY": ["EUR"] * row_count,
-                "PURCHASE_PRICE": [1000.0 + (i % 13) * 10.0 for i in range(row_count)],
-                "INVOICE_AMOUNT": [1200.0 + (i % 11) * 10.0 for i in range(row_count)],
-                "ISSUANCE_DATE": pd.to_datetime(["2025-01-01"] * row_count),
-                "DUE_DATE": pd.to_datetime(["2025-03-01"] * row_count),
-                "TENOR_DAYS": [59] * row_count,
-                "TARGET_LIFETIME_DAYS": [30 + (i % 20) for i in range(row_count)],
-                "CREDIT_START_DATE": pd.date_range("2024-01-01", periods=row_count, freq="D"),
-            }
-        )
-        candidate_row = pd.Series(
-            {
-                "INVOICE_REF": "NEW-1",
-                "COMPANY_CODE": "C1",
-                "CUSTOMER_ID": "U1",
-                "PROGRAM_ID": "P1",
-                "FUNDING_CURRENCY": "EUR",
-                "ORIGINAL_CURRENCY": "EUR",
-                "PURCHASE_PRICE": 1050.0,
-                "INVOICE_AMOUNT": 1200.0,
-                "ISSUANCE_DATE": pd.Timestamp("2026-02-01"),
-                "DUE_DATE": pd.Timestamp("2026-03-15"),
-                "TENOR_DAYS": 42,
-            }
-        )
+def _history(customer_rows):
+    """Observed lifecycles: due Tue 2025-03-04, funded Wed 2025-02-05, released on file k at 12:00.
 
-        context_df, query_df = build_lifetime_payload(
-            history_df,
-            candidate_row,
-            context_min_rows=500,
-            context_max_rows=800,
-        )
-
-        self.assertGreaterEqual(len(context_df), 500)
-        self.assertLessEqual(len(context_df), 800)
-        self.assertEqual(len(query_df), 1)
-        self.assertIn("TARGET_LIFETIME_DAYS", context_df.columns)
-        self.assertNotIn("TARGET_LIFETIME_DAYS", query_df.columns)
+    Args:
+        customer_rows: {customer: [k, k, ...]} one entry per history invoice.
+    """
+    rows = []
+    for customer, offsets in customer_rows.items():
+        for position, k in enumerate(offsets):
+            release = pd.Timestamp("2025-03-04 12:00") + pd.Timedelta(weeks=k)
+            rows.append({"Invoice Reference": f"H-{customer}-{position}", "Company Code": "C1",
+                         "Customer": customer, "Due Date": pd.Timestamp("2025-03-04"),
+                         "credit_start": pd.Timestamp("2025-02-05 15:00") + pd.Timedelta(days=position),
+                         "credit_release": release})
+    return pd.DataFrame(rows)
 
 
-class TestLifetimeEstimatorFallback(unittest.TestCase):
-    def test_disabled_estimator_is_safe_noop(self) -> None:
-        candidates_df = pd.DataFrame(
-            {
-                "Invoice Reference": ["INV-1"],
-                "Company Code": ["C1"],
-                "Customer": ["U1"],
-                "Purchase Price": [1000.0],
-                "Due Date": [pd.Timestamp("2026-03-15")],
-            }
-        )
-        lifecycle_df = pd.DataFrame()
-        config = LifetimeEstimationConfig(enabled=False)
+def _candidates(customers):
+    """Candidates due Tue 2026-03-03 with a planned funding Wednesday of 2026-02-04."""
+    return pd.DataFrame({"Invoice Reference": [f"INV-{i}" for i in range(len(customers))],
+                         "Company Code": ["C1"] * len(customers), "Customer": customers,
+                         "Due Date": [pd.Timestamp("2026-03-03")] * len(customers),
+                         "Planned Funding Date": [pd.Timestamp("2026-02-04")] * len(customers)})
 
-        output_df, report = estimate_candidate_lifetime_with_rpt1(
-            candidates_df,
-            lifecycle_df,
-            config=config,
-        )
 
+class _FakeClient:
+    """Stands in for RPT1Client; predicts a fixed k and records every context it receives."""
+    predicted_k = 1.0
+    contexts = []
+
+    @classmethod
+    def from_env(cls, **kwargs):
+        return cls()
+
+    def fit(self, **kwargs):
+        _FakeClient.contexts.append(kwargs["context_df"])
+        return self
+
+    def predict(self, query_df):
+        result = type("Result", (), {})()
+        result.predictions_df = pd.DataFrame({"ROW_ID": query_df["ROW_ID"],
+                                              "TARGET_RECON_K": [self.predicted_k] * len(query_df)})
+        result.metadata = {"rpt1_usage": {"input_cells": 10, "prediction_count": len(query_df)}}
+        return result
+
+
+def _run(candidates, history, **config):
+    _FakeClient.contexts = []
+    with patch("app.optimizer.model.lifetime_estimation._load_rpt1_client_class", return_value=_FakeClient):
+        return estimate_candidate_lifetime_with_rpt1(candidates, history, config=LifetimeEstimationConfig(**config))
+
+
+class HistoryFeatureTests(unittest.TestCase):
+    def test_offset_target_and_as_of_priors(self):
+        """k is read from the Tuesday calendar; priors never use outcomes known after funding."""
+        history = _prepare_history_features(_history({"U1": [1, 2, 1]}))
+        self.assertEqual(sorted(history["TARGET_RECON_K"].tolist()), [1, 1, 2])
+        # All three were funded before any release, so no earlier outcome was known.
+        self.assertEqual(history["CUST_HISTORY_N"].tolist(), [0, 0, 0])
+        self.assertTrue(history["CUST_MEDIAN_K"].isna().all())
+        self.assertTrue(history["CUSTOMER_ID"].str.startswith("CUST_").all())
+
+
+class ContextSelectionTests(unittest.TestCase):
+    def test_customer_only_when_history_is_sufficient(self):
+        history = _prepare_history_features(_history({"U1": [1] * 30, "U2": [2] * 30}))
+        context = select_context(history, "U1", "C1", min_rows=10, max_rows=800)
+        self.assertEqual(len(context), 30)
+        self.assertTrue((context["CUSTOMER_ID"] == "CUST_U1").all())
+
+    def test_sparse_customer_is_topped_up_and_max_is_respected(self):
+        history = _prepare_history_features(_history({"U1": [1] * 3, "U2": [2] * 30}))
+        self.assertEqual(len(select_context(history, "U1", "C1", min_rows=10, max_rows=800)), 10)
+        self.assertEqual(len(select_context(history, "U2", "C1", min_rows=10, max_rows=12)), 12)
+
+
+class EstimatorTests(unittest.TestCase):
+    def test_disabled_estimator_is_safe_noop(self):
+        output, report = estimate_candidate_lifetime_with_rpt1(
+            _candidates(["U1"]), pd.DataFrame(), config=LifetimeEstimationConfig(enabled=False))
         self.assertEqual(report["status"], "disabled")
-        self.assertEqual(report["predicted_candidates"], 0)
-        self.assertEqual(len(output_df), len(candidates_df))
+        self.assertEqual(len(output), 1)
 
-    def test_parallel_estimation_reports_progress_counters(self) -> None:
-        candidates_df = pd.DataFrame(
-            {
-                "Invoice Reference": [f"INV-{i}" for i in range(30)],
-                "Company Code": ["C1"] * 30,
-                "Customer": [f"U{i % 5}" for i in range(30)],
-                "PROGRAMA": ["P1"] * 30,
-                "Funding Currency": ["EUR"] * 30,
-                "Currency": ["EUR"] * 30,
-                "Purchase Price": [1000.0 + i for i in range(30)],
-                "Amount": [1200.0 + i for i in range(30)],
-                "Issuance date": [pd.Timestamp("2026-01-01")] * 30,
-                "Due Date": [pd.Timestamp("2026-03-01")] * 30,
-            }
-        )
-        lifecycle_df = pd.DataFrame(
-            {
-                "Invoice Reference": [f"H-{i}" for i in range(900)],
-                "Company Code": ["C1"] * 900,
-                "Customer": [f"U{i % 7}" for i in range(900)],
-                "PROGRAMA": ["P1"] * 900,
-                "Funding Currency": ["EUR"] * 900,
-                "Currency": ["EUR"] * 900,
-                "Purchase Price": [950.0 + (i % 30) for i in range(900)],
-                "Amount": [1150.0 + (i % 30) for i in range(900)],
-                "Issuance date": [pd.Timestamp("2025-01-01")] * 900,
-                "Due Date": [pd.Timestamp("2025-03-01")] * 900,
-                "credit_start": pd.date_range("2024-01-01", periods=900, freq="D"),
-                "credit_duration_days": [30 + (i % 10) for i in range(900)],
-            }
-        )
-
-        class _FakePredictionResult:
-            def __init__(self, query_df: pd.DataFrame):
-                self.predictions_df = pd.DataFrame(
-                    {
-                        "INVOICE_REF": query_df["INVOICE_REF"].tolist(),
-                        "TARGET_LIFETIME_DAYS": [42] * len(query_df),
-                        "TARGET_LIFETIME_DAYS__confidence": [0.8] * len(query_df),
-                    }
-                )
-
-        class _FakeClient:
-            @classmethod
-            def from_env(cls, **kwargs):
-                return cls()
-
-            def fit(self, **kwargs):
-                return self
-
-            def predict(self, query_df):
-                return _FakePredictionResult(query_df)
-
-        progress_events = []
-        config = LifetimeEstimationConfig(
-            enabled=True,
-            query_batch_size=10,
-            context_min_rows=100,
-            context_max_rows=150,
-            max_parallel_calls=2,
-        )
-
-        with patch(
-            "app.optimizer.model.lifetime_estimation._load_rpt1_client_class",
-            return_value=_FakeClient,
-        ):
-            output_df, report = estimate_candidate_lifetime_with_rpt1(
-                candidates_df,
-                lifecycle_df,
-                config=config,
-                progress_callback=lambda payload: progress_events.append(payload),
-            )
-
+    def test_margin_raises_k_to_the_customer_quantile(self):
+        """Model k=1; customer p75 k=2 -> release Tue 2026-03-17 12:00, 42 days, 6 weeks."""
+        output, report = _run(_candidates(["U1"]), _history({"U1": [1] * 10 + [2] * 10}))
+        row = output.iloc[0]
         self.assertEqual(report["status"], "completed")
-        self.assertEqual(report["predicted_candidates"], 30)
+        self.assertEqual((row.expected_recon_k_model, row.expected_recon_k), (1, 2))
+        self.assertEqual(row.expected_release_date, "2026-03-17")
+        self.assertEqual((row.expected_lifetime_days, row.expected_lifetime_weeks), (42, 6))
+        self.assertEqual(row.expected_lifetime_source, "RPT-1")
+        self.assertEqual(report["margin_applied_candidates"], 1)
+
+    def test_without_margin_the_model_k_is_used(self):
+        output, _ = _run(_candidates(["U1"]), _history({"U1": [1] * 10 + [2] * 10}), release_margin_quantile=None)
+        self.assertEqual((output.iloc[0].expected_recon_k, output.iloc[0].expected_lifetime_days), (1, 35))
+
+    def test_one_customer_context_per_batch_and_progress_counters(self):
+        customers = [f"U{i % 5}" for i in range(30)]
+        history = _history({f"U{i}": [1] * 20 for i in range(5)})
+        events = []
+        with patch("app.optimizer.model.lifetime_estimation._load_rpt1_client_class", return_value=_FakeClient):
+            _FakeClient.contexts = []
+            output, report = estimate_candidate_lifetime_with_rpt1(
+                _candidates(customers), history,
+                config=LifetimeEstimationConfig(query_batch_size=10, context_min_rows=5, max_parallel_calls=2),
+                progress_callback=events.append)
+        self.assertEqual((report["batches_total"], report["api_calls"], report["predicted_candidates"]), (5, 5, 30))
         self.assertEqual(report["fallback_candidates"], 0)
-        self.assertEqual(report["max_parallel_calls"], 2)
-        self.assertEqual(report["batches_total"], 5)
-        self.assertEqual(report["batches_completed"], 5)
-        self.assertEqual(report["api_calls"], 5)
-        self.assertTrue((output_df["expected_lifetime_source"] == "RPT-1").all())
-        self.assertTrue(len(progress_events) >= 2)
-        self.assertTrue(
-            any(event.get("batches_completed") == report["batches_completed"] for event in progress_events)
-        )
+        self.assertTrue(all(context["CUSTOMER_ID"].nunique() == 1 for context in _FakeClient.contexts))
+        self.assertTrue((output["expected_lifetime_source"] == "RPT-1").all())
+        self.assertTrue(any(event["batches_completed"] == 5 for event in events))
+
+    def test_missing_funding_date_falls_back_to_four_weeks(self):
+        candidates = _candidates(["U1"]).drop(columns="Planned Funding Date")
+        output, report = _run(candidates, _history({"U1": [1] * 10}))
+        self.assertEqual(output.iloc[0].expected_lifetime_source, "fallback_default_weeks")
+        self.assertEqual(output.iloc[0].expected_lifetime_days, 28)
+        self.assertEqual(report["fallback_candidates"], 1)
 
 
 if __name__ == "__main__":

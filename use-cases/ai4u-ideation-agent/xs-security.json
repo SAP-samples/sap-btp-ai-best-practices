@@ -1,0 +1,11 @@
+{
+  "xsappname": "ai4u-ideation",
+  "tenant-mode": "dedicated",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://ai4u-ideation-agent.cfapps.eu10-005.hana.ondemand.com/**",
+      "http://localhost:5173/**",
+      "http://localhost:4173/**"
+    ]
+  }
+}

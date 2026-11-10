@@ -1,0 +1,57 @@
+# AI4U Ideation Agent — Cloud Foundry Manifest Template
+#
+# This template is used by setup.sh to generate a manifest.yaml configured
+# for your specific BTP landscape. All placeholders are resolved during setup.
+#
+# If you prefer manual setup, copy this file to manifest.yaml and replace:
+#   ((app_prefix))        → your app name prefix (e.g., "ai4u-ideation-agent")
+#   ((cf_region))         → your CF region (e.g., "eu10-005", "us10-001")
+#   ((xsuaa_instance))    → your XSUAA service instance name
+#   ((hana_instance))     → your HANA service instance name
+#   ((objectstore_instance)) → your Object Store service instance name
+#   ((aicore_instance))   → your AI Core service instance name
+#   ((xsuaa_subdomain))   → your BTP subdomain (from XSUAA service key → "identityzone")
+#   ((xsuaa_client_id))   → your XSUAA client ID (from service key → "clientid")
+#   ((cf_region_base))    → base region without variant (e.g., "eu10" from "eu10-005")
+#   ((cdc_api_key))       → CDC API key (leave empty if not using CDC)
+#   ((cdc_base_url))      → CDC base URL (leave empty if not using CDC)
+#
+---
+applications:
+    - name: ((app_prefix))-api
+      path: api
+      buildpacks:
+      - python_buildpack
+      command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+      memory: 2G
+      disk_quota: 4G
+      routes:
+          - route: ((app_prefix))-api.cfapps.((cf_region)).hana.ondemand.com
+      services:
+          - ((xsuaa_instance))
+          - ((hana_instance))
+          - ((objectstore_instance))
+          - ((aicore_instance))
+      env:
+          APP_ENV: production
+          ALLOWED_ORIGIN: https://((app_prefix)).cfapps.((cf_region)).hana.ondemand.com
+          API_BASE_URL: https://((app_prefix))-api.cfapps.((cf_region)).hana.ondemand.com
+    - name: ((app_prefix))-ui
+      path: ui
+      buildpack: nodejs_buildpack
+      command: npm start -- --port $PORT
+      memory: 1G
+      disk_quota: 1G
+      routes:
+          - route: ((app_prefix)).cfapps.((cf_region)).hana.ondemand.com
+      env:
+          VITE_API_BASE_URL: https://((app_prefix))-api.cfapps.((cf_region)).hana.ondemand.com
+          VITE_APP_HOST: ((app_prefix)).cfapps.((cf_region)).hana.ondemand.com
+          VITE_XSUAA_URL: "https://((xsuaa_subdomain)).authentication.((cf_region_base)).hana.ondemand.com"
+          VITE_XSUAA_CLIENT_ID: ((xsuaa_client_id))
+          # Set your identity-provider origin, or "" to show XSUAA provider selection.
+          VITE_XSUAA_IDP_ORIGIN: "sap.default"
+          VITE_CDC_API_KEY: "((cdc_api_key))"
+          VITE_CDC_BASE_URL: "((cdc_base_url))"
+          NODE_MODULES_CACHE: false
+          NODE_OPTIONS: --max-old-space-size=768

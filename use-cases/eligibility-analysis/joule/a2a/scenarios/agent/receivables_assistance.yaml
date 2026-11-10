@@ -1,0 +1,19 @@
+description: >
+  Ask about invoice eligibility rules, historical patterns, saved funding plans, credit limits, opening exposure and RPT-1 lifetime assumptions. The remote assistant explains saved evidence and cannot execute funding.
+
+target:
+  type: function
+  name: query_receivables_agent
+  parameters:
+    # Inject the previously persisted remote context into the next Joule function call.
+    # This parameter must stay optional in the function definition and must not also be bound through slots.
+    - name: agent_context_id
+      value: $capability_context.agent_context_id
+
+# response_context:
+#   - value: agent_result
+
+capability_context:
+  # Persist the latest remote contextId so Joule can continue the same LangGraph thread on the next turn.
+  - name: agent_context_id
+    value: $target_result.agent_context_id

@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import hashlib
+import json
+
 import os
 import uuid
 from datetime import datetime, timezone
@@ -12,6 +16,10 @@ try:
     from .agent import run_agent
 except ImportError:  # pragma: no cover
     from agent import run_agent
+try:
+    from ..observability.llm_usage_logging import LlmUsageContext, context_from_request
+except ImportError:  # pragma: no cover
+    from observability.llm_usage_logging import LlmUsageContext, context_from_request
 try:
     from ..security import get_api_key
 except ImportError:  # pragma: no cover
@@ -411,7 +419,12 @@ def _build_task_response(
 # JSON-RPC Method Handlers
 # ==============================================================================
 
-async def _handle_message_send(req_id: Any, params: Dict[str, Any]) -> Dict[str, Any]:
+async def _handle_message_send(
+    req_id: Any,
+    params: Dict[str, Any],
+    *,
+    usage_context: Optional[LlmUsageContext] = None,
+) -> Dict[str, Any]:
     """Handles the message/send JSON-RPC method.
 
     This is the main entry point for sending messages to the agent. It:
@@ -432,63 +445,48 @@ async def _handle_message_send(req_id: Any, params: Dict[str, Any]) -> Dict[str,
     if error:
         return _jsonrpc_error(req_id, error["code"], error["message"])
 
-    # Step 2: Setup context and task identifiers
-    context_id = provided_context_id or str(uuid.uuid4())
-    task_id = str(uuid.uuid4())
-
-    # Step 3: Create user message and add to context history
-    user_msg = _message(
-        role="user",
-        text=text,
-        message_id=message_id,
-        task_id=task_id,
-        context_id=context_id,
-    )
-    history = _get_or_create_context_history(context_id)
-    history.append(user_msg)
-
-    # Step 4: Run the agent (LangGraph manages LLM context via thread_id)
+    from .persistence import get_conversation_store,access_domain
+    from .workspace_context import resolve_workspace_context
+    from ..routers.workspace import get_workspace_service
+    from ..models.workspace import RevisionConflict
+    metadata = params.get('metadata') or {}
+    if not isinstance(metadata,dict): return _jsonrpc_error(req_id,ERROR_INVALID_PARAMS,'Metadata must be an object')
+    owner = access_domain()
+    # Deterministic initial context makes an uncertain first-message retry idempotent.
+    context_id = provided_context_id or str(uuid.uuid5(uuid.NAMESPACE_URL,owner+':'+message_id))
+    request_id = message_id
+    store = get_conversation_store()
+    input_hash = hashlib.sha256(json.dumps(params,sort_keys=True).encode()).hexdigest()
+    claimed = None
     try:
-        agent_result = await run_agent(text, context_id)
-    except Exception as exc:
-        return _jsonrpc_error(
-            req_id, ERROR_INTERNAL, "Internal server error", {"detail": str(exc)}
-        )
-
-    # Step 5: Build the task response
-    metadata = params.get("metadata") if isinstance(params, dict) else None
-    include_tool_calls = bool(
-        isinstance(metadata, dict) and metadata.get("includeToolCalls")
-    )
-
-    tool_results = agent_result.get("tool_results", []) or []
-    final_text = agent_result.get("text", "")
-
-    task = _build_task_response(
-        task_id=task_id,
-        context_id=context_id,
-        history=history,
-        agent_text=final_text,
-        tool_calls=agent_result.get("tool_calls", []),
-        tool_results=tool_results,
-        include_tool_calls=include_tool_calls,
-    )
-
-    # Step 6: Log tool calls if enabled
-    if os.getenv("A2A_LOG_TOOL_CALLS", "false").strip().lower() in {"1", "true", "yes"}:
-        print(f"[a2a] tool_calls={agent_result.get('tool_calls', [])}")
-        if tool_results:
-            print(f"[a2a] tool_result_stats={_tool_result_stats(tool_results)}")
-
-    # Step 7: Store task and return response
-    _TASKS[task_id] = {"task": task, "context_id": context_id}
-
-    config = params.get("configuration") or {}
-    history_length = config.get("historyLength")
-    task_response = _apply_history_length(
-        task, history_length if isinstance(history_length, int) else None
-    )
-    return _jsonrpc_result(req_id, task_response)
+        claimed=store.claim(context_id,request_id,owner,input_hash)
+        if 'cached' in claimed:
+            history_length=(params.get('configuration') or {}).get('historyLength')
+            return _jsonrpc_result(req_id,_apply_history_length(claimed['cached'],history_length if isinstance(history_length,int) else None))
+        workspace = metadata.get('workspace_context')
+        if workspace:
+            service=get_workspace_service()
+            workspace=resolve_workspace_context(workspace,service.analyses,service.runs).model_dump()
+        else: workspace={}
+        task_id=str(uuid.uuid4())
+        history=list(claimed.get('history',[]))
+        history.append(_message(role='user',text=text,message_id=message_id,task_id=task_id,context_id=context_id))
+        agent_result=await asyncio.wait_for(run_agent(text,context_id,usage_context=usage_context,
+            workspace_context=workspace,saved_messages=claimed.get('messages',[]),request_id=request_id),timeout=180)
+        task=_build_task_response(task_id=task_id,context_id=context_id,history=history,
+            agent_text=agent_result.get('text',''),tool_calls=agent_result.get('tool_calls',[]),
+            tool_results=agent_result.get('tool_results',[]),include_tool_calls=bool(metadata.get('includeToolCalls')))
+        store.complete(context_id,request_id,owner,claimed['revision'],agent_result.get('messages',[]),task,history,workspace)
+        _TASKS[task_id]={'task':task,'context_id':context_id}
+        history_length=(params.get('configuration') or {}).get('historyLength')
+        return _jsonrpc_result(req_id,_apply_history_length(task,history_length if isinstance(history_length,int) else None))
+    except (ValueError,LookupError) as error:
+        if claimed and 'cached' not in claimed:store.fail(context_id,request_id,owner)
+        return _jsonrpc_error(req_id,ERROR_INVALID_PARAMS,str(error))
+    except Exception as error:
+        if claimed and 'cached' not in claimed:store.fail(context_id,request_id,owner)
+        message='The Luna model endpoint is rate-limited. Please retry later.' if getattr(error,'status_code',None)==429 else 'Assistant request failed; retry explicitly.'
+        return _jsonrpc_error(req_id,ERROR_INTERNAL,message,{'detail':type(error).__name__})
 
 
 def _handle_tasks_get(req_id: Any, params: Dict[str, Any]) -> Dict[str, Any]:
@@ -507,7 +505,12 @@ def _handle_tasks_get(req_id: Any, params: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(task_id, str) or not task_id:
         return _jsonrpc_error(req_id, ERROR_INVALID_PARAMS, "Invalid method parameters")
     if task_id not in _TASKS:
-        return _jsonrpc_error(req_id, ERROR_TASK_NOT_FOUND, "Task not found")
+        from .persistence import get_conversation_store,access_domain
+        try:
+            saved=get_conversation_store().task(task_id,access_domain())
+            _TASKS[task_id]={'task':saved,'context_id':saved['contextId']}
+        except LookupError:
+            return _jsonrpc_error(req_id,ERROR_TASK_NOT_FOUND,'Task not found')
 
     task = _TASKS[task_id]["task"]
     history_length = params.get("historyLength") if isinstance(params, dict) else None
@@ -575,7 +578,11 @@ async def a2a_endpoint(request: Request, _: str = Depends(get_api_key)) -> JSONR
     params = payload.get("params") or {}
 
     if method == "message/send":
-        response = await _handle_message_send(req_id, params)
+        response = await _handle_message_send(
+            req_id,
+            params,
+            usage_context=context_from_request(request, route="/api/a2a"),
+        )
     elif method == "tasks/get":
         response = _handle_tasks_get(req_id, params)
     elif method == "tasks/cancel":
@@ -604,11 +611,8 @@ def _agent_card_base_url() -> str:
 
 def _agent_card_endpoint_url() -> str:
     """Gets the full endpoint URL for the JSON-RPC interface."""
-    endpoint = os.getenv("A2A_ENDPOINT_URL")
-    if endpoint:
-        return endpoint.rstrip("/")
-    base_url = _agent_card_base_url()
-    return f"{base_url}/api/a2a"
+    from .public_url import public_agent_endpoint
+    return public_agent_endpoint(os.environ)
 
 
 def _agent_card() -> Dict[str, Any]:
@@ -635,7 +639,7 @@ def _agent_card() -> Dict[str, Any]:
         "name": os.getenv("A2A_AGENT_NAME", "Eligibility A2A Agent"),
         "description": os.getenv(
             "A2A_AGENT_DESCRIPTION",
-            "Eligibility assistant for invoice rules and customer log analysis.",
+            "Read-only assistant explaining saved invoice eligibility analyses and credit recommendation runs.",
         ),
         "url": endpoint_url,
         "preferredTransport": "JSONRPC",
@@ -652,14 +656,14 @@ def _agent_card() -> Dict[str, Any]:
         "defaultOutputModes": ["text/plain", "application/json"],
         "skills": [
             {
-                "id": "eligibility-analysis",
-                "name": "Eligibility Analysis",
-                "description": "Explains eligibility rules and analyzes invoice outcomes.",
-                "tags": ["eligibility", "invoices", "rules", "analytics"],
+                "id": "invoice-workspace",
+                "name": "Invoice Workspace",
+                "description": "Explains saved eligibility analyses, lifetime assumptions and credit recommendation runs.",
+                "tags": ["eligibility", "invoices", "recommendation", "credit"],
                 "examples": [
-                    "Why was invoice INV-100 rejected?",
-                    "What are the most rejected debtors?",
-                    "Which rules fail most often for seller S-123?",
+                    "List my saved offers",
+                    "Why is this invoice non-eligible?",
+                    "Explain the assumptions of the saved recommendation run",
                 ],
             }
         ],

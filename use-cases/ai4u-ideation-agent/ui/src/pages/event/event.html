@@ -1,0 +1,92 @@
+<div class="event-workspace">
+    <!-- Join overlay (shown to non-members) -->
+    <div id="event-join-overlay" class="event-join-overlay" hidden>
+        <div class="join-card">
+            <ui5-icon name="calendar" class="join-icon"></ui5-icon>
+            <ui5-title id="join-overlay-name" level="H2"></ui5-title>
+            <ui5-text class="join-invite-text">You've been invited to join this event!</ui5-text>
+            <div class="join-meta">
+                <span class="join-meta-badge"><ui5-icon name="group" class="join-meta-icon"></ui5-icon><ui5-text id="join-overlay-members"></ui5-text></span>
+                <span class="join-meta-badge join-status-badge"><ui5-text id="join-overlay-status"></ui5-text></span>
+            </div>
+            <ui5-button id="join-overlay-btn" design="Emphasized" icon="enter-more">Join Event</ui5-button>
+        </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="event-loading" class="event-loading">
+        <ui5-busy-indicator active size="M" delay="0"></ui5-busy-indicator>
+    </div>
+
+    <!-- Main workspace (hidden until loaded) -->
+    <div id="event-main" class="event-main" hidden>
+        <!-- Back navigation -->
+        <div class="event-back-nav">
+            <ui5-button id="event-back-hub" icon="nav-back" design="Transparent">All Events</ui5-button>
+        </div>
+
+        <!-- Hero header -->
+        <div class="event-hero">
+            <ui5-icon name="calendar" class="event-hero-icon"></ui5-icon>
+            <ui5-title id="event-title" level="H3" class="event-hero-title"></ui5-title>
+            <div class="event-hero-meta">
+                <ui5-text id="event-member-count" class="event-member-count"></ui5-text>
+                <span class="event-meta-separator"></span>
+                <ui5-text id="event-status-badge" class="event-status-badge"></ui5-text>
+            </div>
+            <div class="event-hero-actions">
+                <ui5-button id="event-new-solution" icon="add" design="Emphasized" class="event-hero-cta">New Solution</ui5-button>
+                <ui5-button id="event-share" icon="share-2" design="Default">Share Event</ui5-button>
+            </div>
+        </div>
+
+        <!-- Admin toolbar (hidden for non-admins) -->
+        <div id="event-admin-controls" class="event-admin-toolbar" hidden>
+            <ui5-button id="event-toggle-status" design="Attention"></ui5-button>
+            <ui5-button id="event-show-members" icon="group" design="Transparent">Members</ui5-button>
+        </div>
+
+        <!-- Leaderboard -->
+        <div id="event-leaderboard-view" class="event-leaderboard-view">
+            <div class="leaderboard-header">
+                <ui5-title level="H4">Leaderboard</ui5-title>
+                <ui5-button id="event-refresh-lb" icon="refresh" design="Transparent" tooltip="Refresh"></ui5-button>
+            </div>
+            <div id="event-leaderboard-list" class="leaderboard-list">
+                <ui5-busy-indicator id="event-lb-busy" active size="M" delay="0"></ui5-busy-indicator>
+            </div>
+            <div id="event-lb-empty" class="leaderboard-empty" hidden>
+                <ui5-illustrated-message name="NoData" title-text="No submissions yet" subtitle-text="Be the first to submit a solution!" design="Spot"></ui5-illustrated-message>
+            </div>
+        </div>
+    </div>
+
+    <!-- Members dialog -->
+    <ui5-dialog id="event-members-dialog" header-text="Event Members">
+        <div id="event-members-list" class="members-list" style="padding: 1rem; min-width: 320px; max-height: 400px; overflow-y: auto;"></div>
+        <div slot="footer" style="display: flex; justify-content: flex-end; padding: 0.5rem 1rem; width: 100%;">
+            <ui5-button id="event-members-close" design="Transparent">Close</ui5-button>
+        </div>
+    </ui5-dialog>
+
+    <!-- Share event dialog -->
+    <ui5-dialog id="event-share-dialog" header-text="Share Event">
+        <div class="dialog-content event-share-content">
+            <ui5-text>Share this code with participants:</ui5-text>
+            <div class="join-code-display">
+                <ui5-title id="share-event-code" level="H2" class="code-text"></ui5-title>
+                <ui5-button id="share-copy-code-btn" icon="copy" design="Transparent" tooltip="Copy code"></ui5-button>
+            </div>
+            <ui5-text class="share-link-label">Or share this link:</ui5-text>
+            <div class="share-link-display">
+                <ui5-input id="share-event-link" readonly style="width: 100%;"></ui5-input>
+                <ui5-button id="share-copy-link-btn" icon="copy" design="Transparent" tooltip="Copy link"></ui5-button>
+            </div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <ui5-button id="event-share-close" design="Transparent">Close</ui5-button>
+        </div>
+    </ui5-dialog>
+
+    <ui5-toast id="event-toast" placement="BottomCenter"></ui5-toast>
+</div>

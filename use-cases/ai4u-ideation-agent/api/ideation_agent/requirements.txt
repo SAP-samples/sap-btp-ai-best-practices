@@ -1,0 +1,17 @@
+notebook
+jupyterlab
+sap-ai-sdk-gen[all]
+python-dotenv
+aioboto3
+langgraph
+# langchain_aws  # for LangChain Implementation
+# langchain-google-vertexai  # for LangChain Implementation
+# langchain>=0.2.14
+langchain-core>=0.2.41
+langgraph>=0.2.39
+pydantic>=2.8.0
+langchain-mcp-adapters==0.1.14
+mcp>=1.9.2
+fastapi
+uvicorn[standard]
+httpx

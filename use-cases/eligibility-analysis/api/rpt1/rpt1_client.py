@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
 import os
+import threading
 import time
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, Mapping, Sequence
 
 import pandas as pd
@@ -38,8 +41,27 @@ class RPT1RequestError(RPT1Error):
         self.response_body = response_body
 
 
+# Resolved deployment URLs keyed by (AI Core base URL, resource group, model name,
+# model version). Lifetime estimation builds one client per worker thread, so the
+# cache prevents every thread from repeating the same AI Core discovery calls.
+# ponytail: process-local cache; restart picks up a redeployed model.
+_DEPLOYMENT_CACHE: dict[tuple[str, str, str, str | None], tuple[str, str | None]] = {}
+_DEPLOYMENT_CACHE_LOCK = threading.Lock()
+
+
 @dataclass
 class PredictionResult:
+    """Parsed RPT-1 prediction result.
+
+    Attributes:
+        predictions_df: Predictions normalized into a DataFrame.
+        metadata: Response metadata plus local request usage counters.
+        status_code: RPT-1 status code from the response payload.
+        status_message: RPT-1 status message from the response payload.
+        request_id: Provider request identifier when returned.
+        raw_response: Raw response JSON.
+    """
+
     predictions_df: pd.DataFrame
     metadata: dict[str, Any]
     status_code: int | None
@@ -49,7 +71,12 @@ class PredictionResult:
 
 
 class RPT1Client:
-    """DataFrame-first client for SAP RPT-1 inferencing through SAP AI Core."""
+    """DataFrame-first client for SAP RPT-1 inferencing through SAP AI Core.
+
+    The client locates its AI Core deployment from a foundation-model name such as
+    ``sap-rpt-1-small`` (and an optional model version) instead of a landscape
+    specific deployment URL or ID. Discovery runs lazily on the first prediction.
+    """
 
     _ALLOWED_TASK_TYPES = {"classification", "regression"}
     _ALLOWED_SCHEMA_TYPES = {"string", "numeric", "date"}
@@ -62,9 +89,9 @@ class RPT1Client:
         aicore_auth_url: str,
         client_id: str,
         client_secret: str,
+        model_name: str,
+        model_version: str | None = None,
         resource_group: str = "default",
-        deployment_url: str | None = None,
-        deployment_id: str | None = None,
         timeout_seconds: int = 60,
         max_retries: int = 3,
         retry_backoff_seconds: float = 1.0,
@@ -78,6 +105,8 @@ class RPT1Client:
             raise RPT1ValidationError("client_id is required.")
         if not client_secret:
             raise RPT1ValidationError("client_secret is required.")
+        if not model_name or not str(model_name).strip():
+            raise RPT1ValidationError("model_name is required (set RPT1_MODEL_NAME).")
         if timeout_seconds <= 0:
             raise RPT1ValidationError("timeout_seconds must be > 0.")
         if max_retries < 0:
@@ -90,8 +119,11 @@ class RPT1Client:
         self.client_id = client_id
         self.client_secret = client_secret
         self.resource_group = resource_group
-        self.deployment_url = deployment_url.rstrip("/") if deployment_url else None
-        self.deployment_id = deployment_id
+        self.model_name = str(model_name).strip()
+        self.model_version = str(model_version).strip() if model_version else None
+        # Filled by discovery; a test may preset deployment_url to skip discovery.
+        self.deployment_url: str | None = None
+        self.deployment_id: str | None = None
         self.timeout_seconds = timeout_seconds
         self.max_retries = max_retries
         self.retry_backoff_seconds = retry_backoff_seconds
@@ -116,11 +148,28 @@ class RPT1Client:
         timeout_seconds: int = 60,
         max_retries: int = 3,
         retry_backoff_seconds: float = 1.0,
-        deployment_url: str | None = None,
-        deployment_id: str | None = None,
+        model_name: str | None = None,
+        model_version: str | None = None,
         resource_group: str | None = None,
         session: requests.Session | None = None,
     ) -> "RPT1Client":
+        """Build a client from AICORE_* credentials and RPT1_MODEL_NAME/VERSION.
+
+        Args:
+            env_path: Optional dotenv file loaded before reading the environment.
+            override: Whether dotenv values override existing variables.
+            timeout_seconds: HTTP timeout per request.
+            max_retries: Retry count for retryable HTTP failures.
+            retry_backoff_seconds: Base delay for exponential backoff.
+            model_name: Explicit model name; defaults to RPT1_MODEL_NAME.
+            model_version: Explicit model version; defaults to RPT1_MODEL_VERSION
+                (empty means any version of the named model).
+            resource_group: AI Core resource group; defaults to AICORE_RESOURCE_GROUP.
+            session: Optional injected requests session (tests).
+
+        Returns:
+            An unresolved client; the deployment is discovered on first predict.
+        """
         if env_path is not None:
             load_dotenv(dotenv_path=env_path, override=override)
 
@@ -134,15 +183,13 @@ class RPT1Client:
             if resource_group is not None
             else os.getenv("AICORE_RESOURCE_GROUP", "default")
         )
-        resolved_deployment_url = (
-            deployment_url
-            if deployment_url is not None
-            else os.getenv("RPT1_DEPLOYMENT_URL", "") or None
+        resolved_model_name = (
+            model_name if model_name is not None else os.getenv("RPT1_MODEL_NAME", "")
         )
-        resolved_deployment_id = (
-            deployment_id
-            if deployment_id is not None
-            else os.getenv("RPT1_DEPLOYMENT_ID", "") or None
+        resolved_model_version = (
+            model_version
+            if model_version is not None
+            else os.getenv("RPT1_MODEL_VERSION", "") or None
         )
 
         return cls(
@@ -151,8 +198,8 @@ class RPT1Client:
             client_id=client_id,
             client_secret=client_secret,
             resource_group=resolved_resource_group,
-            deployment_url=resolved_deployment_url,
-            deployment_id=resolved_deployment_id,
+            model_name=resolved_model_name,
+            model_version=resolved_model_version,
             timeout_seconds=timeout_seconds,
             max_retries=max_retries,
             retry_backoff_seconds=retry_backoff_seconds,
@@ -206,17 +253,37 @@ class RPT1Client:
         *,
         parse_data_types: bool = True,
     ) -> PredictionResult:
+        """Predict target columns for query rows and log request usage.
+
+        Args:
+            query_df: Query rows to score. Target columns are inserted with the
+                configured prediction placeholder before the request is sent.
+            parse_data_types: Whether RPT-1 should parse data types from values.
+
+        Returns:
+            PredictionResult with parsed predictions and `metadata["rpt1_usage"]`
+            containing input cell and prediction counts.
+        """
         self._ensure_fitted()
-        payload, _ = self._build_prediction_payload(
+        payload, query_aligned = self._build_prediction_payload(
             query_df, parse_data_types=parse_data_types
         )
-
         deployment_url = self._resolve_deployment_url()
-        response = self._request(
-            "POST",
-            f"{deployment_url}/predict",
-            payload=payload,
-        )
+        usage = self._build_usage_metadata(payload, query_aligned)
+        start_time = time.perf_counter()
+        try:
+            response = self._request(
+                "POST",
+                f"{deployment_url}/predict",
+                payload=payload,
+            )
+        except Exception:
+            self._emit_usage_event(
+                usage,
+                outcome="error",
+                latency_ms=int((time.perf_counter() - start_time) * 1000),
+            )
+            raise
 
         status = response.get("status", {})
         status_code = status.get("code")
@@ -229,14 +296,90 @@ class RPT1Client:
             )
 
         predictions_df = self._parse_predictions(response, query_df)
+        usage["prediction_count"] = int(len(predictions_df))
+        usage["request_id"] = response.get("id")
+        self._emit_usage_event(
+            usage,
+            outcome="success",
+            latency_ms=int((time.perf_counter() - start_time) * 1000),
+        )
+        metadata = dict(response.get("metadata", {}))
+        metadata["rpt1_usage"] = dict(usage)
         return PredictionResult(
             predictions_df=predictions_df,
-            metadata=dict(response.get("metadata", {})),
+            metadata=metadata,
             status_code=status_code,
             status_message=status_message,
             request_id=response.get("id"),
             raw_response=response,
         )
+
+    def _build_usage_metadata(
+        self,
+        payload: Mapping[str, Any],
+        query_aligned: pd.DataFrame,
+    ) -> dict[str, Any]:
+        """Return local RPT-1 request usage counters for a prediction payload."""
+        rows = payload.get("rows", [])
+        input_rows = len(rows) if isinstance(rows, list) else 0
+        input_columns = 0
+        input_cells = 0
+        if isinstance(rows, list) and rows:
+            column_names: set[str] = set()
+            for row in rows:
+                if isinstance(row, Mapping):
+                    column_names.update(str(key) for key in row.keys())
+                    input_cells += len(row)
+            input_columns = len(column_names)
+        target_columns = [str(column) for column in self._target_columns]
+        context_rows = max(0, input_rows - int(len(query_aligned)))
+        return {
+            "provider": "sap-ai-core",
+            "rpt_endpoint": "predict",
+            "model_name": self.model_name,
+            "model_version": self.model_version,
+            "deployment_id": self.deployment_id,
+            "context_rows": int(context_rows),
+            "query_rows": int(len(query_aligned)),
+            "input_rows": int(input_rows),
+            "input_columns": int(input_columns),
+            "input_cells": int(input_cells),
+            "prediction_count": 0,
+            "target_columns": target_columns,
+            "request_id": None,
+        }
+
+    def _emit_usage_event(
+        self,
+        usage: Mapping[str, Any],
+        *,
+        outcome: str,
+        latency_ms: int,
+    ) -> None:
+        """Emit one compact RPT-1 request usage event to stdout."""
+        event = {
+            "schema_version": "btp.rpt1_usage.v1",
+            "event_type": "rpt1_usage",
+            "event_time": datetime.now(timezone.utc)
+            .isoformat(timespec="milliseconds")
+            .replace("+00:00", "Z"),
+            "provider": usage.get("provider", "sap-ai-core"),
+            "rpt_endpoint": usage.get("rpt_endpoint", "predict"),
+            "model_name": usage.get("model_name"),
+            "model_version": usage.get("model_version"),
+            "deployment_id": usage.get("deployment_id"),
+            "context_rows": int(usage.get("context_rows") or 0),
+            "query_rows": int(usage.get("query_rows") or 0),
+            "input_rows": int(usage.get("input_rows") or 0),
+            "input_columns": int(usage.get("input_columns") or 0),
+            "input_cells": int(usage.get("input_cells") or 0),
+            "prediction_count": int(usage.get("prediction_count") or 0),
+            "target_columns": list(usage.get("target_columns") or []),
+            "outcome": outcome,
+            "latency_ms": int(latency_ms),
+            "request_id": usage.get("request_id"),
+        }
+        print(json.dumps(event, ensure_ascii=False, separators=(",", ":")), flush=True)
 
     def _build_prediction_payload(
         self,
@@ -336,26 +479,95 @@ class RPT1Client:
         return pd.DataFrame(rows, columns=ordered_columns)
 
     def _resolve_deployment_url(self) -> str:
+        """Return the inference URL of the single RUNNING deployment for the model.
+
+        Discovery follows the AI Core foundation-model contract:
+        1. List ``foundation-models`` configurations of executable ``aicore-sap``
+           and keep those whose parameter bindings match ``modelName`` (and
+           ``modelVersion`` when one is configured).
+        2. List deployments and keep RUNNING ones created from those configurations.
+        3. Fail on zero or several matches instead of guessing.
+
+        Returns:
+            Deployment base URL without trailing slash (``/predict`` is appended).
+
+        Raises:
+            RPT1RequestError: When no, or more than one, running deployment matches.
+        """
         if self.deployment_url:
             return self.deployment_url.rstrip("/")
 
-        if self.deployment_id:
-            payload = self._request(
-                "GET",
-                f"{self.aicore_base_url}/v2/lm/deployments/{self.deployment_id}",
-            )
-            deployment_url = payload.get("deploymentUrl")
-            if not deployment_url:
-                raise RPT1RequestError(
-                    f"Deployment '{self.deployment_id}' does not contain 'deploymentUrl'.",
-                    response_body=str(payload),
-                )
-            self.deployment_url = str(deployment_url).rstrip("/")
+        cache_key = (self.aicore_base_url, self.resource_group, self.model_name, self.model_version)
+        with _DEPLOYMENT_CACHE_LOCK:
+            cached = _DEPLOYMENT_CACHE.get(cache_key)
+        if cached:
+            self.deployment_url, self.deployment_id = cached
             return self.deployment_url
 
-        raise RPT1ValidationError(
-            "No deployment configured. Set deployment_url, RPT1_DEPLOYMENT_URL, or RPT1_DEPLOYMENT_ID."
+        label = self.model_name + (f" version {self.model_version}" if self.model_version else "")
+        configurations = self._list_resources(
+            "/v2/lm/configurations",
+            {"scenarioId": "foundation-models", "executableIds": "aicore-sap", "$top": 1000},
         )
+        configuration_ids = set()
+        for configuration in configurations:
+            bindings = self._parameter_bindings(configuration)
+            if bindings.get("modelName") != self.model_name:
+                continue
+            if self.model_version and bindings.get("modelVersion") != self.model_version:
+                continue
+            if configuration.get("id") is not None:
+                configuration_ids.add(str(configuration["id"]))
+        if not configuration_ids:
+            raise RPT1RequestError(f"No AI Core configuration matched RPT-1 model '{label}'.")
+
+        matches = []
+        for deployment in self._list_resources("/v2/lm/deployments", {"$top": 1000}):
+            status = deployment.get("status")
+            if isinstance(status, Mapping):
+                status = status.get("status") or status.get("value")
+            if str(deployment.get("configurationId")) in configuration_ids and str(status).upper() == "RUNNING":
+                matches.append(deployment)
+        if not matches:
+            raise RPT1RequestError(f"No RUNNING AI Core deployment matched RPT-1 model '{label}'.")
+        if len(matches) > 1:
+            ids = ", ".join(str(match.get("id", "unknown")) for match in matches)
+            raise RPT1RequestError(
+                f"Several RUNNING deployments matched RPT-1 model '{label}': {ids}. "
+                "Set RPT1_MODEL_VERSION or stop the duplicate deployment."
+            )
+
+        deployment_id = str(matches[0].get("id") or "") or None
+        deployment_url = matches[0].get("deploymentUrl")
+        if not deployment_url:
+            if not deployment_id:
+                raise RPT1RequestError("Matched deployment has neither an id nor a deploymentUrl.")
+            deployment_url = f"{self.aicore_base_url}/v2/inference/deployments/{deployment_id}"
+        self.deployment_url = str(deployment_url).rstrip("/")
+        self.deployment_id = deployment_id
+        with _DEPLOYMENT_CACHE_LOCK:
+            _DEPLOYMENT_CACHE[cache_key] = (self.deployment_url, self.deployment_id)
+        return self.deployment_url
+
+    def _list_resources(self, path: str, params: Mapping[str, Any]) -> list[dict[str, Any]]:
+        """GET an AI Core list endpoint and return its ``resources`` array."""
+        payload = self._request("GET", f"{self.aicore_base_url}{path}", params=params)
+        resources = payload.get("resources")
+        if not isinstance(resources, list):
+            raise RPT1RequestError(f"AI Core response for {path} has no 'resources' list.")
+        return [item for item in resources if isinstance(item, Mapping)]
+
+    @staticmethod
+    def _parameter_bindings(configuration: Mapping[str, Any]) -> dict[str, Any]:
+        """Return configuration parameter bindings as a key-value dict (list or mapping form)."""
+        bindings = configuration.get("parameterBindings") or []
+        if isinstance(bindings, Mapping):
+            return dict(bindings)
+        return {
+            str(item.get("key")): item.get("value")
+            for item in bindings
+            if isinstance(item, Mapping) and item.get("key") is not None
+        }
 
     def _request(
         self,
