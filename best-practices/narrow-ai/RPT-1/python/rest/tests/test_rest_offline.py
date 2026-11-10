@@ -1,7 +1,8 @@
 """Offline checks for the RPT direct-REST support modules (no network calls).
 
 Covers rpt_ts_client (response flattening, hierarchy flattening, error
-redaction) and rpt_decisions (validation, table translation, answer parsing).
+redaction) and rpt_decisions_client (route, 429 retry, error redaction, result
+order, answer flattening).
 
 Run from the rest/ folder or anywhere else:
     python tests/test_rest_offline.py
@@ -19,12 +20,8 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from rpt_client_api import RPTAPIError  # noqa: E402
-from rpt_decisions import (  # noqa: E402
-    PLACEHOLDER,
-    build_decision_payload,
-    parse_decision_answers,
-    validate_decision_request,
-)
+import rpt_decisions_client  # noqa: E402
+from rpt_decisions_client import RPTDecisionsClientAPI, answers_to_frame, most_likely  # noqa: E402
 from rpt_ts_client import RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame  # noqa: E402
 
 TRIAGE = {
@@ -91,18 +88,24 @@ def test_hierarchy_to_frame():
 class FakeResponse:
     """Minimal stand-in for ``requests.Response``."""
 
-    def __init__(self, status_code, payload):
+    def __init__(self, status_code, payload, headers=None):
         self.status_code = status_code
         self.ok = status_code < 400
         self._payload = payload
         self.text = str(payload)
+        self.headers = headers or {}
 
     def json(self):
         return self._payload
 
 
 class FakeSession:
-    """Session whose ``post`` returns a prepared response and records the call."""
+    """Session whose ``post`` returns prepared responses and records the calls.
+
+    A single response is returned for every call; a list is returned in order,
+    and its last entry is repeated once the list is used up. A callable is
+    called with the request JSON and its return value is used.
+    """
 
     def __init__(self, response):
         self.response = response
@@ -110,13 +113,17 @@ class FakeSession:
 
     def post(self, url, **kwargs):
         self.calls.append((url, kwargs))
+        if callable(self.response):
+            return self.response(kwargs.get("json"))
+        if isinstance(self.response, list):
+            return self.response[min(len(self.calls), len(self.response)) - 1]
         return self.response
 
 
-def offline_ts_client(response):
-    """Build an RPTTSClientAPI without OAuth or discovery, using a fake session."""
-    client = object.__new__(RPTTSClientAPI)
-    client.model_name, client.timeout_s, client.resource_group = "sap-rpt-ts", 5, "default"
+def offline_ts_client(response, client_class=RPTTSClientAPI):
+    """Build a client without OAuth or discovery, using a fake session."""
+    client = object.__new__(client_class)
+    client.model_name, client.timeout_s, client.resource_group = "offline-model", 5, "default"
     client.deployment_url = "https://example.invalid/deployments/d1"
     client._client_id, client._client_secret = "client-id-123", "secret-456"
     client._token, client._token_expires_at = "token-789", time.monotonic() + 3600
@@ -143,69 +150,71 @@ def test_ts_forecast_success_and_redacted_error():
         raise AssertionError("RPTAPIError not raised")
 
 
-def test_decision_validation():
-    """The documented decision rules fail early with readable messages."""
-    validate_decision_request(TRIAGE)
-    missing_label = {**TRIAGE, "examples": [
-        {"state": "a", "answers": {"billing": False, "tone": "calm", "priority": "0"}},
-        {"state": "b", "answers": {"billing": True, "tone": "calm", "priority": "1"}},
-    ]}
-    expect_error(ValueError, lambda: validate_decision_request(missing_label), "never appear")
-    expect_error(ValueError, lambda: validate_decision_request({**TRIAGE, "examples": TRIAGE["examples"][:1]}),
-                 "2-2,048 examples")
-    unknown = {**TRIAGE, "questions": {"x": {"type": "rank", "instructions": "?"}}}
-    expect_error(ValueError, lambda: validate_decision_request(unknown), "unsupported type")
+ANSWERS = {
+    "billing": {"type": "noul", "noul": 0.85},
+    "tone": {"type": "choice", "choice": "calm", "confidence": 0.415,
+             "probabilities": {"angry": 0.28, "calm": 0.61, "neutral": 0.11}},
+    "priority": {"type": "score", "score": 0.77, "confidence": 0.0,
+                 "legend": {"0": "can wait", "1": "this week", "2": "today"},
+                 "probabilities": {"0": 0.54, "1": 0.15, "2": 0.31}},
+}
 
 
-def test_decision_payload_described_and_plain():
-    """Examples become context rows, states become [PREDICT] query rows."""
-    payload = build_decision_payload(TRIAGE)
-    rows = payload["rows"]
-    assert [row["row_id"] for row in rows] == ["example-0", "example-1", "query-0"]
-    assert rows[1]["What is the tone?"] == "angry: Hostile"
-    assert rows[1]["Is this about billing?"] == "yes" and rows[0]["How urgent?"] == "low"
-    assert rows[2]["What is the tone?"] == PLACEHOLDER
-    targets = {t["name"]: t["top_k"] for t in payload["prediction_config"]["target_columns"]}
-    assert targets == {"Is this about billing?": 2, "What is the tone?": 2, "How urgent?": 2}
-
-    plain = build_decision_payload(TRIAGE, encoding="plain")
-    assert plain["rows"][1] == {"row_id": "example-1", "state": "Refund me now",
-                                "billing": "true", "tone": "angry", "priority": "1"}
+def test_decide_route_and_body():
+    """decide posts the request unchanged to /systemone and returns the body."""
+    client = offline_ts_client(FakeResponse(200, {"answers": ANSWERS, "usage": {}}), RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"]["tone"]["choice"] == "calm"
+    url, kwargs = client._session.calls[0]
+    assert url.endswith("/systemone") and kwargs["json"] == TRIAGE
+    assert kwargs["headers"]["Authorization"] == "Bearer token-789"
 
 
-def test_decision_structured_and_chat_states():
-    """Dict states become columns, list states become JSON text."""
-    request = {**TRIAGE, "examples": [
-        {"state": {"channel": "mail", "text": "Great"}, "answers": TRIAGE["examples"][0]["answers"]},
-        {"state": {"channel": "chat", "text": "Refund"}, "answers": TRIAGE["examples"][1]["answers"]},
-    ]}
-    rows = build_decision_payload(request, [{"channel": "mail", "text": "?"}])["rows"]
-    assert rows[2]["channel"] == "mail" and "state" not in rows[2]
-    chat = build_decision_payload(TRIAGE, [[{"role": "user", "text": "hi"}]])["rows"][2]
-    assert chat["state"] == '[{"role": "user", "text": "hi"}]'
-    clash = {**request, "examples": [{"state": {"row_id": "x"}, "answers": e["answers"]} for e in request["examples"]]}
-    expect_error(ValueError, lambda: build_decision_payload(clash), "clash")
+def test_decide_retries_rate_limit():
+    """HTTP 429 is retried, waiting Retry-After seconds."""
+    responses = [FakeResponse(429, {"error": "TooManyRequest"}, {"Retry-After": "0"}),
+                 FakeResponse(200, {"answers": ANSWERS})]
+    client = offline_ts_client(responses, RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
+    assert len(client._session.calls) == 2
 
 
-def test_decision_answer_parsing():
-    """RPT candidates map back to Playground answers; missing options get 0."""
-    response = {"predictions": [
-        {"row_id": "query-1",
-         "Is this about billing?": [{"prediction": "no", "confidence": 0.8}],
-         "What is the tone?": [{"prediction": "calm: Polite", "confidence": 1.0}],
-         "How urgent?": [{"prediction": "low", "confidence": 1.0}]},
-        {"row_id": "query-0",
-         "Is this about billing?": [{"prediction": "yes", "confidence": 0.7}, {"prediction": "no", "confidence": 0.3}],
-         "What is the tone?": [{"prediction": "angry: Hostile", "confidence": 0.6},
-                               {"prediction": "calm: Polite", "confidence": 0.4}],
-         "How urgent?": [{"prediction": "high", "confidence": 0.75}, {"prediction": "low", "confidence": 0.25}]},
-    ]}
-    first, second = parse_decision_answers(response, TRIAGE)
-    assert first["billing"] == {"type": "noul", "noul": 0.7}
-    assert first["tone"]["choice"] == "angry" and first["tone"]["probabilities"] == {"calm": 0.4, "angry": 0.6}
-    assert first["priority"]["score"] == 0.75 and first["priority"]["legend"] == {"0": "low", "1": "high"}
-    assert second["billing"]["noul"] == 0.0  # "yes" not returned
-    assert second["tone"]["confidence"] == 1.0
+def test_decide_error_is_redacted():
+    """Validation errors raise with the server detail and credentials redacted."""
+    detail = [{"loc": ["examples"], "msg": "examples must contain at least 2 entries token-789"}]
+    client = offline_ts_client(FakeResponse(422, {"detail": detail, "status": {"code": 2}}), RPTDecisionsClientAPI)
+    try:
+        client.decide(TRIAGE)
+    except rpt_decisions_client.RPTAPIError as error:
+        assert error.http_status == 422 and "at least 2 entries" in str(error)
+        assert "token-789" not in str(error) and "token-789" not in str(error.response_payload)
+    else:
+        raise AssertionError("RPTAPIError not raised")
+    gateway = offline_ts_client(FakeResponse(400, {"error": "BadRequest", "message": "Subpath 'predict' is not allowed"}),
+                                RPTDecisionsClientAPI)
+    expect_error(RPTAPIError, lambda: gateway.decide(TRIAGE), "is not allowed")
+
+
+def test_decide_many_keeps_order():
+    """decide_many sends one request per state and returns results in input order."""
+    def echo(body):
+        """Answer with the state's length so each result can be traced back."""
+        return FakeResponse(200, {"answers": {"billing": {"type": "noul", "noul": len(body["state"]) / 100}}})
+
+    client = offline_ts_client(echo, RPTDecisionsClientAPI)
+    states = ["a" * n for n in range(1, 21)]
+    results = client.decide_many(TRIAGE, states, max_concurrency=4, progress=False)
+    assert [r["answers"]["billing"]["noul"] for r in results] == [n / 100 for n in range(1, 21)]
+    assert len(client._session.calls) == 20
+    assert all(set(kwargs["json"]) == {"state", "questions", "examples"} for _, kwargs in client._session.calls)
+
+
+def test_answers_to_frame_and_most_likely():
+    """Answers are flattened to one row per state; most_likely picks one label."""
+    frame = answers_to_frame([{"answers": ANSWERS}], index=["msg-1"])
+    row = frame.loc["msg-1"].to_dict()
+    assert row == {"billing": 0.85, "tone": "calm", "tone_confidence": 0.415,
+                   "priority": 0.77, "priority_level": "0", "priority_confidence": 0.0}
+    assert most_likely(ANSWERS["billing"]) is True and most_likely(ANSWERS["tone"]) == "calm"
 
 
 if __name__ == "__main__":

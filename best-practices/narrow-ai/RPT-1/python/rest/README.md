@@ -9,7 +9,7 @@ The four notebooks in this folder show four uses:
 | 01 | Fill in a missing value in a table: a category or a number | the cost center and discount of an order; an employee's salary and flight risk | SAP-RPT-1.5, SAP-RPT-1.6 |
 | 02 | The same with very large example tables (more than 8,000 rows) | hotel nights per region and guest country | SAP-RPT-1.6-large, `context_mode="deep"` |
 | 03 | Forecast the next steps of a time series, with a range of likely values | 20 years of monthly hotel nights in 13 Swiss regions | SAP-RPT-TS |
-| 04 | Answer fixed questions about a text, with a probability for each answer | "Is this message about billing?", "Which of 10 needs does this bank customer have?" | SAP-RPT-1.6 |
+| 04 | Answer fixed questions about a text, with a probability for each answer | "Is this message about billing?", "Which of 10 needs does this bank customer have?" | SAP-RPT decisions (`sap-rpt-decisions`) |
 
 Every notebook is committed with the results of a live run, so you can read it without an SAP AI Core account.
 
@@ -37,10 +37,10 @@ rest/
                                    top_k, confidence intervals, explanations, model comparison
   02_RPT-1.6_deep_context.ipynb    sap-rpt-1.6 vs sap-rpt-1.6-large default vs deep, 3 test months, ~15,000 context rows
   03_RPT-TS_forecast.ipynb         SAP-RPT-TS: request fields, rules, rolling backtest, quantiles, hierarchy
-  04_RPT_decisions.ipynb           decisions (yes/no, choice, ordered scale) as RPT tables, accuracy on banking77
+  04_RPT_decisions.ipynb           sap-rpt-decisions: yes/no, choice and ordered-scale questions, accuracy on banking77
   rpt_client_api.py                support: OAuth, deployment discovery, /predict for tabular RPT
   rpt_ts_client.py                 support: RPTTSClientAPI, forecast_to_frame, hierarchy_to_frame
-  rpt_decisions.py                 support: decision validation, table translation, answer parsing
+  rpt_decisions_client.py          support: RPTDecisionsClientAPI (/systemone, 429 retry, decide_many), answers_to_frame
   tests/test_rest_offline.py       offline checks of the support modules
   data/hotel_nights_2005_2026.csv  Swiss hotel nights per region and guest origin, 2005-2026 (notebook 03)
   data/OVERNIGHTSTAYS.csv          Swiss hotel nights per region and country, 2022-2024 (notebooks 02, 03)
@@ -59,9 +59,10 @@ rest/
    | Model name | Used in |
    |---|---|
    | `sap-rpt-1.5`, `sap-rpt-1.5-large` | 01 |
-   | `sap-rpt-1.6` | 01, 02, 04 |
+   | `sap-rpt-1.6` | 01, 02 |
    | `sap-rpt-1.6-large` | 01, 02 |
    | `sap-rpt-ts` | 03 |
+   | `sap-rpt-decisions` | 04 |
 
    The clients find the deployment by model name; exactly one `RUNNING` deployment per model is expected in the resource group. No deployment ID or URL is configured.
 
@@ -279,6 +280,9 @@ Accepting only answers with confidence of at least 0.8 handled 95% of the messag
 | RPT-TS HTTP 400 | Business rule, e.g. a future covariate whose length differs from `horizon`, or too many missing timestamps (more than 20%). |
 | `Invalid value '[PREDICT]' for dtype 'float64'` (pandas) | Cast target columns to `object` before writing the placeholder. |
 | Weak predictions | Add representative context, fix label consistency, transform heavy-tailed targets, add lag columns for temporal data. |
+| `Subpath 'predict' is not allowed for model 'sap-rpt-decisions'` (HTTP 400) | The decisions deployment only accepts `POST {deployment_url}/systemone`. Use `RPTDecisionsClientAPI`, not `predict_json`. |
+| HTTP 429 `TooManyRequest` | AI Core rate-limited the deployment. The RPT-TS and decisions clients wait and retry automatically; lower `max_concurrency` in `decide_many` if it keeps happening. |
+| Decisions HTTP 422 `states ... Extra inputs are not permitted` | One `state` per request; use `decide_many` for many inputs. |
 
 ## References
 
