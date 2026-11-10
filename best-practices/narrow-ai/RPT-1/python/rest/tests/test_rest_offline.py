@@ -163,7 +163,7 @@ ANSWERS = {
 def test_decide_route_and_body():
     """decide posts the request unchanged to /systemone and returns the body."""
     client = offline_ts_client(FakeResponse(200, {"answers": ANSWERS, "usage": {}}), RPTDecisionsClientAPI)
-    assert client.decide(TRIAGE)["answers"]["tone"]["choice"] == "calm"
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
     url, kwargs = client._session.calls[0]
     assert url.endswith("/systemone") and kwargs["json"] == TRIAGE
     assert kwargs["headers"]["Authorization"] == "Bearer token-789"
@@ -215,6 +215,15 @@ def test_answers_to_frame_and_most_likely():
     assert row == {"billing": 0.85, "tone": "calm", "tone_confidence": 0.415,
                    "priority": 0.77, "priority_level": "0", "priority_confidence": 0.0}
     assert most_likely(ANSWERS["billing"]) is True and most_likely(ANSWERS["tone"]) == "calm"
+
+
+def test_missing_confidence_is_not_derived():
+    """Absent server confidence remains missing even with full probabilities."""
+    answers = {key: {k: v for k, v in answer.items() if k != "confidence"}
+               for key, answer in ANSWERS.items()}
+    frame = answers_to_frame([{"answers": answers}])
+    assert pd.isna(frame.loc[0, "tone_confidence"])
+    assert pd.isna(frame.loc[0, "priority_confidence"])
 
 
 if __name__ == "__main__":

@@ -235,36 +235,29 @@ Results on 13 regional series of monthly hotel nights, with history since 2005. 
 
 `noul` is the yes/no type, named as in the decision format of SAP's RPT Playground.
 
-**How:** RPT on AI Core is a table endpoint (`/predict` requires `prediction_config` and rejects other fields with HTTP 422), so `rpt_decisions.py` translates the decision into one RPT table and one joint `/predict` call:
-
-- examples become context rows, states become query rows (`row_id` index);
-- the state becomes a `state` column (text, JSON text for lists) or one column per key (objects);
-- each question becomes a classification target with `top_k` equal to its number of options, so the full distribution is returned;
-- the response is mapped back to one answer per question.
+**How:** `RPTDecisionsClientAPI` discovers the existing `sap-rpt-decisions` deployment (version `1`) and sends the typed request directly to `POST {deployment_url}/systemone`. The service validates and processes the request; the client returns its JSON unchanged.
 
 ```python
-from rpt_client_api import RPTClientAPI
-from rpt_decisions import decide
+from rpt_decisions_client import RPTDecisionsClientAPI, answers_to_frame
 
-result = decide(RPTClientAPI(model_name="sap-rpt-1.6"), request)              # one state
-batch = decide(RPTClientAPI(model_name="sap-rpt-1.6"), request, states=texts)  # up to 512 states
-result["answers"][0]["tone"]  # {"type": "choice", "choice": "angry", "probabilities": {...}, "confidence": 0.46}
+client = RPTDecisionsClientAPI()
+result = client.decide(request)  # one state; questions and examples required
+confidence = result["answers"]["tone"]["confidence"]  # directly from the endpoint
+batch = client.decide_many(request, states=texts)  # one request per state
+frame = answers_to_frame(batch)  # copies returned confidence without a formula
 ```
 
-`encoding="described"` (default) uses the question `instructions` as column names and the option descriptions as cell values (`"angry: Hostile, frustrated, or threatening"`); `encoding="plain"` writes the raw keys.
+**Confidence:** the [Playground API documentation](https://rpt.cloud.sap/docs/api/decisions) defines confidence as the winning probability for `choice` and `score`. A live check on 10 November 2026 found different semantics on AI Core's `sap-rpt-decisions` deployment: tone confidence `0.415` versus winning probability `0.61`, and priority confidence `0.0` versus most likely level probability `0.54`. Both values come from the response. Read confidence as supplied, keep probabilities separate, and validate any acceptance threshold on held-out cases. `noul` returns the probability of true without a separate confidence field.
 
-Results on 400 real customer messages to a bank whose answers were hidden (banking77 dataset, 10 intents, i.e. 10 kinds of customer need). Two questions per message: which need it is (`choice`), and whether it is about the customer's card (yes/no, derived from the intent):
+The notebook's earlier banking77 evaluation used 400 held-out messages, 10 intents and two questions per message. Intent accuracy for 2, 5, 20 and 80 examples per intent was 92.5%, 96.2%, 96.8% and 97.0%; card yes/no accuracy was 96.2%, 97.0%, 98.2% and 98.5%. Those historical results were not rerun during the focused confidence check.
 
-| Examples per intent | Intent accuracy (plain / described) | Card yes/no accuracy |
-|---|---|---|
-| 2 | 0.888 / 0.880 | 0.94 / 0.92 |
-| 5 | 0.950 / 0.945 | 0.96 / 0.96 |
-| 20 | 0.960 / 0.972 | 0.98 / 0.98 |
-| 80 | 0.978 / 0.978 | 0.99 / 0.99 |
+To repeat the two synthetic live probes from this folder:
 
-Accepting only answers with confidence of at least 0.8 handled 95% of the messages automatically at 99.7% accuracy. On the small hand-written triage example the described encoding fixed a wrong tone answer; on the banking messages both encodings were equal.
+```bash
+python tests/probe_decisions_confidence.py --output /tmp/decisions-confidence.json
+```
 
-`validate_decision_request` enforces the limits before the call: 1-10 questions, 2-2,048 examples, 2-255 options, and every option must appear in at least one example. The request format follows the decision format of SAP's RPT Playground; the table translation is our own design.
+See [the confidence investigation](../../../../docs/rpt-decisions-confidence.md) for inputs, observed responses, limitations and verification.
 
 ---
 

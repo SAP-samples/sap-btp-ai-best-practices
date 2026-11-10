@@ -206,7 +206,9 @@ def answers_to_frame(
 
     Returns:
         DataFrame with one row per result. The full probability distributions
-        stay in the raw responses.
+        stay in the raw responses. Confidence is copied from the endpoint,
+        never derived from probabilities; missing confidence stays missing.
+        Its semantics can differ from the Playground API documentation.
     """
     rows = []
     for result in results:
