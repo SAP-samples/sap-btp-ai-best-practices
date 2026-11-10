@@ -143,17 +143,14 @@ Set `VITE_XSUAA_IDP_ORIGIN` to your organization's identity-provider origin to d
 
 Checks for newer versions and shows a notification to all users when an update is available. Enabled by default.
 
-The version check request includes an anonymous installation ID and aggregate usage counts (total conversations, users, submissions — no PII). This allows tracking active installations and version distribution across all deployments. Disable entirely with `UPDATE_CHECK_ENABLED=false`.
+Compares the installed version with the version returned by the upstream endpoint. Successful checks are cached for one hour.
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `UPDATE_CHECK_ENABLED` | Enable/disable upstream version checks + anonymous telemetry | `true` |
-| `UPDATE_CHECK_URL` | URL to fetch the upstream VERSION file | SAP-hosted telemetry endpoint |
-| `INSTALLATION_ID` | Explicit installation identifier (auto-generated UUID if not set) | *(auto)* |
+| `UPDATE_CHECK_ENABLED` | Enable/disable upstream version checks | `true` |
+| `UPDATE_CHECK_URL` | URL that returns the upstream version | SAP-hosted version-check endpoint |
 
-Set `UPDATE_CHECK_ENABLED=false` in air-gapped environments or to opt out of anonymous usage reporting.
-
-The `INSTALLATION_ID` is auto-generated (UUID4) and persisted in HANA across restages. Only override this for the SAP-hosted instance (`sap-hosted-primary`).
+Set `UPDATE_CHECK_ENABLED=false` in air-gapped environments or to disable update notifications.
 
 ## Feature Flag Summary
 
@@ -167,4 +164,3 @@ The `INSTALLATION_ID` is auto-generated (UUID4) and persisted in HANA across res
 | Catalog Matching | Always on (uses AI Core) | Enabled |
 | File Upload | Always on (uses Object Store) | Enabled |
 | Update Notifications | `UPDATE_CHECK_ENABLED` | Enabled |
-| Telemetry Receiver | `INSTALLATION_ID=sap-hosted-primary` | SAP-hosted only |

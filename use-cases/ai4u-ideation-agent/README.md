@@ -14,7 +14,7 @@ AI-powered tool that guides users through a structured interview to design SAP B
 - **A2A Protocol** — Agent-to-Agent JSON-RPC interface for programmatic access
 - **File Upload** — Multimodal analysis of uploaded images, PDFs, and documents
 - **Authentication** — XSUAA (primary) + optional SAP CDC OTP (external users via email code)
-- **Update Notifications** — Persistent banner when a newer version is available upstream (includes anonymous aggregate counts — opt-out via env var)
+- **Update Notifications** — Persistent banner when a newer version is available upstream (disable via `UPDATE_CHECK_ENABLED=false`)
 
 ## Prerequisites
 
