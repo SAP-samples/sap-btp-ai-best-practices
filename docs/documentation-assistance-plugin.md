@@ -8,7 +8,7 @@ SAP AI applications and proofs of concept, separate from the development
 skills in `sap-ai4u-skills`. Teams install it on its own when they need
 documentation help without the full development catalog.
 
-Version 0.3.0 contains one skill: `technical-handover`.
+Version 0.4.0 contains two skills: `technical-handover` and `one-pager`.
 
 The display name is "AI4U Documentation Assistance". The identifier is
 lowercase (`ai4u-documentation-assistance`) because Claude Code, Codex, and
@@ -197,6 +197,92 @@ and cut the 13,480 px process flow into its two panels (ECN process and New
 product process) with their titles. On a test handover the checker reported
 a dropped requirement and the unnamed "Global CIB" process.
 
+## The `one-pager` skill
+
+### Purpose
+
+AI4U one-pagers used to be built by hand in a shared PowerPoint deck that
+kept growing with every use case. All of them share one template: dark
+purple background, SAP and AI4U logos, two persona circles with name and
+role, a laptop showing the app, arrows with short captions, and three panels
+(Challenge, Solution, Benefits). The `one-pager` skill produces the same
+layout as a single PNG image, so nobody edits the deck any more.
+
+### Inputs
+
+- The current codebase (README, entry points, prompts, UI) or, in an empty
+  folder, the user's answers to five interview questions (use case and app
+  name, who does the work, who owns the outcome, the pain today, what the
+  app does, three benefits).
+- A screenshot of the app: a file, the clipboard, an agent capture of the
+  running UI, or none (placeholder).
+- Optional user photos for the personas; otherwise two are picked at random
+  from the bundled library.
+
+### Outputs
+
+- `one-pager/one-pager.png`, 3840x2160 by default (`--width 1920` for
+  1080p; smaller widths are refused).
+- `one-pager/content.json`, the approved copy, kept for later re-renders.
+
+### How it works
+
+1. The agent drafts every slot following `references/copy-guide.md` and
+   shows them to the user. Nothing is rendered before approval.
+2. `scripts/pick_personas.py` picks two different photos and a first name
+   for each that matches the photo's presented gender (from
+   `assets/personas/manifest.json` and `names.json`).
+3. `scripts/render_one_pager.py` loads `assets/base_plate.png` (the template
+   master rendered once at 4K without any slide content), fits the
+   screenshot into the laptop screen, pastes the circle-masked photos and
+   draws the text with the SAP 72 fonts. `scripts/text_fit.py` wraps and
+   shrinks each slot; if a slot still does not fit at its minimum size, the
+   render stops with exit code 2 and names the slot.
+4. The agent opens the PNG and checks it before delivering.
+
+All positions live in `scripts/layout.py` in a 1920 basis (1 pt = 2 px on
+the 13.33 in slide), scaled to the output width.
+
+### Key code
+
+Colored first word of each benefit:
+
+```python
+def benefit_runs(text):
+    first, _, rest = text.strip().partition(" ")
+    return [(first, layout.ACCENT), (rest, layout.WHITE)]
+```
+
+Gender-consistent persona pick:
+
+```python
+left, right = rng.sample(photos, 2)
+first = rng.choice(names[left["gender"]])
+second = rng.choice([n for n in names[right["gender"]] if n != first])
+```
+
+Screenshot fit that never cuts the app's sides:
+
+```python
+img = img.resize((w, max(1, round(img.height * w / img.width))), Image.LANCZOS)
+if img.height >= h:
+    return img.crop((0, 0, w, h))
+```
+
+### How to test
+
+```bash
+cd plugins/ai4u-documentation-assistance/skills/one-pager
+pip install pillow
+python scripts/check_one_pager.py
+python scripts/render_one_pager.py --content assets/example_content.json --output /tmp/one-pager.png
+```
+
+The check renders the bundled example at 4K and 1080p, confirms that an
+over-long challenge is rejected and that widths under 1920 are refused, and
+runs the persona picker over 200 seeds. Open `/tmp/one-pager.png` to see the
+example with the "Screenshot pending" placeholder.
+
 ## Related files
 
 | Path | Role |
@@ -208,6 +294,10 @@ a dropped requirement and the unnamed "Global CIB" process.
 | `plugins/ai4u-documentation-assistance/skills/technical-handover/references/` | Checklist, diagram, Markdown, ROM cost and BPD merge references |
 | `plugins/ai4u-documentation-assistance/skills/technical-handover/scripts/` | The helper tools |
 | `plugins/ai4u-documentation-assistance/skills/technical-handover/assets/` | Brand file and example diagram spec |
+| `plugins/ai4u-documentation-assistance/skills/one-pager/SKILL.md` | One-pager workflow and rules |
+| `plugins/ai4u-documentation-assistance/skills/one-pager/references/copy-guide.md` | Slot limits, voice, worked examples, base plate regeneration |
+| `plugins/ai4u-documentation-assistance/skills/one-pager/scripts/` | Renderer, text fitting, layout constants, persona picker, self-check |
+| `plugins/ai4u-documentation-assistance/skills/one-pager/assets/` | Base plate, persona library, example content |
 | `.claude-plugin/marketplace.json` | Claude marketplace entry |
 | `.agents/plugins/marketplace.json` | Codex marketplace entry |
 | `scripts/validate_package.py` | Multi-plugin package validation |
@@ -248,7 +338,7 @@ python3 -m pip install -r requirements-dev.txt
 python3 scripts/validate_package.py
 ```
 
-Expected result: `Validation passed: 35 skill(s), 3 recommendation warning(s)`.
+Expected result: `Validation passed: 38 skill(s), 4 recommendation warning(s)`.
 
 Install and try the plugin in Claude Code:
 

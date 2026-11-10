@@ -5,7 +5,7 @@ This branch (`sap-ai4u-plugin`) of the SAP BTP AI best-practices repository dist
 | Plugin | Skills | Purpose |
 | --- | --- | --- |
 | `sap-ai4u-skills` | 35 | Curated skills for SAP BTP AI development |
-| `ai4u-documentation-assistance` | 1 | Delivery documentation, starting with `technical-handover` |
+| `ai4u-documentation-assistance` | 2 | Delivery documentation: `technical-handover` and `one-pager` |
 | `ai4u-a2a-connector` | 1 + MCP server | Talk to A2A agents registered as BTP destinations |
 
 Each plugin is installed independently. Codex and Claude Code use the repository marketplaces;

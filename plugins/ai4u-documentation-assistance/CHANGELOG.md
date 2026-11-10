@@ -2,6 +2,23 @@
 
 All notable changes to `ai4u-documentation-assistance` are recorded here.
 
+## 0.4.0 - 2026-11-10
+
+- New `one-pager` skill: renders an AI4U use-case one-pager as a single PNG
+  (3840x2160 default, 1920x1080 minimum) instead of a slide in the shared
+  PowerPoint deck. Gathers content from the codebase or by interviewing the
+  user, shows every slot for approval before rendering, and offers three
+  screenshot routes (user file or clipboard, agent capture of the running
+  UI, "Screenshot pending" placeholder).
+- Rendering is Pillow-only: a pre-rendered base plate of the template
+  master, the screenshot fitted to the laptop screen, circle-masked persona
+  photos and auto-shrinking text slots. Overflowing text stops the render
+  with a message naming the slot and the words to cut. The first word of
+  each benefit is drawn in the accent color.
+- Persona library of 73 headshots from the deck with a gender manifest and
+  name pools; `pick_personas.py` picks two different photos at random and
+  gives each a matching, non-repeating first name.
+
 ## 0.3.0 - 2026-10-02
 
 - `technical-handover` path to production narrowed to security and

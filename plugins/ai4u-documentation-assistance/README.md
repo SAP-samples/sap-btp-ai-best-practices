@@ -11,6 +11,12 @@ documentation for SAP AI applications and proofs of concept.
   catalog, AI capabilities, and the path to production.
   It can also merge a Business Process Document (BPD) into a business
   scenario chapter with requirement traceability.
+- `one-pager`: renders an AI4U use-case one-pager as one PNG (3840x2160 by
+  default, at least 1920x1080) in the standard AI4U template: title, two
+  randomly picked personas with matching names, the app screenshot on a
+  laptop, and Challenge / Solution / Benefits panels. Content comes from the
+  codebase or from a short interview; the user approves the copy before
+  rendering. Only Pillow is needed at runtime.
 
 ## Compatibility
 
@@ -37,3 +43,10 @@ outputs, and testing are documented in
 
 Step 0 of the skill copies `scripts/` and `assets/` into the target project's
 `handover/.tools/` folder, so each project can adapt its own copy of the tools.
+
+`one-pager` follows the same pattern: `SKILL.md` (workflow and rules),
+`references/copy-guide.md` (slot limits, voice, worked examples),
+`scripts/` (renderer, text fitting, layout constants, persona picker,
+self-check) and `assets/` (base plate image, 73 persona photos with a gender
+manifest and name pools, example content). Step 0 copies `scripts/` and
+`assets/` into the project's `one-pager/.tools/` folder.

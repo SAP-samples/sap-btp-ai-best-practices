@@ -1,7 +1,7 @@
 {
   "name": "ai4u-documentation-assistance",
-  "version": "0.3.0",
-  "description": "Agent skills that produce delivery documentation for SAP AI applications and PoCs, starting with technical handover handbooks.",
+  "version": "0.4.0",
+  "description": "Agent skills that produce delivery documentation for SAP AI applications and PoCs: technical handover handbooks and AI4U use-case one-pager images.",
   "author": {
     "name": "SAP AI4U"
   },
@@ -11,13 +11,15 @@
     "sap",
     "documentation",
     "handover",
-    "docx"
+    "docx",
+    "one-pager",
+    "png"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "AI4U Documentation Assistance",
-    "shortDescription": "Delivery documentation skills for SAP AI projects.",
-    "longDescription": "Generates SAP-styled technical handover Word handbooks for application and PoC codebases: usage, architecture diagrams, API catalog, AI capabilities, and path to production.",
+    "shortDescription": "Delivery documentation and one-pager skills for SAP AI projects.",
+    "longDescription": "Generates SAP-styled technical handover Word handbooks for application and PoC codebases (usage, architecture diagrams, API catalog, AI capabilities, path to production) and AI4U use-case one-pager images (personas, app screenshot, challenge, solution, benefits) in the standard AI4U template.",
     "developerName": "SAP AI4U",
     "category": "Developer Tools",
     "capabilities": [
@@ -26,7 +28,8 @@
     ],
     "defaultPrompt": [
       "Create a technical handover document for this repository.",
-      "Document this PoC so an implementation team can take it over."
+      "Document this PoC so an implementation team can take it over.",
+      "Create a one-pager image for this use case."
     ]
   }
 }

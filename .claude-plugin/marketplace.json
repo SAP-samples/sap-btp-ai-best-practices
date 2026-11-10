@@ -13,7 +13,7 @@
     {
       "name": "ai4u-documentation-assistance",
       "source": "./plugins/ai4u-documentation-assistance",
-      "description": "Delivery documentation skills for SAP AI applications and PoCs, starting with technical handover handbooks."
+      "description": "Delivery documentation skills for SAP AI applications and PoCs: technical handover handbooks and use-case one-pager images."
     },
     {
       "name": "ai4u-a2a-connector",
