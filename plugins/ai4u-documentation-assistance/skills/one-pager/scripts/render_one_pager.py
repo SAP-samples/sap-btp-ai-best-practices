@@ -129,17 +129,18 @@ def fit_screen(img, w, h):
     """Fit a screenshot into the laptop screen without losing its sides.
 
     Scales to the screen width. A taller result is cropped at the bottom; a
-    shorter one is padded below with the screenshot's own bottom-edge color,
-    which blends with typical app footers. Left navigation and right-hand
-    actions are never cut and nothing is stretched.
+    shorter one is padded below by repeating its last pixel row, so each
+    column keeps its own color (a white side bar stays white, a grey canvas
+    stays grey) and no seam shows. Left navigation and right-hand actions are
+    never cut and the content itself is never stretched.
     """
     w, h = int(round(w)), int(round(h))
     img = img.resize((w, max(1, round(img.height * w / img.width))), Image.LANCZOS)
     if img.height >= h:
         return img.crop((0, 0, w, h))
-    edge = img.crop((0, img.height - 1, w, img.height)).resize((1, 1), Image.BOX).getpixel((0, 0))
-    out = Image.new("RGB", (w, h), edge)
+    out = Image.new("RGB", (w, h))
     out.paste(img, (0, 0))
+    out.paste(img.crop((0, img.height - 1, w, img.height)).resize((w, h - img.height)), (0, img.height))
     return out
 
 
