@@ -233,7 +233,7 @@ Results on 13 regional series of monthly hotel nights, with history since 2005. 
 | `choice` | option name | winning option, distribution, confidence |
 | `score` | level index as string | expected level, distribution, confidence |
 
-`noul` is the yes/no type, named as in the decision format of SAP's RPT Playground.
+`noul` is the endpoint's yes/no question type.
 
 **How:** `RPTDecisionsClientAPI` discovers the existing `sap-rpt-decisions` deployment (version `1`) and sends the typed request directly to `POST {deployment_url}/systemone`. The service validates and processes the request; the client returns its JSON unchanged.
 
@@ -247,7 +247,7 @@ batch = client.decide_many(request, states=texts)  # one request per state
 frame = answers_to_frame(batch)  # copies returned confidence without a formula
 ```
 
-**Confidence:** the [Playground API documentation](https://rpt.cloud.sap/docs/api/decisions) defines confidence as the winning probability for `choice` and `score`. A live check on 10 November 2026 found different semantics on AI Core's `sap-rpt-decisions` deployment: tone confidence `0.415` versus winning probability `0.61`, and priority confidence `0.0` versus most likely level probability `0.54`. Both values come from the response. Read confidence as supplied, keep probabilities separate, and validate any acceptance threshold on held-out cases. `noul` returns the probability of true without a separate confidence field.
+**Confidence:** read the endpoint's returned field directly and keep winning probability separate. For priority, a distribution split across distant levels can have confidence zero. The original five-example triage context gives poor priorities. Notebook 04 now compares it with 18 balanced examples under an explicit support policy: a nine-message synthetic check improves from 5/9 to 8/9, retaining one nonurgent billing escalation error. This small check is not a production benchmark. The escalation and resolution examples also contain errors and demonstrate input formats rather than validated classifiers.
 
 The notebook's earlier banking77 evaluation used 400 held-out messages, 10 intents and two questions per message. Intent accuracy for 2, 5, 20 and 80 examples per intent was 92.5%, 96.2%, 96.8% and 97.0%; card yes/no accuracy was 96.2%, 97.0%, 98.2% and 98.5%. Those historical results were not rerun during the focused confidence check.
 
