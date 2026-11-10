@@ -242,14 +242,14 @@ from rpt_decisions_client import RPTDecisionsClientAPI, answers_to_frame
 
 client = RPTDecisionsClientAPI()
 result = client.decide(request)  # one state; questions and examples required
-confidence = result["answers"]["tone"]["confidence"]  # directly from the endpoint
+confidence = result["answers"]["request_kind"]["confidence"]  # directly from the endpoint
 batch = client.decide_many(request, states=texts)  # one request per state
 frame = answers_to_frame(batch)  # copies returned confidence without a formula
 ```
 
-**Confidence:** read the endpoint's returned field directly and keep winning probability separate. For priority, a distribution split across distant levels can have confidence zero. The original five-example triage context gives poor priorities. Notebook 04 now compares it with 18 balanced examples under an explicit support policy: a nine-message synthetic check improves from 5/9 to 8/9, retaining one nonurgent billing escalation error. This small check is not a production benchmark. The escalation and resolution examples also contain errors and demonstrate input formats rather than validated classifiers.
+**Confidence:** read the endpoint's returned field directly and keep winning probability separate. A score is the expected numeric level, while its most likely level is selected from the probability distribution; dispersed distributions can have confidence zero. Notebook 04 defines an explicit support policy with 18 representative examples, then teaches all three answer types, multiple messages, operational ticket fields, conversation topics, request validation, and held-out evaluation within its original sections. Each demonstration displays expected labels beside returned answers. The client retries rate limits and transient upstream HTTP 500/502/503/504 errors with a fixed budget; the large benchmark uses sequential requests to reduce bursts.
 
-The notebook's earlier banking77 evaluation used 400 held-out messages, 10 intents and two questions per message. Intent accuracy for 2, 5, 20 and 80 examples per intent was 92.5%, 96.2%, 96.8% and 97.0%; card yes/no accuracy was 96.2%, 97.0%, 98.2% and 98.5%. Those historical results were not rerun during the focused confidence check.
+The notebook's earlier banking77 evaluation used 400 held-out messages, 10 intents and two questions per message. Intent accuracy for 2, 5, 20 and 80 examples per intent was 92.5%, 96.2%, 96.8% and 97.0%; card yes/no accuracy was 96.2%, 97.0%, 98.2% and 98.5%. The complete revised notebook was rerun on 10 November 2026; all 1,600 evaluation requests completed.
 
 To repeat the two synthetic live probes from this folder:
 

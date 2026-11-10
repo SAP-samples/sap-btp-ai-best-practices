@@ -178,6 +178,16 @@ def test_decide_retries_rate_limit():
     assert len(client._session.calls) == 2
 
 
+def test_decide_retries_transient_upstream_error():
+    """A transient upstream HTTP 500 is retried without changing the request."""
+    responses = [FakeResponse(500, {"message": "Temporary upstream failure"}, {"Retry-After": "0"}),
+                 FakeResponse(200, {"answers": ANSWERS})]
+    client = offline_ts_client(responses, RPTDecisionsClientAPI)
+    assert client.decide(TRIAGE)["answers"] == ANSWERS
+    assert len(client._session.calls) == 2
+    assert all(kwargs["json"] == TRIAGE for _, kwargs in client._session.calls)
+
+
 def test_decide_error_is_redacted():
     """Validation errors raise with the server detail and credentials redacted."""
     detail = [{"loc": ["examples"], "msg": "examples must contain at least 2 entries token-789"}]

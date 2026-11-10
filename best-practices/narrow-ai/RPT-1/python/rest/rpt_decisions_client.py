@@ -13,7 +13,7 @@ contract differs:
 * Response: ``{"answers": {question_key: {...}}, "metadata": {...}, "model":
   ..., "usage": {...}}``. There is no ``status.code`` on success.
 * Errors: HTTP 400 / 422 with ``{"detail": [...], "status": {"code": 2}}``.
-  HTTP 429 means AI Core rate-limited the request; it is retried here.
+  Rate limits and transient HTTP 500/502/503/504 errors are retried here.
 
 Example:
     from rpt_decisions_client import RPTDecisionsClientAPI, answers_to_frame
@@ -81,12 +81,13 @@ class RPTDecisionsClientAPI(RPTClientAPI):
         Raises:
             RPTAPIError: On transport failures or HTTP errors. The server's
                 ``detail`` message is included (with credentials redacted).
-                HTTP 429 is retried up to ``MAX_RATE_LIMIT_RETRIES`` times,
+                HTTP 429 and transient HTTP 500/502/503/504 errors are retried
+                up to ``MAX_RATE_LIMIT_RETRIES`` times,
                 waiting ``Retry-After`` seconds when the server sends it.
         """
         url = self.deployment_url + DECISIONS_ROUTE
-        # ponytail: fixed retry budget for HTTP 429 only; add jitter if many
-        # clients share one deployment.
+        # Inference is read-only; retry rate limits and transient upstream faults
+        # with a fixed budget, respecting Retry-After when the gateway supplies it.
         for attempt in range(MAX_RATE_LIMIT_RETRIES + 1):
             try:
                 response = self._session.post(
@@ -97,9 +98,9 @@ class RPTDecisionsClientAPI(RPTClientAPI):
                 )
             except requests.RequestException as exc:
                 raise RPTAPIError(f"RPT {DECISIONS_ROUTE} transport failed.") from exc
-            if response.status_code != 429 or attempt == MAX_RATE_LIMIT_RETRIES:
+            if response.status_code not in {429, 500, 502, 503, 504} or attempt == MAX_RATE_LIMIT_RETRIES:
                 break
-            # Rate limited: wait as long as the server asks (default 10 s, 20 s, ...).
+            # Wait as long as the server asks (default 10 s, 20 s, ...).
             retry_after = getattr(response, "headers", {}).get("Retry-After")
             time.sleep(float(retry_after) if retry_after else 10.0 * (attempt + 1))
 
