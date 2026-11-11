@@ -1,0 +1,33 @@
+# Node / Angular build artifacts
+frontend/node_modules/
+frontend/.angular/
+frontend/src/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Dev / secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore

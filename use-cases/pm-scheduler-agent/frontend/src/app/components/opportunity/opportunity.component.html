@@ -1,0 +1,85 @@
+<div class="fmi-opp">
+
+  <div class="fd-form-group" role="group">
+    <div class="fd-form-item">
+      <label class="fd-form-label" for="equip-select">
+        Select Equipment (currently offline)
+      </label>
+      <div class="fd-select">
+        <select
+          id="equip-select"
+          class="fd-select__control"
+          [(ngModel)]="selectedEquipmentId"
+          (ngModelChange)="onEquipmentChange()"
+        >
+          <option value="">-- Select Equipment --</option>
+          @for (eq of equipment; track eq.id) {
+            <option [value]="eq.id">{{ eq.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="fd-busy-indicator" aria-label="Loading" role="progressbar">
+      <div class="fd-busy-indicator__circle"></div>
+      <div class="fd-busy-indicator__circle"></div>
+      <div class="fd-busy-indicator__circle"></div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="fd-message-strip fd-message-strip--error" role="alert">
+      <span class="fd-message-strip__text">{{ error() }}</span>
+    </div>
+  }
+
+  @if (!isLoading() && selectedEquipmentId && oppRows.length === 0 && !error()) {
+    <div class="fd-message-strip fd-message-strip--information" role="alert">
+      <span class="fd-message-strip__text">
+        No future-week RTS P3/P4 orders found for this equipment.
+      </span>
+    </div>
+  }
+
+  @if (oppRows.length > 0) {
+    <p class="fd-form-label fmi-opp__hint">
+      Select orders to pull forward into the current week schedule:
+    </p>
+
+    <fdp-table [dataSource]="oppDisplayRows" [pageSize]="20">
+      <fdp-column name="WEEK_BUCKET" key="WEEK_BUCKET" label="Planned Week" [sortable]="true"></fdp-column>
+      <fdp-column name="ORDER_NO" key="ORDER_NO" label="Order No"></fdp-column>
+      <fdp-column name="ORDER_TYPE_CODE" key="ORDER_TYPE_CODE" label="Type"></fdp-column>
+      <fdp-column name="EQUIPMENT_DESC" key="EQUIPMENT_DESC" label="Equipment"></fdp-column>
+      <fdp-column name="PRIORITY" key="PRIORITY" label="Priority"></fdp-column>
+      <fdp-column name="EQUIPMENT_CRITICALITY" key="EQUIPMENT_CRITICALITY" label="Criticality"></fdp-column>
+      <fdp-column name="ACTIVITY_WORK_INVOLVE" key="ACTIVITY_WORK_INVOLVE" label="Work (h)"></fdp-column>
+      <fdp-column name="BASIC_START_DATE" key="BASIC_START_DATE" label="Basic Start" [sortable]="true"></fdp-column>
+    </fdp-table>
+
+    <div class="fmi-opp__selection">
+      <p class="fd-form-label">Select orders to include:</p>
+      @for (row of oppRows; track row['ORDER_NO']) {
+        <fd-checkbox
+          [label]="row['ORDER_NO'] + ' — ' + row['EQUIPMENT_DESC'] + ' (' + row['WEEK_BUCKET'] + ', ' + row['ACTIVITY_WORK_INVOLVE'] + ' h)'"
+          [ngModel]="selectedOrderNos.has(row['ORDER_NO'])"
+          (ngModelChange)="toggleOrder(row['ORDER_NO'])"
+        ></fd-checkbox>
+      }
+
+      <div class="fmi-opp__actions">
+        <button
+          fd-button
+          [fdType]="'emphasized'"
+          [disabled]="selectedOrderNos.size === 0"
+          (click)="addToSchedule()"
+        >
+          Add {{ selectedOrderNos.size }} order(s) to Schedule
+        </button>
+      </div>
+    </div>
+  }
+
+</div>
