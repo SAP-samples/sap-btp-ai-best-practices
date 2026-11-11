@@ -1,0 +1,23 @@
+# Files and directories excluded from cf push
+# ── Root ──────────────────────────────────────────────────────────────────────
+*.docx
+*.doc
+ejemplos/
+.git/
+.github/
+*.sh
+
+# ── Backend ───────────────────────────────────────────────────────────────────
+backend/.venv/
+backend/browser_profile/
+backend/downloads/
+backend/__pycache__/
+backend/*.pyc
+
+# ── Frontend source (only dist/ is deployed for the UI app) ──────────────────
+frontend/node_modules/
+frontend/.angular/
+frontend/src/
+frontend/*.json
+frontend/*.ts
+frontend/public/
