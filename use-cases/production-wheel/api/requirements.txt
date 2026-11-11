@@ -1,0 +1,43 @@
+# Single dependency source for the API, the orchestrating agent, and the
+# production_wheel optimizer (installed as a top-level package under api/, no
+# pyproject). Install with:  pip install -r api/requirements.txt
+
+# --- API server ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+httpx>=0.28.0
+requests>=2.32.0
+python-dotenv>=1.2.2
+python-multipart>=0.0.9
+PyJWT>=2.10.1
+cryptography>=43.0.0
+
+# --- SAP Generative AI Hub + LangGraph agent (pins aligned to the agent template) ---
+sap-ai-sdk-gen[all]>=7.2.0
+langchain
+langchain-core>=0.3.20
+langchain-community>=0.3.10
+langchain-openai>=0.2.0
+langchain-aws>=0.2.0
+langchain-google-vertexai>=2.0.0
+langgraph>=1.2.10
+langchain-mcp-adapters>=0.3.1
+mcp>=1.29.0
+pydantic>=2.13.4
+PyYAML>=6.0.3
+tqdm>=4.70.0
+
+# --- SAP HANA (PRODUCTION_WHEEL_JOBS store + optional agent conversation memory) ---
+sqlalchemy>=2.0.0
+sqlalchemy-hana>=2.0.0
+hdbcli
+
+# --- Optimizer (production_wheel): Pyomo model solved with HiGHS ---
+pyomo>=6.9
+highspy>=1.8
+openpyxl>=3.1.0
+numpy
+
+# --- Reporting / data ---
+pandas>=2.2.0
+fpdf2>=2.8.0

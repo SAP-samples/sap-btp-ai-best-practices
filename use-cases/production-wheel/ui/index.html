@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Production Wheel · Optimizer workspace</title>
+    <link rel="icon" href="/images/SAP_logo.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="shell">
+        <a class="brand" href="#datasets"
+          ><img src="/images/SAP_logo.svg" alt="SAP" /><span
+            >Production Wheel <small>Decision workspace</small></span
+          ></a
+        >
+        <nav aria-label="Main navigation">
+          <a href="#datasets" data-nav="datasets">Datasets</a
+          ><a href="#workspace" data-nav="workspace">Optimizer workspace</a><a href="#settings" data-nav="settings">Settings</a>
+        </nav>
+        <ui5-button id="toggle-chat" design="Transparent" aria-expanded="true"
+          >Assistant</ui5-button
+        >
+      </header>
+      <div id="notice" role="alert" hidden></div>
+      <div class="app-layout">
+        <main id="main"></main>
+        <aside id="chat-panel" aria-label="Optimizer assistant">
+          <div class="chat-header">
+            <div>
+              <span class="eyebrow">WORKSPACE ASSISTANT</span>
+            </div>
+            <ui5-button id="reset-chat" design="Transparent">New conversation</ui5-button>
+            <ui5-button
+              id="close-chat"
+              design="Transparent"
+              accessible-name="Close assistant"
+              >✕</ui5-button
+            >
+          </div>
+          <div id="chat-context" class="context-chips"></div>
+          <div id="chat-messages" role="log" aria-live="polite"></div>
+          <form id="chat-form">
+            <label for="chat-input">Ask about data or refine the draft</label
+            ><textarea
+              id="chat-input"
+              rows="3"
+              placeholder="Explain this frontier, or adjust my draft…"
+              required
+            ></textarea
+            ><ui5-button id="chat-send" design="Emphasized">Send</ui5-button>
+          </form>
+        </aside>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
