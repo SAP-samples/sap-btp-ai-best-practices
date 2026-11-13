@@ -70,10 +70,9 @@ def parse_model(value: str) -> tuple[str, str]:
 async def tool_round_trip(provider: str, model_name: str) -> str:
     """Call a tool, send its result back and return the model's final answer.
 
-    The second request is the one that carries the first answer's history (for
-    GPT on the Responses API: function call plus reasoning item). It is where SAP
-    AI Core used to answer ``404 Resource not found`` for replayed reasoning, so a
-    high reasoning effort is used to make sure a reasoning item is produced.
+    The second request replays the function call and its matching output.
+    High effort encourages reasoning but a model may return only a tool call;
+    reasoning_follow_up separately requires a real encrypted reasoning response.
     """
 
     settings = ModelSettings(
@@ -104,6 +103,47 @@ async def tool_round_trip(provider: str, model_name: str) -> str:
     return final.text
 
 
+async def reasoning_follow_up(model_name: str) -> dict[str, object]:
+    """Require an encrypted reasoning response and replay it in a later request.
+
+    Args:
+        model_name: Existing GPT Responses deployment in the target resource group.
+    Returns:
+        Safe diagnostic counts and final text, without IDs or encrypted content.
+    Raises:
+        RuntimeError: The first response lacked opaque reasoning, the follow-up
+            failed, or outgoing history retained provider storage IDs.
+    """
+    model = create_chat_model(ModelSettings(
+        provider="openai", name=model_name, reasoning_effort="high",
+        use_responses_api=True,
+    ))
+    messages = [HumanMessage(content=(
+        "Formulate a correct mathematical constraint for this policy: each product "
+        "has alternative production versions, each with a filling line. A group "
+        "selects one version per product. If any selected version uses line 2, the "
+        "entire group's distinct product count must be at most 2. Explain a binary "
+        "variable formulation and why counting only line-2 members changes the rule."
+    ))]
+    first = await model.ainvoke(messages)
+    blocks = first.content if isinstance(first.content, list) else []
+    opaque_count = sum(
+        isinstance(block, dict) and block.get("type") == "reasoning"
+        and bool(block.get("encrypted_content")) for block in blocks
+    )
+    if not opaque_count:
+        raise RuntimeError("Reasoning replay was not exercised: no encrypted reasoning returned")
+    messages.extend([first, HumanMessage(content="Summarize the conclusion in one sentence.")])
+    payload = model._get_request_payload(messages)
+    replay_types = {"message", "reasoning", "function_call", "custom_tool_call"}
+    if any("id" in item for item in payload["input"] if item.get("type") in replay_types):
+        raise RuntimeError("Outgoing reasoning history still contains provider storage IDs")
+    final = await model.bind(reasoning_effort="low", max_completion_tokens=512).ainvoke(messages)
+    if final.tool_calls or not final.text:
+        raise RuntimeError("Reasoning replay follow-up did not produce final text")
+    return {"encrypted_reasoning_items": opaque_count, "follow_up": final.text}
+
+
 async def smoke_one(
     provider: str,
     model_name: str,
@@ -132,16 +172,18 @@ async def smoke_one(
         content = [{"type": "text", "text": "Identify the supplied attachment types."}]
         content.extend(item.to_content_block(provider) for item in attachments)
         response = await model.ainvoke([HumanMessage(content=content)])
-        attachment_text = str(response.content)
+        attachment_text = response.text
     round_trip = await tool_round_trip(provider, model_name)
+    reasoning_replay = await reasoning_follow_up(model_name) if provider == "openai" else None
     if provider == "openai" and getattr(model, "use_responses_api", None) is not True:
         raise RuntimeError("OpenAI model was not configured for Responses API")
     return {
         "provider": provider,
         "model": model_name,
-        "text": str(text.content),
+        "text": text.text,
         "tool": tool_response.tool_calls[0]["name"],
         "tool_round_trip": round_trip,
+        "reasoning_replay": reasoning_replay,
         "structured": parsed.model_dump(mode="json") if hasattr(parsed, "model_dump") else parsed,
         "attachments": attachment_text,
     }
@@ -162,7 +204,7 @@ async def run(args: argparse.Namespace) -> int:
     for provider, model_name in tqdm(models, desc="Provider smoke tests", unit="model"):
         try:
             results.append(await smoke_one(provider, model_name, attachments))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- report each provider failure and continue the smoke suite
             failures.append(
                 {
                     "provider": provider,

@@ -4,8 +4,8 @@
 
 - `openai`: SAP `ChatOpenAI` subclass with `proxy_model_name`, Responses API
   enabled, `store=False`, the SDK 7.2.0 chat-only `n` default removed from
-  Responses calls, and reasoning blocks dropped from every answer (see
-  "Reasoning on SAP AI Core" below).
+  Responses calls, encrypted reasoning requested, and provider output item IDs
+  removed from replayed history (see "Reasoning on SAP AI Core" below).
 - `gemini`: SAP `ChatGoogleGenerativeAI` with `proxy_model_name`.
 - `claude`: SAP `ChatBedrockConverse` with its deployment `model_name` and
   derived non-empty Bedrock `model` ID.
@@ -17,33 +17,57 @@ Structured output is an optional second model call after the tool loop.
 
 ### Reasoning on SAP AI Core
 
-GPT reasoning models on the Responses API return an encrypted `reasoning` item
-with every answer; LangChain keeps it in the `AIMessage` and sends it back with
-the next call. SAP AI Core does not accept that (tested 2026-11 with plain HTTP
-against a `gpt-6-luna` deployment, no LangChain involved):
+Use self-contained Responses history through the bundled model factory. Reasoning
+models can return encrypted `reasoning` items; simple tool calls may return none.
+The opaque content can be replayed without decrypting it or exposing it to users.
+Provider output item IDs are a separate mechanism: they can ask the backend to
+resolve earlier output from storage, which AI Core may not retain or share.
 
-| Next call after a tool call | Result |
+A 13 November 2026 synthetic four-tool conversation on a GPT-6.1 Sol deployment
+produced a reasoning response. Replaying identical history demonstrated:
+
+| Follow-up serialization | Result in that reproduction |
 |---|---|
-| reasoning item sent back (`store` true or false, any `api-version`) | `404 Resource not found` from the AI Core gateway, or a hang until it gives up |
-| previous response referenced with `previous_response_id` | 404 or hang |
-| no reasoning item, `store=false` | 200 |
+| Original item IDs retained | HTTP 404 `Resource not found` |
+| `store=False` alone; reasoning/function IDs still retained | HTTP 404 |
+| `store=False`, item IDs removed, encrypted content retained | HTTP 200 |
 
-Symptom: runs fail with `NotFoundError: Error code: 404` after one to several
-minutes, usually on the first call that follows a reasoning-heavy tool call;
-short runs sometimes pass. It is not rate limiting (no 429, load-independent),
-and LangChain's own stateless rule does not help because AI Core always returns
-`encrypted_content`.
+Other simple and later calls with IDs succeeded. The failure is intermittent;
+AI Core's internal routing/storage cause is not exposed by the error. The earlier
+November workaround discarded reasoning altogether after observing 404/hangs on
+a GPT-6 Luna deployment. These new results establish that encrypted reasoning
+replay can work and support a narrower fix, rather than a universal claim that
+AI Core rejects all reasoning items.
 
-`ResponsesCompatibleChatOpenAI` therefore removes `type == "reasoning"` content
-blocks in `_generate` / `_agenerate` (`_without_reasoning`) and the model is
-created with `store=False`. The blocks never reach the graph state, so they are
-neither replayed nor written to HANA memory or traces (with memory enabled they
-would otherwise be stored and replayed on the next turn, failing every
-multi-turn conversation). The model still sees all earlier tool calls and
-results and reasons again in each step. `scripts.live_model_smoke` includes a
-tool round trip with a planning prompt and `reasoning_effort: high`, which hangs
-or fails without this handling. Remove the overrides and `store=False` once AI
-Core accepts replayed reasoning.
+`ResponsesCompatibleChatOpenAI._get_request_payload` removes the chat-only `n`
+parameter and `id` from replayed `message`, `reasoning`, `function_call`, and
+`custom_tool_call` items after LangChain serialization. The shared factory uses
+`store=False` and `include=["reasoning.encrypted_content"]`. `langchain-openai` 1.3.5
+already removes text IDs with `store=False`, but retains encrypted reasoning and
+function-call IDs, which is why both settings and payload normalization are needed.
+
+Preserve encrypted content, function `call_id` links, tool arguments, and the
+original `AIMessage.id` values used by LangGraph. Do not mutate returned messages
+or strip reasoning unconditionally. HANA memory keeps the complete internal
+history; public responses should show final text and approved activity, never
+opaque reasoning blocks. Do not use `previous_response_id` or bare item references
+unless a real follow-up proves provider storage works in the target deployment.
+
+Distinguish failures by the provider status and code:
+
+- HTTP 404 after successful steps can be a missing replayed item; inspect request
+  structure before assuming the model deployment or plant profile is missing.
+- HTTP 400 `invalid_encrypted_content` means verification failed. A caller can
+  implement one narrow retry without reasoning, preserving text/tool history.
+  This template does not automatically retry that distinct error.
+- HTTP 429 is a rate limit. Keep quota recovery separate from replay handling.
+
+The verified stack is SAP AI SDK 7.2.0, `langchain-openai` 1.3.5,
+`langchain-core` 1.6.1, and `openai` 2.54.0. Validate in the target resource group
+before relying on another model or SDK combination. `scripts.live_model_smoke`
+checks a complete tool round trip plus a follow-up after an explicitly required
+encrypted reasoning response. Keep these multi-step checks: a one-call text probe
+does not exercise replay. See `assets/template/docs/responses-replay.md`.
 
 ## Dynamic skills
 

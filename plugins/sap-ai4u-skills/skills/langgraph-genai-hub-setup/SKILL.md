@@ -6,7 +6,9 @@ description: "INVOKE THIS SKILL when initializing LLMs for LangGraph on SAP BTP.
 <overview>
 SAP Generative AI Hub provides LangChain-compatible proxy wrappers for multiple LLM providers. These proxies implement the standard `BaseChatModel` interface, so **all LangGraph patterns work unchanged** once the LLM is initialized correctly.
 
-The only difference from standard LangChain is the import path and parameter names. Get these right and everything else follows.
+Provider imports and parameter names differ from standard LangChain. GPT
+Responses tool loops additionally need the self-contained history handling below;
+a successful one-call text probe does not verify reasoning replay.
 </overview>
 
 ---
@@ -124,6 +126,29 @@ llm = make_llm(provider="openai", model_name="gpt-4.1")
 </ex-factory-pattern>
 
 ---
+
+## GPT Responses agents and history replay
+
+For reasoning-capable GPT agents, reuse `create-langgraph-react-agent`'s bundled
+`template_agent/providers.py` rather than switching only the model name in the
+GPT-4.1 Chat Completions snippets above. Its SAP `ChatOpenAI` subclass:
+
+- Selects `use_responses_api=True` for the configured GPT Responses deployment.
+- Sets `store=False` and `include=["reasoning.encrypted_content"]`.
+- Removes the SAP SDK's chat-only `n` parameter after Responses serialization.
+- Removes provider item `id` from replayed message, reasoning and function-call
+  items while preserving encrypted content and function `call_id` links.
+
+`store=False` alone is insufficient in the tested `langchain-openai` 1.3.5:
+reasoning/function IDs are still serialized and can cause AI Core HTTP 404 on a
+later call. Keep graph `AIMessage.id` values and tool arguments unchanged. Reuse
+the same factory for agent, formatter and summarizer. Validate a tool round trip
+and a follow-up after a reasoning response, not just a single text call.
+
+See [the configuration reference](../create-langgraph-react-agent/references/configuration.md)
+for the measured 404 reproduction, required versions and the separate HTTP 400
+`invalid_encrypted_content` failure. Preserve opaque reasoning internally without
+printing it in user-visible chat or ordinary diagnostics.
 
 ## Embeddings
 

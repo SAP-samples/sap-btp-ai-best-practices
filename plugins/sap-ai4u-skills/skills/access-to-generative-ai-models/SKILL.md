@@ -5,8 +5,6 @@ description: Implement Python code and notebooks that call generative AI models 
 
 # Access Models via SAP Gen AI Hub
 
-Use this skill to implement direct model calls through SAP Gen AI Hub.
-
 ## Set Up the Environment
 
 Load SAP AI Core credentials from `.env` before creating clients:
@@ -31,7 +29,7 @@ Use `sap-ai-sdk-gen[all]`, `python-dotenv`, `boto3`, `langchain`, `langchain-ope
 
 ## Choose the Integration Pattern
 
-- Use native OpenAI `responses` for new OpenAI-shaped work: text, structured output, image input, PDF input, reasoning controls, and stateful follow-up calls.
+- Use native OpenAI `responses` for new OpenAI-shaped work: text, structured output, image input, PDF input, reasoning controls, and self-contained follow-up calls.
 - Use native OpenAI `chat.completions` only for legacy chat-completion code, simple compatibility examples, or OpenAI-compatible models that are exposed through that path such as Perplexity and Meta deployments.
 - Use native Amazon Bedrock clients for direct Anthropic/Amazon `converse` calls, especially when following Bedrock message formats.
 - Use native Google GenAI clients for Gemini image, video, audio, and PDF calls.
@@ -193,40 +191,80 @@ response = responses.create(
 print(response.output_text)
 ```
 
-## Reasoning Models
+## Reasoning Models and Self-contained Follow-ups
 
-For `gpt-5` style models, use `reasoning` with Responses API and avoid chat-style `temperature`/`max_tokens` parameters unless the selected deployment explicitly supports them:
+For reasoning-capable GPT deployments, use `reasoning` with Responses and avoid
+chat-style `temperature`/`max_tokens` unless the deployment supports them. Keep
+model names in configuration and verify their availability in the resource group.
+Use `store=False` and request `reasoning.encrypted_content` when carrying history
+locally. Retain encrypted reasoning without decrypting or printing it.
 
 ```python
 from gen_ai_hub.proxy.native.openai import responses
 
+
+def replay_output_items(output_items):
+    """Copy native Responses output for replay without provider storage IDs.
+
+    Args:
+        output_items: Typed output items from a completed native Responses call.
+    Returns:
+        JSON-ready message, function/custom call and replayable reasoning items;
+        encrypted content and call_id links remain intact. Other provider-managed
+        item types require their own capability-tested replay strategy.
+    """
+    replayable = []
+    supported = {"message", "reasoning", "function_call", "custom_tool_call"}
+    for item in output_items:
+        data = item.model_dump(mode="json", exclude_none=True)
+        if data.get("type") not in supported:
+            raise ValueError(f"Unsupported local replay type: {data.get('type')}")
+        if data["type"] == "reasoning" and not data.get("encrypted_content"):
+            continue  # A bare reasoning ID cannot be resolved in stateless mode.
+        replayable.append({key: value for key, value in data.items() if key != "id"})
+    return replayable
+
+
+model = "gpt-5.4"  # Must be deployed in the target resource group.
+question = "Give a short checklist for migrating a SAP BTP assistant to Responses."
+history = [{"role": "user", "content": question}]
 reasoning_response = responses.create(
-    model="gpt-5.4",
-    input=(
-        "A team wants to evaluate whether to move a chat-completions based "
-        "SAP BTP assistant to the Responses API. Give a short migration checklist."
-    ),
-    reasoning={"effort": "low", "summary": "auto"},
+    model=model,
+    input=history,
+    reasoning={"effort": "low"},
+    store=False,
+    include=["reasoning.encrypted_content"],
 )
-
 print(reasoning_response.output_text)
-
-for item in reasoning_response.output:
-    if getattr(item, "type", None) == "reasoning":
-        for summary in getattr(item, "summary", []) or []:
-            print(getattr(summary, "text", summary))
-
+history.extend(replay_output_items(reasoning_response.output))
+history.append({"role": "user", "content": "Turn the checklist into three validation tests."})
 follow_up = responses.create(
-    model="gpt-5.4",
-    previous_response_id=reasoning_response.id,
-    input="Now turn the checklist into three concrete validation tests.",
-    reasoning={"effort": "low", "summary": "auto"},
+    model=model,
+    input=history,
+    reasoning={"effort": "low"},
+    store=False,
+    include=["reasoning.encrypted_content"],
 )
-
 print(follow_up.output_text)
 ```
 
-Use `previous_response_id` for supported stateful follow-ups. For stateless or zero-data-retention setups, keep the prior output items yourself and only rely on encrypted reasoning content when the selected deployment supports it.
+On the tested AI Core deployment, replaying earlier output item IDs intermittently
+returned HTTP 404; the same history succeeded with IDs removed and encrypted
+content preserved. A 404 does not establish failed decryption. HTTP 400
+`invalid_encrypted_content` is the distinct verification failure. Do not treat
+all 404 errors as invalid reasoning or unconditionally discard opaque content.
+
+Use `previous_response_id` only when a real continuation has established that
+provider storage is supported in the target deployment; it is not the default
+for SAP AI Core. For tool loops, append full function calls and their matching
+`function_call_output` items with the same `call_id`. Remove only top-level
+provider item IDs, never IDs inside tool arguments.
+
+For LangChain, reuse the tested serializer in
+[create-langgraph-react-agent](../create-langgraph-react-agent/references/configuration.md).
+`store=False` alone does not strip reasoning/function IDs in
+`langchain-openai` 1.3.5. The reference documents the verified versions and the
+required reasoning/tool follow-up smoke checks.
 
 ## Native Chat Completions
 
@@ -372,16 +410,20 @@ response = chat.invoke("What is the capital of France?")
 print(response.content)
 ```
 
-For OpenAI reasoning models in LangChain, use `verbosity` and `reasoning_effort`:
+For OpenAI reasoning agents in LangChain, reuse the compatible factory from
+`create-langgraph-react-agent`. After copying its template modules into your
+project, configure Responses, `verbosity` and `reasoning_effort` through it:
 
 ```python
-chat = ChatOpenAI(
-    proxy_model_name="gpt-5",
-    verbosity="medium",
-    reasoning_effort="low",
-)
+from template_agent.config import ModelSettings
+from template_agent.providers import create_chat_model
+
+chat = create_chat_model(ModelSettings(
+    provider="openai", name="gpt-5.4", reasoning_effort="low",
+    use_responses_api=True,
+)).bind(verbosity="medium")
 response = chat.invoke("Explain Green's theorem briefly.")
-print(response.content)
+print(response.text)  # Keep opaque reasoning out of public output.
 ```
 
 For Anthropic through Bedrock:
@@ -444,7 +486,10 @@ print(result.orchestration_result.choices[0].message.content)
 - Check output access by API family: `output_text` for Responses, `output_parsed` for structured Responses, `choices[0].message.content` for chat completions and orchestration, `response.text` for Gemini, and `response.content` for LangChain.
 - Print token usage when available because field names differ by API family.
 - For PDF and image examples, assert that the response references the attached artifact, not just the prompt text.
-- For reasoning examples, inspect reasoning summaries and reasoning token counts when returned.
+- For reasoning examples, inspect safe token counts and permitted summaries;
+  never print encrypted content. Confirm a complete tool round trip and a later
+  follow-up after a response containing encrypted reasoning. A text-only probe
+  or a forced tool call that returned no reasoning is insufficient.
 - Keep functions and classes documented with docstrings. When creating CLI scripts, start the file with a module docstring that includes example commands.
 
 ## Related Skills

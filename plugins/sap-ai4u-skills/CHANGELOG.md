@@ -4,6 +4,16 @@ All notable changes to `sap-ai4u-skills` are recorded here.
 
 ## Unreleased
 
+- `create-langgraph-react-agent`: preserve encrypted reasoning and remove provider
+  output item IDs from serialized Responses history, replacing the broad
+  reasoning-discard workaround. Request opaque content with `store=False` and
+  `include`, preserve tool call links and graph state, pin the tested LangChain
+  OpenAI serializer, and add reasoning follow-up smoke and serialization checks.
+- Update `access-to-generative-ai-models`, `langgraph-genai-hub-setup` and the
+  `sap-btp-ai` router with self-contained replay guidance, the distinction between
+  missing response state (HTTP 404) and verification failure (HTTP 400), and
+  multi-step validation. Document the measured reproduction and migration.
+
 - `rpt-decisions`: replace the local `/predict` translator with the verified
   `sap-rpt-decisions` `/systemone` client, ordered per-state requests, endpoint
   confidence preservation and bounded rate-limit/upstream retries.

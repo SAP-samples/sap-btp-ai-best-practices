@@ -87,9 +87,14 @@ Foundry instances. Keep approvals as the pending action in the HANA row rather
 than `interrupt()`, which needs a checkpointer this landscape does not use.
 Keep A2A as a transport adapter around `AgentRuntime.ainvoke`; do not duplicate
 the graph, tool registry, or memory implementation in the server.
-Keep the reasoning handling in `providers.py` (reasoning blocks dropped,
-`store=False`): SAP AI Core answers replayed Responses API reasoning with 404 or
-hangs; see "Reasoning on SAP AI Core" in the configuration reference.
+Keep the Responses compatibility handling in `providers.py`: `store=False`,
+`include=["reasoning.encrypted_content"]`, and removal of provider output item
+IDs from serialized history. Preserve encrypted reasoning, function `call_id`
+links and graph message IDs. A late AI Core HTTP 404 can be a missing response
+item, while HTTP 400 `invalid_encrypted_content` is a separate verification
+failure. See "Reasoning on SAP AI Core" in the configuration reference. Do not
+assume an earlier generated application automatically contains the current
+marketplace template; compare its provider module before adapting it.
 
 ## Validate
 

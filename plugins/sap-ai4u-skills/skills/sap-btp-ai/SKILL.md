@@ -14,7 +14,7 @@ This skill routes to the right specialized skill and defines conventions shared 
 | Direct LLM calls (OpenAI/Anthropic/Gemini) through Gen AI Hub, structured output, multimodal input, orchestration service | `access-to-generative-ai-models` |
 | Any LangGraph code (graphs, state, nodes, edges) | `langgraph-fundamentals` (always) + the ones below |
 | LLM initialization for LangGraph on SAP BTP | `langgraph-genai-hub-setup` |
-| Tool-calling agents, ReAct, MCP tools in LangGraph | `langgraph-agent-patterns` |
+| Tool-calling agents, ReAct, MCP tools in LangGraph | `create-langgraph-react-agent` + `langgraph-agent-patterns` |
 | Conversation memory in SAP HANA, concurrent turns across CF instances, history summarization, checkpointers, subgraphs, Store | `langgraph-persistence` |
 | Tool approval across user turns (HANA pending action), interrupt/resume, breakpoints | `langgraph-human-in-the-loop` |
 | Chunking + embedding documents into HANA vector store | `vector-rag-embedding` |
@@ -90,7 +90,7 @@ pip install langgraph langchain langchain-hana          # LangGraph + HANA vecto
 ## Non-Negotiable Rules
 
 1. **Never bypass the Gen AI Hub proxy.** Import LLM clients from `gen_ai_hub.proxy.*`, never from `openai`, `langchain_openai`, `anthropic`, or `google.genai` directly. Direct imports silently skip SAP AI Core routing and fail on credentials.
-2. **Smoke-test before building.** Run one minimal text-only LLM call (or `SELECT * FROM DUMMY` for HANA) and confirm it works before adding tools, chains, RAG, or graphs. Most failures are environment failures; find them in 10 lines, not 300.
+2. **Smoke-test before building.** Run one minimal text-only LLM call (or `SELECT * FROM DUMMY` for HANA) and confirm it works before adding tools, chains, RAG, or graphs. For GPT Responses agents, also verify a complete tool round trip and a follow-up after a reasoning response using `create-langgraph-react-agent`; a single text call cannot detect missing response state. Most startup failures are environment failures; isolate them before building the graph.
 3. **Model names are deployment-specific.** Example model names in skills (`gpt-4.1`, `gpt-4o`, `text-embedding-3-small`, `anthropic--claude-4.5-sonnet`) must exist as deployments in the target AI Core resource group. Keep model names in variables and confirm availability with the user or a probe call; do not hard-fail an implementation over a model-name guess.
 4. **HANA is its own SQL dialect.** Before writing any DDL/DML, apply `sap-hana-sql`. No `IF NOT EXISTS`, no `ON CONFLICT`, no `SERIAL`.
 5. **Tabular app data belongs in HANA**, not local CSV/Excel files, unless the file is a user upload flow or the user says otherwise.
