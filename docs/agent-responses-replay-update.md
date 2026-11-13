@@ -26,8 +26,9 @@ carries that narrower fix into new scaffolds and guidance for existing projects.
   compatibility guidance alongside legacy Chat Completions examples.
 - `plugins/sap-ai4u-skills/skills/sap-btp-ai/SKILL.md`: route ReAct work to the
   template and require multi-step smoke coverage for GPT Responses.
-- `plugins/sap-ai4u-skills/CHANGELOG.md`: add the update under Unreleased, preserving
-  released version metadata and earlier historical observations.
+- `plugins/sap-ai4u-skills/CHANGELOG.md`: record the update in release `0.6.6`
+  dated 13 November 2026, preserving earlier historical observations. The portable,
+  Codex and Claude Code manifests all use `0.6.6`.
 
 Inputs are configured SAP proxy models, prompt/history messages and local tool
 results. Outputs are complete provider requests without storage-dependent item

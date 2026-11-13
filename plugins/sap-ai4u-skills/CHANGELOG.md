@@ -4,6 +4,11 @@ All notable changes to `sap-ai4u-skills` are recorded here.
 
 ## Unreleased
 
+## 0.6.6 - 2026-11-13
+
+- Bump the portable Agent Plugins, Codex, and Claude Code manifests from
+  `0.6.5` to `0.6.6`.
+
 - `create-langgraph-react-agent`: preserve encrypted reasoning and remove provider
   output item IDs from serialized Responses history, replacing the broad
   reasoning-discard workaround. Request opaque content with `store=False` and
