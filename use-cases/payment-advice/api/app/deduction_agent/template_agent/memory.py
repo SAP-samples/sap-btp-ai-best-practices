@@ -236,7 +236,11 @@ def create_conversation_store(settings: MemorySettings) -> ConversationStore:
 
 
 def _hana_connection() -> Any:
-    """Create one hdbcli connection from standard environment variables."""
+    """Create one hdbcli connection from standard environment variables.
+
+    Optional ``HANA_SCHEMA`` sets ``currentSchema``; empty keeps the login
+    user's own schema.
+    """
 
     from hdbcli import dbapi
 
@@ -253,6 +257,7 @@ def _hana_connection() -> Any:
         sslValidateCertificate=_as_bool(
             os.getenv("HANA_SSL_VALIDATE_CERTIFICATE", "true")
         ),
+        currentSchema=os.getenv("HANA_SCHEMA", ""),
     )
 
 

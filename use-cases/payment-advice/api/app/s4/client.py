@@ -15,6 +15,13 @@ Connectivity mode is chosen by `S4_CONNECTIVITY_MODE`:
 OData writes (POST/PATCH) first fetch an `X-CSRF-Token`; the shared
 `requests.Session` keeps the session cookies the token is bound to.
 
+Reads are retried, writes never are. A GET that fails at connection level or
+with HTTP 429/502/503/504 is repeated up to `S4_GET_RETRIES` times (default 2)
+with a growing pause, because repeating a read cannot change S/4. A POST or
+PATCH is sent exactly once: after a timeout nobody knows whether S/4 stored the
+document, so the caller decides how to reconcile (see `app.s4.posting`).
+Every request waits at most `S4_TIMEOUT_SECONDS` (default 120).
+
 Example:
     client = S4Client(load_s4_config())
     rows = odata_rows(client.get_json("API_BUSINESS_PARTNER", "/A_BusinessPartner", {"$top": "1"}))
@@ -23,6 +30,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -40,7 +48,32 @@ from .connectivity import (
 
 ODATA_ROOT = "/sap/opu/odata/sap/"
 TIMEOUT_SECONDS = 120
+GET_RETRIES = 2
+# HTTP statuses of a read that are worth repeating: throttling and gateway / availability errors.
+RETRY_STATUS = frozenset({429, 502, 503, 504})
+# Pause before retry n (seconds) is RETRY_PAUSE * n.
+RETRY_PAUSE = 0.5
 API_DIR = Path(__file__).resolve().parents[2]
+# Indirection so tests can run retries without waiting.
+_sleep = time.sleep
+
+
+def _env_int(name: str, default: int, minimum: int) -> int:
+    """Read a whole-number setting from the environment; missing or invalid values give ``default``."""
+    try:
+        return max(minimum, int(os.getenv(name, "").strip() or default))
+    except ValueError:
+        return default
+
+
+def timeout_seconds() -> int:
+    """Seconds one S/4 request may take (`S4_TIMEOUT_SECONDS`, default 120, at least 1)."""
+    return _env_int("S4_TIMEOUT_SECONDS", TIMEOUT_SECONDS, 1)
+
+
+def get_retries() -> int:
+    """How often a failed read is repeated (`S4_GET_RETRIES`, default 2, 0 switches retries off)."""
+    return _env_int("S4_GET_RETRIES", GET_RETRIES, 0)
 
 
 class S4ConfigError(RuntimeError):
@@ -242,20 +275,37 @@ class S4Client:
         return S4RuntimeContext(self.config.base_url, self.config.client, {}, None, self.config.verify)
 
     def _send(self, method: str, path: str, *, params: dict[str, Any] | None = None,
-              headers: dict[str, str] | None = None, timeout: int = TIMEOUT_SECONDS, **kwargs: Any) -> requests.Response:
-        """Send one request to `<base_url><path>` and raise S4HTTPError on failure.
+              headers: dict[str, str] | None = None, timeout: int | None = None, **kwargs: Any) -> requests.Response:
+        """Send a request to `<base_url><path>` and raise S4HTTPError on failure.
+
+        A GET is repeated on transient failures (see module docstring); any other
+        method is sent once.
 
         Args:
             method: HTTP method.
             path: Absolute path on the S/4 host, starting with `/`.
             params: Query parameters; `sap-client` is added when configured.
             headers: Extra headers, merged over the context (auth/proxy) headers.
-            timeout: Seconds before the request is abandoned.
+            timeout: Seconds before the request is abandoned (default `timeout_seconds()`).
             kwargs: Passed to `requests` (`json`, `data`).
 
         Returns:
             The successful response.
         """
+        attempts = 1 + (get_retries() if method.upper() == "GET" else 0)
+        for attempt in range(1, attempts + 1):
+            try:
+                return self._send_once(method, path, params, headers, timeout or timeout_seconds(), kwargs)
+            except S4HTTPError as exc:
+                transient = exc.status_code == 0 or exc.status_code in RETRY_STATUS
+                if attempt == attempts or not transient:
+                    raise
+                _sleep(RETRY_PAUSE * attempt)
+        raise AssertionError("unreachable")  # the loop always returns or raises
+
+    def _send_once(self, method: str, path: str, params: dict[str, Any] | None, headers: dict[str, str] | None,
+                   timeout: int, kwargs: dict[str, Any]) -> requests.Response:
+        """Send exactly one request and raise S4HTTPError for connection failures and HTTP status >= 400."""
         context = self.context()
         url = f"{context.base_url}{path}"
         query = dict(params or {})

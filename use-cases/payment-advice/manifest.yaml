@@ -3,6 +3,7 @@ applications:
   - name: payment-advice-automation-api
     path: api
     buildpack: python_buildpack
+    stack: cflinuxfs5
     command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     memory: 512M
     disk_quota: 2G
@@ -23,9 +24,11 @@ applications:
       HANA_USER: ((hana_user))
       HANA_PASSWORD: ((hana_password))
       HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
   - name: payment-advice-automation
     path: ui
     buildpack: nodejs_buildpack
+    stack: cflinuxfs5
     command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
     memory: 512M
     routes:

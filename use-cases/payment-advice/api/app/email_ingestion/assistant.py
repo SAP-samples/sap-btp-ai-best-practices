@@ -57,6 +57,9 @@ async def chat(base, store, advice_id, revision, message, history, dox=None, set
     @tool
     def edit_field(target: str, field: str, value: str, reason: str) -> dict:
         """Correct one header/row field. value is JSON (number, string, list or null). Ambiguous references fail."""
+        # The assistant never sees the S/4 candidate list, so it may not choose the S/4 document.
+        if field == 's4_document':
+            raise ValueError('The S/4 document is chosen in the S/4 posting tab')
         # A question about an old correction or quoted email must not authorize a new write.
         if not re.search(r'\b(change|correct|set|update|replace|should|cambia|corrige|asigna)\b', message, re.I):
             raise ValueError('An explicit correction request is required')

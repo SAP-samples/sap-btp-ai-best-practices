@@ -7,17 +7,30 @@
  * data and creates the S/4 Payment Advice; the advice then becomes immutable.
  */
 import { node, value, keyValueList, button } from "./dom.js";
+import { howMatched, documentCell, matchOverview, reviewerChoiceNotes, choiceBlocks } from "./s4-choice.js";
 
 const kindLabels = {matched: "S/4 item", deduction: "Deduction", unresolved: "Not resolved", residual: "Residual"};
 const statusLabels = {open: "Open", cleared: "Already cleared", reversed: "Reversed in S/4", not_found: "Not in S/4",
-  ambiguous: "Ambiguous", residual: "Posted as open item"};
+  ambiguous: "Ambiguous", residual: "Posted as open item", sign_mismatch: "Invoice/credit mismatch", special_gl: "Special G/L item"};
 /** Blocking issues the reviewer can resolve by posting the paid line as a residual open item. */
 const residualIssues = new Set(["invoice_reversed", "invoice_not_found"]);
 
-/** One-line state of the S/4 step, shown above the actions. */
+/**
+ * One-line state of the S/4 step, shown above the actions.
+ * @param {object} advice Current advice.
+ * @param {object|undefined} s4 Stored S/4 check (`advice.s4`).
+ * @returns {[string, string]} Text and CSS class of the status line.
+ */
 function summary(advice, s4) {
   if (s4?.posted) return ["Posted to S/4 as payment advice " + s4.posted.key.PaymentAdvice + ".", "s4-ok"];
   if (!s4) return ["Not checked against S/4 yet.", ""];
+  // S/4 never answered the last post: it may or may not hold the advice, so this outranks every other state.
+  if (s4.post_outcome === "unknown") return ["S/4 did not confirm the last post" + (s4.post_error ? " (" + s4.post_error + ")" : "") +
+    ". Post again to check S/4 and finish, or release the advice to change it.", "s4-blocking"];
+  // A post was started and never finished (for example the application stopped in between): same way out.
+  if (s4.posting_started_at) return ["A post of this advice was started and did not finish. Post again to check S/4 and finish, " +
+    "or release the advice to change it.", "s4-blocking"];
+  if (s4.stale) return ["The advice changed after this check. Check against S/4 again.", "s4-blocking"];
   if (s4.post_error) return ["S/4 rejected the last post: " + s4.post_error, "s4-blocking"];
   const blocking = s4.issues.filter(i => i.severity === "blocking").length;
   if (blocking) return [blocking + " blocking issue(s): resolve them, then check again.", "s4-blocking"];
@@ -51,6 +64,7 @@ function issuesList(s4, advice, actions) {
     if (editable && line?.row_id && residualIssues.has(issue.code)) item.append(residualAction(line, advice, actions));
     list.append(item);
   }
+  if (editable) list.append(...reviewerChoiceNotes(s4, advice, actions));
   for (const line of s4.lines || []) {
     if (line.kind !== "residual") continue;
     const item = node("li", "Line " + (line.index + 1) + " (" + line.reference + ") is posted as an open item on the customer.", "s4-info");
@@ -60,20 +74,28 @@ function issuesList(s4, advice, actions) {
   return list;
 }
 
-/** Table of advice lines with their S/4 match. */
+/**
+ * Table of advice lines with their S/4 match.
+ * @param {object[]} lines `s4.lines`.
+ * @returns {HTMLElement} Scrollable table.
+ */
 function linesTable(lines) {
   const scroll = node("div", "", "inbox-table-scroll"); scroll.tabIndex = 0;
   scroll.setAttribute("aria-label", "S/4 match per advice line, horizontally scrollable");
   const table = node("table", "", "s4-lines"), head = node("tr"), body = node("tbody");
-  ["#", "Reference", "Kind", "S/4 status", "S/4 document", "Account (rules)", "S/4 customer", "S/4 amount", "Advice net", "Reason"].forEach(h => head.append(node("th", h)));
+  ["#", "Reference", "Kind", "S/4 status", "S/4 document", "Account (rules)", "S/4 customer", "S/4 amount", "Open in S/4", "Advice net", "Reason",
+   "How it was matched"].forEach(h => head.append(node("th", h)));
   for (const line of lines) {
     const item = line.s4_item || {};
     const tr = node("tr", "", "s4-" + line.kind);
     // A deduction never has an S/4 item before clearing creates its residual, so "Not in S/4" would read as an error.
     const status = line.kind === "deduction" ? "New deduction" : statusLabels[line.status] || line.status;
-    [line.index + 1, line.reference, kindLabels[line.kind] || line.kind, status,
-     item.accounting_document ? item.accounting_document + "/" + item.fiscal_year + " (" + line.matched_by + ")" : "",
-     line.account || "", item.customer || "", item.amount ? item.amount + " " + item.currency : "", line.net, line.reason_code || ""]
+    // The reference may be the customer's own document number rather than our invoice number.
+    const reference = line.reference_source === "customer_document_reference" ? line.reference + " (customer document no.)" : line.reference;
+    const open = line.open_amount ? line.open_amount + " " + (item.currency || "") : "";
+    [line.index + 1, reference, kindLabels[line.kind] || line.kind, status, documentCell(line),
+     line.account || "", item.customer || "", item.amount ? item.amount + " " + item.currency : "", open, line.net,
+     line.reason_code || "", howMatched(line.resolution)]
       .forEach(cell => tr.append(node("td", value(cell))));
     body.append(tr);
   }
@@ -143,6 +165,21 @@ function storedItemsTable(stored) {
   return scroll;
 }
 
+/**
+ * "Release for changes" after a post S/4 never confirmed: unlocks the advice for edits. The server only
+ * allows it when S/4 holds no payment advice for this payment reference.
+ * @param {object} advice Current advice (for its revision).
+ * @param {{post: Function, onError: Function}} actions Mutation callback and error handler.
+ * @returns {HTMLButtonElement} The button.
+ */
+function releaseButton(advice, {post, onError}) {
+  return button("Release for changes", async () => {
+    if (!window.confirm("Release this advice so it can be changed? This only works when S/4 holds no payment advice " +
+      "for this payment reference. If S/4 created it, post again instead to finish.")) return;
+    await post("/s4/release", {revision: advice.revision});
+  }, onError);
+}
+
 /** Collapsible JSON block (payload preview, S/4 call trace). */
 function disclosure(title, data) {
   const details = node("details"), pre = node("pre", JSON.stringify(data, null, 2));
@@ -167,13 +204,21 @@ export function renderS4Panel(content, advice, {post, onError}) {
     const check = button("Check against S/4", () => post("/s4/check", {revision: advice.revision}), onError);
     check.disabled = busy;
     const derived = s4?.derived || {};
+    // After an unfinished post, posting again first looks in S/4 for the advice that was sent and finishes with it.
+    const unfinished = Boolean(s4?.posting_started_at);
     const send = button("Post to S/4", async () => {
-      const ok = window.confirm("Create the payment advice in S/4 for company code " + derived.company_code +
-        ", customer " + derived.customer + ", amount " + s4.payload?.PaidAmountInPaytCurrency + " " + derived.currency + "?");
+      const ok = window.confirm(unfinished
+        ? "Check S/4 for the payment advice of the unfinished post and finish it? It is only created if S/4 does not hold it."
+        : "Create the payment advice in S/4 for company code " + derived.company_code +
+          ", customer " + derived.customer + ", amount " + s4.payload?.PaidAmountInPaytCurrency + " " + derived.currency + "?");
       if (ok) await post("/s4/post", {revision: advice.revision});
     }, onError, "primary");
-    send.disabled = busy || advice.status !== "reviewed" || !s4?.ready;
+    // A check older than the advice no longer describes what would be posted. An unfinished post stays postable even
+    // when the new check blocks: S/4 may already hold the advice (and may have cleared the invoice with it).
+    send.disabled = busy || advice.status !== "reviewed" || (!unfinished && (!s4?.ready || s4?.stale === true));
     bar.append(check, send);
+    // The advice is locked for changes while a post is unfinished, whatever the reason it did not finish.
+    if (s4?.posting_started_at) bar.append(releaseButton(advice, {post, onError}));
   }
   content.append(bar);
   if (!s4) return;
@@ -183,8 +228,11 @@ export function renderS4Panel(content, advice, {post, onError}) {
     "advice account": derived.customer, "payer (rules)": derived.payer_account || "none",
     "other customers": (derived.customers || []).slice(1).join(", ") || "none", currency: derived.currency,
     "checked at": s4.checked_at, connection: s4.mode}));
+  const overview = matchOverview(s4.summary);
+  if (overview) content.append(overview);
   const list = issuesList(s4, advice, {post, onError});
   if (list.children.length) content.append(list);
+  content.append(...choiceBlocks(s4, advice, {post, onError}));
   content.append(linesTable(s4.lines || []));
   if (s4.payload) content.append(disclosure("Payment advice payload", s4.payload));
   content.append(disclosure("S/4 calls made by the check", s4.trace || []));

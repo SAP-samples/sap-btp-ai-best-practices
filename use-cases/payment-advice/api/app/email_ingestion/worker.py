@@ -13,7 +13,7 @@ from .gmail import Gmail, CursorExpired, GmailError, MessageGone, binding
 from .intake import intake, refresh_email
 from .store import Conflict, ADVICE_SLOTS, FETCH_SLOT
 from dox_client import SapDoxClient, ServiceKey
-from .domain import apply_edit, stable_rows
+from .domain import apply_edit, mark_s4_stale, stable_rows
 from ..payment_advice.extraction_service import extract_to_canonical
 from ..payment_advice.interpretation_service import interpret_events
 from ..payment_advice.deduction_rules import get_playbook
@@ -175,6 +175,8 @@ async def process_advice(state, store, job, owner):
         verification=asdict(verify_canonical(current['header'], current['line_items'])),
         extraction_evidence=evidence, interpretation_evidence=events, rule_snapshot=asdict(pb) if pb else None,
         error=None, stage='complete')
+    # The stored S/4 check describes the previous result, so it no longer reflects this one.
+    mark_s4_stale(advice)
     advice['status'] = 'needs_review' if not client or advice['verification']['needs_review'] or any(r.get('flags') for r in current['line_items']) else 'ready'
     def finish():
         """Atomically retain run evidence and the interpreted result before rollup."""

@@ -173,11 +173,12 @@ def apply_edit(payload: dict, target: str, field: str, value: Any) -> tuple[dict
     """Return a copied advice with one typed field changed; reject ambiguous targets."""
     from app.payment_advice.canonical import (DERIVED_HEADER_FIELD_NAMES, DERIVED_LINE_FIELD_NAMES,
                                               HEADER_FIELD_NAMES, LINE_FIELD_NAMES)
+    from app.s4.references import parse_pick
     result = copy.deepcopy(payload)
     # Rule-derived fields (customer account, payer, company code) are corrected like extracted ones.
     allowed = set(HEADER_FIELD_NAMES) | set(DERIVED_HEADER_FIELD_NAMES) if target == 'header' else \
         set(LINE_FIELD_NAMES) | set(DERIVED_LINE_FIELD_NAMES) | {'reason_code', 'document_nature', 'residual_items', 'rationale', 'flags',
-                                                                 's4_treatment', 'excluded'}
+                                                                 's4_treatment', 's4_document', 'excluded'}
     if field not in allowed:
         raise ValueError('Unsupported editable field')
     if target == 'header':
@@ -204,6 +205,10 @@ def apply_edit(payload: dict, target: str, field: str, value: Any) -> tuple[dict
         elif field == 'excluded':
             if not isinstance(value, bool):
                 raise ValueError('Excluded must be true or false')
+        elif field == 's4_document':
+            # Syntax only: replay runs through here, so S/4 or row state must never be consulted.
+            if not isinstance(value, str) or parse_pick(value) is None:
+                raise ValueError('S/4 document must be COMPANYCODE/DOCUMENT/YEAR or COMPANYCODE/DOCUMENT/YEAR/ITEM')
         elif field == 'flags':
             if not isinstance(value, list) or len(value) > 50 or any(not isinstance(v, str) or len(v) > 200 for v in value):
                 raise ValueError('Flags must be a list of at most 50 texts of at most 200 characters')
@@ -215,6 +220,19 @@ def apply_edit(payload: dict, target: str, field: str, value: Any) -> tuple[dict
             raise ValueError('Invalid document nature')
     row[field] = value
     return result, ids
+
+
+def mark_s4_stale(advice: dict) -> None:
+    """Flag the stored S/4 check result as outdated after the advice result changed.
+
+    Inputs: ``advice`` is an advice record whose optional ``'s4'`` dict holds the last S/4 check.
+    Output: None; the advice is changed in place. A non-empty, not yet posted ``'s4'`` dict is
+    replaced by a copy with ``'stale': True`` that keeps every other key (including the markers of
+    an interrupted post). A missing, empty or posted ``'s4'`` is left untouched.
+    """
+    check = advice.get('s4')
+    if isinstance(check, dict) and check and 'posted' not in check:
+        advice['s4'] = {**check, 'stale': True}
 
 
 def stable_rows(rows: list[dict], previous: list[dict], advice_id: str):

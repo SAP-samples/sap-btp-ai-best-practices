@@ -57,6 +57,7 @@ HANA_PORT=$(read_env_var "HANA_PORT")
 HANA_USER=$(read_env_var "HANA_USER")
 HANA_PASSWORD=$(read_env_var "HANA_PASSWORD")
 HANA_ENCRYPT=$(read_env_var "HANA_ENCRYPT")
+HANA_SCHEMA=$(read_env_var "HANA_SCHEMA")
 
 # 4. Deploy the application
 echo "Deploying application..."
@@ -71,7 +72,8 @@ cf push \
   --var hana_port="$HANA_PORT" \
   --var hana_user="$HANA_USER" \
   --var hana_password="$HANA_PASSWORD" \
-  --var hana_encrypt="$HANA_ENCRYPT"
+  --var hana_encrypt="$HANA_ENCRYPT" \
+  --var hana_schema="$HANA_SCHEMA"
 
 # 5. S/4HANA connectivity (BTP Destination + Connectivity). Only the btp-mode
 #    variables are copied; direct-mode S/4 credentials never leave the laptop.
@@ -82,7 +84,8 @@ if [ -n "$(read_env_var "DESTINATION_CLIENT_ID")" ]; then
   for VAR in S4_CLIENT S4_VERIFY S4_DESTINATION_NAME DESTINATION_SERVICE_URI DESTINATION_TOKEN_BASE_URL \
              DESTINATION_CLIENT_ID DESTINATION_CLIENT_SECRET CONNECTIVITY_PROXY_HOST CONNECTIVITY_PROXY_PORT \
              CONNECTIVITY_TOKEN_BASE_URL CONNECTIVITY_CLIENT_ID CONNECTIVITY_CLIENT_SECRET BTP_DEST_DEBUG \
-             S4_PAYMENT_ADVICE_TYPE S4_AUTO_POST S4_COMPANY_CODE_ALIASES S4_REASON_CODE_ALIASES; do
+             S4_PAYMENT_ADVICE_TYPE S4_AUTO_POST S4_COMPANY_CODE_ALIASES S4_REASON_CODE_ALIASES \
+             S4_TIMEOUT_SECONDS S4_GET_RETRIES S4_CURRENCY_DECIMALS; do
     VALUE=$(read_env_var "$VAR")
     if [ -n "$VALUE" ]; then
       cf set-env "$APP_NAME" "$VAR" "$VALUE" > /dev/null

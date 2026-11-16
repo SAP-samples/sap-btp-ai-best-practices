@@ -5,6 +5,9 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
+import requests
+
+from app.s4 import client as client_module
 from app.s4.client import S4Client, S4Config, S4ConfigError, S4HTTPError, load_s4_config, odata_error_message
 from app.s4.connectivity import S4BtpConnectivityClient, load_s4_btp_connectivity_config_from_env
 
@@ -28,7 +31,10 @@ class FakeSession:
 
     def request(self, method, url, **kwargs):
         self.requests.append({"method": method, "url": url, **kwargs})
-        return self.responses.pop(0)
+        response = self.responses.pop(0)
+        if isinstance(response, Exception):  # a queued exception simulates a connection-level failure
+            raise response
+        return response
 
 
 BTP_ENV = {
@@ -125,6 +131,50 @@ class ClientTests(unittest.TestCase):
 
     def test_error_message_parser_tolerates_non_json(self):
         self.assertIsNone(odata_error_message("<html>502</html>"))
+
+
+class RetryTests(unittest.TestCase):
+    """Reads are repeated on transient failures; writes are sent exactly once."""
+    def client(self, responses):
+        session = FakeSession(responses)
+        config = S4Config(base_url="https://s4.example", client="550", verify=True, username="u", password="p")
+        self.pauses = []
+        patcher = patch.object(client_module, "_sleep", self.pauses.append)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        return S4Client(config, session=session), session
+
+    def test_get_is_repeated_after_gateway_and_connection_failures(self):
+        client, session = self.client([FakeResponse(503, "busy"), requests.ConnectionError("reset"),
+                                       FakeResponse(200, {"d": {"results": [{"CompanyCode": "CA01"}]}})])
+        body = client.get_json("API_COMPANYCODE_SRV", "/A_CompanyCode")
+        self.assertEqual(body["d"]["results"][0]["CompanyCode"], "CA01")
+        self.assertEqual((len(session.requests), self.pauses), (3, [0.5, 1.0]))
+
+    def test_get_gives_up_after_the_configured_retries_and_never_repeats_a_client_error(self):
+        client, session = self.client([FakeResponse(503, "busy")] * 3)
+        with self.assertRaises(S4HTTPError) as caught:
+            client.get_json("API_COMPANYCODE_SRV", "/A_CompanyCode")
+        self.assertEqual((caught.exception.status_code, len(session.requests)), (503, 3))
+        client, session = self.client([FakeResponse(404, "missing")])
+        with self.assertRaises(S4HTTPError):
+            client.get_json("API_COMPANYCODE_SRV", "/A_CompanyCode")
+        self.assertEqual(len(session.requests), 1)
+
+    def test_post_is_never_repeated(self):
+        client, session = self.client([FakeResponse(200, "", {"X-CSRF-Token": "tok-1"}), FakeResponse(503, "busy")])
+        with self.assertRaises(S4HTTPError):
+            client.post_json("API_PAYMENT_ADVICE_SRV", "/A_PaymentAdvice", {"CompanyCode": "CA01"})
+        self.assertEqual([r["method"] for r in session.requests], ["GET", "POST"])
+
+    def test_timeout_and_retries_come_from_the_environment(self):
+        with patch.dict(os.environ, {"S4_TIMEOUT_SECONDS": "45", "S4_GET_RETRIES": "0"}):
+            client, session = self.client([FakeResponse(503, "busy")])
+            with self.assertRaises(S4HTTPError):
+                client.get_json("API_COMPANYCODE_SRV", "/A_CompanyCode")
+        self.assertEqual((len(session.requests), session.requests[0]["timeout"]), (1, 45))
+        with patch.dict(os.environ, {"S4_TIMEOUT_SECONDS": "not a number"}):
+            self.assertEqual(client_module.timeout_seconds(), 120)
 
 
 if __name__ == "__main__":

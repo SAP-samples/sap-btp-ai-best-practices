@@ -54,3 +54,5 @@
 .s4-result h4 {margin:0 0 0.5rem;font-size:1.05rem;}
 .s4-issues .inline-action {white-space:nowrap;margin-inline-start:0.25rem;padding:0.1rem 0.6rem;}
 .s4-issues .s4-info {color:#1d2d3e;}
+.s4-choice {margin:0.75rem 0;}.s4-choice h4 {margin:0 0 0.4rem;font-size:0.95rem;color:#a84d00;}
+.s4-lines.s4-choices {min-width:640px;}.s4-choices .inline-action {white-space:nowrap;padding:0.1rem 0.6rem;}
