@@ -86,10 +86,10 @@ Recognized job states are `QUEUED`, `RUNNING`, `SUCCEEDED`, and `FAILED`.
 | `API_KEY` | Production | Protects all extraction endpoints through `X-API-Key`. |
 | `APP_ENV` | Production | Set to `production`; the API fails closed when `API_KEY` is missing. |
 | `ALLOWED_ORIGIN` | Production UI | Allowed Streamlit origin for CORS. |
-| `hana_address`, `hana_port`, `hana_user`, `hana_password` | Yes | HANA connection used by reference data and extraction jobs. |
-| `hana_encrypt` | No | Enables encrypted HANA connections; defaults to `true`. |
-| `hana_ssl_validate_certificate` | No | Enables HANA certificate validation; defaults to `false`. |
-| `HANA_SCHEMA` | No | Overrides the current HANA schema. |
+| `HANA_ADDRESS`, `HANA_PORT`, `HANA_USER`, `HANA_PASSWORD` | Yes | HANA connection used by reference data and extraction jobs. |
+| `HANA_ENCRYPT` | No | Enables encrypted HANA connections; defaults to `true`. |
+| `HANA_SSL_VALIDATE_CERTIFICATE` | No | Enables HANA certificate validation; defaults to `false`. |
+| `HANA_SCHEMA` | No | Schema holding the reference and job tables. Passed as the connection's `currentSchema` and used to qualify table names; empty keeps `HANA_USER`'s own schema. |
 | `HANA_REFERENCE_DATA_VERSION` | No | Requires all three reference tables to contain the expected shared `DATA_VERSION`. |
 | `HANA_COMMODITY_CATALOG_TABLE` | No | Overrides `REFERENCE_COMMODITY_CATALOG`. |
 | `HANA_UNSPSC_MAPPING_TABLE` | No | Overrides `REFERENCE_UNSPSC_MAPPING`. |
@@ -112,34 +112,22 @@ The API creates and validates the HANA extraction job tables on first use. The t
 
 ## Deploy the API and UI
 
-Review `manifest.yaml`, configure the HANA and SAP Gen AI Hub runtime in the target landscape, and deploy manually from the repository root.
+Review `manifest.yaml`, fill `api/.env` from `api/.env.example`, log in with `cf login`, and deploy manually from this folder.
 
-For API/UI-only deployment, the helper generates a new API key and passes it to Cloud Foundry:
+`deploy.sh` reads `AICORE_AUTH_URL`, `AICORE_CLIENT_ID`, `AICORE_CLIENT_SECRET`, `AICORE_BASE_URL`, `AICORE_RESOURCE_GROUP`, `HANA_ADDRESS`, `HANA_PORT`, `HANA_USER`, `HANA_PASSWORD`, `HANA_ENCRYPT` (default `true`), `HANA_SSL_VALIDATE_CERTIFICATE` (default `false`) and `HANA_SCHEMA` (optional) from `api/.env`, and passes them to the `((...))` placeholders of the API app in `manifest.yaml` through `cf push --var`. It stops before pushing when a required value is empty. It also generates a new API key shared by the API and UI:
 
 ```bash
 chmod +x deploy.sh
 ./deploy.sh
 ```
 
-For a deployment that will also be used by Joule, retain the generated key because the same value must be added to the BTP destination:
+For a deployment that is also used by Joule, the API key must match the BTP destination. Export the existing key so the script reuses it instead of generating a new one:
 
 ```bash
-API_KEY="$(openssl rand -hex 32)"
-cf push --var api_key="$API_KEY"
+API_KEY="<key-stored-in-the-destination>" ./deploy.sh
 ```
 
-Configure any HANA variables that are not supplied through the target landscape's service or secret management, then restage the API. For example:
-
-```bash
-cf set-env commodity-code-pipeline-api hana_address "<host>"
-cf set-env commodity-code-pipeline-api hana_port "<port>"
-cf set-env commodity-code-pipeline-api hana_user "<user>"
-cf set-env commodity-code-pipeline-api hana_password "<password>"
-cf set-env commodity-code-pipeline-api HANA_SCHEMA "<schema>"
-cf restage commodity-code-pipeline-api
-```
-
-Do not commit credentials or API keys.
+Every `cf push` with the manifest overwrites values set earlier with `cf set-env`, so change credentials in `api/.env` and redeploy. Do not commit credentials or API keys.
 
 ### Verify the Cloud Foundry applications
 
@@ -271,7 +259,7 @@ Validate Joule separately with the lint and compile commands in the deployment s
 ## Troubleshooting
 
 - **`503 API authentication is not configured`**: set `API_KEY` when `APP_ENV=production`, then restage the API.
-- **HANA storage or reference-data errors**: verify the lowercase HANA connection variables, schema permissions, reference-table names, and shared `DATA_VERSION`.
+- **HANA storage or reference-data errors**: verify the `HANA_*` connection variables, schema permissions, reference-table names, and shared `DATA_VERSION`.
 - **Joule receives `401`**: verify `URL.headers.X-API-Key` in `CommodityCodePipelineAPI` matches the API application key.
 - **Joule cannot prepare a status or result path**: redeploy the current SAPDAS files and begin a new conversation so an older `last_job_id` value is not reused.
 - **Results are unavailable**: check the job first; structured result pages are returned only after `SUCCEEDED`.

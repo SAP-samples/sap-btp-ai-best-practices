@@ -57,6 +57,20 @@ def _qualified_table_name(schema: str | None, table: str) -> str:
 
 
 def _connect():
+    """Open a HANA connection for reference-data reads.
+
+    Reads ``HANA_ADDRESS``, ``HANA_PORT``, ``HANA_USER``, ``HANA_PASSWORD``,
+    ``HANA_ENCRYPT`` and ``HANA_SSL_VALIDATE_CERTIFICATE``. The optional
+    ``HANA_SCHEMA`` is passed as ``currentSchema``; an empty value keeps the
+    login user's own schema.
+
+    Returns:
+        An open ``hdbcli`` connection.
+
+    Raises:
+        ReferenceDataError: When hdbcli is missing, credentials are missing,
+            or the connection fails.
+    """
     try:
         from hdbcli import dbapi
     except ImportError as exc:  # pragma: no cover - depends on optional runtime dependency
@@ -64,12 +78,12 @@ def _connect():
             "hdbcli is required for HANA-backed reference data. Add it to the deployment environment."
         ) from exc
 
-    address = _require_env("hana_address")
-    port = int(_require_env("hana_port"))
-    user = _require_env("hana_user")
-    password = _require_env("hana_password")
-    encrypt = _bool_to_hana_flag(os.getenv("hana_encrypt"), default="true")
-    validate_cert = _bool_to_hana_flag(os.getenv("hana_ssl_validate_certificate"), default="false")
+    address = _require_env("HANA_ADDRESS")
+    port = int(_require_env("HANA_PORT"))
+    user = _require_env("HANA_USER")
+    password = _require_env("HANA_PASSWORD")
+    encrypt = _bool_to_hana_flag(os.getenv("HANA_ENCRYPT"), default="true")
+    validate_cert = _bool_to_hana_flag(os.getenv("HANA_SSL_VALIDATE_CERTIFICATE"), default="false")
 
     try:
         return dbapi.connect(
@@ -79,6 +93,8 @@ def _connect():
             password=password,
             encrypt=encrypt,
             sslValidateCertificate=validate_cert,
+            # Optional schema override; empty keeps the login user's default schema.
+            currentSchema=os.getenv("HANA_SCHEMA", "").strip(),
         )
     except Exception as exc:  # pragma: no cover - network/runtime dependency
         raise ReferenceDataError(f"Failed to connect to HANA at {address}:{port}: {exc}") from exc

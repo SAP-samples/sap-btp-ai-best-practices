@@ -137,6 +137,27 @@ while True:
 - `HANA_EXTRACTION_JOBS_TABLE`: optional jobs table name override; default `EXTRACTION_JOBS`.
 - `HANA_EXTRACTION_JOB_FILES_TABLE`: optional uploaded-files table name override; default `EXTRACTION_JOB_FILES`.
 
+## HANA Connection and Schema
+
+The API and the reference-data loader read the connection from `HANA_ADDRESS`, `HANA_PORT`, `HANA_USER`, `HANA_PASSWORD`, `HANA_ENCRYPT` (default `true`) and `HANA_SSL_VALIDATE_CERTIFICATE` (default `false`).
+
+`HANA_SCHEMA` lets the app log in as one HANA user and work in another schema. When set, it is:
+
+- passed as the `currentSchema` connection property at every connection site, so unqualified SQL and the `SELECT CURRENT_SCHEMA` fallback resolve to it;
+- used to qualify every table name (`"<schema>"."<table>"`).
+
+When empty, the app uses the login user's own schema.
+
+Connection sites:
+
+- `api/app/services/extraction_jobs.py` (`HanaExtractionJobRepository._connect`)
+- `api/app/services/reference_data.py` (`_connect`)
+- `api/scripts/generate_and_load_reference_data.py` (`_connect_to_hana`)
+
+Required privileges for `HANA_USER` on `HANA_SCHEMA`: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, plus `CREATE ANY` the first time, because the job tables are created automatically.
+
+If the app connects without errors but shows no reference data or reports missing tables, check that `HANA_SCHEMA` names the schema that actually holds the tables.
+
 ## Limitations
 
 - Jobs run inside the API process. API restarts can interrupt running work, though submitted job state and artifacts are persisted in HANA.

@@ -865,20 +865,28 @@ def _column_sql_type(series: pd.Series) -> str:
 
 
 def _connect_to_hana():
+    """Open a HANA connection from the ``HANA_*`` environment variables.
+
+    The optional ``HANA_SCHEMA`` is passed as ``currentSchema`` so the session
+    works in that schema; an empty value keeps the login user's own schema.
+
+    Returns:
+        An open ``hdbcli`` connection.
+    """
     try:
         from hdbcli import dbapi
     except ImportError as exc:  # pragma: no cover - optional runtime dependency
         raise RuntimeError("hdbcli must be installed to load synthetic data into HANA.") from exc
 
-    address = os.getenv("hana_address", "").strip()
-    port = int(os.getenv("hana_port", "").strip())
-    user = os.getenv("hana_user", "").strip()
-    password = os.getenv("hana_password", "").strip()
-    encrypt = "true" if os.getenv("hana_encrypt", "true").strip().lower() in {"1", "true", "yes", "on"} else "false"
-    validate_cert = "false" if os.getenv("hana_ssl_validate_certificate", "false").strip().lower() in {"0", "false", "no", "off"} else "true"
+    address = os.getenv("HANA_ADDRESS", "").strip()
+    port = int(os.getenv("HANA_PORT", "").strip())
+    user = os.getenv("HANA_USER", "").strip()
+    password = os.getenv("HANA_PASSWORD", "").strip()
+    encrypt = "true" if os.getenv("HANA_ENCRYPT", "true").strip().lower() in {"1", "true", "yes", "on"} else "false"
+    validate_cert = "false" if os.getenv("HANA_SSL_VALIDATE_CERTIFICATE", "false").strip().lower() in {"0", "false", "no", "off"} else "true"
 
     if not all([address, port, user, password]):
-        raise RuntimeError("Missing HANA credentials. Populate hana_address, hana_port, hana_user, and hana_password.")
+        raise RuntimeError("Missing HANA credentials. Populate HANA_ADDRESS, HANA_PORT, HANA_USER, and HANA_PASSWORD.")
 
     return dbapi.connect(
         address=address,
@@ -887,6 +895,8 @@ def _connect_to_hana():
         password=password,
         encrypt=encrypt,
         sslValidateCertificate=validate_cert,
+        # Optional schema override; empty keeps the login user's default schema.
+        currentSchema=os.getenv("HANA_SCHEMA", "").strip(),
     )
 
 

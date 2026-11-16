@@ -2,6 +2,7 @@ applications:
   - name: commodity-code-pipeline-api
     memory: 512M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./api # Points to API folder
     buildpacks:
       - python_buildpack
@@ -13,11 +14,25 @@ applications:
       ALLOWED_ORIGIN: https://commodity-code-pipeline.cfapps.eu10-004.hana.ondemand.com
       APP_ENV: production
       API_KEY: ((api_key))
+      # Credentials below are read from api/.env by deploy.sh.
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SSL_VALIDATE_CERTIFICATE: ((hana_ssl_validate_certificate))
+      HANA_SCHEMA: ((hana_schema))
       LLM_PROVIDER: "openai"
       LLM_MODEL: "gpt-4.1"
   - name: commodity-code-pipeline-ui
     memory: 256M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./ui # Points to UI folder
     buildpacks:
       - python_buildpack

@@ -736,24 +736,34 @@ class HanaExtractionJobRepository:
         )
 
     def _connect(self):
-        """Open a HANA connection using the deployment environment."""
+        """Open a HANA connection using the deployment environment.
+
+        Reads ``HANA_ADDRESS``, ``HANA_PORT``, ``HANA_USER``, ``HANA_PASSWORD``,
+        ``HANA_ENCRYPT`` and ``HANA_SSL_VALIDATE_CERTIFICATE``. The optional
+        ``HANA_SCHEMA`` is passed as ``currentSchema`` so unqualified SQL and the
+        ``CURRENT_SCHEMA`` fallback resolve to that schema instead of the login
+        user's own schema.
+
+        Returns:
+            An open ``hdbcli`` connection.
+        """
 
         try:
             from hdbcli import dbapi
         except ImportError as exc:  # pragma: no cover - depends on deployment dependency
             raise JobStorageError("hdbcli is required for HANA-backed extraction jobs.") from exc
 
-        address = os.getenv("hana_address", "").strip()
-        port_raw = os.getenv("hana_port", "").strip()
-        user = os.getenv("hana_user", "").strip()
-        password = os.getenv("hana_password", "").strip()
+        address = os.getenv("HANA_ADDRESS", "").strip()
+        port_raw = os.getenv("HANA_PORT", "").strip()
+        user = os.getenv("HANA_USER", "").strip()
+        password = os.getenv("HANA_PASSWORD", "").strip()
         if not all([address, port_raw, user, password]):
             raise JobStorageError("Missing HANA credentials for extraction job storage.")
 
-        encrypt = "true" if os.getenv("hana_encrypt", "true").strip().lower() in {"1", "true", "yes", "on"} else "false"
+        encrypt = "true" if os.getenv("HANA_ENCRYPT", "true").strip().lower() in {"1", "true", "yes", "on"} else "false"
         validate_cert = (
             "true"
-            if os.getenv("hana_ssl_validate_certificate", "false").strip().lower() in {"1", "true", "yes", "on"}
+            if os.getenv("HANA_SSL_VALIDATE_CERTIFICATE", "false").strip().lower() in {"1", "true", "yes", "on"}
             else "false"
         )
         return dbapi.connect(
@@ -763,6 +773,8 @@ class HanaExtractionJobRepository:
             password=password,
             encrypt=encrypt,
             sslValidateCertificate=validate_cert,
+            # Optional schema override; empty keeps the login user's default schema.
+            currentSchema=os.getenv("HANA_SCHEMA", "").strip(),
         )
 
     def _with_connection(self, callback: Callable[[Any], Any]) -> Any:

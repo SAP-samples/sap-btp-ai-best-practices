@@ -451,13 +451,13 @@ Configured in `api/.env` (see `api/.env.example` for template):
 
 | Variable                         | Description |
 |----------------------------------|-------------|
-| `hana_address`                   | HANA host name or address |
-| `hana_port`                      | HANA SQL port |
-| `hana_user`                      | HANA user for reference-data access |
-| `hana_password`                  | HANA password for reference-data access |
-| `hana_encrypt`                   | Enables encrypted HANA connections |
-| `hana_ssl_validate_certificate`  | Controls TLS certificate validation |
-| `HANA_SCHEMA`                    | Optional schema override |
+| `HANA_ADDRESS`                   | HANA host name or address |
+| `HANA_PORT`                      | HANA SQL port |
+| `HANA_USER`                      | HANA user for reference-data access |
+| `HANA_PASSWORD`                  | HANA password for reference-data access |
+| `HANA_ENCRYPT`                   | Enables encrypted HANA connections |
+| `HANA_SSL_VALIDATE_CERTIFICATE`  | Controls TLS certificate validation |
+| `HANA_SCHEMA`                    | Optional schema override (connection `currentSchema` and table qualifier); empty = `HANA_USER`'s schema |
 | `HANA_REFERENCE_DATA_VERSION`    | Expected synthetic dataset version |
 | `HANA_COMMODITY_CATALOG_TABLE`   | Optional catalog table override |
 | `HANA_UNSPSC_MAPPING_TABLE`      | Optional UNSPSC table override |
