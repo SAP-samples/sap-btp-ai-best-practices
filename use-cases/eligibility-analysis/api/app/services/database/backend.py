@@ -3,8 +3,12 @@ Database Backend Abstraction
 
 Provides a unified interface for SQLite and SAP HANA Cloud backends.
 Backend selection is automatic based on environment variables:
-  - If `hana_address` is set and non-empty -> HANA
+  - If `HANA_ADDRESS` is set and non-empty -> HANA
   - Otherwise -> SQLite
+
+HANA settings: HANA_ADDRESS, HANA_PORT, HANA_USER, HANA_PASSWORD, HANA_ENCRYPT and the
+optional HANA_SCHEMA. HANA_SCHEMA is applied as the `currentSchema` connection property,
+so unqualified table names resolve to that schema instead of the login user's own one.
 
 HANA connections are pooled (thread-safe queue, size 5).
 SQLite connections are opened per call (cheap, file-local).
@@ -29,7 +33,13 @@ class BackendType(Enum):
 
 
 def detect_backend() -> BackendType:
-    addr = os.getenv("hana_address", "").strip()
+    """
+    Pick the database backend from the environment.
+
+    Returns:
+        BackendType.HANA when HANA_ADDRESS is set and non-empty, else BackendType.SQLITE.
+    """
+    addr = os.getenv("HANA_ADDRESS", "").strip()
     if addr:
         return BackendType.HANA
     return BackendType.SQLITE
@@ -174,13 +184,24 @@ class DatabaseBackend:
         logger.info("HANA connection pool initialized (size=%d)", self._POOL_SIZE)
 
     def _create_hana_connection(self):
+        """
+        Open one hdbcli connection from the HANA_* environment variables.
+
+        HANA_SCHEMA (optional) is passed as `currentSchema`, so the app can log in as one
+        user (HANA_USER) while reading and writing tables in another schema. An empty value
+        keeps HANA's default: the login user's own schema.
+
+        Returns:
+            An open hdbcli connection whose CURRENT_SCHEMA is HANA_SCHEMA when set.
+        """
         from hdbcli import dbapi
 
-        address = os.getenv("hana_address", "")
-        port = int(os.getenv("hana_port", "443"))
-        user = os.getenv("hana_user", "")
-        password = os.getenv("hana_password", "")
-        encrypt = os.getenv("hana_encrypt", "true").lower() in ("true", "1", "yes")
+        address = os.getenv("HANA_ADDRESS", "")
+        port = int(os.getenv("HANA_PORT", "443"))
+        user = os.getenv("HANA_USER", "")
+        password = os.getenv("HANA_PASSWORD", "")
+        encrypt = os.getenv("HANA_ENCRYPT", "true").lower() in ("true", "1", "yes")
+        schema = os.getenv("HANA_SCHEMA", "").strip()
 
         conn = dbapi.connect(
             address=address,
@@ -188,8 +209,10 @@ class DatabaseBackend:
             user=user,
             password=password,
             encrypt=encrypt,
+            # Optional schema override; empty keeps the login user's default schema.
+            currentSchema=schema,
         )
-        logger.debug("Created new HANA connection to %s:%d", address, port)
+        logger.debug("Created new HANA connection to %s:%d (schema=%s)", address, port, schema or "<user default>")
         return conn
 
     def _validate_hana_connection(self, conn) -> bool:

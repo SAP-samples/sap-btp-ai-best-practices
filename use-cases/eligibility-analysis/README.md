@@ -52,7 +52,7 @@ The interactive API documentation is at `http://127.0.0.1:8000/docs` when runnin
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r api/requirements.txt
-cp api/.env.example api/.env   # fill in API_KEY, AICORE_*, RPT1_MODEL_NAME, hana_*
+cp api/.env.example api/.env   # fill in API_KEY, AICORE_*, RPT1_MODEL_NAME, HANA_* (HANA_SCHEMA optional)
 PYTHONPATH=api .venv/bin/uvicorn app.main:app --reload --port 8000
 ```
 
@@ -86,7 +86,7 @@ Prerequisites:
   Studio CLI, `openssl` and `curl`.
 
 Steps (Bash, from this folder):
-1. Create `api/.env` from `api/.env.example` and fill in the `AICORE_*` and `hana_*` values.
+1. Create `api/.env` from `api/.env.example` and fill in the `AICORE_*` and `HANA_*` values (`HANA_SCHEMA` is optional, see [docs/hana-connection.md](docs/hana-connection.md)).
 2. Set your own routes in `manifest.yaml` (`routes`, `API_BASE_URL`, `A2A_BASE_URL`,
    `A2A_ENDPOINT_URL`, `ALLOWED_ORIGIN`, `VITE_API_BASE_URL`, `VITE_APP_HOST`).
 3. `cf login --sso`, `cf target -o <org> -s <space>`, `btp login --sso`, `btp target`.

@@ -11,7 +11,8 @@
 # Prerequisites:
 #   - cf login + cf target (org/space of the apps in manifest.yaml)
 #   - btp login + btp target <subaccount> (unless --skip-destination or BTP_SUBACCOUNT_ID is set)
-#   - api/.env with AICORE_* and hana_* values (see api/.env.example)
+#   - api/.env with AICORE_* and HANA_* values (see api/.env.example);
+#     HANA_SCHEMA is optional (empty = the HANA_USER's own schema)
 #
 # Steps:
 #   1. Pre-flight checks (CLI logins, required variables).
@@ -59,7 +60,7 @@ from pathlib import Path
 allowed = {
     "AICORE_AUTH_URL", "AICORE_CLIENT_ID", "AICORE_CLIENT_SECRET", "AICORE_BASE_URL",
     "AICORE_RESOURCE_GROUP", "LOG_USER_HASH_SALT",
-    "hana_address", "hana_port", "hana_user", "hana_password", "hana_encrypt",
+    "HANA_ADDRESS", "HANA_PORT", "HANA_USER", "HANA_PASSWORD", "HANA_ENCRYPT", "HANA_SCHEMA",
 }
 for line in Path("api/.env").read_text().splitlines():
     line = line.strip()
@@ -77,14 +78,16 @@ PY
 fi
 
 : "${AICORE_RESOURCE_GROUP:=default}"
-: "${hana_port:=443}"
-: "${hana_encrypt:=true}"
+: "${HANA_PORT:=443}"
+: "${HANA_ENCRYPT:=true}"
+# Optional: empty keeps the login user's own schema, but the var must exist for cf push.
+: "${HANA_SCHEMA:=}"
 
 # --- 1. Pre-flight ---
 echo "==> Pre-flight checks"
 cf target >/dev/null 2>&1 || die "cf CLI is not logged in/targeted. Run: cf login && cf target -o <org> -s <space>"
 missing=()
-for var in AICORE_AUTH_URL AICORE_CLIENT_ID AICORE_CLIENT_SECRET AICORE_BASE_URL hana_address hana_user hana_password; do
+for var in AICORE_AUTH_URL AICORE_CLIENT_ID AICORE_CLIENT_SECRET AICORE_BASE_URL HANA_ADDRESS HANA_USER HANA_PASSWORD; do
   [ -n "${!var:-}" ] || missing+=("$var")
 done
 [ ${#missing[@]} -eq 0 ] || die "Missing required variables (api/.env or shell): ${missing[*]}. The workspace requires HANA."
@@ -121,7 +124,7 @@ VARS_FILE=$(mktemp)
 chmod 600 "$VARS_FILE"
 trap 'rm -f "$VARS_FILE"' EXIT
 export API_KEY LOG_USER_HASH_SALT AICORE_AUTH_URL AICORE_CLIENT_ID AICORE_CLIENT_SECRET AICORE_BASE_URL \
-  AICORE_RESOURCE_GROUP hana_address hana_port hana_user hana_password hana_encrypt
+  AICORE_RESOURCE_GROUP HANA_ADDRESS HANA_PORT HANA_USER HANA_PASSWORD HANA_ENCRYPT HANA_SCHEMA
 "$PY" - "$VARS_FILE" <<'PY'
 import json
 import os
@@ -131,9 +134,9 @@ names = {
     "api_key": "API_KEY", "log_user_hash_salt": "LOG_USER_HASH_SALT",
     "aicore_auth_url": "AICORE_AUTH_URL", "aicore_client_id": "AICORE_CLIENT_ID",
     "aicore_client_secret": "AICORE_CLIENT_SECRET", "aicore_base_url": "AICORE_BASE_URL",
-    "aicore_resource_group": "AICORE_RESOURCE_GROUP", "hana_address": "hana_address",
-    "hana_port": "hana_port", "hana_user": "hana_user", "hana_password": "hana_password",
-    "hana_encrypt": "hana_encrypt",
+    "aicore_resource_group": "AICORE_RESOURCE_GROUP", "hana_address": "HANA_ADDRESS",
+    "hana_port": "HANA_PORT", "hana_user": "HANA_USER", "hana_password": "HANA_PASSWORD",
+    "hana_encrypt": "HANA_ENCRYPT", "hana_schema": "HANA_SCHEMA",
 }
 # JSON is valid YAML, so cf push --vars-file reads it directly.
 with open(sys.argv[1], "w", encoding="utf-8") as handle:
