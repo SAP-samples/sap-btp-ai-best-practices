@@ -3,6 +3,7 @@ applications:
   - name: autoevaluation-assistant-api
     path: api
     buildpack: python_buildpack
+    stack: cflinuxfs5
     command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     memory: 512M
     disk_quota: 2G
@@ -18,6 +19,7 @@ applications:
       HANA_USER: ((hana_user))
       HANA_PASSWORD: ((hana_password))
       HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
       AICORE_AUTH_URL: ((aicore_auth_url))
       AICORE_CLIENT_ID: ((aicore_client_id))
       AICORE_CLIENT_SECRET: ((aicore_client_secret))
@@ -35,6 +37,7 @@ applications:
   - name: autoevaluation-assistant-worker
     path: api
     buildpack: python_buildpack
+    stack: cflinuxfs5
     command: python -m app.workers.ai_review_worker
     memory: 512M
     disk_quota: 2G
@@ -48,6 +51,7 @@ applications:
       HANA_USER: ((hana_user))
       HANA_PASSWORD: ((hana_password))
       HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
       AICORE_AUTH_URL: ((aicore_auth_url))
       AICORE_CLIENT_ID: ((aicore_client_id))
       AICORE_CLIENT_SECRET: ((aicore_client_secret))

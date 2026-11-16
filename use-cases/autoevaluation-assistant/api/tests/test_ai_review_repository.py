@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from app.db import build_hana_url
+from app.db import build_hana_connect_args, build_hana_url
 from app.models.ai_review import QuestionReviewResult
 from app.models.assessment import AnswerItem, AssessmentQuestion
 from app.services.ai_review_repository.hana import HanaAiReviewRepository
@@ -814,6 +814,28 @@ def test_build_hana_url_preserves_reserved_characters(monkeypatch: pytest.Monkey
 
     assert hana_url.password == "p@ss/word"
     assert "p%40ss%2Fword" in hana_url.render_as_string(hide_password=False)
+
+
+def test_build_hana_connect_args_applies_optional_schema(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Verify ``HANA_SCHEMA`` becomes the ``currentSchema`` driver property.
+
+    Inputs:
+        monkeypatch: Pytest helper used to set and clear ``HANA_SCHEMA``.
+
+    Outputs:
+        None. Assertions confirm a set schema is forwarded and an empty or
+        missing value keeps the login user's default schema.
+    """
+    monkeypatch.setenv("HANA_SCHEMA", " APP_SCHEMA ")
+    assert build_hana_connect_args() == {"currentSchema": "APP_SCHEMA"}
+
+    monkeypatch.setenv("HANA_SCHEMA", "")
+    assert build_hana_connect_args() == {}
+
+    monkeypatch.delenv("HANA_SCHEMA")
+    assert build_hana_connect_args() == {}
 
 
 def test_save_question_result_completes_known_matching_task() -> None:

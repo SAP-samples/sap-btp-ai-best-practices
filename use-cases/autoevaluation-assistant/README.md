@@ -124,6 +124,7 @@ cp ui/.env.example ui/.env
 ```
 
 - Set `api/.env` values for HANA + SAP AI Core.
+- Optional `HANA_SCHEMA`: the schema that holds the app tables. Leave it empty to use `HANA_USER`'s own schema. Set it when the login user (for example `DBADMIN` or a technical user) differs from the schema owner. The API and the worker pass it as the `currentSchema` connection property (`api/app/db.py`). The login user needs SELECT, INSERT, UPDATE, DELETE on that schema, plus CREATE ANY, ALTER and DROP if tables are created on startup. If the app connects but shows an empty workspace, it is most likely using the wrong schema.
 - Keep `VITE_API_KEY` in `ui/.env` equal to `API_KEY` in `api/.env`.
 
 ### Run local services

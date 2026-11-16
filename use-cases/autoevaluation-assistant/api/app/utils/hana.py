@@ -26,6 +26,8 @@ class HANAConnection:
         self.user = os.getenv("HANA_USER")
         self.password = os.getenv("HANA_PASSWORD")
         self.encrypt = os.getenv("HANA_ENCRYPT", "True").lower() == "true"
+        # Optional schema override; empty keeps the login user's default schema.
+        self.schema = os.getenv("HANA_SCHEMA", "").strip()
 
         self.engine = None
         self.connection = None
@@ -38,7 +40,11 @@ class HANAConnection:
 
     def connect(self):
         """
-        Establish connection to HANA database
+        Establish connection to HANA database.
+
+        When ``HANA_SCHEMA`` is set, it is passed as the ``currentSchema``
+        connection property so unqualified table names resolve to that schema
+        instead of the login user's own schema.
         """
         if not all([self.address, self.port, self.user, self.password]):
             raise ValueError("HANA credentials missing")
@@ -66,7 +72,11 @@ class HANAConnection:
             )
 
             logger.info("Creating SQLAlchemy engine...")
-            self.engine = create_engine(connection_string, echo=False)
+            self.engine = create_engine(
+                connection_string,
+                echo=False,
+                connect_args={"currentSchema": self.schema} if self.schema else {},
+            )
 
             logger.info("Establishing connection...")
             self.connection = self.engine.connect()

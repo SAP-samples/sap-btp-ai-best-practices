@@ -53,6 +53,8 @@ ALLOWED_ORIGIN="${ALLOWED_ORIGIN:-https://autoevaluation-assistant.cfapps.eu10-0
 API_BASE_URL="${API_BASE_URL:-https://autoevaluation-assistant-api.cfapps.eu10-005.hana.ondemand.com}"
 AGENT_PUBLIC_URL="${AGENT_PUBLIC_URL:-$API_BASE_URL}"
 HANA_ENCRYPT="${HANA_ENCRYPT:-true}"
+# Optional: empty keeps HANA_USER's own schema (cf push accepts an empty --var).
+HANA_SCHEMA="${HANA_SCHEMA:-}"
 GENAI_DEFAULT_MODEL="${GENAI_DEFAULT_MODEL:-gpt-5.4}"
 GENAI_REVIEW_MODEL="${GENAI_REVIEW_MODEL:-gpt-5.4}"
 GENAI_REASONING_EFFORT="${GENAI_REASONING_EFFORT:-low}"
@@ -78,6 +80,7 @@ cf push \
   --var hana_user="$HANA_USER" \
   --var hana_password="$HANA_PASSWORD" \
   --var hana_encrypt="$HANA_ENCRYPT" \
+  --var hana_schema="$HANA_SCHEMA" \
   --var aicore_auth_url="$AICORE_AUTH_URL" \
   --var aicore_client_id="$AICORE_CLIENT_ID" \
   --var aicore_client_secret="$AICORE_CLIENT_SECRET" \

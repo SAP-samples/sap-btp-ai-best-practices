@@ -77,17 +77,46 @@ def build_hana_url() -> URL:
     )
 
 
+def build_hana_connect_args() -> dict[str, str]:
+    """Build driver-level HANA connection properties from the environment.
+
+    HANA resolves unqualified table names against ``CURRENT_SCHEMA``, which
+    defaults to the login user's own schema. The optional ``HANA_SCHEMA``
+    variable lets the application log in as one database user (for example a
+    technical or admin user) while reading and writing the tables of another
+    schema. It is forwarded to ``hdbcli`` as the ``currentSchema`` property.
+
+    Inputs:
+        The function reads optional ``HANA_SCHEMA`` from the process
+        environment. Surrounding whitespace is ignored.
+
+    Outputs:
+        dict[str, str]: ``{"currentSchema": <schema>}`` when ``HANA_SCHEMA`` is
+        set, or an empty dictionary so the login user's default schema is used.
+    """
+    schema = os.getenv("HANA_SCHEMA", "").strip()
+    return {"currentSchema": schema} if schema else {}
+
+
 def create_hana_engine() -> Engine:
     """Create a SQLAlchemy engine configured for HANA repository access.
 
     Inputs:
-        The function reads HANA connection settings through ``build_hana_url``.
+        The function reads HANA connection settings through ``build_hana_url``
+        and the optional schema override (``HANA_SCHEMA``) through
+        ``build_hana_connect_args``.
 
     Outputs:
-        Engine: A SQLAlchemy engine with connection pre-ping enabled and SQL
-        echoing disabled.
+        Engine: A SQLAlchemy engine with connection pre-ping enabled, SQL
+        echoing disabled, and every pooled connection bound to ``HANA_SCHEMA``
+        when it is set (otherwise to the login user's own schema).
     """
-    return create_engine(build_hana_url(), echo=False, pool_pre_ping=True)
+    return create_engine(
+        build_hana_url(),
+        echo=False,
+        pool_pre_ping=True,
+        connect_args=build_hana_connect_args(),
+    )
 
 
 @contextmanager

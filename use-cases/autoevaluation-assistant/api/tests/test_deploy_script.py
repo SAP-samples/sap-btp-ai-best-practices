@@ -41,6 +41,7 @@ def test_deploy_script_passes_manifest_vars_from_api_env(
                 'HANA_USER="hana-user"',
                 'HANA_PASSWORD="hana-password"',
                 'HANA_ENCRYPT="true"',
+                'HANA_SCHEMA="APP_SCHEMA"',
                 'AICORE_AUTH_URL="https://auth.example.test"',
                 'AICORE_CLIENT_ID="client-id"',
                 'AICORE_CLIENT_SECRET="client-secret"',
@@ -109,6 +110,8 @@ def test_deploy_script_passes_manifest_vars_from_api_env(
         "hana_password=hana-password",
         "--var",
         "hana_encrypt=true",
+        "--var",
+        "hana_schema=APP_SCHEMA",
         "--var",
         "aicore_auth_url=https://auth.example.test",
         "--var",
@@ -217,6 +220,7 @@ def test_deploy_script_generates_log_user_hash_salt_when_missing(
     )
     generated_salt = salt_arg.split("=", maxsplit=1)[1]
     assert generated_salt
+    assert "hana_schema=" in cf_push_args
     assert "Generated temporary LOG_USER_HASH_SALT" in result.stdout
 
 
