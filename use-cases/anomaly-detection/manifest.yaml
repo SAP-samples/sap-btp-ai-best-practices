@@ -5,7 +5,7 @@ applications:
     memory: 512M
     disk_quota: 2G
     instances: 1
-    stack: cflinuxfs4
+    stack: cflinuxfs5
     path: backend
     buildpacks:
       - python_buildpack
@@ -28,7 +28,7 @@ applications:
     memory: 64M
     disk_quota: 256M
     instances: 1
-    stack: cflinuxfs4
+    stack: cflinuxfs5
     path: frontend/dist
     buildpacks:
       - staticfile_buildpack
