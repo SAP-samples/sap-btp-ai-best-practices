@@ -3,7 +3,7 @@ import unittest
 import copy
 from types import SimpleNamespace
 from unittest.mock import patch, Mock
-from app.email_ingestion.domain import match_customer, email_status, apply_edit, prepare_attachment
+from app.email_ingestion.domain import match_customer, email_status, apply_edit, prepare_attachment, mark_s4_stale
 from app.email_ingestion.intake import intake
 from app.email_ingestion.corrections import edit, edit_many, revert_all, undo, propose, confirm
 from app.email_ingestion.worker import synchronize, process_advice
@@ -72,6 +72,30 @@ class WorkspaceTests(unittest.TestCase):
         self.assertIs(apply_edit(original, "a", "excluded", True)[0]["line_items"][0]["excluded"], True)
         with self.assertRaises(ValueError):
             apply_edit(original, "a", "excluded", "yes")
+
+    def test_s4_document_edit_validates_syntax_only(self):
+        """The S/4 document pick accepts the two pick formats and None, and rejects malformed text."""
+        original = {'header': {}, 'line_items': [{'row_id': 'r1', 'invoice_reference': 'I1'}]}
+        for pick in ('1000/1800000012/2026', '1000/1800000012/2026/002'):
+            self.assertEqual(apply_edit(original, 'r1', 's4_document', pick)[0]['line_items'][0]['s4_document'], pick)
+        self.assertIsNone(apply_edit(original, 'r1', 's4_document', None)[0]['line_items'][0]['s4_document'])
+        for bad in ('1800000012', '1000/1800000012', '1000/1800000012/26', 1800000012):
+            with self.assertRaisesRegex(ValueError, 'COMPANYCODE/DOCUMENT/YEAR'):
+                apply_edit(original, 'r1', 's4_document', bad)
+        # A replayed pick resolves its row through the customer document reference alone.
+        by_document = {'header': {}, 'line_items': [{'row_id': 'r2', 'customer_document_reference': 'D7'}]}
+        replayed, ids = apply_edit(by_document, 'D7', 's4_document', '1000/1800000012/2026/002')
+        self.assertEqual((ids, replayed['line_items'][0]['s4_document']), (['r2'], '1000/1800000012/2026/002'))
+
+    def test_mark_s4_stale_skips_missing_empty_and_posted_checks(self):
+        """Only a stored, unposted S/4 check is flagged; its other keys are kept."""
+        advice = {'s4': {'ready': True, 'claimed_payload': {'a': 1}}}
+        mark_s4_stale(advice)
+        self.assertEqual(advice['s4'], {'ready': True, 'claimed_payload': {'a': 1}, 'stale': True})
+        for advice in ({}, {'s4': {}}, {'s4': None}, {'s4': {'posted': {'document': '1800000012'}}}):
+            before = copy.deepcopy(advice)
+            mark_s4_stale(advice)
+            self.assertEqual(advice, before)
 
     def test_attachment_and_rollup(self):
         """Untrusted file names are sanitized and statuses reflect all advices."""
@@ -204,6 +228,51 @@ class IntakeTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):
             revert_all(self.store, advice['id'], reverted['revision'])
 
+    def advice_with_result(self, payload, **fields):
+        """Save one intake advice with ``payload`` as its processed result plus extra ``fields``."""
+        email_id = intake(self.store, self.message)
+        advice = self.store.list('advice', parent=email_id)[0]
+        advice.update(result=payload, original_result=copy.deepcopy(payload), status='reviewed', **fields)
+        return self.store.update(advice)
+
+    def test_s4_document_edit_is_audited_and_undone(self):
+        """Picking an S/4 document writes an edit audit record and undo clears the pick again."""
+        advice = self.advice_with_result({'header': {}, 'line_items': [{'row_id': 'r1', 'invoice_reference': 'I1'}]})
+        saved = edit(self.store, advice['id'], advice['revision'], 'r1', 's4_document', '1000/1800000012/2026/002', 'Reviewer pick')
+        self.assertEqual(saved['result']['line_items'][0]['s4_document'], '1000/1800000012/2026/002')
+        audit = self.store.list('edit', parent=advice['id'])
+        self.assertEqual([(a['field'], a['before'], a['value']) for a in audit], [('s4_document', None, '1000/1800000012/2026/002')])
+        reverted = undo(self.store, advice['id'], saved['revision'])
+        self.assertIsNone(reverted['result']['line_items'][0]['s4_document'])
+        self.assertEqual(reverted['corrections'], [])
+
+    def test_correction_marks_stored_s4_check_stale(self):
+        """A correction flags an unposted S/4 check as stale and keeps its other keys."""
+        payload = {'header': {}, 'line_items': [{'row_id': 'r1', 'invoice_reference': 'I1', 'reason_code': '323'}]}
+        advice = self.advice_with_result(payload, s4={'ready': True, 'post_error': 'x'})
+        saved = edit(self.store, advice['id'], advice['revision'], 'r1', 'reason_code', '321', 'Confirmed allowance')
+        self.assertIs(saved['s4']['stale'], True)
+        self.assertEqual(saved['s4']['post_error'], 'x')
+        # Undo and revert also change the result, so they flag the check too.
+        fresh = self.store.get(advice['id'])
+        fresh['s4'] = {'ready': True}
+        fresh = self.store.update(fresh)
+        self.assertIs(undo(self.store, advice['id'], fresh['revision'])['s4']['stale'], True)
+        without = self.advice_with_result(copy.deepcopy(payload))
+        saved = edit(self.store, without['id'], without['revision'], 'r1', 'reason_code', '321', 'Confirmed allowance')
+        self.assertNotIn('s4', saved)
+        fresh = self.store.get(without['id'])
+        fresh['s4'] = {'ready': False}
+        fresh = self.store.update(fresh)
+        self.assertIs(revert_all(self.store, without['id'], fresh['revision'])['s4']['stale'], True)
+
+    def test_correction_reference_falls_back_to_customer_document(self):
+        """A row without an invoice reference stores its customer document reference for replay."""
+        advice = self.advice_with_result({'header': {}, 'line_items': [
+            {'row_id': 'r1', 'invoice_reference': None, 'customer_document_reference': 'D7'}]})
+        saved = edit(self.store, advice['id'], advice['revision'], 'r1', 's4_document', '1000/1800000012/2026', 'Reviewer pick')
+        self.assertEqual(saved['corrections'][0]['reference'], 'D7')
+
     def test_proposals_scope_and_staleness(self):
         """A proposal cannot be confirmed for another advice or after its source changes."""
         email_id = intake(self.store, self.message)
@@ -280,6 +349,23 @@ class IntakeTests(unittest.IsolatedAsyncioTestCase):
             return SimpleNamespace(ainvoke=invoke)
         with patch('app.email_ingestion.assistant.scoped_runtime', side_effect=runtime_factory), self.assertRaises(ValueError):
             await chat(object(), self.store, advice['id'], advice['revision'], 'Change invoice I1 reason code to 321', [])
+        self.assertEqual(self.store.get(advice['id'])['revision'], advice['revision'])
+
+    async def test_chat_cannot_pick_s4_document(self):
+        """The assistant's edit tool refuses the S/4 document even when the user asks explicitly."""
+        from app.email_ingestion.assistant import chat
+        advice = self.advice_with_result({'header': {}, 'line_items': [{'row_id': 'row-a', 'invoice_reference': 'I1'}]})
+        def runtime_factory(base, tools, prompt):
+            """Simulate a model trying to set the S/4 document through the edit tool."""
+            async def invoke(**kwargs):
+                """Invoke the real bound edit tool with an S/4 document pick."""
+                edit_tool = next(t for t in tools if t.name == 'edit_field')
+                edit_tool.invoke({'target': 'I1', 'field': 's4_document', 'value': '"1000/1800000012/2026"', 'reason': 'User pick'})
+                return SimpleNamespace(output_text='Changed')
+            return SimpleNamespace(ainvoke=invoke)
+        with patch('app.email_ingestion.assistant.scoped_runtime', side_effect=runtime_factory), \
+             self.assertRaisesRegex(ValueError, 'S/4 posting tab'):
+            await chat(object(), self.store, advice['id'], advice['revision'], 'Set invoice I1 S/4 document to 1000/1800000012/2026', [])
         self.assertEqual(self.store.get(advice['id'])['revision'], advice['revision'])
 
     def test_rollup_reloads_children_after_concurrent_conflict(self):

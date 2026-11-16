@@ -1,23 +1,39 @@
-"""Check an advice against S/4 (draft) and post it as an S/4 Payment Advice (final).
+"""Check an advice against S/4 (draft), post it as an S/4 Payment Advice (final), or release an unfinished post.
 
-Two explicit steps, mirroring Cash Application's draft/final split:
+Three explicit steps, mirroring Cash Application's draft/final split:
 
-1. `check`: read-only. Looks up every line reference in S/4, validates, builds
-   the payload preview and stores it on the advice as `advice["s4"]`:
-   `{derived, lines, issues, ready, payload, trace, result_hash, checked_at, mode}`.
+1. `check`: read-only. Collects the S/4 candidates of every line
+   (`matching.collect_candidates`: references field by field, other spellings
+   of unknown references, partial payments and residual items), resolves and
+   validates them (`validation.check_advice`, with the customer master and the
+   reason codes of `master_data`), builds the payload preview and stores it on
+   the advice as `advice["s4"]`:
+   `{derived, lines, issues, ready, summary, payload, trace, result_hash, checked_at, mode}`.
    `result_hash` fingerprints the advice result, so any later correction makes
-   the stored check visibly stale.
-2. `post`: only for `reviewed` advices. Re-runs the check against fresh S/4
-   data, then:
-   - claims the post with a revision-checked write (a concurrent second click
-     fails instead of creating a second advice in S/4),
-   - searches S/4 for an advice with the same account and header text
-     (payment reference); one left by an interrupted post of this advice is
-     adopted, anything else is refused as a duplicate,
-   - creates the advice, reads it back, sets status `posted` and inserts an
-     immutable `s4_posting` workspace record (payload, key, read-back).
+   the stored check visibly stale. The claim of an unfinished post
+   (`posting.CLAIM_KEYS`) is kept on the new result.
+2. `post`: only for `reviewed` advices.
+   a. Re-runs the check against fresh S/4 data; blocking issues are stored
+      (claim kept) and nothing is posted.
+   b. `posting.reconcile` searches S/4 for advices with the same account and
+      header text (payment reference). Without a claim any match is refused as
+      a duplicate. With a claim (an earlier post ended without an answer) a
+      single match equal to the claimed payload is adopted, a different one or
+      several are refused, and none means create once the claim is older than
+      the S/4 request timeout.
+   c. To create: writes the claim (`posting_started_at`, `claimed_payload`)
+      with a revision-checked update, so a concurrent second click fails
+      instead of creating a second advice, then POSTs once. A definite 4xx
+      rejection clears the claim; any other failure keeps it with
+      `post_outcome: "unknown"` (`posting.failed_create`). Never retried.
+   d. Reads the advice back, sets status `posted` and inserts an immutable
+      `s4_posting` workspace record (payload, key, read-back, `adopted`).
+3. `release`: hands an advice with an unfinished post back to the analyst once
+   S/4 holds no advice for the claimed reference and the claim is older than
+   the S/4 request timeout; the claim keys are removed.
 
-Posted advices are immutable (see `corrections.advice_record(mutable=True)`).
+Posted advices are immutable, and advices with a claim cannot be edited
+(see `corrections.advice_record(mutable=True)`).
 """
 from __future__ import annotations
 
@@ -30,18 +46,14 @@ from typing import Any
 
 from ..email_ingestion.corrections import advice_record
 from ..email_ingestion.intake import refresh_email
-from .client import S4Client, S4Config, S4HTTPError, load_s4_config, odata_rows, odata_str
-from .lookup import existing_customers, find_receivables
-from .payment_advice import SERVICE, build_payload, compare_read_back, create, read_back
+from . import posting
+from .client import S4Client, S4Config, S4HTTPError, load_s4_config
+from .master_data import customer_status, reason_codes
+from .matching import collect_candidates
+from .payment_advice import build_payload, compare_read_back, create, read_back
+# Re-exported: the router, the CLI and the tests use `service.S4PostError`.
+from .posting import S4PostError  # noqa: F401
 from .validation import check_advice
-
-
-class S4PostError(RuntimeError):
-    """S/4 rejected the payment advice; `detail` is the S/4 message for the user."""
-
-    def __init__(self, detail: str) -> None:
-        super().__init__(detail)
-        self.detail = detail
 
 
 @lru_cache(maxsize=1)
@@ -97,11 +109,12 @@ def run_check(client: S4Client, advice: dict[str, Any]) -> dict[str, Any]:
     if not result or advice["status"] in {"queued", "processing", "failed"}:
         raise ValueError("The advice must finish processing before it can be checked against S/4")
     trace: list[dict[str, Any]] = []
-    rows = [row for row in result.get("line_items") or [] if not row.get("excluded")]
-    found = find_receivables(client, [row.get("invoice_reference") for row in rows], trace=trace)
+    aliases = company_code_aliases()
+    found = collect_candidates(client, result, aliases, trace)
     check = check_advice(result, found, advice.get("verification"),
-                         customer_lookup=lambda accounts, code: existing_customers(client, accounts, code, trace),
-                         aliases=company_code_aliases())
+                         customer_lookup=lambda accounts, code: customer_status(client, accounts, code, trace),
+                         aliases=aliases, reason_codes=lambda code: reason_codes(client, code, trace),
+                         reason_aliases=reason_code_aliases())
     payload = (build_payload(result, check, os.getenv("S4_PAYMENT_ADVICE_TYPE", "04") or "04", reason_code_aliases())
                if check["ready"] else None)
     return {**check, "payload": payload, "trace": trace, "result_hash": result_hash(result),
@@ -109,66 +122,132 @@ def run_check(client: S4Client, advice: dict[str, Any]) -> dict[str, Any]:
 
 
 def check(store, client: S4Client, advice_id: str, revision: int | None = None) -> dict[str, Any]:
-    """Run the read-only S/4 check and store it on the advice; returns the saved advice."""
-    advice = advice_record(store, advice_id, revision, mutable=True)
-    advice["s4"] = run_check(client, advice)
+    """Run the read-only S/4 check and store it on the advice.
+
+    Args:
+        store: Workspace repository.
+        client: S/4 client.
+        advice_id: Advice to check.
+        revision: Expected advice revision (None skips the revision check).
+
+    Returns:
+        The saved advice; the claim of an unfinished post is kept on the new check result.
+
+    Raises:
+        ValueError: The advice is posted, or not processed yet.
+        Conflict: The advice changed since ``revision``.
+        S4HTTPError: An S/4 lookup failed.
+    """
+    advice = advice_record(store, advice_id, revision, mutable=True, claimed_ok=True)
+    advice["s4"] = {**run_check(client, advice), **posting.claim_of(advice)}
     return store.update(advice)
 
 
-def _existing_in_s4(client: S4Client, payload: dict[str, Any]) -> list[dict[str, Any]]:
-    """Find S/4 advices for the same account whose header text equals this payment reference."""
-    if not payload.get("PaymentAdviceHeaderText"):
-        return []
-    filt = " and ".join(f"{field} eq {odata_str(payload[field])}" for field in
-                        ("CompanyCode", "PaymentAdviceAccountType", "PaymentAdviceAccount", "PaymentAdviceHeaderText"))
-    return odata_rows(client.get_json(SERVICE, "/A_PaymentAdvice", {"$filter": filt, "$top": "5",
-        "$select": "CompanyCode,PaymentAdviceAccountType,PaymentAdviceAccount,PaymentAdvice,CreationDate"}))
+def _create(store, client: S4Client, advice: dict[str, Any], fresh: dict[str, Any]) -> tuple[dict[str, Any], dict[str, str]]:
+    """Claim the post with a revision-checked write, then create the advice in S/4 (one POST).
+
+    Args:
+        store: Workspace repository.
+        client: S/4 client.
+        advice: The advice being posted (revision as read).
+        fresh: The fresh, ready check result; its payload is sent.
+
+    Returns:
+        ``(advice, key)``: the advice as saved with the claim, and the key S/4 assigned.
+
+    Raises:
+        Conflict: A concurrent post or edit won the revision check (nothing was sent).
+        S4PostError: The create failed; the claim is kept unless S/4 definitely rejected it.
+    """
+    advice["s4"] = {**fresh, "posting_started_at": _now(), "claimed_payload": fresh["payload"]}
+    advice = store.update(advice)  # claim: a concurrent post now fails its revision check
+    try:
+        return advice, create(client, fresh["payload"])
+    except S4HTTPError as exc:
+        advice["s4"], error = posting.failed_create(fresh, posting.claim_of(advice), exc, _now())
+        store.update(advice)
+        raise error from exc
 
 
 def post(store, client: S4Client, advice_id: str, revision: int) -> dict[str, Any]:
-    """Create the S/4 payment advice for a reviewed advice; returns the saved (posted) advice.
+    """Create (or adopt after an interrupted post) the S/4 payment advice of a reviewed advice.
+
+    Args:
+        store: Workspace repository.
+        client: S/4 client.
+        advice_id: Advice to post.
+        revision: Expected advice revision.
+
+    Returns:
+        The saved advice with status `posted` and `s4.posted` = `{key, posted_at, adopted, read_back, verification}`.
 
     Raises:
-        ValueError: Not reviewed, or blocking issues in the fresh check (saved on the advice).
-        ValueError: Also when S/4 already holds an advice with this payment reference.
+        ValueError: Not reviewed, or blocking issues in the fresh check (saved on the advice, claim kept).
+        ValueError: S/4 already holds a different or several advices with this payment reference,
+            or an earlier post may still be running in S/4 (see `posting.reconcile`).
         Conflict: Concurrent change (another post or edit won the revision check).
-        S4PostError: S/4 rejected the creation (the error is saved on the advice).
+        S4PostError: S/4 rejected the creation, or did not confirm it (`unknown`); saved on the advice.
+        S4HTTPError: A lookup, search or adoption read-back failed.
     """
-    advice = advice_record(store, advice_id, revision, mutable=True)
+    advice = advice_record(store, advice_id, revision, mutable=True, claimed_ok=True)
     if advice["status"] != "reviewed":
         raise ValueError("Mark the advice reviewed before posting it to S/4")
-    interrupted = bool((advice.get("s4") or {}).get("posting_started_at"))
+    claim = posting.claim_of(advice)
     fresh = run_check(client, advice)
-    if not fresh["ready"]:
-        advice["s4"] = fresh
+    # An interrupted post is reconciled BEFORE the fresh check may block. If S/4 created the advice and has
+    # since used it (the invoice is cleared now), the fresh check is no longer ready, yet the advice S/4 holds
+    # is exactly the one that was sent and must be adopted, not left in a dead end.
+    interrupted = bool(claim.get("posting_started_at") and claim.get("claimed_payload"))
+    adopted = posting.reconcile(client, claim, fresh["payload"], _now()) if fresh["ready"] or interrupted else None
+    if not adopted and not fresh["ready"]:
+        advice["s4"] = {**fresh, **claim}
         store.update(advice)
         raise ValueError("S/4 check found blocking issues; nothing was posted")
-    payload = fresh["payload"]
-    existing = _existing_in_s4(client, payload)
-    if existing and not interrupted:
-        raise ValueError(f"S/4 already holds payment advice {existing[0]['PaymentAdvice']} for this payment reference")
-    advice["s4"] = {**fresh, "posting_started_at": _now()}
-    advice = store.update(advice)  # claim: a concurrent post now fails its revision check
-    if existing:
-        key = {field: existing[0][field] for field in ("CompanyCode", "PaymentAdviceAccountType", "PaymentAdviceAccount", "PaymentAdvice")}
+    if adopted:
+        payload, key = adopted["payload"], adopted["key"]
+        stored, verification = adopted["read_back"], adopted["verification"]
     else:
+        payload = fresh["payload"]
+        advice, key = _create(store, client, advice, fresh)
         try:
-            key = create(client, payload)
+            stored = read_back(client, key)
+            verification = compare_read_back(payload, stored)
         except S4HTTPError as exc:
-            advice["s4"] = {**fresh, "post_error": exc.detail, "post_failed_at": _now()}
-            store.update(advice)
-            raise S4PostError(exc.detail) from exc
-    try:
-        stored = read_back(client, key)
-        verification = compare_read_back(payload, stored)
-    except S4HTTPError as exc:
-        stored, verification = {"read_back_error": exc.detail}, None
-    posting = {"key": key, "posted_at": _now(), "adopted": bool(existing), "read_back": stored, "verification": verification}
-    advice["s4"] = {**fresh, "posted": posting}
+            # The advice exists in S/4; a failed read-back is recorded, not treated as a failed post.
+            stored, verification = {"read_back_error": exc.detail}, None
+    record = {"key": key, "posted_at": _now(), "adopted": bool(adopted), "read_back": stored, "verification": verification}
+    advice["s4"] = {**fresh, "posted": record}
     advice["status"] = "posted"
     with store.engine.begin() as conn:
         saved = store.update(advice, conn=conn)
-        store.insert("s4_posting", {**posting, "advice_id": advice_id, "payload": payload}, parent=advice_id,
+        store.insert("s4_posting", {**record, "advice_id": advice_id, "payload": payload}, parent=advice_id,
                      status="posted", conn=conn)
     refresh_email(store, advice["parent_id"])
     return saved
+
+
+def release(store, client: S4Client, advice_id: str, revision: int) -> dict[str, Any]:
+    """Give an advice with an unfinished post back to the analyst for editing.
+
+    Args:
+        store: Workspace repository.
+        client: S/4 client.
+        advice_id: Advice to release.
+        revision: Expected advice revision.
+
+    Returns:
+        The saved advice without the claim keys; every other `s4` key is kept.
+
+    Raises:
+        ValueError: The advice is posted, has no claim, S/4 holds an advice for the claimed
+            reference, or the claim is younger than the S/4 request timeout.
+        Conflict: The advice changed since ``revision``.
+        S4HTTPError: The S/4 search failed.
+    """
+    advice = advice_record(store, advice_id, revision, mutable=True, claimed_ok=True)
+    claim = posting.claim_of(advice)
+    s4 = advice.get("s4") or {}
+    # Old claims carry no payload; the last check's payload holds the same reference.
+    posting.ensure_releasable(client, claim, claim.get("claimed_payload") or s4.get("payload") or {}, _now())
+    advice["s4"] = {key: value for key, value in s4.items() if key not in posting.CLAIM_KEYS}
+    return store.update(advice)

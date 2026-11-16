@@ -208,6 +208,25 @@ class ParallelWorkerTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.store.get(job['id'])['status'], 'completed', 'Advice became reviewable before its job finished')
         self.assertEqual(len(self.store.list('advice')), 1)
 
+    async def test_s4_document_pick_is_replayed_and_check_marked_stale(self):
+        """Reprocessing replays a stored S/4 document pick by reference and flags the old S/4 check."""
+        advice_id = self.add_email('document')
+        advice = self.store.get(advice_id)
+        # The row ID changed since the pick, so replay must find the row by its document reference.
+        advice['corrections'] = [{'target': 'earlier-row', 'reference': 'D7', 'field': 's4_document', 'before': None,
+                                  'value': '1000/1800000012/2026/002', 'reason': 'Reviewer pick'}]
+        advice['s4'] = {'ready': True, 'posting_started_at': 'x'}
+        self.store.update(advice)
+        job = self.store.list('job', parent=advice_id)[0]
+        canonical = {'header': {}, 'line_items': [{'customer_document_reference': 'D7', 'net_amount': -10}]}
+        with patch.object(worker, 'extract_to_canonical', return_value={'canonical': canonical}):
+            await worker.process_advice(self.state, self.store, job, 'worker')
+        saved = self.store.get(advice_id)
+        self.assertEqual(saved['result']['line_items'][0]['s4_document'], '1000/1800000012/2026/002')
+        self.assertIsNone(saved['original_result']['line_items'][0].get('s4_document'))
+        self.assertEqual(saved['corrections'][0]['target'], saved['result']['line_items'][0]['row_id'])
+        self.assertEqual(saved['s4'], {'ready': True, 'posting_started_at': 'x', 'stale': True})
+
     async def test_job_deadline_does_not_hold_its_slot_forever(self):
         """A hung provider is failed safely and its slot is released without stalling the loop."""
         advice_id = self.add_email('hung')

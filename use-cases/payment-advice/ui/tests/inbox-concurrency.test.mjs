@@ -44,7 +44,7 @@ function moduleSource(name) {
 }
 /** Render the S/4 tab for one advice and return the button labels with their disabled state. */
 function s4Buttons(advice) {
-  const render = vm.runInNewContext(moduleSource('dom.js') + moduleSource('s4-panel.js') + 'renderS4Panel',
+  const render = vm.runInNewContext(moduleSource('dom.js') + moduleSource('s4-choice.js') + moduleSource('s4-panel.js') + 'renderS4Panel',
     {document:{createElement:tag=>new Element(tag)}, window:{confirm:()=>true}, JSON});
   const content = new Element('div');
   render(content, advice, {post: async () => {}, onError: () => {}});
@@ -210,7 +210,7 @@ test('reprocessing keeps corrected values visible instead of replacing them with
 });
 
 test('Post as residual sits in the message it resolves, never on deduction lines', async () => {
-  const render = vm.runInNewContext(moduleSource('dom.js') + moduleSource('s4-panel.js') + 'renderS4Panel',
+  const render = vm.runInNewContext(moduleSource('dom.js') + moduleSource('s4-choice.js') + moduleSource('s4-panel.js') + 'renderS4Panel',
     {document:{createElement:tag=>new Element(tag)}, window:{confirm:()=>true}, JSON});
   const posts = [];
   const lines = [{index:0, row_id:'r0', reference:'D-1', kind:'deduction', status:'not_found', net:'-81.09'},

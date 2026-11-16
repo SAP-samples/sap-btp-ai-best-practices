@@ -10,9 +10,12 @@ groupings, revenue accounts of customer invoices with their tax code, tax
 jurisdiction and profit center). Demo customers and invoices are created with
 those values, so nobody has to guess them.
 
-S/4 configuration that no API can read or create (reason codes in OBBE, payment
-advice type number ranges, customer tolerances) is listed in `MANUAL_CHECKS`
-for the S/4 functional expert.
+S/4 configuration that no API can read or create (payment advice type number
+ranges, customer tolerances) is listed in `MANUAL_CHECKS` for the S/4 functional
+expert. Reason codes are different: the S/4 check itself reads the codes of the
+company code (`master_data.reason_codes`) and blocks an advice that uses an
+unknown one; the manual check only covers systems where that list is not
+offered.
 """
 from __future__ import annotations
 
@@ -31,7 +34,8 @@ SERVICES = (
     ("API_COMPANYCODE_SRV", "read company codes and currencies"),
 )
 MANUAL_CHECKS = (
-    "Reason codes 316, 319, 321, 323 exist for the company code (OBBE / T053R).",
+    "The reason codes the customer rules use exist for the company code (OBBE / T053R); the S/4 check verifies "
+    "this per advice when the reason-code value help of the Manage Payment Advices app is active.",
     "Payment advice type 04 has a number range (T053G, FBE1 numbering).",
     "Customer tolerance group allows the demo deductions (OBA3), or residuals go to manual processing.",
     "User has F_AVIK_BUK / F_AVIK_AVA authorization for the company code and advice type.",
