@@ -2,6 +2,7 @@ applications:
   - name: diagram-to-bpmn-api
     memory: 512M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./api # Points to API folder
     buildpacks:
       - python_buildpack
@@ -16,6 +17,7 @@ applications:
   - name: diagram-to-bpmn-ui
     memory: 256M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./ui-UI5 # Points to UI folder
     buildpacks:
       - nodejs_buildpack
