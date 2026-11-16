@@ -35,6 +35,8 @@ class DocumentRequestSettings:
         hana_user: SAP HANA database user.
         hana_password: SAP HANA database password.
         hana_encrypt: Whether HANA TLS encryption is enabled.
+        hana_schema: Optional schema used for unqualified table names. When
+            empty, HANA falls back to the login user's own schema.
         fetch_max_days: Maximum Gmail lookback window.
         fetch_max_workers: Emails processed in parallel during one background run.
         extractor_model: Fast model used for email classification and extraction.
@@ -52,6 +54,7 @@ class DocumentRequestSettings:
     hana_user: str | None
     hana_password: str | None
     hana_encrypt: bool
+    hana_schema: str | None
     fetch_max_days: int
     fetch_max_workers: int
     extractor_model: str
@@ -76,6 +79,8 @@ class DocumentRequestSettings:
             hana_user=os.getenv("HANA_USER"),
             hana_password=os.getenv("HANA_PASSWORD"),
             hana_encrypt=os.getenv("HANA_ENCRYPT", "true").lower() == "true",
+            # Empty or unset keeps HANA's default: the login user's own schema.
+            hana_schema=os.getenv("HANA_SCHEMA", "").strip() or None,
             fetch_max_days=int(os.getenv("FETCH_MAX_DAYS", "7")),
             fetch_max_workers=max(1, int(os.getenv("FETCH_MAX_WORKERS", "4"))),
             extractor_model=os.getenv("DOCUMENT_REQUEST_EXTRACTOR_MODEL", "gpt-6-luna"),

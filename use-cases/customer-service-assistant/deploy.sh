@@ -27,9 +27,59 @@ DOCUMENT_REQUEST_FROM_EMAIL_OVERRIDE="${DOCUMENT_REQUEST_FROM_EMAIL-}"
 # Cloud Logging service instance that collects the LLM token-usage stdout events.
 CLOUD_LOGGING_SERVICE_NAME="${CLOUD_LOGGING_SERVICE_NAME:-Cloud Logging}"
 
+# Load KEY=VALUE lines from a dotenv file as literal text.
+#
+# The file is not sourced: sourcing runs it as shell code, so a secret such as
+# "abc$def" would be expanded ("$def" -> unbound variable under set -u, or a
+# silently truncated value otherwise). Each value is assigned verbatim instead.
+#
+# Supported syntax: blank lines, full-line "#" comments, an optional "export "
+# prefix, CRLF line endings, and one pair of matching surrounding quotes
+# ("..." or '...'), which are stripped. Everything inside the quotes, including
+# $, `, \ and #, is kept as is. Unquoted values are trimmed of surrounding
+# whitespace.
+#
+# Arguments:
+#   $1 - path to the dotenv file
+# Result:
+#   Defines one shell variable per valid key; exits on an invalid key.
+load_env_file() {
+  local env_file="$1"
+  local line key value line_number=0
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line_number=$((line_number + 1))
+    line="${line%$'\r'}"
+    # Skip blank lines and full-line comments.
+    [[ "$line" =~ ^[[:space:]]*(#|$) ]] && continue
+    # Drop an optional leading "export ".
+    line="${line#"${line%%[![:space:]]*}"}"
+    line="${line#export }"
+    if [[ "$line" != *=* ]]; then
+      echo "Ignoring line $line_number in $env_file: no '=' found." >&2
+      continue
+    fi
+    key="${line%%=*}"
+    value="${line#*=}"
+    # Trim whitespace around the key and the value.
+    key="${key//[[:space:]]/}"
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value%"${value##*[![:space:]]}"}"
+    if [[ ! "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+      echo "Invalid variable name on line $line_number in $env_file." >&2
+      exit 1
+    fi
+    # Strip one pair of matching surrounding quotes.
+    if [[ ${#value} -ge 2 ]]; then
+      if [[ "$value" == \"*\" || "$value" == \'*\' ]]; then
+        value="${value:1:${#value}-2}"
+      fi
+    fi
+    printf -v "$key" '%s' "$value"
+  done < "$env_file"
+}
+
 if [[ -f "$API_ENV_FILE" ]]; then
-  # shellcheck disable=SC1090
-  source "$API_ENV_FILE"
+  load_env_file "$API_ENV_FILE"
 else
   echo "Missing API environment file: $API_ENV_FILE" >&2
   echo "Create it from api/.env.example before deploying." >&2
@@ -49,6 +99,12 @@ API_RUNTIME_ENV_VARS=(
   AICORE_CLIENT_SECRET
   AICORE_BASE_URL
   AICORE_RESOURCE_GROUP
+)
+# Optional runtime values: set on the API app when non-empty, unset when empty
+# so a previously deployed value does not linger.
+# HANA_SCHEMA: schema for unqualified table names (empty = HANA_USER's own schema).
+API_OPTIONAL_RUNTIME_ENV_VARS=(
+  HANA_SCHEMA
 )
 
 require_env_var() {
@@ -70,6 +126,16 @@ set_cf_env_quietly() {
     exit 1
   fi
   echo "   set $name"
+}
+
+unset_cf_env_quietly() {
+  local app_name="$1"
+  local name="$2"
+  if ! cf unset-env "$app_name" "$name" >/dev/null 2>&1; then
+    echo "Failed to unset Cloud Foundry env var $name on $app_name." >&2
+    exit 1
+  fi
+  echo "   unset $name (empty in api/.env)"
 }
 
 for env_var in "${API_RUNTIME_ENV_VARS[@]}"; do
@@ -98,6 +164,13 @@ cf push \
 echo "Synchronizing API runtime environment..."
 for env_var in "${API_RUNTIME_ENV_VARS[@]}"; do
   set_cf_env_quietly "$API_APP_NAME" "$env_var" "${!env_var}"
+done
+for env_var in "${API_OPTIONAL_RUNTIME_ENV_VARS[@]}"; do
+  if [[ -n "${!env_var-}" ]]; then
+    set_cf_env_quietly "$API_APP_NAME" "$env_var" "${!env_var}"
+  else
+    unset_cf_env_quietly "$API_APP_NAME" "$env_var"
+  fi
 done
 
 echo "Binding $API_APP_NAME to Cloud Logging service '$CLOUD_LOGGING_SERVICE_NAME'..."

@@ -20,8 +20,15 @@ def create_hana_engine(settings: DocumentRequestSettings) -> Engine:
     DocumentRequestSettings is a frozen dataclass, so it is hashable and can be
     used as the cache key.
 
+    When settings.hana_schema is set (HANA_SCHEMA env var), it is passed to
+    hdbcli as the ``currentSchema`` connection property, so every pooled
+    connection resolves unqualified table names (and CURRENT_SCHEMA) against
+    that schema. This lets the app log in as one user (e.g. DBADMIN) while
+    working in another schema. When empty, HANA uses the login user's schema.
+
     Args:
-        settings: Runtime settings containing HANA connection values.
+        settings: Runtime settings containing HANA connection values and the
+            optional schema override.
 
     Returns:
         SQLAlchemy Engine connected through the HANA dialect.
@@ -33,7 +40,15 @@ def create_hana_engine(settings: DocumentRequestSettings) -> Engine:
     address = str(settings.hana_address)
     port = str(settings.hana_port)
     encrypt = "true" if settings.hana_encrypt else "false"
-    return create_engine(f"hana://{user}:{password}@{address}:{port}?encrypt={encrypt}", echo=False, future=True, pool_pre_ping=True)
+    # Optional schema override, forwarded by sqlalchemy-hana to hdbcli.dbapi.connect.
+    connect_args = {"currentSchema": settings.hana_schema} if settings.hana_schema else {}
+    return create_engine(
+        f"hana://{user}:{password}@{address}:{port}?encrypt={encrypt}",
+        echo=False,
+        future=True,
+        pool_pre_ping=True,
+        connect_args=connect_args,
+    )
 
 
 @contextmanager

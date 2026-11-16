@@ -46,6 +46,7 @@ HANA_PORT=443
 HANA_USER=replace-me
 HANA_PASSWORD=replace-me
 HANA_ENCRYPT=true
+HANA_SCHEMA=
 AICORE_AUTH_URL=replace-me
 AICORE_CLIENT_ID=replace-me
 AICORE_CLIENT_SECRET=replace-me
@@ -135,6 +136,14 @@ cds bind --exec -- ../.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 
 
 In Cloud Foundry, do not use `cds bind --exec`; `VCAP_SERVICES` is supplied by the `services` binding in `manifest.yaml`.
 
+## HANA Schema
+
+HANA resolves unqualified table names against `CURRENT_SCHEMA`, which by default is the login user's own schema. Set `HANA_SCHEMA` to log in as one user (for example `DBADMIN`) while you read and write the app tables in another schema. Leave it empty to use `HANA_USER`'s own schema.
+
+- `api/app/document_requests/db.py` (`create_hana_engine`) passes `HANA_SCHEMA` to hdbcli as the `currentSchema` connection property. This engine is used by both the API and the seeding script, so the script checks and creates tables in the same schema.
+- `HANA_USER` needs `SELECT`, `INSERT`, `UPDATE` and `DELETE` on that schema. The seeding script also needs `CREATE ANY`, `ALTER` and `DROP`.
+- If the API connects but shows no orders, documents or history, it is probably using the wrong schema. Check where the tables are with `SELECT SCHEMA_NAME, COUNT(*) FROM SYS.TABLES WHERE TABLE_NAME = 'ORDER_STATUS' GROUP BY SCHEMA_NAME`.
+
 ## HANA Seeding
 
 The runtime API never reads shipment documents from disk. The setup script reads anonymized local scenario files from `data/anonymized/`, clears previously seeded order/document rows by default, stores PDF metadata plus binary content in HANA, parses scenario `.eml` tables, and derives order status from HANA line rows.
@@ -204,7 +213,7 @@ The deploy script:
 1. Generates a temporary API key.
 2. Builds the UI with the production API route and API key.
 3. Pushes API and UI using `manifest.yaml`.
-4. Syncs HANA and AI Core runtime environment variables from `api/.env` to the API app without printing secret values.
+4. Syncs HANA and AI Core runtime environment variables from `api/.env` to the API app without printing secret values. If the optional `HANA_SCHEMA` is empty, it is unset on the app. The script reads `api/.env` as plain `KEY=VALUE` text and does not `source` it, so secrets that contain `$`, backticks or `\` are copied unchanged. Write each entry on one line and do not put a comment after a quoted value.
 5. Restarts the API app so the runtime environment is active.
 
 Override optional deployment values:
@@ -225,7 +234,7 @@ cf push \
   --var document_request_from_email=""
 ```
 
-After manual `cf push`, set the HANA and AI Core values on `shipment-document-request-agent-api` with `cf set-env`, then restart the API app.
+After manual `cf push`, set the HANA values (including `HANA_SCHEMA` when used) and AI Core values on `shipment-document-request-agent-api` with `cf set-env`, then restart the API app.
 
 ## Tests
 

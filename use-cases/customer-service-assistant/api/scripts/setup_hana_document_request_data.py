@@ -316,7 +316,10 @@ def document_id_for_path(path: Path) -> str:
 
 
 def table_exists(connection: Connection, table_name: str) -> bool:
-    """Return True when a table exists in the current HANA schema."""
+    """Return True when a table exists in the current HANA schema.
+
+    CURRENT_SCHEMA is HANA_SCHEMA when set, otherwise the login user's schema.
+    """
     result = connection.execute(
         text(
             "SELECT table_name FROM sys.tables "
@@ -353,7 +356,9 @@ def create_tables(connection: Connection) -> None:
 
 
 def column_exists(connection: Connection, table_name: str, column_name: str) -> bool:
-    """Return True when a column exists on a HANA table.
+    """Return True when a column exists on a HANA table in the current schema.
+
+    CURRENT_SCHEMA is HANA_SCHEMA when set, otherwise the login user's schema.
 
     Args:
         connection: Active HANA connection.
