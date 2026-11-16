@@ -3,7 +3,7 @@ import copy
 import json
 from dataclasses import asdict
 from sqlalchemy import text
-from .domain import apply_edit
+from .domain import apply_edit, mark_s4_stale
 from .intake import refresh_email
 from .store import Conflict
 from ..payment_advice.verify import verify_canonical
@@ -12,10 +12,19 @@ from ..payment_advice.deduction_rules import get_playbook
 
 
 POSTED = 'This advice was posted to S/4HANA and can no longer be changed'
+CLAIMED = ('A post of this advice to S/4HANA is unfinished; post it again or release it in the S/4 posting tab '
+           'before changing it')
 
 
-def advice_record(store, advice_id, revision=None, mutable=False):
-    """Read an advice and reject wrong kinds, stale revisions and (when mutable) posted advices."""
+def advice_record(store, advice_id, revision=None, mutable=False, claimed_ok=False):
+    """Read an advice and reject wrong kinds, stale revisions and, when mutable, posted or claimed advices.
+
+    Inputs: ``revision`` is the expected revision (None skips the check); ``mutable`` means the caller
+    will change the advice; ``claimed_ok`` lets the S/4 check/post/release steps through while a post
+    to S/4 is unfinished (``s4.posting_started_at``). Output: the advice record.
+    Raises: KeyError (not an advice), Conflict (stale revision), ValueError (posted, or claimed and
+    not ``claimed_ok``).
+    """
     advice = store.get(advice_id)
     if advice['kind'] != 'advice':
         raise KeyError(advice_id)
@@ -23,6 +32,9 @@ def advice_record(store, advice_id, revision=None, mutable=False):
         raise Conflict('Advice changed; reload before editing')
     if mutable and advice['status'] == 'posted':
         raise ValueError(POSTED)
+    # While a post's outcome is open, an edit could make S/4 differ from what is shown as posted.
+    if mutable and not claimed_ok and (advice.get('s4') or {}).get('posting_started_at'):
+        raise ValueError(CLAIMED)
     return advice
 
 
@@ -55,11 +67,15 @@ def edit_many(store, advice_id, revision, edits, reason):
             # Name the offending cell so the reviewer can find it in the table.
             raise ValueError(f"{item['target']} / {item['field']}: {exc}") from None
         row = next((r for r in prior['line_items'] if r['row_id'] in ids), prior['header'])
-        new_corrections.append({'target': ids[0] if ids else 'header', 'reference': row.get('invoice_reference'),
+        # Replay falls back to this reference when the row ID changed; rows without an invoice
+        # reference are still found through their customer document reference.
+        reference = row.get('invoice_reference') or row.get('customer_document_reference')
+        new_corrections.append({'target': ids[0] if ids else 'header', 'reference': reference,
             'field': item['field'], 'before': row.get(item['field']), 'value': item['value'], 'reason': reason})
         changed += [i for i in ids if i not in changed]
     advice['corrections'] = [*advice.get('corrections', []), *new_corrections]
     advice.update(result=result, status='needs_review', verification=asdict(verify_canonical(result['header'], result['line_items'])))
+    mark_s4_stale(advice)
     with store.engine.begin() as conn:
         saved = store.update(advice, revision, conn)
         for correction in new_corrections:
@@ -86,6 +102,7 @@ def revert_all(store, advice_id, revision):
     result = copy.deepcopy(advice['original_result'])
     advice.update(result=result, corrections=[], status='needs_review',
         verification=asdict(verify_canonical(result['header'], result['line_items'])))
+    mark_s4_stale(advice)
     with store.engine.begin() as conn:
         saved = store.update(advice, revision, conn)
         store.insert('edit', {'operation': 'revert_all', 'corrections': previous, 'advice_revision': saved['revision'],
@@ -105,6 +122,7 @@ def undo(store, advice_id, revision):
     result, ids = apply_edit(advice['result'], previous['target'], previous['field'], previous['before'])
     advice.update(result=result, corrections=advice['corrections'][:-1], status='needs_review',
         verification=asdict(verify_canonical(result['header'], result['line_items'])))
+    mark_s4_stale(advice)
     with store.engine.begin() as conn:
         saved = store.update(advice, revision, conn)
         store.insert('edit', {'operation': 'undo', 'correction': previous, 'advice_revision': saved['revision'],

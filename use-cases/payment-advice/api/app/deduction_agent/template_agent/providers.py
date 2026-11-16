@@ -33,6 +33,18 @@ class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
         return payload
 
 
+# Responses-API settings that make every call self-contained. By default a follow-up
+# call in the ReAct loop (after a tool call or skill load) references the previous
+# reasoning items by their stored id. SAP AI Core does not reliably resolve those ids
+# and answers "404 Resource not found", which aborted interpretation and rule
+# authoring. With storage off and the encrypted reasoning returned, LangChain sends
+# the prior reasoning inline instead, so no stored item is ever looked up.
+RESPONSES_STATELESS_SETTINGS: dict[str, object] = {
+    "store": False,
+    "include": ["reasoning.encrypted_content"],
+}
+
+
 def create_chat_model(settings: ModelSettings) -> BaseChatModel:
     """Create the configured GPT, Gemini, or Claude chat model.
 
@@ -52,6 +64,10 @@ def create_chat_model(settings: ModelSettings) -> BaseChatModel:
             common["max_completion_tokens"] = settings.max_tokens
         if settings.reasoning_effort:
             common["reasoning_effort"] = settings.reasoning_effort
+        if settings.use_responses_api:
+            # Copy the list so a model instance never shares mutable state with the constant.
+            common["store"] = RESPONSES_STATELESS_SETTINGS["store"]
+            common["include"] = list(RESPONSES_STATELESS_SETTINGS["include"])
         return ResponsesCompatibleChatOpenAI(
             proxy_model_name=settings.name,
             use_responses_api=settings.use_responses_api,
