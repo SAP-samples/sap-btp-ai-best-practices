@@ -2,6 +2,7 @@ applications:
   - name: Demo_Credit_Creation_api
     memory: 512M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./api # Points to API folder
     buildpacks:
       - python_buildpack
@@ -17,6 +18,7 @@ applications:
   - name: Demo_Credit_Creation_ui
     memory: 256M
     disk_quota: 1G
+    stack: cflinuxfs5
     path: ./ui # Points to UI folder
     buildpacks:
       - python_buildpack
