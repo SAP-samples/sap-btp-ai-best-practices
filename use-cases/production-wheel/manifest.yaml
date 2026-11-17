@@ -1,0 +1,66 @@
+---
+# Cloud Foundry deployment for the Production Wheel Optimizer.
+# Three isolated apps (API, optimizer worker and UI): the FastAPI + agent backend (path: api) and the UI (path: ui).
+# Deploy with ./deploy.sh, which reads credentials from api/.env and runs cf push.
+#
+# TODO before the first deploy: replace <CF_APPS_DOMAIN> below with your Cloud
+# Foundry apps domain (for example cfapps.eu10-005.hana.ondemand.com).
+applications:
+  - name: production-wheel-api
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # The optimizer solves a Pyomo/HiGHS MILP in a forked subprocess; a full plant
+    # frontier needs well above the previous 512M. Raise this for larger blocks.
+    memory: 2G
+    disk_quota: 2G
+    routes:
+      - route: production-wheel-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://production-wheel-ui.cfapps.eu10-005.hana.ondemand.com
+      API_BASE_URL: https://production-wheel-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      WORKSPACE_EMBEDDED_WORKER: "false"
+      # Directory for async solve artifacts (extraction runs + frontier bundles);
+      # ephemeral per instance and counted against disk_quota.
+      PRODUCTION_WHEEL_WORKSPACE: /home/vcap/app/job_runs
+      API_KEY: ((api_key))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+  - name: production-wheel-worker
+    path: api
+    buildpack: python_buildpack
+    command: python -m app.workspace worker
+    no-route: true
+    health-check-type: process
+    # Full-population candidate generation and four solver processes need a
+    # separate memory allocation; adjust to the target landscape after sizing.
+    memory: 8G
+    disk_quota: 2G
+    instances: 1
+    env:
+      APP_ENV: production
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+  - name: production-wheel-ui
+    path: ui
+    buildpack: nodejs_buildpack
+    command: npm run build && npx vite preview --host 0.0.0.0 --port $PORT
+    memory: 256M
+    routes:
+      - route: production-wheel-ui.cfapps.eu10-005.hana.ondemand.com
+    env:
+      VITE_API_BASE_URL: https://production-wheel-api.cfapps.eu10-005.hana.ondemand.com
+      VITE_APP_HOST: production-wheel-ui.cfapps.eu10-005.hana.ondemand.com
+      VITE_API_KEY: ((api_key))
