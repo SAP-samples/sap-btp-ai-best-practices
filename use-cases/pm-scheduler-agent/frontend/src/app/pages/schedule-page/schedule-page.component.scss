@@ -1,0 +1,243 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fmi-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fmi-dynamic-page {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+// Override dynamic-page header to sticky when inside our flex shell
+::ng-deep .fd-dynamic-page__header-fixed {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10;
+}
+
+// KPI strip in collapsible header
+.fmi-kpi-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  // Horizontal padding keeps the first card off the subheader's clipping edge
+  // and its box-shadow from being cut.
+  padding: 0.75rem 0.25rem;
+}
+
+.fmi-kpi-card {
+  min-width: 180px;
+
+  // The fundamental-styles card content sets `overflow: hidden` with rounded
+  // top corners; with the compact tile the first glyph of the first/last line
+  // gets clipped by the corner radius. Let the short KPI text render fully.
+  ::ng-deep .fd-card__content {
+    overflow: visible;
+    padding: 0.75rem 1rem;
+  }
+
+  &__title {
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+  }
+
+  &__sub {
+    margin: 0.1rem 0 0;
+    font-size: var(--sapFontSmallSize, 0.75rem);
+    color: var(--sapContent_LabelColor);
+  }
+}
+
+// Tab content wrapper
+.fmi-tab-content {
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+// Filter bar
+.fmi-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem 1.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: var(--sapGroup_ContentBackground);
+  border: 1px solid var(--sapGroup_TitleBorderColor);
+  border-radius: var(--sapButton_BorderCornerRadius, 0.25rem);
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  &__checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+
+  .fd-form-label {
+    white-space: nowrap;
+    font-size: var(--sapFontSmallSize, 0.75rem);
+    color: var(--sapContent_LabelColor);
+  }
+}
+
+// Work-center checkbox strip
+.fmi-wc-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--sapGroup_ContentBackground);
+  border-radius: var(--sapButton_BorderCornerRadius, 0.25rem);
+}
+
+.fmi-wc-fav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.5rem;
+  border-left: 1px solid var(--sapGroup_TitleBorderColor, #d9d9d9);
+  padding-left: 0.75rem;
+}
+
+// Footer bar
+.fmi-footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--sapGroup_TitleBorderColor);
+}
+
+.fmi-email-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fmi-email-input {
+  width: 220px;
+}
+
+// Opportunity sub-component
+::ng-deep .fmi-opp {
+  max-width: 960px;
+
+  &__hint {
+    margin-top: 1rem;
+    display: block;
+  }
+
+  &__selection {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__actions {
+    margin-top: 0.75rem;
+  }
+}
+
+// Section title above schedule table / down equipment
+.fmi-section-title {
+  margin: 1.25rem 0 0.25rem;
+  font-size: var(--sapFontHeader5Size, 1rem);
+  font-weight: 600;
+  color: var(--sapTextColor);
+}
+
+// Down equipment section
+.fmi-down-equipment-section {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sapGroup_TitleBorderColor);
+}
+
+.fmi-down-equipment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
+.fmi-down-eq-card {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--sapGroup_TitleBorderColor);
+  border-radius: var(--sapButton_BorderCornerRadius, 0.25rem);
+  overflow: hidden;
+
+  &__title {
+    padding: 0.6rem 1rem;
+    background: var(--sapGroup_TitleBackground, #f2f2f2);
+    font-size: 13px;
+    border-bottom: 1px solid var(--sapGroup_TitleBorderColor);
+  }
+}
+
+.fmi-down-eq-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th, td {
+    padding: 5px 10px;
+    border-bottom: 1px solid var(--sapGroup_TitleBorderColor);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th {
+    background: var(--sapList_HeaderBackground, #f7f7f7);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--sapContent_LabelColor);
+  }
+
+  tr:last-child td { border-bottom: none; }
+}
+
+.fmi-down-eq-row--selected td {
+  background: var(--sapList_SelectionBackgroundColor, #e8f1fb);
+}
+
+// AI panel sub-component
+::ng-deep .fmi-ai {
+  max-width: 960px;
+
+  &__section {
+    margin-bottom: 1.5rem;
+  }
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__output {
+    margin-top: 0.75rem;
+  }
+
+  &__text {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    margin: 0;
+  }
+}

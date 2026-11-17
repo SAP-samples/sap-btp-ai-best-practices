@@ -1,0 +1,58 @@
+@if (rows.length === 0) {
+  <div class="fd-message-strip fd-message-strip--information fd-message-strip--dismissible" role="alert">
+    <fd-icon class="fd-message-strip__icon" glyph="message-information" aria-hidden="true"></fd-icon>
+    <span class="fd-message-strip__text">No scheduled operations. Generate a schedule to see results.</span>
+  </div>
+} @else {
+  <fdp-table [dataSource]="rows" [pageSize]="25" [bodyHeight]="tableBodyHeight">
+    <fdp-column name="_work_center" key="_work_center" label="Work Center" [sortable]="true" [filterable]="true"></fdp-column>
+    <fdp-column name="SCHED_WEEK" key="SCHED_WEEK" label="Rec. Date" [sortable]="true"></fdp-column>
+    <fdp-column name="ORDER_NO" key="ORDER_NO" label="Order No" [sortable]="true">
+      <ng-template fdpCellDef let-row>
+        {{ row.ORDER_NO }}
+        @if (row._isLinked) {
+          <span
+            class="fmi-linked-badge"
+            title="Multi-crew: this order spans multiple work centers"
+          >⇌ Multi-WC</span>
+        }
+      </ng-template>
+    </fdp-column>
+    <fdp-column name="OPER_NO" key="OPER_NO" label="Op"></fdp-column>
+    <fdp-column name="OPER_SHORT_TEXT" key="OPER_SHORT_TEXT" label="Operation" [sortable]="true"></fdp-column>
+    <fdp-column name="ORDER_TYPE_CODE" key="ORDER_TYPE_CODE" label="Type" [filterable]="true"></fdp-column>
+    <fdp-column name="EQUIPMENT_DESC" key="EQUIPMENT_DESC" label="Equipment" [sortable]="true"></fdp-column>
+    <fdp-column name="PRIORITY" key="PRIORITY" label="Priority" [filterable]="true" [sortable]="true"></fdp-column>
+    <fdp-column name="EQUIPMENT_CRITICALITY" key="EQUIPMENT_CRITICALITY" label="Criticality" [filterable]="true"></fdp-column>
+    <fdp-column name="ACTIVITY_WORK_INVOLVE" key="ACTIVITY_WORK_INVOLVE" label="Work (h)" [sortable]="true"></fdp-column>
+    <fdp-column name="RELEASE_DATE" key="RELEASE_DATE" label="Order Date" [sortable]="true"></fdp-column>
+    <fdp-column name="BASIC_START_DATE" key="BASIC_START_DATE" label="Basic Start" [sortable]="true">
+      <ng-template fdpCellDef let-row>
+        @if (editingKey() === row._rowKey) {
+          <div style="display:flex;align-items:center;gap:4px;white-space:nowrap;">
+            <input
+              class="fd-input fd-input--compact"
+              type="date"
+              style="width:136px;"
+              [ngModel]="editingDate()"
+              (ngModelChange)="editingDate.set($event)"
+            />
+            <button fd-button [fdType]="'emphasized'" (click)="saveEdit(row)" style="height:2rem;padding:0 0.75rem;font-size:12px;">Save</button>
+            <button fd-button [fdType]="'ghost'" (click)="cancelEdit()" style="height:2rem;padding:0 0.5rem;font-size:12px;">✕</button>
+          </div>
+        } @else {
+          <span
+            style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;"
+            (click)="openEdit(row)"
+            title="Click to change Basic Start date"
+          >
+            {{ row.BASIC_START_DATE ?? '—' }}
+            <fd-icon glyph="edit" style="font-size:0.7rem;opacity:0.45;" aria-hidden="true"></fd-icon>
+          </span>
+        }
+      </ng-template>
+    </fdp-column>
+    <fdp-column name="BASIC_FINISH_DATE" key="BASIC_FINISH_DATE" label="Basic Finish"></fdp-column>
+    <fdp-column name="OVERDUE" key="OVERDUE" label="Status" [filterable]="true"></fdp-column>
+  </fdp-table>
+}
