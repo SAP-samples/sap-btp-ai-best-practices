@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://btp-ai-bp.docs.sap/blog</id>
-    <title>SAP BTP AI Best Practices Blog</title>
+    <title>SAP Business AI Platform Best Practices Blog</title>
     <updated>2021-08-26T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://btp-ai-bp.docs.sap/blog"/>
-    <subtitle>SAP BTP AI Best Practices Blog</subtitle>
+    <subtitle>SAP Business AI Platform Best Practices Blog</subtitle>
     <icon>https://btp-ai-bp.docs.sap/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[Welcome]]></title>
