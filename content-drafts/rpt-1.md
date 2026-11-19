@@ -291,7 +291,7 @@ Use the standard SAP AI SDK / Generative AI Hub environment configuration:
 
 #### Recommended
 
-- [SAP BTP AI Best Practices - RPT-1 Python](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/python)
+- [SAP Business AI Platform Best Practices - RPT-1 Python](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/python)
 
 **Other Sources**
 
@@ -363,7 +363,7 @@ For local development, the sample code uses:
 
 #### Recommended
 
-- [SAP BTP AI Best Practices - RPT-1 TypeScript](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/typescript)
+- [SAP Business AI Platform Best Practices - RPT-1 TypeScript](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/typescript)
 
 **SAP Samples**
 
@@ -426,7 +426,7 @@ For local development, the sample code uses:
 
 #### Recommended
 
-- [SAP BTP AI Best Practices - RPT-1 Java](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/Java)
+- [SAP Business AI Platform Best Practices - RPT-1 Java](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/narrow-ai/RPT-1/Java)
 
 **SAP Samples**
 

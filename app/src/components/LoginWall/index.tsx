@@ -75,14 +75,14 @@ const LoginWall: React.FC<LoginWallProps> = ({
                   className={showTermsError ? styles.inputError : ""}
                 />
                 <span>
-                  I have read and understand the Terms and Conditions of the SAP BTP AI Best Practices <span className={styles.required}>*</span>
+                  I have read and understand the Terms and Conditions of the SAP Business AI Platform Best Practices <span className={styles.required}>*</span>
                 </span>
               </label>
               <p className={styles.termsText}>
-                By clicking "Login with your SAP account", you agree to SAP BTP AI Best Practices' terms. You can learn about how SAP BTP AI Best Practices collects, uses, and
+                By clicking "Login with your SAP account", you agree to SAP Business AI Platform Best Practices' terms. You can learn about how SAP Business AI Platform Best Practices collects, uses, and
                 shares data in the{" "}
                 <Link to="https://btp-ai-bp.docs.sap/privacy" target="_blank" rel="noopener noreferrer">
-                  SAP BTP AI Best Practices' Privacy Statement
+                  SAP Business AI Platform Best Practices' Privacy Statement
                 </Link>
                 .
               </p>
@@ -94,10 +94,10 @@ const LoginWall: React.FC<LoginWallProps> = ({
             {showTermsError && <p className={styles.errorMessage}>You must accept the terms and conditions to continue.</p>}
 
             <p className={styles.termsText} style={{ marginBottom: "0", textAlign: "center" }}>
-              By clicking "Login with your SAP account", you agree to SAP BTP AI Best Practices' terms. You can learn about how SAP BTP AI Best Practices collects, uses, and shares
+              By clicking "Login with your SAP account", you agree to SAP Business AI Platform Best Practices' terms. You can learn about how SAP Business AI Platform Best Practices collects, uses, and shares
               data in the{" "}
               <Link to={privacyUrl} target="_blank" rel="noopener noreferrer">
-                SAP BTP AI Best Practices' Privacy Statement
+                SAP Business AI Platform Best Practices' Privacy Statement
               </Link>
               .
             </p>

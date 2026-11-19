@@ -778,7 +778,7 @@ export const projects = [
     id: "partial-payment-investigation",
     title: "Partial Payment Investigation",
     description:
-      "SAP BTP AI accelerates deduction clearing by analyzing partial payment data across sources, reducing lead time and supporting AR clerks in process orchestration.",
+      "SAP Business AI Platform accelerates deduction clearing by analyzing partial payment data across sources, reducing lead time and supporting AR clerks in process orchestration.",
     icon: "inspect",
     docsPath: "partial-payment-investigation",
     sampleFiles: [],
@@ -800,7 +800,7 @@ export const projects = [
     id: "dynamic-pricing-simulation",
     title: "Dynamic Pricing Simulation",
     description:
-      "SAP BTP AI empowers smarter pricing decisions by predicting margin impacts, optimizing contract selling prices, and reducing uncertainty during sudden material cost increases.",
+      "SAP Business AI Platform empowers smarter pricing decisions by predicting margin impacts, optimizing contract selling prices, and reducing uncertainty during sudden material cost increases.",
     icon: "simulate",
     docsPath: "dynamic-pricing-simulation",
     sampleFiles: [],

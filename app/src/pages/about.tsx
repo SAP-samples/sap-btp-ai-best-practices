@@ -25,7 +25,7 @@ function AboutHeader() {
             <Heading as="h1" className={styles.title}>
               About
             </Heading>
-            <p className={styles.subtitle}>Empowering developers to build cutting-edge, AI-powered applications on SAP BTP with proven patterns and comprehensive guidance</p>
+            <p className={styles.subtitle}>Empowering developers to build cutting-edge, AI-powered applications on SAP Business AI Platform with proven patterns and comprehensive guidance</p>
           </div>
         </div>
       </div>
@@ -44,8 +44,8 @@ export default function About(): React.ReactNode {
           <div className={styles.contentSection}>
             <div className={styles.introSection}>
               <p className={styles.introText}>
-                SAP BTP AI Best Practices is a curated collection of proven development guidelines and patterns designed to{" "}
-                <strong>empower you to build cutting-edge, AI-powered applications on SAP BTP</strong>. We aim to help you accelerate your development, reduce complexity, and
+                SAP Business AI Platform Best Practices is a curated collection of proven development guidelines and patterns designed to{" "}
+                <strong>empower you to build cutting-edge, AI-powered applications on SAP Business AI Platform</strong>. We aim to help you accelerate your development, reduce complexity, and
                 unlock new possibilities with artificial intelligence.
               </p>
             </div>
@@ -153,7 +153,7 @@ export default function About(): React.ReactNode {
 
             <div className={styles.roadmapHighlightSection}>
               <h2 className={styles.roadmapHeading}>See What's Next</h2>
-              <p className={styles.roadmapDescription}>Curious about upcoming BTP AI Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
+              <p className={styles.roadmapDescription}>Curious about upcoming Business AI Platform Best Practices? Check the roadmap to see what's planned and what's coming soon!</p>
               <div className={styles.roadmapButtonWrapper}>
                 <a href="/docs/SAP BTP AI Best Practices roadmap_with status_public_20261104.pdf" target="_blank" rel="noopener noreferrer" className={styles.roadmapButton}>
                   <Icon name="workflow-tasks" className={styles.roadmapButtonIcon} style={{ marginRight: 8, fontSize: 22 }} />
@@ -165,7 +165,7 @@ export default function About(): React.ReactNode {
             <div className={styles.contentSection}>
               <div className={styles.bestPracticesSection}>
                 <h2>Available Best Practices</h2>
-                <p>Here's a list of the SAP BTP AI Best Practices we have released so far, designed to help you get started quickly:</p>
+                <p>Here's a list of the SAP Business AI Platform Best Practices we have released so far, designed to help you get started quickly:</p>
                 <div className={`button-grid ${styles.bestPracticesGrid}`}>
                   <IconLinkButton href="/docs/technical-view/generative-ai/plain/access-to-generative-ai-models" text="Access to Generative AI Models" />
                   <IconLinkButton href="/docs/technical-view/generative-ai/plain/prompt-templating" text="Prompt Templating" />
@@ -193,7 +193,7 @@ export default function About(): React.ReactNode {
                   <IconLinkButton href="/docs/technical-view/agentic-ai/agentic-ai-security-governance" text="Agentic AI Security & Governance" />
                 </div>
                 <p>
-                  Further SAP BTP AI Best Practices are in preparation. <strong>Stay tuned</strong> to keep your AI development on SAP BTP at the forefront!
+                  Further SAP Business AI Platform Best Practices are in preparation. <strong>Stay tuned</strong> to keep your AI development on SAP Business AI Platform at the forefront!
                 </p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function About(): React.ReactNode {
                 We're continuously expanding this collection to bring you the latest insights and proven approaches. Your feedback is invaluable in shaping this resource, so please
                 give us your feedback.
               </p>
-              <Link to="mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Feedback]" className={`${styles.cardButtonLink} ${styles.cardButtonLinkWhite}`}>
+              <Link to="mailto:btp_ai_bp@sap.com?subject=[SAP Business AI Platform Best Practices Feedback]" className={`${styles.cardButtonLink} ${styles.cardButtonLinkWhite}`}>
                 <span>Provide Feedback</span>
               </Link>
             </div>

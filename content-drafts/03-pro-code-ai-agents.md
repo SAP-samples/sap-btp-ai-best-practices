@@ -149,7 +149,7 @@ The recommended agent framework. LangGraph provides state graphs for defining ag
 ### Reference Code
 The code examples are organized as a learning path in two parts. Start with **Part 1** to understand what happens inside a ReAct agent at the lowest level, then continue with **Part 2** to see how a framework handles the same patterns with less boilerplate and more reliability.
 
-[**SAP BTP AI Best Practices - Code-Based Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents)
+[**SAP Business AI Platform Best Practices - Code-Based Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents)
 
 ---
 
@@ -164,7 +164,7 @@ The key insight is that an agent is fundamentally just a loop around an LLM call
 Understanding the raw ReAct loop is essential before using any framework. The following implementation shows how an agent reasons and acts using only the SAP Orchestration Service.
 
 ### Reference Code
-* [**SAP BTP AI Best Practices - Code-Based Agents - Native ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/native-react)
+* [**SAP Business AI Platform Best Practices - Code-Based Agents - Native ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/native-react)
 
 ---
 
@@ -173,7 +173,7 @@ Understanding the raw ReAct loop is essential before using any framework. The fo
 LangGraph replaces the manual loop with a structured state graph. Instead of writing your own parsing, scratchpad management, and tool dispatch, you define nodes (processing steps), edges (transitions), and conditional routing and let the framework handle execution. This part contains three progressive notebooks that build from a basic agent to an enterprise workflow.
 
 #### Reference Code
-* [**SAP BTP AI Best Practices - Code-Based Agents - LangGraph ReAct Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/langgraph-react)
+* [**SAP Business AI Platform Best Practices - Code-Based Agents - LangGraph ReAct Agents**](https://github.com/SAP-samples/sap-btp-ai-best-practices/tree/main/best-practices/agentic-ai/code-based-agents/langgraph-react)
 
 ### 2.1 Basic ReAct Agent
 The simplest possible Langgraph Agent: two nodes connected in a loop. The **assistant** node calls the LLM with tools bound via `bind_tools()`, and the **tools** node executes whatever the LLM requested. Routing uses `tools_condition`: if the LLM response contains tool calls, go to tools; otherwise, end
@@ -183,7 +183,7 @@ The simplest possible Langgraph Agent: two nodes connected in a loop. The **assi
 This notebook demonstrates LLM initialization via the SAP GenAI Hub proxy, the `@tool` decorator for automatic JSON schema generation, `MessagesState` for message history and parallel tool execution (the LLM can request multiple tools in one response). 
 
 #### Reference Code
-* [**SAP BTP AI Best Practices - Code-Based Agents - Basic ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/01_react_agent.ipynb)
+* [**SAP Business AI Platform Best Practices - Code-Based Agents - Basic ReAct Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/01_react_agent.ipynb)
 
 ### 2.2 Multi-Agent Routing with Conditional Edges
 This notebook adds an LLM-based classifier at the entry point of the graph. The classifier determines the query category (math, weather, or general) and routes to a specialized agent. Each agent has access only to its relevant tools: the math agent can call `add` and `multiply`, the weather agent can call `get_weather`, and the general agent has access to all tools.
@@ -193,7 +193,7 @@ This notebook adds an LLM-based classifier at the entry point of the graph. The 
 The key takeaway is **scoped tool access**: by restricting which tools each agent can call, you reduce cost (fewer tokens describing irrelevant tools), improve reliability (the model is less likely to pick the wrong tool), and enforce domain boundaries. The notebook also demonstrates custom state schemas, domain-specific system prompts, and conditional edges with custom routing options
 
 #### Reference Code
-* [**SAP BTP AI Best Practices - Code-Based Agents - Multi-Agent Routing with Conditional Edges Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/02_multi_step_workflow.ipynb)
+* [**SAP Business AI Platform Best Practices - Code-Based Agents - Multi-Agent Routing with Conditional Edges Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/02_multi_step_workflow.ipynb)
 
 ### 2.3 Enterprise Procurement Workflow
 This notebook uses the same simple two-node graph topology as Notebook 1 — but replaces the toy tools with six enterprise-grade tools backed by mock data simulating SAP systems (Material Master, Warehouse Management, Controlling, Vendor Master). The system prompt encodes a detailed six-step procurement procedure:
@@ -208,7 +208,7 @@ This notebook uses the same simple two-node graph topology as Notebook 1 — but
 The key takeaway is that **graph complexity is not always necessary**. A simple graph with well-designed tools and a detailed system prompt handles complex multi-step business workflows effectively. Tool design matters more than graph design: tools that return contextual information (for example, inventory at all plants, not just the one requested) reduce the number of agent iterations and improve response quality
 
 #### Reference Code
-* [**SAP BTP AI Best Practices - Code-Based Agents - Enterprise Procurement Workflow Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/03_procurement_workflow.ipynb)
+* [**SAP Business AI Platform Best Practices - Code-Based Agents - Enterprise Procurement Workflow Notebook**](https://github.com/SAP-samples/sap-btp-ai-best-practices/blob/main/best-practices/agentic-ai/code-based-agents/langgraph-react/03_procurement_workflow.ipynb)
 
 ---
 

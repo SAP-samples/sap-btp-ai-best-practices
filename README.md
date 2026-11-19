@@ -1,6 +1,6 @@
-# BTP AI Best Practices Website
+# SAP Business AI Platform Best Practices Website
 
-This project contains the BTP AI Best Practices website (Docusaurus frontend) and its supporting CAP backend service.
+This project contains the SAP Business AI Platform Best Practices website (Docusaurus frontend) and its supporting CAP backend service.
 
 ## Prerequisites
 
