@@ -153,8 +153,30 @@ h6,
 
 /* Navbar */
 
+.navbar__title {
+  white-space: normal;
+  line-height: 1.2;
+}
+
 .navbar__item.navbar__link {
   font-size: 0.8rem;
+}
+
+@media screen and (max-width: 996px) {
+  .navbar,
+  .navbar-sidebar__brand {
+    height: auto;
+    min-height: var(--ifm-navbar-height);
+  }
+
+  .navbar__title {
+    font-size: 0.9rem;
+  }
+
+  /* Keep Activate AI in the mobile menu to make room for the site title. */
+  .navbar__items > .navbar__item--activate.navbar__link {
+    display: none;
+  }
 }
 
 /* GitHub icon in navbar */

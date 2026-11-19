@@ -22,8 +22,8 @@ function registerDownloadRoute() {
 }
 
 const config: Config = {
-  title: "SAP BTP AI Best Practices",
-  tagline: "Your Ultimate Guide for Building AI Solutions on SAP BTP",
+  title: "SAP Business AI Platform Best Practices",
+  tagline: "Your Ultimate Guide for Building AI Solutions on SAP Business AI Platform.",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -151,7 +151,7 @@ const config: Config = {
     // Social card image
     image: "img/logo.png",
     navbar: {
-      title: "BTP AI Best Practices",
+      title: "Business AI Platform Best Practices",
       logo: {
         alt: "SAP Logo",
         src: "img/logo.svg"
@@ -274,7 +274,7 @@ const config: Config = {
           items: [
             {
               label: "Provide Feedback",
-              to: "mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Feedback]"
+              to: "mailto:btp_ai_bp@sap.com?subject=[SAP Business AI Platform Best Practices Feedback]"
             },
             {
               label: "Report Issue",
@@ -282,7 +282,7 @@ const config: Config = {
             },
             {
               label: "Questions",
-              href: "mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Questions]"
+              href: "mailto:btp_ai_bp@sap.com?subject=[SAP Business AI Platform Best Practices Questions]"
             }
           ]
         }

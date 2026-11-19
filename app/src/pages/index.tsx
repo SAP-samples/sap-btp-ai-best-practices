@@ -25,12 +25,12 @@ function HomepageHeader() {
       <div className={clsx("container", styles.heroContent)}>
         <div className={styles.heroText}>
           <Heading as="h1" className={styles.title}>
-            SAP BTP <span className={styles.highlight}>AI Best Practices</span>
+            SAP Business AI Platform <span className={styles.highlight}>Best Practices</span>
           </Heading>
           <p className={styles.subtitle}>{siteConfig.tagline}</p>
         </div>
         <p className={styles.description}>
-          SAP BTP AI Best Practices is a curated collection of guides and patterns for implementing AI solutions on SAP Business Technology Platform. Explore a{" "}
+          SAP Business AI Platform Best Practices is a curated collection of guides and patterns for implementing AI solutions on SAP Business AI Platform. Explore a{" "}
           <b>functional view</b> that showcases what AI can do, and a <b>technical view</b> that shows how to make it real.
         </p>
         <div className={styles.navigation}>
