@@ -1,7 +1,7 @@
 /**
- * SAP BTP AI Best Practices Website Tracking Utility
+ * SAP Business AI Platform Best Practices Website Tracking Utility
  *
- * This utility handles user tracking for the SAP BTP AI Best Practices website with two main modes:
+ * This utility handles user tracking for the SAP Business AI Platform Best Practices website with two main modes:
  *
  * 1. With User Consent (Cookie-based tracking):
  *    - Uses persistent storage to track user sessions

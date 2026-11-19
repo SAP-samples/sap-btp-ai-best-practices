@@ -1,7 +1,7 @@
 _schema-version: 3.3.0
 ID: btp-ai-best-practices-page
 version: 1.0.0
-description: "BTP AI Best Practices Page"
+description: "SAP Business AI Platform Best Practices Page"
 parameters:
   enable-parallel-deployments: true
 build-parameters:

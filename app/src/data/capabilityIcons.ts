@@ -132,7 +132,11 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/ai-services/sap-document-ai": "attachment-video",
   "/docs/technical-view/ai-services/sap-rpt": "table-view",
   "/docs/technical-view/ai-services/custom-joule-skills": "da",
-  "/docs/technical-view/ai-services/sap-translation-hub": "translate"
+  "/docs/technical-view/ai-services/sap-translation-hub": "translate",
+  "/docs/technical-view/ai-services/application-and-ai-consumption-monitoring": "sys-monitor",
+
+  // === Standalone Pages ===
+  "/ai-governance": "shield"
 };
 
 /**

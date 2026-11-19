@@ -22,8 +22,8 @@ function registerDownloadRoute() {
 }
 
 const config: Config = {
-  title: "SAP BTP AI Best Practices",
-  tagline: "Your Ultimate Guide for Building AI Solutions on SAP BTP",
+  title: "SAP Business AI Platform Best Practices",
+  tagline: "Your Ultimate Guide for Building AI Solutions on SAP Business AI Platform.",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -39,7 +39,7 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "sap-samples", // Usually your GitHub org/user name.
+  organizationName: "SAP-samples", // Usually your GitHub org/user name.
   projectName: "sap-btp-ai-best-practices", // Usually your repo name.
   trailingSlash: false,
 
@@ -151,7 +151,7 @@ const config: Config = {
     // Social card image
     image: "img/logo.png",
     navbar: {
-      title: "BTP AI Best Practices",
+      title: "Business AI Platform Best Practices",
       logo: {
         alt: "SAP Logo",
         src: "img/logo.svg"
@@ -177,6 +177,14 @@ const config: Config = {
           target: "_blank",
           rel: "noopener noreferrer",
           className: "navbar__item--ai4u",
+        },
+        {
+          href: "https://sapxm.qualtrics.com/jfe/form/SV_2ozSvl0Byxi56Ki?utm_source=btp-ai-best-practices&utm_medium=referral&utm_campaign=baip-activation&utm_content=navbar",
+          label: "Activate AI",
+          position: "left",
+          target: "_blank",
+          rel: "noopener noreferrer",
+          className: "navbar__item--activate",
         },
         // { to: "/blog", label: "Blog", position: "left" },
         {
@@ -266,7 +274,7 @@ const config: Config = {
           items: [
             {
               label: "Provide Feedback",
-              to: "mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Feedback]"
+              to: "mailto:btp_ai_bp@sap.com?subject=[SAP Business AI Platform Best Practices Feedback]"
             },
             {
               label: "Report Issue",
@@ -274,7 +282,7 @@ const config: Config = {
             },
             {
               label: "Questions",
-              href: "mailto:btp_ai_bp@sap.com?subject=[SAP BTP AI Best Practices Questions]"
+              href: "mailto:btp_ai_bp@sap.com?subject=[SAP Business AI Platform Best Practices Questions]"
             }
           ]
         }

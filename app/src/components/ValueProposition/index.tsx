@@ -12,7 +12,7 @@ type ValueItem = {
 const ValueList: ValueItem[] = [
   {
     title: "Comprehensive Guidance",
-    description: "Step-by-step guidance for implementing AI solutions on SAP BTP, covering both functional and technical aspects.",
+    description: "Step-by-step guidance for implementing AI solutions on SAP Business AI Platform, covering both functional and technical aspects.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M24 4L4 14V34L24 44L44 34V14L24 4Z" fill="currentColor" fillOpacity="0.1" />
@@ -25,7 +25,7 @@ const ValueList: ValueItem[] = [
   },
   {
     title: "Proven Patterns",
-    description: "Battle-tested patterns and architectures for scalable AI solutions on SAP BTP.",
+    description: "Battle-tested patterns and architectures for scalable AI solutions on SAP Business AI Platform.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 8H40V40H8V8Z" fill="currentColor" fillOpacity="0.1" />
@@ -51,7 +51,7 @@ const ValueList: ValueItem[] = [
   },
   {
     title: "Comprehensive Guidance",
-    description: "Step-by-step guidance for implementing AI solutions on SAP BTP, covering both functional and technical aspects.",
+    description: "Step-by-step guidance for implementing AI solutions on SAP Business AI Platform, covering both functional and technical aspects.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M24 4L4 14V34L24 44L44 34V14L24 4Z" fill="currentColor" fillOpacity="0.1" />
@@ -64,7 +64,7 @@ const ValueList: ValueItem[] = [
   },
   {
     title: "Proven Patterns",
-    description: "Battle-tested patterns and architectures for scalable AI solutions on SAP BTP.",
+    description: "Battle-tested patterns and architectures for scalable AI solutions on SAP Business AI Platform.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 8H40V40H8V8Z" fill="currentColor" fillOpacity="0.1" />
@@ -109,7 +109,7 @@ export default function ValueProposition(): ReactNode {
         <div className="row">
           <div className="col col--12">
             <Heading as="h2" className="section-title">
-              Why Use SAP BTP <span className="highlight">AI Best Practices</span>?
+              Why Use SAP Business AI Platform <span className="highlight">Best Practices</span>?
             </Heading>
           </div>
         </div>

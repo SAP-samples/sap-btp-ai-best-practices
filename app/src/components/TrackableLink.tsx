@@ -6,11 +6,12 @@ interface TrackableLinkProps {
   href: string;
   className?: string;
   target?: string;
+  rel?: string;
   trackingFeature?: keyof typeof TRACKING_EVENTS.BUTTON_CLICK;
   children: React.ReactNode;
 }
 
-export default function TrackableLink({ href, className, target, trackingFeature, children }: TrackableLinkProps) {
+export default function TrackableLink({ href, className, target, rel, trackingFeature, children }: TrackableLinkProps) {
   const getFeatureName = () => {
     return trackingFeature ? TRACKING_EVENTS.BUTTON_CLICK[trackingFeature] : `[trackable-link]:${href}`;
   };
@@ -43,6 +44,7 @@ export default function TrackableLink({ href, className, target, trackingFeature
       href={href}
       className={className}
       target={target}
+      rel={rel}
       onClick={trackLinkClick}
       onAuxClick={trackLinkClick} // Capture middle clicks
       onContextMenu={handleContextMenu} // Capture right clicks
