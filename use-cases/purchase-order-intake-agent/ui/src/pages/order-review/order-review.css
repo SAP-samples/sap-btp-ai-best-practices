@@ -1,0 +1,52 @@
+/* Review page layout: documents left, data right, floating footer */
+.review-page { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.review-page-error { margin: 1rem; }
+.review-title { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.75rem 1rem 0.5rem; }
+.review-title-line { display: flex; align-items: center; gap: 0.75rem; }
+.review-subtitle { color: var(--sapContent_LabelColor); font-size: var(--sapFontSmallSize); }
+.review-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 1rem; padding: 0 1rem 4.5rem; }
+.review-left, .review-right { min-height: 0; overflow: auto; }
+.review-right { display: flex; flex-direction: column; gap: 1rem; padding-right: 0.25rem; }
+@media (max-width: 1100px) { .review-body { grid-template-columns: 1fr; } }
+
+/* Document viewer */
+.review-viewer { height: 100%; }
+.review-pdf { width: 100%; height: calc(100vh - 14rem); border: 0; }
+.review-image { max-width: 100%; }
+.review-text { white-space: pre-wrap; font-family: var(--sapFontFamily); font-size: var(--sapFontSize); margin: 0; }
+.review-busy { display: flex; justify-content: center; padding: 2rem; }
+.review-email dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 1rem; margin: 0 0 1rem; }
+.review-email dt { color: var(--sapContent_LabelColor); }
+.review-email dd { margin: 0; overflow-wrap: anywhere; }
+.review-gallery { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+.review-inline { margin: 0; max-width: 260px; }
+.review-inline img { max-width: 100%; border: 1px solid var(--sapGroup_ContentBorderColor); }
+.review-inline figcaption { display: flex; gap: 0.5rem; align-items: center; font-size: var(--sapFontSmallSize); }
+
+/* Issues */
+.review-issues { display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--sapFontFamily); color: var(--sapTextColor); }
+.review-issue-list { margin: 0; padding-left: 1.25rem; font-size: var(--sapFontSmallSize); }
+.review-issue--error strong { color: var(--sapNegativeColor); }
+.review-issue--review strong, .review-issue--warning strong { color: var(--sapCriticalColor); }
+.review-agent { background: var(--sapInformationBackgroundColor); padding: 0.5rem 0.75rem; border-radius: 0.5rem; }
+.review-fixes { font-size: var(--sapFontSmallSize); color: var(--sapContent_LabelColor); }
+
+/* Form */
+.review-form { display: flex; flex-direction: column; gap: 1rem; }
+.review-form section { background: var(--sapGroup_ContentBackground); border: 1px solid var(--sapGroup_ContentBorderColor); border-radius: 0.75rem; padding: 0.75rem 1rem; }
+.review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 0.5rem 1rem; margin-top: 0.5rem; }
+.review-field { display: flex; flex-direction: column; min-width: 0; }
+.review-field--wide { grid-column: 1 / -1; }
+.review-field ui5-input, .review-field ui5-select { width: 100%; }
+.review-field-label { display: flex; justify-content: space-between; align-items: baseline; }
+.review-confidence { font-size: var(--sapFontSmallSize); color: var(--sapContent_LabelColor); }
+.review-confidence--low { color: var(--sapCriticalTextColor); font-weight: bold; }
+.review-system { display: block; margin-top: 0.5rem; color: var(--sapContent_LabelColor); font-size: var(--sapFontSmallSize); }
+
+/* Lines */
+.review-lines-header { display: flex; justify-content: space-between; align-items: center; }
+.review-cell { display: flex; align-items: center; gap: 0.25rem; }
+.review-cell ui5-input { width: 100%; }
+
+.review-footer { position: fixed; bottom: 0.5rem; left: 4.5rem; right: 1.5rem; width: auto; box-sizing: border-box; z-index: 10; }
+.review-note { width: 100%; margin-top: 0.5rem; }
