@@ -1,0 +1,3 @@
+# Cloud Foundry staticfile_buildpack config. Copied into dist/ by Vite.
+# pushstate: serve index.html for unknown paths so BrowserRouter deep links work.
+pushstate: enabled
