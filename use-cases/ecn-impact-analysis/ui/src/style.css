@@ -1,0 +1,338 @@
+:root {
+  --app-shellbar-height: 3.25rem;
+  color: var(--sapTextColor, #1d2d3e);
+  background: var(--sapBackgroundColor, #f5f6f7);
+  font-family: "72", "72full", Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 20rem;
+  background:
+    radial-gradient(circle at 90% 0%, rgb(0 112 242 / 8%), transparent 32rem),
+    var(--sapBackgroundColor, #f5f6f7);
+}
+
+#app {
+  min-height: 100vh;
+  opacity: 0;
+}
+
+#app.ready {
+  opacity: 1;
+}
+
+.content {
+  min-width: 0;
+  min-height: calc(100vh - 3rem);
+  max-width: 100%;
+  overflow-x: clip; /* Clip wide content without creating a false sticky-scroll container. */
+}
+
+h1, h2, h3, p { margin-top: 0; }
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  min-height: 2.25rem;
+  border: 1px solid var(--sapButton_BorderColor, #0064d9);
+  border-radius: .375rem;
+  padding: .45rem .85rem;
+  color: var(--sapButton_TextColor, #0064d9);
+  background: var(--sapButton_Background, #fff);
+  cursor: pointer;
+}
+
+/* Emphasized action; global because the ECN list and ECN detail pages both use it. */
+.primary-action {
+  border-color: var(--sapButton_Emphasized_BorderColor, #0064d9);
+  color: var(--sapButton_Emphasized_TextColor, #fff);
+  background: var(--sapButton_Emphasized_Background, #0064d9);
+}
+
+button:hover:not(:disabled) { background: var(--sapButton_Hover_Background, #eaecee); }
+.primary-action:hover:not(:disabled) { background: var(--sapButton_Emphasized_Hover_Background, #0054b6); }
+button:disabled { cursor: not-allowed; opacity: .55; }
+
+input, select {
+  min-height: 2.25rem;
+  border: 1px solid var(--sapField_BorderColor, #89919a);
+  border-radius: .25rem;
+  padding: .4rem .55rem;
+  background: var(--sapField_BackgroundStyle, #fff);
+}
+
+[role="alert"]:empty, [role="status"]:empty { display: none; }
+[role="alert"] { color: var(--sapNegativeTextColor, #aa0808); }
+
+a { color: var(--sapLinkColor, #0064d9); }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible,
+.table-scroll:focus-visible {
+  outline: 2px solid var(--sapContent_FocusColor, #0064d9);
+  outline-offset: 2px;
+}
+/* Snapshot evidence remains in the page while the assistant follows the viewport. */
+.snapshot-workspace { min-width: 0; }
+.snapshot-main { min-width: 0; display: grid; gap: 16px; }
+.snapshot-main .surface { min-width: 0; margin-bottom: 0; }
+.snapshot-notice { display: table; margin: 0 0 16px; }
+#additional-assessment-details { display: grid; gap: 16px; min-width: 0; }
+.snapshot-main input, .snapshot-main textarea, .snapshot-main select { max-width: 100%; }
+.snapshot-main textarea { display: block; width: 100%; margin: 12px 0; }
+.workspace-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+.workspace-controls input[type=number] { width: 90px; }
+.summary-selection { margin-right: 8px; }
+/* SAP theme tokens shared by UI5 Web Components and the React documentation. */
+.ecn-assistant {
+  --chat-accent: var(--sapHighlightColor, #0064d9);
+  --chat-primary: var(--sapButton_Emphasized_Background, #0070f2);
+  --chat-focus: var(--sapContent_FocusColor, #0032a5);
+  --chat-surface: var(--sapGroup_ContentBackground, #fff);
+  --chat-muted: var(--sapContent_LabelColor, #556b82);
+  --chat-question: var(--sapButton_Selected_Background, #edf6ff);
+  --chat-answer: var(--sapNeutralBackground, #eff1f2);
+  color: var(--sapTextColor, #131e29);
+  font-family: var(--sapFontFamily, "72", "72full", Arial, Helvetica, sans-serif);
+}
+.ecn-assistant:not([hidden]) {
+  position: fixed;
+  z-index: 40;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  width: min(416px, calc(100vw - 32px));
+  height: min(90dvh, 768px, calc(100dvh - var(--app-shellbar-height) - 24px));
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 30px;
+  background: var(--chat-surface);
+  box-shadow: var(--sapContent_Shadow2, 0 0 0 1px rgb(34 53 72 / 48%), 0 10px 30px rgb(34 53 72 / 25%));
+}
+.assistant-header { flex: 0 0 58px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px; }
+.ecn-assistant .assistant-title { display: inline-flex; align-items: center; gap: 10px; min-width: 0; margin: 0; color: var(--chat-accent); font-size: 14px; font-weight: 600; }
+.ecn-assistant .assistant-title ui5-icon { width: 20px; height: 20px; color: var(--chat-accent); }
+.ecn-assistant .assistant-close { display: grid; place-items: center; flex: 0 0 44px; width: 44px; min-height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; color: var(--chat-accent); background: var(--sapButton_Lite_Hover_Background, #eaecee); }
+.ecn-assistant .assistant-close ui5-icon { width: 20px; height: 20px; color: inherit; }
+.ecn-assistant .assistant-close:hover { background: var(--sapButton_Selected_Background, #edf6ff); }
+#assistant-shell-action:not([hidden]) { display: inline-flex; }
+#assistant-shell-action { --sapButton_Lite_TextColor: var(--sapHighlightColor, #0064d9); --sapButton_Lite_Hover_TextColor: var(--sapHighlightColor, #0064d9); }
+.assistant-body { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
+.chat-welcome:not([hidden]) { flex: 0 0 auto; display: flex; align-items: center; flex-direction: column; padding: clamp(24px, 6.3dvh, 56px) 32px 0; text-align: center; }
+.chat-welcome > ui5-icon { width: 56px; height: 56px; color: var(--chat-primary); margin-bottom: 48px; }
+.chat-welcome h3 { margin: 0; color: var(--chat-accent); font-size: 28px; line-height: 1.2; font-weight: 400; }
+.assistant-scope { flex: 0 0 auto; margin: 12px 32px 28px; color: var(--chat-muted); text-align: center; font-size: 14px; line-height: 1.45; }
+.chat-footer { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; padding: 0 16px 16px; }
+.chat-composer { flex: 0 0 auto; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 14px; min-height: 108px; border: 1px solid var(--chat-accent); border-radius: 30px; background: var(--chat-surface); box-shadow: 0 0 2px color-mix(in srgb, var(--chat-primary), transparent 84%), 0 8px 16px color-mix(in srgb, var(--chat-primary), transparent 84%); }
+.chat-composer:focus-within { border-color: var(--chat-focus); box-shadow: 0 0 0 1px var(--chat-focus), 0 8px 16px color-mix(in srgb, var(--chat-primary), transparent 84%); }
+.ecn-assistant .chat-composer textarea { display: block; width: 100%; min-height: 38px; max-height: 120px; resize: none; margin: 0; padding: 8px 6px; border: 0; outline: none; font: inherit; font-size: 14px; line-height: 18px; color: var(--sapTextColor, #131e29); background: transparent; }
+.chat-composer textarea::placeholder { font-style: italic; color: var(--chat-muted); opacity: 1; }
+.chat-composer-actions { display: flex; justify-content: flex-end; align-items: center; min-height: 28px; }
+.ecn-assistant .chat-send { display: grid; place-items: center; width: 28px; min-height: 28px; margin: 0; padding: 0; border: 0; border-radius: 50%; color: var(--sapButton_Emphasized_TextColor, #fff); background: var(--chat-primary); }
+.chat-send ui5-icon { width: 14px; height: 14px; color: inherit; }
+.ecn-assistant .chat-send:hover:not(:disabled) { background: var(--sapButton_Emphasized_Hover_Background, #0064d9); }
+.ecn-assistant .chat-send:disabled { opacity: .3; }
+.ecn-assistant button:focus-visible { outline: 2px solid var(--chat-focus); outline-offset: 2px; }
+.chat-status { flex: 0 0 auto; margin: 12px 8px 0; font-size: 13px; color: var(--chat-muted); overflow-wrap: anywhere; }
+.chat-disclaimer { flex: 0 0 auto; margin: auto 0 0; padding-top: 16px; color: var(--chat-muted); font-size: 11px; line-height: 12px; text-align: center; }
+.chat-has-conversation .assistant-scope { margin: 0 16px 12px; text-align: left; font-size: 12px; }
+.chat-messages:not([hidden]) { display: flex; flex: 1 1 auto; flex-direction: column; align-items: stretch; gap: 24px; min-height: 0; padding: 0 16px 24px; overflow: auto; overflow-wrap: anywhere; }
+.chat-has-conversation .chat-footer { flex: 0 0 auto; padding-top: 8px; }
+.chat-message { flex: 0 0 auto; min-width: 0; padding: 8px 16px; color: var(--sapTextColor, #131e29); font-size: 16px; line-height: 24px; }
+.chat-user { align-self: flex-end; max-width: 90%; background: var(--chat-question); border-radius: 8px 8px 0 8px; }
+.chat-assistant { background: var(--chat-answer); border-radius: 8px; }
+.chat-message p { margin: 0; }
+.chat-message p + p { margin-top: 12px; }
+.chat-message table { display: block; max-width: 100%; overflow-x: auto; }
+.chat-message pre { max-width: 100%; overflow: auto; }
+.chat-pending { flex: 0 0 auto; padding: 8px 16px; font-size: 14px; color: var(--chat-muted); }
+.chat-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; }
+.chat-sources button { min-height: 28px; padding: 2px 8px; font-size: 12px; }
+@media (max-width: 600px) {
+  .ecn-assistant:not([hidden]) { right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 16px); height: calc(100dvh - var(--app-shellbar-height) - 16px); border-radius: 24px; }
+}
+@media (max-height: 650px) {
+  .chat-welcome:not([hidden]) { padding-top: 16px; }
+  .chat-welcome > ui5-icon { margin-bottom: 20px; width: 40px; height: 40px; }
+  .assistant-scope { margin-bottom: 16px; }
+}
+
+.object-dialog { width: min(1200px, 90vw); max-height: 85vh; overflow: auto; border: 1px solid #b8c8d8; border-radius: 10px; padding: 24px; }
+.object-dialog table, .snapshot-main table { width: 100%; border-collapse: collapse; }
+.object-dialog th, .object-dialog td, .snapshot-main th, .snapshot-main td { padding: 10px; text-align: left; border-bottom: 1px solid #d9e2ea; vertical-align: top; overflow-wrap: anywhere; }
+/* Source-backed hierarchy paths stay visible without becoming navigation controls. */
+.hierarchy-stack { width: max-content; min-width: 260px; display: flex; flex-direction: column; gap: 6px; }
+.hierarchy-line { display: flex; align-items: center; gap: 8px; }
+.hierarchy-line + .hierarchy-line { position: relative; padding-inline-start: 1rem; }
+.hierarchy-line + .hierarchy-line::before { content: "↳"; position: absolute; inset-inline-start: 0; color: #526b85; }
+.hierarchy-node { overflow-wrap: anywhere; }
+.object-dialog td:has(> .hierarchy-stack) { padding-right: 24px; }
+/* Bounded native dialog: evidence scrolls while its close action stays reachable. */
+.object-dialog { padding: 0; overflow: hidden; width: min(1200px, 94vw); max-height: 90vh; }
+.object-dialog[open] { display: flex; flex-direction: column; }
+.object-dialog-body { overflow-y: auto; padding: 24px; min-height: 0; }
+.object-dialog-footer { flex: none; display: flex; justify-content: flex-end; border-top: 1px solid #d5dadd; padding: 16px 24px; background: white; }
+.material-section { margin-top: 28px; }
+.material-section > h3, .material-section > summary { margin-bottom: 16px; font-weight: 700; }
+.material-identifier { margin: 4px 0 0; color: #526b85; }
+.object-dialog .material-dialog-state { margin-block: 24px; }
+.material-story-block { margin-top: 20px; }
+.material-story-block > h3, .material-evidence-section > h3 { margin: 0 0 10px; font-size: 1rem; }
+.material-story-block > p { margin: 0; }
+.material-story-block > .helper-text { margin-top: 6px; }
+.material-acceptance-issue {
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid var(--sapCriticalBorderColor, #e76500);
+  border-radius: .5rem;
+  background: var(--sapWarningBackground, #fff8d6);
+  color: var(--sapTextColor, #1d2d3e);
+  overflow-wrap: anywhere;
+}
+.material-acceptance-issue h3 { margin: 0 0 .5rem; }
+.material-acceptance-issue p { margin: .5rem 0 0; line-height: 1.4; }
+.material-acceptance-issue:focus-visible { outline: 2px solid var(--sapContent_FocusColor, #0070f2); outline-offset: 2px; }
+.drawing-feasibility > h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.drawing-feasibility-overall-status { display: inline-flex; align-items: center; margin-inline-start: 8px; max-width: 100%; }
+.drawing-feasibility-overall-tag { max-width: 100%; }
+.drawing-feasibility-status-description { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.drawing-feasibility-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0; }
+.drawing-feasibility-form input[type="file"] { max-width: 100%; }
+/* Attached drawings and selected files share a contained drawing viewer. */
+.engineering-drawing-preview { min-width: 0; overflow-wrap: anywhere; }
+.engineering-drawing-preview > label { display: block; margin: 12px 0 6px; }
+.drawing-preview-input { display: block; width: 100%; max-width: 32rem; margin-top: 6px; }
+.engineering-drawing-preview > button { margin-top: 10px; max-width: 100%; white-space: normal; }
+.drawing-preview-viewer[hidden] { display: none; }
+.drawing-preview-viewer:not([hidden]) { min-width: 0; max-width: 100%; margin-top: 12px; padding: 12px; border: 1px solid var(--sapGroup_ContentBorderColor); border-radius: .375rem; background: var(--sapGroup_ContentBackground); }
+.drawing-preview-viewer > button { margin-bottom: 10px; max-width: 100%; white-space: normal; }
+.drawing-preview-content { max-width: 100%; max-height: min(32rem, 55vh); overflow: auto; overscroll-behavior: contain; }
+.drawing-preview-media { display: block; width: 100%; max-width: 100%; }
+img.drawing-preview-media { height: auto; object-fit: contain; }
+.pdf-drawing-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .75rem 0; }
+.pdf-drawing-controls button { max-width: 100%; }
+.pdf-drawing-page { display: block; max-width: none; background: white; }
+.pdf-drawing-viewer { min-width: 0; }
+.engineering-drawing-preview button:focus-visible, .engineering-drawing-preview input:focus-visible, .drawing-preview-content:focus-visible { outline: 2px solid var(--sapContent_FocusColor); outline-offset: 3px; }
+.drawing-feasibility-assessment-summary { margin: 12px 0 16px; color: var(--sapContent_LabelColor, #556b82); line-height: 1.4; }
+.ai-attribution-icon {
+  display: inline-block;
+  margin-inline-end: 4px;
+  color: var(--sapAccentColor, #0a6ed1);
+  font-size: .9em;
+  line-height: 1;
+  vertical-align: -.1em;
+}
+.drawing-feasibility-ai-heading > .ai-attribution-icon { font-size: 1em; }
+.drawing-feasibility-summary-table th > .ai-attribution-icon { margin-inline-end: 5px; }
+.drawing-feasibility-candidates > h4 { margin: 16px 0 8px; }
+.drawing-feasibility-summary-table table { table-layout: auto; }
+.drawing-feasibility-summary-table th:nth-child(2), .drawing-feasibility-summary-table td:nth-child(2) {
+  width: 10rem;
+  min-width: 10rem;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.drawing-feasibility-summary-table td:nth-child(2) > ui5-tag { white-space: nowrap; }
+.drawing-feasibility-candidates > ui5-tag { margin-bottom: 8px; }
+.drawing-feasibility-calculations { margin-top: 16px; }
+.drawing-feasibility-calculations > summary, .drawing-feasibility-calculation-group > summary { cursor: pointer; font-weight: 700; }
+/* Keep native list-item markers and focus behavior; headings remain in reading order. */
+.drawing-feasibility-calculations > summary > h4 { display: inline; margin: 0; font-size: 1rem; }
+.drawing-feasibility-calculation-group { margin-top: 16px; }
+.drawing-feasibility-calculation-group > summary > h5 { display: inline; margin: 0; font-size: .9375rem; }
+.drawing-feasibility-calculation-group-status { margin-inline-start: 12px; max-width: 100%; vertical-align: middle; }
+.drawing-feasibility-calculation-group > .table-scroll { margin-top: 8px; }
+.drawing-feasibility-evidence { margin-top: 12px; }
+/* Material evidence keeps real table semantics and scrolls inside its named region.
+   Fixed tracks plus anywhere wrapping prevent intrinsic hierarchy/identifier widths
+   from painting across adjacent facts. Never truncate source values. */
+.object-dialog .material-evidence-table { min-width: 0; max-width: 100%; overflow: auto; }
+.object-dialog .material-evidence-table table { table-layout: fixed; }
+.object-dialog .material-evidence-table th,
+.object-dialog .material-evidence-table td { min-width: 0; white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+.object-dialog .material-evidence-table th { position: sticky; top: 0; z-index: 1; background: var(--sapGroup_ContentBackground, #fff); }
+.object-dialog .observed-occurrences-table { max-height: min(28rem, 45vh); margin-top: 12px; }
+.object-dialog .bom-coverage-table table { width: max(100%, 76rem); }
+.object-dialog .bom-coverage-table th:nth-child(1) { width: 25%; }
+.object-dialog .bom-coverage-table th:nth-child(2),
+.object-dialog .bom-coverage-table th:nth-child(3) { width: 16%; }
+.object-dialog .bom-coverage-table th:nth-child(4) { width: 17%; }
+.object-dialog .bom-coverage-table th:nth-child(5) { width: 12%; }
+.object-dialog .bom-coverage-table th:nth-child(6) { width: 14%; }
+.object-dialog .observed-occurrences-table table { width: max(100%, 78rem); }
+.object-dialog .observed-occurrences-table th:nth-child(1) { width: 12%; }
+.object-dialog .observed-occurrences-table th:nth-child(2) { width: 30%; }
+.object-dialog .observed-occurrences-table th:nth-child(3) { width: 12%; }
+.object-dialog .observed-occurrences-table th:nth-child(4) { width: 10%; }
+.object-dialog .observed-occurrences-table th:nth-child(5) { width: 19%; }
+.object-dialog .observed-occurrences-table th:nth-child(6) { width: 17%; }
+.object-dialog .observed-occurrences-table .hierarchy-stack { width: 100%; min-width: 0; max-width: 100%; }
+.object-dialog .observed-occurrences-table .hierarchy-line { min-width: 0; }
+.object-dialog .observed-occurrences-table .hierarchy-node { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.object-dialog .material-procurement-table table { width: max(100%, 48rem); }
+.object-dialog .material-procurement-table th:nth-child(1) { width: 25%; }
+.object-dialog .material-procurement-table th:nth-child(2) { width: 20%; }
+.object-dialog .material-procurement-table th:nth-child(3) { width: 20%; }
+.object-dialog .material-procurement-table th:nth-child(4) { width: 35%; }
+.object-dialog .drawing-feasibility-calculation-table table { width: max(100%, 64rem); }
+.object-dialog .drawing-feasibility-calculation-table th:nth-child(1) { width: 22%; }
+.object-dialog .drawing-feasibility-calculation-table th:nth-child(2) { width: 25%; }
+.object-dialog .drawing-feasibility-calculation-table th:nth-child(3) { width: 38%; }
+.object-dialog .drawing-feasibility-calculation-table th:nth-child(4) { width: 15%; }
+.observed-occurrences-details { margin-top: 12px; }
+.observed-occurrences-details > summary { cursor: pointer; font-weight: 700; }
+.material-evidence > summary { cursor: pointer; }
+.material-evidence-section { margin-top: 20px; }
+/* MOCK_DATA_RETIREMENT_VALIDATION_DISABLED_START: curated Make-or-Buy comparison styles.
+.make-buy-comparison-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 16px; }
+.make-buy-comparison-card { min-width: 0; border: 1px solid #d5dadd; border-radius: 8px; padding: 16px; background: var(--sapGroup_ContentBackground, #fff); }
+.make-buy-comparison-card > h4 { margin: 0 0 6px; font-size: 1rem; }
+.make-buy-comparison-card > p { margin: 0; line-height: 1.45; }
+.make-buy-radar { width: 100%; height: 21rem; }
+.make-buy-comparison-evidence { border-top: 1px solid #d5dadd; padding-top: 12px; }
+.make-buy-comparison-evidence > summary { cursor: pointer; font-weight: 700; }
+.make-buy-comparison-evidence > p { margin: 10px 0 0; line-height: 1.4; }
+MOCK_DATA_RETIREMENT_VALIDATION_DISABLED_END: curated Make-or-Buy comparison styles. */
+.material-section td { white-space: pre-line; vertical-align: top; }
+.material-section td p { margin: 0 0 8px; }
+.material-section code { display: block; overflow-wrap: anywhere; margin: 12px 0; }
+.material-description { margin-top: 8px; }
+.material-change { display: grid; grid-template-columns: minmax(12rem, 1.1fr) minmax(9rem, .8fr) minmax(9rem, .8fr) minmax(12rem, 1.3fr); gap: 8px 20px; align-items: center; padding: 12px 0; border-bottom: 1px solid #d5dadd; }
+.material-change > h3, .material-change > .helper-text { grid-column: 1 / -1; margin: 0; }
+.material-change > p { min-width: 0; overflow-wrap: anywhere; }
+.material-change > p:first-of-type { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.material-change:last-child { border-bottom: 0; }
+@media (max-width: 1100px) { .material-change { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 640px) { .material-change { grid-template-columns: minmax(0, 1fr); } }
+.material-change p { margin: 8px 0; }
+.pagination[hidden] { display: none; }
+button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #0064d9; outline-offset: 3px; }
+@media (max-width: 640px) {
+  .object-dialog-body { padding: 16px; }
+  .object-dialog-footer { padding: 16px; }
+  .object-dialog h2, .material-description { overflow-wrap: anywhere; }
+  .object-dialog .table-scroll { max-width: 100%; overflow-x: auto; }
+  .object-dialog td { min-width: 140px; }
+  .material-change p { display: flex; flex-wrap: wrap; gap: 8px; }
+}
+@media (max-width: 640px) {
+  .object-dialog .material-section table, .object-dialog .material-section tbody { display: block; width: 100%; }
+  .object-dialog .material-section thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .object-dialog .material-section tr { display: block; padding: 12px 0; border-bottom: 1px solid #d5dadd; }
+  .object-dialog .material-section td { display: block; min-width: 0; width: auto; border: 0; padding: 8px 0; }
+  .object-dialog .material-section td::before { content: attr(data-label); display: block; font-weight: 700; color: #526b85; margin-bottom: 6px; }
+}

@@ -1,0 +1,44 @@
+---
+applications:
+  - name: po-intake-agent-api
+    path: api
+    buildpack: python_buildpack
+    stack: cflinuxfs5
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 1536M
+    disk_quota: 2G
+    routes:
+      - route: po-intake-agent-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://po-intake-agent.cfapps.eu10-005.hana.ondemand.com
+      API_BASE_URL: https://po-intake-agent-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
+      # Order pipeline (see docs/order-processing-pipeline.md)
+      ORDER_WORKERS: "4"
+      ORDER_AGENT_TIMEOUT_SECONDS: "900"
+      ORDER_MAX_ATTEMPTS: "2"
+      AUTO_POST_ENABLED: "true"
+      CONFIDENCE_THRESHOLD: "0.8"
+  - name: po-intake-agent-ui
+    # Static bundle built locally by deploy.sh (npm run build), served by nginx.
+    path: ui/dist
+    buildpack: staticfile_buildpack
+    stack: cflinuxfs5
+    # Reset any custom start command stored on the app (CF keeps it when the
+    # line is just removed) so the buildpack's nginx start command is used.
+    command: null
+    memory: 256M
+    routes:
+      - route: po-intake-agent.cfapps.eu10-005.hana.ondemand.com

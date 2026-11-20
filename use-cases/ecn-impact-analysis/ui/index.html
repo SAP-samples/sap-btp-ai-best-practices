@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/images/SAP_logo_square.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ECN Impact Analysis</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" aria-busy="true">
+      <ui5-navigation-layout id="nl1" mode="Collapsed">
+        <ui5-shellbar slot="header">
+          <ui5-button icon="menu2" slot="startButton" id="startButton" accessible-name="Toggle navigation" tooltip="Toggle navigation"></ui5-button>
+          <ui5-button
+            id="assistant-shell-action"
+            slot="assistant"
+            icon="discussion-2"
+            design="Transparent"
+            accessible-name="Open ECN chat"
+            tooltip="Open ECN chat"
+            hidden
+          ></ui5-button>
+          <ui5-shellbar-branding slot="branding">
+            ECN Impact Analysis
+            <img slot="logo" src="/images/SAP_logo.svg" alt="SAP" />
+          </ui5-shellbar-branding>
+        </ui5-shellbar>
+
+        <ui5-side-navigation id="sn1" slot="sideContent">
+          <ui5-side-navigation-item data-nav="ecns" text="ECNs" href="/ecns" icon="table-view" selected></ui5-side-navigation-item>
+          <ui5-side-navigation-item data-nav="settings" text="Settings" href="/settings" icon="action-settings"></ui5-side-navigation-item>
+        </ui5-side-navigation>
+
+        <main class="content" aria-live="polite"></main>
+      </ui5-navigation-layout>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

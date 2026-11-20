@@ -1,0 +1,169 @@
+<section class="ecn-page" aria-labelledby="ecns-title">
+  <header class="page-header">
+    <div>
+      <div class="page-title">
+        <h1 id="ecns-title">ECN Inbox</h1>
+        <ui5-button
+          id="ecns-info"
+          icon="information"
+          design="Transparent"
+          accessible-name="Review imported snapshots and explicitly choose which ECNs receive AI summaries."
+          tooltip="Review imported snapshots and explicitly choose which ECNs receive AI summaries."
+        ></ui5-button>
+      </div>
+    </div>
+  </header>
+  <section id="inbox-feedback" class="inbox-feedback" aria-label="Inbox feedback">
+    <ui5-message-strip id="reset-summary" design="Positive" hide-close-button role="status" aria-live="polite" aria-atomic="true" hidden></ui5-message-strip>
+    <ui5-message-strip id="filter-result-status" design="Information" hide-close-button role="status" aria-live="polite" aria-atomic="true" hidden></ui5-message-strip>
+    <ui5-message-strip id="generation-result" design="Positive" hide-close-button role="status" aria-live="polite" aria-atomic="true" hidden></ui5-message-strip>
+    <ui5-message-strip id="list-loading" design="Information" hide-close-button role="status" aria-live="polite" aria-atomic="true" hidden></ui5-message-strip>
+    <ui5-message-strip id="list-error" design="Negative" hide-close-button role="alert" aria-live="assertive" aria-atomic="true" hidden></ui5-message-strip>
+  </section>
+
+  <section class="kpi-grid" aria-label="Analysis overview">
+    <button id="kpi-total-filter" class="kpi-card surface" type="button" aria-pressed="false" aria-controls="ecn-results" aria-describedby="generation-count-scope"><strong id="kpi-total">—</strong><span>Total ECNs</span></button>
+    <button id="kpi-complete-filter" class="kpi-card surface kpi-complete" type="button" aria-pressed="false" aria-controls="ecn-results" aria-describedby="generation-count-scope"><strong id="kpi-complete">—</strong><span>Summaries available</span></button>
+    <button id="kpi-progress-filter" class="kpi-card surface kpi-progress" type="button" aria-pressed="false" aria-controls="ecn-results" aria-describedby="generation-count-scope"><strong id="kpi-progress">—</strong><span>In progress</span></button>
+    <button id="kpi-attention" class="kpi-card surface kpi-attention" type="button" aria-pressed="false" aria-controls="ecn-results" aria-describedby="generation-count-scope">
+      <strong id="kpi-attention-count">—</strong><span>Generation needs attention</span>
+    </button>
+  </section>
+  <div class="generation-count-guidance">
+    <p id="generation-count-scope">Counters cover all imported ECNs across uploads, not just the filtered list or current page. Choose a card to filter by its analysis group; Total ECNs clears the analysis filter. Each card keeps your other list filters.</p>
+    <details id="generation-count-help">
+      <summary>What triggers these generation counters?</summary>
+      <div class="generation-count-help-content" role="region" aria-label="Generation counter explanations" tabindex="0">
+        <h2>In progress</h2>
+        <p id="kpi-progress-help">Counts queued jobs waiting to be claimed plus running jobs currently generating a summary. A job enters when queued and stays counted while running; it leaves when generation completes, fails, or is held as Waiting for AI. Waiting for AI (blocked) jobs are not included.</p>
+        <h2>Generation needs attention</h2>
+        <p id="kpi-attention-help">Counts failed generation jobs only: a technical failure prevented generation from finishing, even if partial results were saved. Choose the Generation needs attention card, open an ECN with View to inspect its details, and use Retry analysis when appropriate. A job leaves this counter when it is queued again for retry; a retry can fail again.</p>
+        <p>Ready for summary, completed summaries (including complete with gaps), and Waiting for AI do not contribute to Generation needs attention. Neither counter measures source-data warnings, source release status, manufacturing feasibility, or engineering-review decisions.</p>
+      </div>
+    </details>
+  </div>
+  <dialog id="import-dialog" class="import-dialog" aria-labelledby="import-title">
+    <div class="import-dialog-content">
+      <label>Data group <input id="import-data-group" value="customer" pattern="[A-Za-z0-9_-]+" maxlength="80"></label>
+      <label>Assessment date <input id="import-assessment-date" type="date"></label>
+      <div>
+        <p class="eyebrow">Fresh Import</p>
+        <h2 id="import-title">Import New ECNs</h2>
+        <p>Select a JSON file, review its ECNs, and import only the selected rows.</p>
+      </div>
+      <label class="import-file" for="import-file">ECN JSON
+        <input id="import-file" type="file" accept=".json,application/json" />
+      </label>
+      <div class="import-toolbar">
+        <label for="import-search">Search ECNs</label>
+        <input id="import-search" type="search" placeholder="ECN number or description" disabled />
+        <button id="select-all-import" type="button" disabled>Select all ECNs</button>
+        <button id="deselect-all-import" type="button" disabled>Deselect all ECNs</button>
+      </div>
+      <p id="selection-summary" role="status">0 selected</p>
+      <div class="table-scroll import-table" tabindex="0" aria-label="ECNs available to import">
+        <table>
+          <thead><tr><th>Select</th><th>Position</th><th>ECN</th><th>Description</th><th>Lifecycle</th></tr></thead>
+          <tbody id="import-rows"></tbody>
+        </table>
+      </div>
+      <nav class="pagination" aria-label="ECN import preview pages">
+        <button id="previous-import-page" type="button" disabled>Previous</button>
+        <span id="import-page-summary">No file selected</span>
+        <button id="next-import-page" type="button" disabled>Next</button>
+      </nav>
+      <p id="import-status" role="alert"></p>
+      <div class="actions">
+        <button id="import-selected" class="primary-action" type="button" disabled>Import selected ECNs</button>
+        <button id="cancel-import" type="button">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="delete-dialog" class="import-dialog delete-dialog" aria-labelledby="delete-title">
+    <div class="import-dialog-content">
+      <h2 id="delete-title">Delete Selected ECNs</h2>
+      <p id="delete-summary"></p>
+      <ul id="delete-list" class="delete-list"></ul>
+      <p>Every assessment version, summary, review and knowledge-graph entry of these ECNs is removed, as if they had never been imported. BOM, material master and other reference data are kept. This cannot be undone.</p>
+      <label for="delete-confirmation">Type <code>DELETE</code> to continue</label>
+      <input id="delete-confirmation" autocomplete="off" spellcheck="false" />
+      <p id="delete-error" role="alert"></p>
+      <div class="import-toolbar">
+        <button id="confirm-delete" class="danger-action" type="button" disabled>Delete ECNs</button>
+        <button id="cancel-delete" type="button">Cancel</button>
+      </div>
+    </div>
+  </dialog>
+
+  <section class="surface history-surface">
+    <form id="filters" class="filters">
+      <label>Search <input name="query" type="search" placeholder="Description or title" /></label>
+      <label>Analysis
+        <select name="analysis_state">
+          <option value="">All</option>
+          <option value="SUMMARIES_AVAILABLE">Summaries available</option>
+          <option value="IN_PROGRESS">In progress (waiting or running)</option>
+          <option value="READY">Ready for summary</option><option value="QUEUED">Waiting</option>
+          <option value="BLOCKED">Waiting for AI</option>
+          <option value="RUNNING">In progress</option>
+          <option value="COMPLETED">Complete</option>
+          <option value="COMPLETED_WITH_GAPS">Complete with gaps</option>
+          <option value="FAILED">Needs attention</option>
+        </select>
+      </label>
+      <label>Sort
+        <select name="sort">
+          <option value="uploaded_at">Uploaded</option><option value="resolution_date">Resolution date</option><option value="affected_plants">Plants</option><option value="ecn_number">ECN</option>
+          <option value="description">Description</option><option value="affected_item_count">Materials</option>
+          <option value="warning_count">Warnings</option><option value="analysis_state">Analysis</option>
+        </select>
+      </label>
+      <button id="filters-disclosure" class="filters-disclosure" type="button" aria-expanded="false" aria-controls="secondary-filters">
+        Filters <span id="active-filter-count">0 active</span>
+      </button>
+      <div id="secondary-filters" class="secondary-filters">
+        <label>ECN number <input name="ecn_number" placeholder="Exact ECN" /></label>
+        <label>Plant <input name="plant" type="search" maxlength="80" placeholder="Code or name" /></label>
+        <label>Warnings
+          <select name="has_warnings"><option value="">All</option><option value="true">Has warnings</option><option value="false">No warnings</option></select>
+        </label>
+        <label>Order <select name="order"><option value="desc">Descending</option><option value="asc">Ascending</option></select></label>
+        <label>Rows <input name="page_size" type="number" min="1" max="100" value="25" /></label>
+        <button id="clear-filters" class="clear-filters" type="button">Clear filters</button>
+      </div>
+      <ui5-button id="apply-filters" design="Emphasized" tooltip="Apply Filters">Go</ui5-button>
+    </form>
+    <div class="table-toolbar" role="toolbar" aria-label="ECN Table Actions">
+      <ui5-button id="open-import" design="Emphasized">Import new ECN</ui5-button>
+      <div class="table-bulk-actions">
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <ui5-button id="select-all-matching" icon="multiselect-all" design="Transparent" accessible-name="Select All Matching ECNs" tooltip="Select All Matching ECNs"></ui5-button>
+        <ui5-button id="clear-summary-selection" icon="decline" design="Transparent" accessible-name="Clear Selection" tooltip="Clear Selection"></ui5-button>
+        <ui5-button id="generate-selected" icon="document-text" design="Transparent" accessible-name="Generate Summaries" tooltip="Generate Summaries" disabled></ui5-button>
+        <ui5-button id="delete-selected" icon="delete" design="Negative" accessible-name="Delete Selected ECNs" tooltip="Delete Selected ECNs" disabled></ui5-button>
+      </div>
+      <p id="summary-selection-status" class="summary-selection-status" role="status">0 selected</p>
+    </div>
+    <div id="ecn-results" class="ecn-results">
+      <div id="table-scroll" class="table-scroll" tabindex="0" aria-label="ECN history table">
+        <table>
+          <colgroup>
+            <col class="col-ecn" /><col class="col-description" /><col class="col-plants" /><col class="col-date" /><col class="col-date" />
+            <col class="col-reference-count" /><col class="col-warning-count" /><col class="col-status" />
+            <col class="col-impact" /><col class="col-review" /><col class="col-action" />
+          </colgroup>
+          <thead><tr><th>ECN</th><th>Description</th><th>Plants</th><th>Resolution date</th><th>Uploaded</th><th>Referenced objects</th><th>Warnings</th><th>Analysis</th><th>Observed impact</th><th>Review</th><th><span class="visually-hidden">Action</span></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="ecn-card-list" class="ecn-card-list" aria-label="ECN results"></div>
+    </div>
+    <p id="empty-state" class="empty-state" role="status" aria-live="polite" hidden>No ECNs have been uploaded.</p>
+    <nav class="pagination" aria-label="ECN pages">
+      <button id="previous-page" type="button">Previous</button>
+      <span id="page-summary"></span>
+      <button id="next-page" type="button">Next</button>
+    </nav>
+  </section>
+</section>

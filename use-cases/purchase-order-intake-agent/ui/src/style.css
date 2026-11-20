@@ -1,0 +1,38 @@
+/* Global styles shared by every page. Page-specific styles live next to the page (e.g. pages/home/home.css). */
+
+/* Optional: include SAP 72 Light (300). Place the font at ui/public/fonts/72-Light.woff2 */
+@font-face {
+  font-family: "72";
+  src: url("/fonts/72-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
+}
+
+/* Body of the NavigationLayout: routed page area */
+.app-body {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Routed page area */
+.content {
+  flex: 1;
+  min-width: 0;
+  min-height: 400px;
+  overflow: auto;
+}
+
+/* Centered busy indicator shown while a lazily loaded page chunk downloads */
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  width: 100%;
+}

@@ -1,0 +1,6680 @@
+{
+ "_meta": {
+  "note": "Anonymized mock ECC master data for demos and tests. Customer, partner, contact and material numbers, names, addresses, brands and product descriptions are fictitious; prices and quantities match the anonymized sample orders in ../orders.",
+  "sales_areas": {
+   "SG10/10/Z3": "SGD, plant SG01",
+   "VN10/10/Z1": "VND, plant VN01",
+   "DE10/10/Z5": "EUR, plant DE01"
+  }
+ },
+ "KNA1_POAGENT": [
+  {
+   "KUNNR": "759842",
+   "KTOKD": "0001",
+   "NAME1": "FARTIZUL OHARNIV CORP. (PVT) LTD",
+   "NAME2": null,
+   "STRAS": "73/29 HEZEPADEGA AVENUE",
+   "PSTLZ": "73096",
+   "ORT01": "COLOMBO 5",
+   "LAND1": "LK",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "760206",
+   "KTOKD": "0001",
+   "NAME1": "OGIPIMU GROUP PVT LTD",
+   "NAME2": "OGIPIMU MARINE",
+   "STRAS": "OJIVERI, RARNOLAMBIH BOBA",
+   "PSTLZ": "24677",
+   "ORT01": "MALE",
+   "LAND1": "MV",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": "8255487XLX181",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "761402",
+   "KTOKD": "0001",
+   "NAME1": "UTIF IN MERIDIAN LTD.",
+   "NAME2": null,
+   "STRAS": "NO 9-32 ALAVULI RD, CIRKEL",
+   "PSTLZ": "861",
+   "ORT01": "KAOHSIUNG",
+   "LAND1": "TW",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762431",
+   "KTOKD": "0002",
+   "NAME1": "BAMBIK YACHT SERVICES PTE LTD",
+   "NAME2": null,
+   "STRAS": "10 SOBE NAHU DRIVE",
+   "PSTLZ": "282700",
+   "ORT01": "SINGAPORE",
+   "LAND1": "SG",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762527",
+   "KTOKD": "0001",
+   "NAME1": "OHERELDIP YACHT SUPPLIES PTE LTD",
+   "NAME2": null,
+   "STRAS": "6 KILEKE DRIVE #01-19 KILEKE BUILDING",
+   "PSTLZ": "684291",
+   "ORT01": "SINGAPORE",
+   "LAND1": "SG",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": "515876919J",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762313",
+   "KTOKD": "0001",
+   "NAME1": "OHERELDIP MARINE PTE LTD",
+   "NAME2": null,
+   "STRAS": "18 ESUL OTI WAY #05-110",
+   "PSTLZ": "746924",
+   "ORT01": "SINGAPORE",
+   "LAND1": "SG",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": "847413410D",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "763421",
+   "KTOKD": "0001",
+   "NAME1": "NAHU PUGUW MARINE YACHT SERVICES",
+   "NAME2": "PVT. LTD.",
+   "STRAS": "101 SEHU CHAMBERS, PLOT 506 A, JEZOTU",
+   "PSTLZ": "929909",
+   "ORT01": "MUMBAI",
+   "LAND1": "IN",
+   "SPRAS": "E",
+   "TELF1": null,
+   "STCEG": "60OCPTE7977C9TU",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "810549",
+   "KTOKD": "0002",
+   "NAME1": "CONG TY OTUP AN WUWOV - VPGD",
+   "NAME2": null,
+   "STRAS": "SO 42 WUWOV 30/4, PHUONG VAM HEJUZ",
+   "PSTLZ": "144688",
+   "ORT01": "HO CHI MINH CITY",
+   "LAND1": "VN",
+   "SPRAS": "V",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "810521",
+   "KTOKD": "0001",
+   "NAME1": "CONG TY OTUP AN WUWOV",
+   "NAME2": "AN WUWOV CO., LTD",
+   "STRAS": "195/44 JS KF, PHUONG JESI SER",
+   "PSTLZ": "144688",
+   "ORT01": "HO CHI MINH CITY",
+   "LAND1": "VN",
+   "SPRAS": "V",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811240",
+   "KTOKD": "0002",
+   "NAME1": "OMB STEEL - NHA MAY BINH WUWOV",
+   "NAME2": null,
+   "STRAS": "LO C-6 KCN LOCO ITAN 2, DI AN",
+   "PSTLZ": "838401",
+   "ORT01": "BINH WUWOV",
+   "LAND1": "VN",
+   "SPRAS": "V",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811231",
+   "KTOKD": "0002",
+   "NAME1": "OMB STEEL - CONG TRUONG DONG NAI",
+   "NAME2": null,
+   "STRAS": "KCN NONE FETTO 3, NONE FETTO",
+   "PSTLZ": "680957",
+   "ORT01": "DONG NAI",
+   "LAND1": "VN",
+   "SPRAS": "V",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811454",
+   "KTOKD": "0001",
+   "NAME1": "CONG TY CO PHAN OMB STEEL",
+   "NAME2": "R.X.Q STEEL",
+   "STRAS": "TANG 5, 33 LE JUDO, QUAN 1",
+   "PSTLZ": "560465",
+   "ORT01": "HO CHI MINH CITY",
+   "LAND1": "VN",
+   "SPRAS": "V",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420525",
+   "KTOKD": "0001",
+   "NAME1": "ILOKUW GMBH KAROSSERIE-",
+   "NAME2": "LACKIERFACHBETRIEBE",
+   "STRAS": "PAVADALLOGOGU 445",
+   "PSTLZ": "10986",
+   "ORT01": "HAMBURG",
+   "LAND1": "DE",
+   "SPRAS": "D",
+   "TELF1": "7403054905",
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420936",
+   "KTOKD": "0001",
+   "NAME1": "ILOKUW AUTOLACK GMBH",
+   "NAME2": null,
+   "STRAS": "WORUREWUWUK 120",
+   "PSTLZ": "93427",
+   "ORT01": "HAMBURG",
+   "LAND1": "DE",
+   "SPRAS": "D",
+   "TELF1": null,
+   "STCEG": null,
+   "AUFSD": "01"
+  },
+  {
+   "KUNNR": "420766",
+   "KTOKD": "0001",
+   "NAME1": "OBAHO KELDEMOKAWI GMBH",
+   "NAME2": null,
+   "STRAS": "HICINSER-IWIF-STRASSE 2",
+   "PSTLZ": "66610",
+   "ORT01": "STADE",
+   "LAND1": "DE",
+   "SPRAS": "D",
+   "TELF1": "747134266",
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420880",
+   "KTOKD": "0001",
+   "NAME1": "AUTOWERKSTATT LALLOHUCU GMBH & CO.",
+   "NAME2": "KG",
+   "STRAS": "PUMBUTTUHET CHAUSSEE 1",
+   "PSTLZ": "58630",
+   "ORT01": "BIESENTHAL",
+   "LAND1": "DE",
+   "SPRAS": "D",
+   "TELF1": "1067924139",
+   "STCEG": null,
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420471",
+   "KTOKD": "0001",
+   "NAME1": "PUDI VEVO KAROSSERIEBAU &",
+   "NAME2": "LACKIERUNGEN GMBH",
+   "STRAS": "TUDOKA-VEPAKAS-STRASSE 12-14",
+   "PSTLZ": "14578",
+   "ORT01": "KARLSRUHE",
+   "LAND1": "DE",
+   "SPRAS": "D",
+   "TELF1": "589265024",
+   "STCEG": null,
+   "AUFSD": null
+  }
+ ],
+ "KNVV_POAGENT": [
+  {
+   "KUNNR": "759842",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "PP00",
+   "INCO1": "CIF",
+   "INCO2": "COLOMBO",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "760206",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "MALE",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "761402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "FOB",
+   "INCO2": "SINGAPORE",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762431",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "SINGAPORE",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "SINGAPORE",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "762313",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "SINGAPORE",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "763421",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "WAERS": "SGD",
+   "ZTERM": "N030",
+   "INCO1": "CFR",
+   "INCO2": "MUMBAI",
+   "VWERK": "SG01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "810549",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "WAERS": "VND",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "JESI SER",
+   "VWERK": "VN01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "WAERS": "VND",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "JESI SER",
+   "VWERK": "VN01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811240",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "WAERS": "VND",
+   "ZTERM": "N045",
+   "INCO1": "DAP",
+   "INCO2": "BINH WUWOV",
+   "VWERK": "VN01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811231",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "WAERS": "VND",
+   "ZTERM": "N045",
+   "INCO1": "DAP",
+   "INCO2": "DONG NAI",
+   "VWERK": "VN01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "WAERS": "VND",
+   "ZTERM": "N045",
+   "INCO1": "DAP",
+   "INCO2": "BINH WUWOV",
+   "VWERK": "VN01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420525",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "WAERS": "EUR",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "HAMBURG",
+   "VWERK": "DE01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420936",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "WAERS": "EUR",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "HAMBURG",
+   "VWERK": "DE01",
+   "AUFSD": "01"
+  },
+  {
+   "KUNNR": "420766",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "WAERS": "EUR",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "STADE",
+   "VWERK": "DE01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420880",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "WAERS": "EUR",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "BIESENTHAL",
+   "VWERK": "DE01",
+   "AUFSD": null
+  },
+  {
+   "KUNNR": "420471",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "WAERS": "EUR",
+   "ZTERM": "N030",
+   "INCO1": "DAP",
+   "INCO2": "KARLSRUHE",
+   "VWERK": "DE01",
+   "AUFSD": null
+  }
+ ],
+ "KNVP_POAGENT": [
+  {
+   "KUNNR": "759842",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "759842",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "759842",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "759842",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "759842",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "759842",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "759842",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "759842",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "760206",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "760206",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "760206",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "760206",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "760206",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "760206",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "760206",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "760206",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "761402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "761402",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "761402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "761402",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "761402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "761402",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "761402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "761402",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "762527",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "762527",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "762527",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "762527",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762527",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "001",
+   "KUNN2": "762431",
+   "DEFPA": null
+  },
+  {
+   "KUNNR": "762313",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "762313",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762313",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "762313",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762313",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "762313",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "762313",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "762313",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "763421",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "763421",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "763421",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "763421",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "763421",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "763421",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "763421",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "SPART": "Z3",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "763421",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "810521",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "810521",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "810521",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "810521",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "810521",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "WE",
+   "PARZA": "001",
+   "KUNN2": "810549",
+   "DEFPA": null
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "811454",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "811454",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "811454",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "811240",
+   "DEFPA": null
+  },
+  {
+   "KUNNR": "811454",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "SPART": "Z1",
+   "PARVW": "WE",
+   "PARZA": "001",
+   "KUNN2": "811231",
+   "DEFPA": null
+  },
+  {
+   "KUNNR": "420525",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "420525",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420525",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "420525",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420525",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "420525",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420525",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "420525",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420936",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "420936",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420936",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "420936",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420936",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "420936",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420936",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "420936",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420766",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "420766",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420766",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "420766",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420766",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "420766",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420766",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "420766",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420880",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "420880",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420880",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "420880",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420880",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "420880",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420880",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "420880",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420471",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "AG",
+   "PARZA": "000",
+   "KUNN2": "420471",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420471",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RE",
+   "PARZA": "000",
+   "KUNN2": "420471",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420471",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "RG",
+   "PARZA": "000",
+   "KUNN2": "420471",
+   "DEFPA": "X"
+  },
+  {
+   "KUNNR": "420471",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "SPART": "Z5",
+   "PARVW": "WE",
+   "PARZA": "000",
+   "KUNN2": "420471",
+   "DEFPA": "X"
+  }
+ ],
+ "KNVK_POAGENT": [
+  {
+   "PARNR": "900001",
+   "KUNNR": "760206",
+   "NAMEV": null,
+   "NAME1": "Purchasing",
+   "TELF1": null,
+   "SMTP_ADDR": "marine@awadibusittosob.com"
+  },
+  {
+   "PARNR": "900002",
+   "KUNNR": "762527",
+   "NAMEV": null,
+   "NAME1": "Purchasing",
+   "TELF1": null,
+   "SMTP_ADDR": "sales@zorabigibofihedos.com"
+  },
+  {
+   "PARNR": "900003",
+   "KUNNR": "763421",
+   "NAMEV": null,
+   "NAME1": "Purchasing",
+   "TELF1": null,
+   "SMTP_ADDR": "info@tepepuhukertuvi.co.in"
+  },
+  {
+   "PARNR": "900004",
+   "KUNNR": "810521",
+   "NAMEV": null,
+   "NAME1": "Purchasing",
+   "TELF1": null,
+   "SMTP_ADDR": "purchasing@montovavi.vn"
+  },
+  {
+   "PARNR": "900005",
+   "KUNNR": "811454",
+   "NAMEV": null,
+   "NAME1": "Purchasing",
+   "TELF1": null,
+   "SMTP_ADDR": "purchasing@ecajutiw.com.vn"
+  }
+ ],
+ "MARA_POAGENT": [
+  {
+   "MATNR": "5734957",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "SVL930/A4LT",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5745397",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "SVL930/A1LT",
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5338270",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "SVL930/A16LT",
+   "VOLUM": 16.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5909763",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "SXO066/4AP",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5606311",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "NVE096/4AP",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5237241",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "LZI402/4AP",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5350302",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "URA975/4AP",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5194822",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "WAZ406/1LT",
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5607402",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "WAZ406/4LT",
+   "VOLUM": 4.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5620197",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "ZBN971/A2.5LT",
+   "VOLUM": 2.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5267617",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "XOV585/10AP",
+   "VOLUM": 10.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5672407",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "TYT255/10AP",
+   "VOLUM": 10.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5906727",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "ECY394/946ML",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5716519",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OJ5233/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5721192",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OW9183/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5821913",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OG0803/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5207255",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OP4357/HG",
+   "VOLUM": 1.893,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5654122",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OJ9090/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5749064",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OG8263/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5701726",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OH4089/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5158706",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OH4089/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5921582",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OR8644/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5580383",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OR8644/5GL",
+   "VOLUM": 18.925,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5109472",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OT3991/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5360528",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OT3991/5GL",
+   "VOLUM": 18.925,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5854486",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OM3621/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5535392",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OP7390/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5892374",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OG1421/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5693070",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OG1421/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5189196",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "ON4062/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5297763",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "ON4062/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5765628",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OS3862/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5791620",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OR4268/GL",
+   "VOLUM": 3.785,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5855654",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OR4268/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5351422",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OZ5331/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5552043",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OZ5331/5L",
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5675747",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "UMO751/3LT",
+   "VOLUM": 3.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5918133",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z3",
+   "MEINS": "PC",
+   "BISMT": "OS3862/QT",
+   "VOLUM": 0.946,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": "X",
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5497171",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "IPJ715/20L/XA",
+   "VOLUM": 17.6,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5574531",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "IPJ715/5L/XA",
+   "VOLUM": 4.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5844182",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "UHU838/20L/XA",
+   "VOLUM": 18.8,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5236314",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "UHU838/5L/XA",
+   "VOLUM": 4.7,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5822421",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "VBY819/5L/XA",
+   "VOLUM": 4.85,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5192652",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "SPG774/20L/XA",
+   "VOLUM": 17.6,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5490855",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "SPG774/5L/XA",
+   "VOLUM": 4.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5550337",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "JHL094/A20L/XA",
+   "VOLUM": 18.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5755241",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "KDH090/A20L/XA",
+   "VOLUM": 19.2,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5847254",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "YUU745/20L/XA",
+   "VOLUM": 17.94,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5769018",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "YUU745/5L/XA",
+   "VOLUM": 4.48,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5759610",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "ZHQ225/20L/XA",
+   "VOLUM": 19.66,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5641304",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "ODR715/20L/XA",
+   "VOLUM": 19.6,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5106450",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "ODR715/5L/XA",
+   "VOLUM": 4.9,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5204317",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "VEQ163/20L/XA",
+   "VOLUM": 17.94,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5405490",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "VEQ163/5L/XA",
+   "VOLUM": 4.48,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5859919",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "IPJ715/20L",
+   "VOLUM": 17.6,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5574113",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "DJP610/5L/XA",
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5231304",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "DJP610/20L/XA",
+   "VOLUM": 20.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5844642",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "COL413/5L/XA",
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5974017",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "EF236/20L/XA",
+   "VOLUM": 20.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "5150513",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z1",
+   "MEINS": "PC",
+   "BISMT": "ASG/5L/XA",
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7353674",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7381276",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 2.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7579462",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7601514",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7620663",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7577801",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7816419",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7854307",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7713262",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7357008",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7295593",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7956103",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7783044",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7696574",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7394406",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7861952",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7541184",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7279455",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7117677",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.5,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7334815",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7310779",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7724909",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7413469",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7529072",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7648121",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7819790",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 5.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7225883",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 3.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7563510",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 3.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7632054",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7567325",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.75,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7985331",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7660502",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7302572",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7202616",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 3.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7612458",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 1.0,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7415788",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7254956",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7699965",
+   "MTART": "FERT",
+   "MATKL": "PAINT",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": 0.4,
+   "VOLEH": "L",
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7149283",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": "MCP1300VLM",
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7952592",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7552686",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "43038"
+  },
+  {
+   "MATNR": "7492456",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "98136"
+  },
+  {
+   "MATNR": "7989107",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "83123"
+  },
+  {
+   "MATNR": "7162912",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "75218"
+  },
+  {
+   "MATNR": "7100421",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "28103"
+  },
+  {
+   "MATNR": "7149198",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "72845"
+  },
+  {
+   "MATNR": "7439347",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "73301"
+  },
+  {
+   "MATNR": "7219465",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "29245"
+  },
+  {
+   "MATNR": "7377333",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "16675"
+  },
+  {
+   "MATNR": "7633280",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "54653"
+  },
+  {
+   "MATNR": "7418210",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "67939"
+  },
+  {
+   "MATNR": "7424378",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "19049"
+  },
+  {
+   "MATNR": "7770528",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "43635"
+  },
+  {
+   "MATNR": "7907183",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "45482"
+  },
+  {
+   "MATNR": "7744357",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "02315"
+  },
+  {
+   "MATNR": "7468077",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "95272"
+  },
+  {
+   "MATNR": "7900617",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": null
+  },
+  {
+   "MATNR": "7734789",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "48398"
+  },
+  {
+   "MATNR": "7658557",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "65398"
+  },
+  {
+   "MATNR": "7722291",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "47332"
+  },
+  {
+   "MATNR": "7972707",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "92459"
+  },
+  {
+   "MATNR": "7377992",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "48545"
+  },
+  {
+   "MATNR": "7289989",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "05832"
+  },
+  {
+   "MATNR": "7787571",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "48873"
+  },
+  {
+   "MATNR": "7158754",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "57685"
+  },
+  {
+   "MATNR": "7618623",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "15770"
+  },
+  {
+   "MATNR": "7352347",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "41126"
+  },
+  {
+   "MATNR": "7348779",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "40102X"
+  },
+  {
+   "MATNR": "7188465",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "979622"
+  },
+  {
+   "MATNR": "7355651",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "UGX 23"
+  },
+  {
+   "MATNR": "7869907",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "664879"
+  },
+  {
+   "MATNR": "7851052",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "051848"
+  },
+  {
+   "MATNR": "7543721",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "124217"
+  },
+  {
+   "MATNR": "7417859",
+   "MTART": "FERT",
+   "MATKL": "ACCESSORY",
+   "SPART": "Z5",
+   "MEINS": "PC",
+   "BISMT": null,
+   "VOLUM": null,
+   "VOLEH": null,
+   "BRGEW": null,
+   "GEWEI": null,
+   "MSTAE": null,
+   "LVORM": null,
+   "MFRPN": "782922"
+  }
+ ],
+ "MAKT_POAGENT": [
+  {
+   "MATNR": "5734957",
+   "SPRAS": "E",
+   "MAKTX": "MARIPROTECT WHITE 4L KIT"
+  },
+  {
+   "MATNR": "5745397",
+   "SPRAS": "E",
+   "MAKTX": "MARIPROTECT WHITE 1L"
+  },
+  {
+   "MATNR": "5338270",
+   "SPRAS": "E",
+   "MAKTX": "MARIPROTECT WHITE 16L KIT"
+  },
+  {
+   "MATNR": "5909763",
+   "SPRAS": "E",
+   "MAKTX": "FENDOR EXTRA 2 ANTIFOULING BLUE 4L"
+  },
+  {
+   "MATNR": "5606311",
+   "SPRAS": "E",
+   "MAKTX": "FENDOR EXTRA 2 ANTIFOULING BLACK 4L"
+  },
+  {
+   "MATNR": "5237241",
+   "SPRAS": "E",
+   "MAKTX": "ULTRA 2 ANTIFOULING BLUE 4L"
+  },
+  {
+   "MATNR": "5350302",
+   "SPRAS": "E",
+   "MAKTX": "ULTRA 2 ANTIFOULING BLACK 4L"
+  },
+  {
+   "MATNR": "5194822",
+   "SPRAS": "E",
+   "MAKTX": "EPOXY THINNER NO.7 1L"
+  },
+  {
+   "MATNR": "5607402",
+   "SPRAS": "E",
+   "MAKTX": "EPOXY THINNER NO.7 4L"
+  },
+  {
+   "MATNR": "5620197",
+   "SPRAS": "E",
+   "MAKTX": "CORESHIELD 200 GREEN 2.5L KIT"
+  },
+  {
+   "MATNR": "5267617",
+   "SPRAS": "E",
+   "MAKTX": "FENDOR 99 ANTIFOULING BLACK 10L"
+  },
+  {
+   "MATNR": "5672407",
+   "SPRAS": "E",
+   "MAKTX": "FENDOR 99 ANTIFOULING BLUE 10L"
+  },
+  {
+   "MATNR": "5906727",
+   "SPRAS": "E",
+   "MAKTX": "LUSTRION PRO JET BLACK 946ML"
+  },
+  {
+   "MATNR": "5716519",
+   "SPRAS": "E",
+   "MAKTX": "KELWOOD MULTI-CLIMATE GLOSS QT"
+  },
+  {
+   "MATNR": "5721192",
+   "SPRAS": "E",
+   "MAKTX": "KELWOOD PRIMER CLEAR QT"
+  },
+  {
+   "MATNR": "5821913",
+   "SPRAS": "E",
+   "MAKTX": "MAX DAX CF GREEN BASE GL"
+  },
+  {
+   "MATNR": "5207255",
+   "SPRAS": "E",
+   "MAKTX": "MAX DAX CF CONVERTER HALF GALLON"
+  },
+  {
+   "MATNR": "5654122",
+   "SPRAS": "E",
+   "MAKTX": "HULLVEX EXTRA BASE GL"
+  },
+  {
+   "MATNR": "5749064",
+   "SPRAS": "E",
+   "MAKTX": "HULLVEX EXTRA CONVERTER QT"
+  },
+  {
+   "MATNR": "5701726",
+   "SPRAS": "E",
+   "MAKTX": "STANDARD REDUCER FOR EPOXY PRIMERS QT"
+  },
+  {
+   "MATNR": "5158706",
+   "SPRAS": "E",
+   "MAKTX": "STANDARD REDUCER FOR EPOXY PRIMERS GL"
+  },
+  {
+   "MATNR": "5921582",
+   "SPRAS": "E",
+   "MAKTX": "KELFAIR LW STANDARD RED CONVERTER GL"
+  },
+  {
+   "MATNR": "5580383",
+   "SPRAS": "E",
+   "MAKTX": "KELFAIR LW STANDARD RED CONVERTER 5GL"
+  },
+  {
+   "MATNR": "5109472",
+   "SPRAS": "E",
+   "MAKTX": "KELFAIR LW WHITE BASE GL"
+  },
+  {
+   "MATNR": "5360528",
+   "SPRAS": "E",
+   "MAKTX": "KELFAIR LW WHITE BASE 5GL"
+  },
+  {
+   "MATNR": "5854486",
+   "SPRAS": "E",
+   "MAKTX": "HIGH BUILD EPOXY PRIMER YELLOW BASE GL"
+  },
+  {
+   "MATNR": "5535392",
+   "SPRAS": "E",
+   "MAKTX": "HIGH BUILD EPOXY PRIMER CONVERTER GL"
+  },
+  {
+   "MATNR": "5892374",
+   "SPRAS": "E",
+   "MAKTX": "545 EPOXY PRIMER WHITE BASE QT"
+  },
+  {
+   "MATNR": "5693070",
+   "SPRAS": "E",
+   "MAKTX": "545 EPOXY PRIMER WHITE BASE GL"
+  },
+  {
+   "MATNR": "5189196",
+   "SPRAS": "E",
+   "MAKTX": "545 EPOXY PRIMER CONVERTER QT"
+  },
+  {
+   "MATNR": "5297763",
+   "SPRAS": "E",
+   "MAKTX": "545 EPOXY PRIMER CONVERTER GL"
+  },
+  {
+   "MATNR": "5765628",
+   "SPRAS": "E",
+   "MAKTX": "KELGRIP TOPCOAT SNOW WHITE GL"
+  },
+  {
+   "MATNR": "5791620",
+   "SPRAS": "E",
+   "MAKTX": "KELCAT 2 SPRAY CONVERTER GL"
+  },
+  {
+   "MATNR": "5855654",
+   "SPRAS": "E",
+   "MAKTX": "KELCAT 2 SPRAY CONVERTER QT"
+  },
+  {
+   "MATNR": "5351422",
+   "SPRAS": "E",
+   "MAKTX": "REDUCER STANDARD QT"
+  },
+  {
+   "MATNR": "5552043",
+   "SPRAS": "E",
+   "MAKTX": "REDUCER STANDARD 5L"
+  },
+  {
+   "MATNR": "5675747",
+   "SPRAS": "E",
+   "MAKTX": "MARIPROTECT BASE WHITE 3L (KIT COMPONEN"
+  },
+  {
+   "MATNR": "5918133",
+   "SPRAS": "E",
+   "MAKTX": "KELGRIP TOPCOAT SNOW WHITE QT"
+  },
+  {
+   "MATNR": "5497171",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE ULTRA DEEP 20L"
+  },
+  {
+   "MATNR": "5574531",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE ULTRA DEEP 5L"
+  },
+  {
+   "MATNR": "5844182",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE MEDIUM 20L"
+  },
+  {
+   "MATNR": "5236314",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE MEDIUM 5L"
+  },
+  {
+   "MATNR": "5822421",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE LIGHT 5L"
+  },
+  {
+   "MATNR": "5192652",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE YELLOW CHROME 20L"
+  },
+  {
+   "MATNR": "5490855",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE YELLOW CHROME 5L"
+  },
+  {
+   "MATNR": "5550337",
+   "SPRAS": "E",
+   "MAKTX": "MARISEAL 670HS BASE ULTRA DEEP 20L"
+  },
+  {
+   "MATNR": "5755241",
+   "SPRAS": "E",
+   "MAKTX": "MARISEAL 670HS BASE LIGHT 20L"
+  },
+  {
+   "MATNR": "5847254",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE ULTRA DEEP 20L"
+  },
+  {
+   "MATNR": "5769018",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE ULTRA DEEP 5L"
+  },
+  {
+   "MATNR": "5759610",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE LIGHT 20L"
+  },
+  {
+   "MATNR": "5641304",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE ULTRA LIGHT 20L"
+  },
+  {
+   "MATNR": "5106450",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE ULTRA LIGHT 5L"
+  },
+  {
+   "MATNR": "5204317",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE YELLOW 20L"
+  },
+  {
+   "MATNR": "5405490",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 BASE YELLOW 5L"
+  },
+  {
+   "MATNR": "5859919",
+   "SPRAS": "E",
+   "MAKTX": "MARILAC 665 BASE ULTRA DEEP 20L EXPORT"
+  },
+  {
+   "MATNR": "5574113",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 AZURE BLUE C356 5L"
+  },
+  {
+   "MATNR": "5231304",
+   "SPRAS": "E",
+   "MAKTX": "MARITHANE 990 AZURE BLUE C356 20L"
+  },
+  {
+   "MATNR": "5844642",
+   "SPRAS": "E",
+   "MAKTX": "THINNER COL413 5L"
+  },
+  {
+   "MATNR": "5974017",
+   "SPRAS": "E",
+   "MAKTX": "EPOXY PAINT YEW F236 20L"
+  },
+  {
+   "MATNR": "5150513",
+   "SPRAS": "E",
+   "MAKTX": "ALKYD MACHINERY PAINT SILVER GREY 5L"
+  },
+  {
+   "MATNR": "7353674",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOGLINT 2.0 EU 5L"
+  },
+  {
+   "MATNR": "7381276",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOGLINT 2.0 HARDENER WE 2.5L"
+  },
+  {
+   "MATNR": "7579462",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 800DF EU 1L"
+  },
+  {
+   "MATNR": "7601514",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 800DC EU 1L"
+  },
+  {
+   "MATNR": "7620663",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 800CC EU 1L"
+  },
+  {
+   "MATNR": "7577801",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 245 EU 1L"
+  },
+  {
+   "MATNR": "7816419",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 098 EU 1L"
+  },
+  {
+   "MATNR": "7854307",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 332BA EU 1L"
+  },
+  {
+   "MATNR": "7713262",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 333P EU 1L"
+  },
+  {
+   "MATNR": "7357008",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 342 EU 1L"
+  },
+  {
+   "MATNR": "7295593",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 400 EU 1L"
+  },
+  {
+   "MATNR": "7956103",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 535 EU 1L"
+  },
+  {
+   "MATNR": "7783044",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 600 EU 1L"
+  },
+  {
+   "MATNR": "7696574",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 974 EU 1L"
+  },
+  {
+   "MATNR": "7394406",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 980 EU 1L"
+  },
+  {
+   "MATNR": "7861952",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 350 EU 0.5L"
+  },
+  {
+   "MATNR": "7541184",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 360 EU 0.5L"
+  },
+  {
+   "MATNR": "7279455",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 361 EU 0.5L"
+  },
+  {
+   "MATNR": "7117677",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX MM 569 EU 0.5L"
+  },
+  {
+   "MATNR": "7334815",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX VERTANA MM Z147 EU 1L"
+  },
+  {
+   "MATNR": "7310779",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN VERTANA MM BLENDING AGENT EU 1L"
+  },
+  {
+   "MATNR": "7724909",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOFLUX VERTANA WB ACTIVATOR 1L"
+  },
+  {
+   "MATNR": "7413469",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN ACTIVATOR WB WE 1L"
+  },
+  {
+   "MATNR": "7529072",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN SEALER WB EU 1L"
+  },
+  {
+   "MATNR": "7648121",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN M200 EU 5L"
+  },
+  {
+   "MATNR": "7819790",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN M700 EU 5L"
+  },
+  {
+   "MATNR": "7225883",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOVELMACER RAPID D-GREY EU 3L"
+  },
+  {
+   "MATNR": "7563510",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOVELMACER RAPID L-GREY EU 3L"
+  },
+  {
+   "MATNR": "7632054",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOVELMACER RAPID HARDENER 1L"
+  },
+  {
+   "MATNR": "7567325",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTOVELMACER UV LIGHT GREY 0.75L"
+  },
+  {
+   "MATNR": "7985331",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN AUTODREL PLUS LV HARDENER EU 1L"
+  },
+  {
+   "MATNR": "7660502",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN TINTFORM PLUS BLUE EU 1L"
+  },
+  {
+   "MATNR": "7302572",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN TINTFORM PLUS RED EU 1L"
+  },
+  {
+   "MATNR": "7202616",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN TINTFORM PLUS BLACK EU 3L"
+  },
+  {
+   "MATNR": "7612458",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN TINTFORM+ HARD NON-SAND EU 1L"
+  },
+  {
+   "MATNR": "7415788",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN 1K ALL PLASTIC PRIMER AERO 0.4L"
+  },
+  {
+   "MATNR": "7254956",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN SPOT PRIMER BLACK AEROSOL 0.4L"
+  },
+  {
+   "MATNR": "7699965",
+   "SPRAS": "E",
+   "MAKTX": "KESTREN WASH PRIMER 1K CF AEROSOL 0.4L"
+  },
+  {
+   "MATNR": "7149283",
+   "SPRAS": "E",
+   "MAKTX": "VELMARLUNE MIXING CUP 1300ML 200PC"
+  },
+  {
+   "MATNR": "7952592",
+   "SPRAS": "E",
+   "MAKTX": "VELMARLUNE COVERALL LARGE GREY/BLUE"
+  },
+  {
+   "MATNR": "7552686",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT DISC 325U 150MM P600 100PC"
+  },
+  {
+   "MATNR": "7492456",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT DISC 325U 150MM P400 100PC"
+  },
+  {
+   "MATNR": "7989107",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT DISC 325U 150MM P240 100PC"
+  },
+  {
+   "MATNR": "7162912",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT DISC 325U 150MM P120 100PC"
+  },
+  {
+   "MATNR": "7100421",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT DISC 325U 150MM P80 100PC"
+  },
+  {
+   "MATNR": "7149198",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT FLEXIBLE DISC 150MM P800 20PC"
+  },
+  {
+   "MATNR": "7439347",
+   "SPRAS": "E",
+   "MAKTX": "1Z PELKIT FLEXIBLE DISC 150MM P1000 20PC"
+  },
+  {
+   "MATNR": "7219465",
+   "SPRAS": "E",
+   "MAKTX": "1Z UTIF DISC 288U 150MM 15H P400 100PC"
+  },
+  {
+   "MATNR": "7377333",
+   "SPRAS": "E",
+   "MAKTX": "1Z VORTANE PELKIT DISC 443SA 75MM P3000"
+  },
+  {
+   "MATNR": "7633280",
+   "SPRAS": "E",
+   "MAKTX": "1Z LUW 2.0 STANDARD 650ML 125MIC 50PC"
+  },
+  {
+   "MATNR": "7418210",
+   "SPRAS": "E",
+   "MAKTX": "1Z LUW 2.0 LARGE 850ML 125MIC 50PC"
+  },
+  {
+   "MATNR": "7424378",
+   "SPRAS": "E",
+   "MAKTX": "1Z FLEXIBLE GRIP HAND SHEET P320 ROLL"
+  },
+  {
+   "MATNR": "7770528",
+   "SPRAS": "E",
+   "MAKTX": "1Z FLEXIBLE GRIP HAND SHEET P400 ROLL"
+  },
+  {
+   "MATNR": "7907183",
+   "SPRAS": "E",
+   "MAKTX": "1Z FLEXIBLE GRIP HAND SHEET P600 ROLL"
+  },
+  {
+   "MATNR": "7744357",
+   "SPRAS": "E",
+   "MAKTX": "1Z FLEXIBLE GRIP HAND SHEET P800 ROLL"
+  },
+  {
+   "MATNR": "7468077",
+   "SPRAS": "E",
+   "MAKTX": "1Z RETICLE SHEET BLUE 70MMX10M P180"
+  },
+  {
+   "MATNR": "7900617",
+   "SPRAS": "E",
+   "MAKTX": "1Z RETICLE SHEET BLUE 70MMX10M P240"
+  },
+  {
+   "MATNR": "7734789",
+   "SPRAS": "E",
+   "MAKTX": "1Z RETICLE SHEET BLUE 70MMX10M P320"
+  },
+  {
+   "MATNR": "7658557",
+   "SPRAS": "E",
+   "MAKTX": "1Z ZEROLON II ROLL 70MM X 12M P320+"
+  },
+  {
+   "MATNR": "7722291",
+   "SPRAS": "E",
+   "MAKTX": "1Z SANDING SPONGE MICRO FINE GREY 20PC"
+  },
+  {
+   "MATNR": "7972707",
+   "SPRAS": "E",
+   "MAKTX": "1Z SANDING SPONGE ULTRA FINE BLUE 20PC"
+  },
+  {
+   "MATNR": "7377992",
+   "SPRAS": "E",
+   "MAKTX": "1Z FLEXIBLE HAND PAD RED 25PC"
+  },
+  {
+   "MATNR": "7289989",
+   "SPRAS": "E",
+   "MAKTX": "1Z 211E ORANGE 36MM X 50MM"
+  },
+  {
+   "MATNR": "7787571",
+   "SPRAS": "E",
+   "MAKTX": "1Z 211E ORANGE 18MM X 50MM"
+  },
+  {
+   "MATNR": "7158754",
+   "SPRAS": "E",
+   "MAKTX": "1Z DISPOSABLE PAPER MIXING PAD"
+  },
+  {
+   "MATNR": "7618623",
+   "SPRAS": "E",
+   "MAKTX": "1Z SMOOTH TRANSITION TAPE 6MM 5 ROLLS"
+  },
+  {
+   "MATNR": "7352347",
+   "SPRAS": "E",
+   "MAKTX": "1Z UNDERSEAL UNDERCOAT PAINTABLE"
+  },
+  {
+   "MATNR": "7348779",
+   "SPRAS": "E",
+   "MAKTX": "1Z ZSFKNCL-NX GRINDING PASTE"
+  },
+  {
+   "MATNR": "7188465",
+   "SPRAS": "E",
+   "MAKTX": "SELVAFLEX 529 EVOLUTION OCHRE C881"
+  },
+  {
+   "MATNR": "7355651",
+   "SPRAS": "E",
+   "MAKTX": "UHUWAZ NITRILE DISPOSABLE GLOVES L 100PC"
+  },
+  {
+   "MATNR": "7869907",
+   "SPRAS": "E",
+   "MAKTX": "OVISCOAT HETTALEG STOPPER 880ML"
+  },
+  {
+   "MATNR": "7851052",
+   "SPRAS": "E",
+   "MAKTX": "OVISCOAT METAL GLAZE NISTE 800ML"
+  },
+  {
+   "MATNR": "7543721",
+   "SPRAS": "E",
+   "MAKTX": "TIVOVIHILO PEKOROF 4X150M"
+  },
+  {
+   "MATNR": "7417859",
+   "SPRAS": "E",
+   "MAKTX": "ROKI TURBO BLOW GUN"
+  }
+ ],
+ "MARM_POAGENT": [
+  {
+   "MATNR": "5734957",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5745397",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5338270",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5909763",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5606311",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5237241",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5350302",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5194822",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5607402",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5620197",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5267617",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5672407",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5906727",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5716519",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5721192",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5821913",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5207255",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5654122",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5749064",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5701726",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5158706",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5921582",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5580383",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5109472",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5360528",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5854486",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5535392",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5892374",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5693070",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5189196",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5297763",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5765628",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5791620",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5855654",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5351422",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5552043",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5675747",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5918133",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5497171",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5574531",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5844182",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5236314",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5822421",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5192652",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5490855",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5550337",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5755241",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5847254",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5769018",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5759610",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5641304",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5106450",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5204317",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5405490",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5859919",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5574113",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5231304",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5844642",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5974017",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "5150513",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7353674",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7381276",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7579462",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7601514",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7620663",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7577801",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7816419",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7854307",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7713262",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7357008",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7295593",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7956103",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7783044",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7696574",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7394406",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7861952",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7541184",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7279455",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7117677",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7334815",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7310779",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7724909",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7413469",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7529072",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7648121",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7819790",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7225883",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7563510",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7632054",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7567325",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7985331",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7660502",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7302572",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7202616",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7612458",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7415788",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7254956",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7699965",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7149283",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7952592",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7552686",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7492456",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7989107",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7162912",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7100421",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7149198",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7439347",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7219465",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7377333",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7633280",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7418210",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7424378",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7770528",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7907183",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7744357",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7468077",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7900617",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7734789",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7658557",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7722291",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7972707",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7377992",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7289989",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7787571",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7158754",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7618623",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7352347",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7348779",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7188465",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7355651",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7869907",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7851052",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7543721",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  },
+  {
+   "MATNR": "7417859",
+   "MEINH": "PC",
+   "UMREZ": 1,
+   "UMREN": 1
+  }
+ ],
+ "MVKE_POAGENT": [
+  {
+   "MATNR": "5734957",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5745397",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5338270",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5909763",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5606311",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5237241",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5350302",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5194822",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5607402",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5620197",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5267617",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5672407",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5906727",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5716519",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5721192",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5821913",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5207255",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5654122",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5749064",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5701726",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5158706",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5921582",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5580383",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5109472",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5360528",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5854486",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5535392",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5892374",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5693070",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5189196",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5297763",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5765628",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5791620",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5855654",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5351422",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5552043",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5675747",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": "02",
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5918133",
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "SG01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5497171",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5574531",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5844182",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5236314",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5822421",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5192652",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5490855",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5550337",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5755241",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5847254",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5769018",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5759610",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5641304",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5106450",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5204317",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5405490",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5859919",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5574113",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5231304",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5844642",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5974017",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "5150513",
+   "VKORG": "VN10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "VN01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7353674",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7381276",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7579462",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7601514",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7620663",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7577801",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7816419",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7854307",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7713262",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7357008",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7295593",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7956103",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7783044",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7696574",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7394406",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7861952",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7541184",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7279455",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7117677",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7334815",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7310779",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7724909",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7413469",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7529072",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7648121",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7819790",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7225883",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7563510",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7632054",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7567325",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7985331",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7660502",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7302572",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7202616",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7612458",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7415788",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7254956",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7699965",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7149283",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7952592",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7552686",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7492456",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7989107",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7162912",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7100421",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7149198",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7439347",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7219465",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7377333",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7633280",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7418210",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7424378",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7770528",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7907183",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7744357",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7468077",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7900617",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7734789",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7658557",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7722291",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7972707",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7377992",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7289989",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7787571",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7158754",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7618623",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7352347",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7348779",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7188465",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7355651",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7869907",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7851052",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7543721",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  },
+  {
+   "MATNR": "7417859",
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "VMSTA": null,
+   "DWERK": "DE01",
+   "VRKME": "PC"
+  }
+ ],
+ "KNMT_POAGENT": [
+  {
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "KUNNR": "760206",
+   "MATNR": "5906727",
+   "KDMAT": "2-WHL-3416",
+   "POSTX": null,
+   "WERKS": null
+  },
+  {
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "KUNNR": "763421",
+   "MATNR": "5654122",
+   "KDMAT": "WKP016",
+   "POSTX": null,
+   "WERKS": null
+  },
+  {
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "KUNNR": "763421",
+   "MATNR": "5749064",
+   "KDMAT": "ZDR961",
+   "POSTX": null,
+   "WERKS": null
+  },
+  {
+   "VKORG": "SG10",
+   "VTWEG": "10",
+   "KUNNR": "763421",
+   "MATNR": "5734957",
+   "KDMAT": "QXN322",
+   "POSTX": null,
+   "WERKS": null
+  }
+ ],
+ "A305_POAGENT": [
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7601514",
+   "KBETR": 96.33,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7713262",
+   "KBETR": 132.13,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7295593",
+   "KBETR": 111.5,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7956103",
+   "KBETR": 82.62,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7334815",
+   "KBETR": 101.04,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420525",
+   "MATNR": "7648121",
+   "KBETR": 105.06,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7353674",
+   "KBETR": 85.25,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7381276",
+   "KBETR": 57.65,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7579462",
+   "KBETR": 97.57,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7601514",
+   "KBETR": 97.57,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7816419",
+   "KBETR": 72.29,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7783044",
+   "KBETR": 57.76,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7394406",
+   "KBETR": 72.29,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7861952",
+   "KBETR": 66.37,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7117677",
+   "KBETR": 56.74,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7612458",
+   "KBETR": 28.95,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7415788",
+   "KBETR": 26.85,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7254956",
+   "KBETR": 16.57,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7699965",
+   "KBETR": 16.57,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7552686",
+   "KBETR": 49.0,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7492456",
+   "KBETR": 49.0,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7989107",
+   "KBETR": 49.71,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7162912",
+   "KBETR": 49.71,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7100421",
+   "KBETR": 49.71,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7149198",
+   "KBETR": 58.96,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7439347",
+   "KBETR": 58.96,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7377333",
+   "KBETR": 41.57,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7633280",
+   "KBETR": 88.19,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7418210",
+   "KBETR": 97.46,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7424378",
+   "KBETR": 33.09,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7770528",
+   "KBETR": 33.09,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7907183",
+   "KBETR": 33.09,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7744357",
+   "KBETR": 33.09,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7468077",
+   "KBETR": 16.44,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7900617",
+   "KBETR": 16.44,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7734789",
+   "KBETR": 16.44,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7188465",
+   "KBETR": 10.26,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7355651",
+   "KBETR": 10.78,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7869907",
+   "KBETR": 21.39,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420880",
+   "MATNR": "7851052",
+   "KBETR": 28.89,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7579462",
+   "KBETR": 129.73,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7620663",
+   "KBETR": 82.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7577801",
+   "KBETR": 82.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7854307",
+   "KBETR": 129.73,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7357008",
+   "KBETR": 82.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7295593",
+   "KBETR": 82.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7783044",
+   "KBETR": 66.11,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7696574",
+   "KBETR": 82.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7541184",
+   "KBETR": 47.38,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7310779",
+   "KBETR": 51.35,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7724909",
+   "KBETR": 41.08,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7413469",
+   "KBETR": 9.7,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7529072",
+   "KBETR": 48.23,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7648121",
+   "KBETR": 52.53,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7819790",
+   "KBETR": 49.08,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7225883",
+   "KBETR": 112.98,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7563510",
+   "KBETR": 112.98,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7632054",
+   "KBETR": 31.31,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7567325",
+   "KBETR": 56.9,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7985331",
+   "KBETR": 44.01,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7660502",
+   "KBETR": 36.02,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7302572",
+   "KBETR": 36.02,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7202616",
+   "KBETR": 108.06,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7149283",
+   "KBETR": 54.82,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7952592",
+   "KBETR": 26.42,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7219465",
+   "KBETR": 28.23,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7658557",
+   "KBETR": 35.18,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7722291",
+   "KBETR": 9.17,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7972707",
+   "KBETR": 9.17,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7377992",
+   "KBETR": 24.29,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7289989",
+   "KBETR": 1.68,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7787571",
+   "KBETR": 0.84,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7158754",
+   "KBETR": 1.0,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7618623",
+   "KBETR": 49.5,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7352347",
+   "KBETR": 10.36,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7348779",
+   "KBETR": 22.19,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7543721",
+   "KBETR": 40.45,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  },
+  {
+   "VKORG": "DE10",
+   "VTWEG": "10",
+   "KUNNR": "420471",
+   "MATNR": "7417859",
+   "KBETR": 21.02,
+   "KONWA": "EUR",
+   "KPEIN": 1,
+   "KMEIN": "PC"
+  }
+ ],
+ "ZUOM_ALIAS_POAGENT": [
+  {
+   "ALIAS": "l",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "lt",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "ltr",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "ltrs",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "litre",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "litres",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "liter",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "liters",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "lít",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "lit",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "lít.",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "ltr.",
+   "MSEHI": "L"
+  },
+  {
+   "ALIAS": "gal",
+   "MSEHI": "GAL"
+  },
+  {
+   "ALIAS": "gallon",
+   "MSEHI": "GAL"
+  },
+  {
+   "ALIAS": "gallons",
+   "MSEHI": "GAL"
+  },
+  {
+   "ALIAS": "gl",
+   "MSEHI": "GAL"
+  },
+  {
+   "ALIAS": "gallon-",
+   "MSEHI": "GAL"
+  },
+  {
+   "ALIAS": "qt",
+   "MSEHI": "QT"
+  },
+  {
+   "ALIAS": "quart",
+   "MSEHI": "QT"
+  },
+  {
+   "ALIAS": "quarts",
+   "MSEHI": "QT"
+  },
+  {
+   "ALIAS": "ql",
+   "MSEHI": "QT"
+  },
+  {
+   "ALIAS": "ml",
+   "MSEHI": "ML"
+  },
+  {
+   "ALIAS": "millilitre",
+   "MSEHI": "ML"
+  },
+  {
+   "ALIAS": "milliliter",
+   "MSEHI": "ML"
+  },
+  {
+   "ALIAS": "kg",
+   "MSEHI": "KG"
+  },
+  {
+   "ALIAS": "kilogram",
+   "MSEHI": "KG"
+  },
+  {
+   "ALIAS": "kgs",
+   "MSEHI": "KG"
+  },
+  {
+   "ALIAS": "pc",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "pcs",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "pce",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "piece",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "pieces",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "ea",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "each",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "item",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "items",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "unit",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "units",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "st",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "stk",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "stück",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "can",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "cans",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "tin",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "tins",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "pail",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "pails",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "thùng",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "thung",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "t",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "drum",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "drums",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "kit",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "kits",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "set",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "sets",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "bộ",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "bo",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "lon",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "hộp",
+   "MSEHI": "PC"
+  },
+  {
+   "ALIAS": "hop",
+   "MSEHI": "PC"
+  }
+ ]
+}
