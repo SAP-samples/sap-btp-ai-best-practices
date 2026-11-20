@@ -1,0 +1,89 @@
+<section class="settings-page" aria-labelledby="settings-title">
+  <header class="settings-header">
+    <p class="eyebrow">Application Controls</p>
+    <h1 id="settings-title">Settings</h1>
+    <p>Manage the reusable HANA source snapshots and inspect safe AI provider readiness.</p>
+  </header>
+
+  <section class="surface provider-card" aria-labelledby="provider-title">
+    <div class="settings-section-heading">
+      <div>
+        <p class="eyebrow">AI Core Connectivity</p>
+        <h2 id="provider-title">Provider Readiness</h2>
+        <p>Only model names, safe status codes, and support metadata are displayed.</p>
+      </div>
+      <button id="check-provider" type="button">Check now</button>
+    </div>
+    <p id="provider-checked-at" class="checked-at">Loading cached status…</p>
+    <div id="provider-status" class="provider-status-grid" aria-live="polite"></div>
+    <p id="provider-error" role="alert"></p>
+  </section>
+
+  <section class="surface" aria-labelledby="sources-title">
+    <div class="settings-section-heading">
+      <div>
+        <p class="eyebrow">Versioned HANA Sources</p>
+        <h2 id="sources-title">Reference Datasets</h2>
+        <p>Publish a validated replacement for its stated scope. Existing ECNs keep their pinned source versions.</p>
+      </div>
+    </div>
+    <p class="settings-guidance">For each source, choose a file, describe its publication scope, then validate and activate it. Validation failure leaves the current active source unchanged; successful activation affects only future ECN imports in the same scope.</p>
+    <p id="sources-error" role="alert"></p>
+    <div id="source-cards" class="source-card-grid" aria-live="polite"></div>
+    <details class="status-legend">
+      <summary><strong>Procurement Status-Code Legend</strong> <span id="legend-version"></span></summary>
+      <dl id="procurement-legend"></dl>
+    </details>
+  </section>
+
+  <section class="surface advanced-administration" aria-labelledby="advanced-administration-title">
+    <div class="settings-section-heading">
+      <div>
+        <p class="eyebrow">Restricted Controls</p>
+        <h2 id="advanced-administration-title">Advanced Administration</h2>
+        <p>Manage plant assignment rules or permanently remove analysis history. These controls do not replace active reference datasets.</p>
+      </div>
+    </div>
+    <details id="plant-mapping" class="plant-mapping">
+      <summary><strong>Plant Code Mapping</strong> <span>Used for ECNs imported after a mapping change.</span></summary>
+      <p>Conditional rules name brands, for example <code>GEN_E_BRAND = E_BRAND_JB</code>. Map each brand suffix (<code>JB</code>) to the SAP plant that builds it. Several suffixes may share one plant. A material belongs to the plants of the brands named by the rules of its VC group.</p>
+      <form id="plant-mapping-form">
+        <table class="plant-mapping-table">
+          <thead>
+            <tr><th scope="col">Brand suffix</th><th scope="col">Plant code</th><th scope="col">Plant name</th><th scope="col"><span class="visually-hidden">Remove</span></th></tr>
+          </thead>
+          <tbody id="plant-mapping-rows"></tbody>
+        </table>
+        <button id="add-plant-mapping" type="button">Add row</button>
+        <fieldset class="rule-states">
+          <legend>Rule states used for plant assignment</legend>
+          <div id="rule-states-options"></div>
+        </fieldset>
+        <p class="plant-mapping-note">Changes apply to ECNs imported afterwards. Use "Reassess with current data" on an ECN to apply them to it.</p>
+        <div class="source-form-actions">
+          <button type="submit">Save mapping</button>
+          <p id="plant-mapping-status" class="source-form-status" role="status"></p>
+        </div>
+      </form>
+    </details>
+
+    <details class="history-reset" id="history-reset-details">
+      <summary id="history-reset-disclosure"><strong>Reset analysis history</strong> <span>Permanently removes ECN history after a safety check and exact confirmation.</span></summary>
+      <div class="danger-zone" aria-labelledby="reset-title">
+        <p class="eyebrow">Destructive Action</p>
+        <h3 id="reset-title">Reset Analysis History</h3>
+        <p>This deletes ECN uploads, pinned ECN/BOM artifacts, BOM rows, ECN rows, jobs, attempts, and saved analyses.</p>
+        <p>Settings-managed reference datasets and HANA table definitions remain available.</p>
+        <p>After reset, ECN JSON can be uploaded when an active BOM publication exists in Settings. The Plant Code Mapping is kept.</p>
+        <p id="active-status" role="status">Checking analysis activity…</p>
+        <label for="reset-confirmation">Type <code>RESET HISTORY</code> to continue</label>
+        <input id="reset-confirmation" autocomplete="off" spellcheck="false" />
+        <div class="settings-actions">
+          <button id="reset-history" type="button" disabled>Reset analysis history</button>
+          <button id="retry-status" type="button" hidden>Retry status</button>
+        </div>
+        <p id="reset-error" role="alert"></p>
+      </div>
+    </details>
+  </section>
+</section>

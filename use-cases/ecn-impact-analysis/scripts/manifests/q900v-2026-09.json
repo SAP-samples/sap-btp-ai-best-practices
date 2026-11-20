@@ -1,0 +1,35 @@
+{
+  "description": "Anonymized Q900V extraction (data/): EBOM/MBOM workbook, conditional rules, material master, purchase info records and stock. No plant is declared: plants are derived from the conditional rules and the Settings Plant Code Mapping. Isolated in its own data group so other datasets are not pinned together with it.",
+  "data_group": "real-q900v",
+  "publications": [
+    {
+      "path": "data/EBOM MBOM_Q900V_04.09.2026.xlsx",
+      "dataset_type": "BOM",
+      "context": {"model_range": "Q900V", "environment": "PRODUCTION", "snapshot_date": "2026-09-04", "coverage_complete": true}
+    },
+    {
+      "path": "data/Règlesconditionnelleslocales~david.gerber@example.com~04092026_0747GMT.xlsx",
+      "dataset_type": "CONDITIONAL_RULES",
+      "context": {"model_range": "Q900V", "environment": "PRODUCTION", "snapshot_date": "2026-09-04"}
+    },
+    {
+      "path": "data/new_16-09/SAP AI4U - Material Master2.XLSX",
+      "dataset_type": "MATERIAL_MASTER",
+      "context": {"environment": "PRODUCTION", "snapshot_date": "2026-09-16"}
+    },
+    {
+      "path": "data/new_16-09/SAP AI4U - Purchase Info Record2.XLSX",
+      "dataset_type": "PURCHASE_INFO_RECORDS",
+      "context": {"environment": "PRODUCTION", "snapshot_date": "2026-09-16"}
+    },
+    {
+      "path": "data/new_16-09/SAP AI4U - Stock Information.XLSX",
+      "dataset_type": "STOCK",
+      "context": {"environment": "PRODUCTION", "snapshot_date": "2026-09-16"}
+    }
+  ],
+  "ecns": {
+    "path": "data/new_16-09/ECN_full.json",
+    "numbers": ["ECN345274", "ECN346863"]
+  }
+}
