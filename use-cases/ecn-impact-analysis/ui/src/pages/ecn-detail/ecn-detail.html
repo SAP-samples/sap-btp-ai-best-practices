@@ -1,0 +1,174 @@
+<article class="ecn-detail" aria-labelledby="detail-title">
+
+  <a id="back-to-list" class="back-link" href="/ecns">← Back to ECNs</a>
+
+  <ui5-dynamic-page id="ecn-page" show-footer>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TITLE AREA — always visible, never scrolls away
+    ═══════════════════════════════════════════════════════ -->
+    <ui5-dynamic-page-title slot="titleArea">
+
+      <!-- Change area: the entire ECN story starts with this concise statement. -->
+      <ui5-title slot="heading" id="detail-title" class="ecn-page-heading" level="H1" size="H5">ECN Details</ui5-title>
+      <ui5-title slot="snappedHeading" id="detail-title-snapped" level="H1" size="H5">ECN Details</ui5-title>
+
+      <div slot="subheading" class="overview-change">
+        <p class="decision-story">
+          <ui5-icon class="decision-story-ai-icon" name="ai" mode="Image" accessible-name="AI-generated change brief"></ui5-icon>
+          <span id="decision-story"></span>
+        </p>
+        <p id="overview-change-facts" class="overview-change-facts" hidden></p>
+      </div>
+
+      <!-- Action buttons -->
+      <ui5-button id="generate-summary" slot="actionsBar" design="Default">Generate Summary</ui5-button>
+      <ui5-button id="retry-analysis" slot="actionsBar" design="Default" hidden>Retry Analysis</ui5-button>
+
+    </ui5-dynamic-page-title>
+
+    <!-- ═══════════════════════════════════════════════════════
+         HEADER AREA — collapses on scroll, pinnable
+    ═══════════════════════════════════════════════════════ -->
+    <ui5-dynamic-page-header slot="headerArea">
+
+      <!-- Deferred: the decision-signal cards are retained in code but removed
+           from this compact header at stakeholder request. -->
+      <!--
+      <div id="ecn-kpi-header" class="kpi-row">
+        <div class="kpi-tile kpi-loading">Loading analysis…</div>
+      </div>
+      -->
+
+      <!-- Source preparation status (shown when graph is not CURRENT) -->
+      <section id="source-preparation" class="source-preparation" role="status" hidden>
+        <strong>Source preparation: <span id="rdf-projection-status"></span></strong>
+        <p id="rdf-projection-notice"></p>
+        <button id="rdf-projection-retry" type="button" hidden>Retry source preparation</button>
+      </section>
+
+      <!-- Generation status line -->
+      <p id="detail-generation-status" role="status" class="generation-status"></p>
+      <p id="detail-error" role="alert" class="detail-error"></p>
+
+    </ui5-dynamic-page-header>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MAIN CONTENT — one scrollable section per ECN topic
+    ═══════════════════════════════════════════════════════ -->
+    <div class="ecn-sections">
+      <nav class="ecn-section-navigation" aria-label="ECN sections">
+        <button type="button" data-section-target="overview" aria-current="true">Overview</button>
+        <button type="button" data-section-target="plants">Plants</button>
+        <button type="button" data-section-target="bom">BOM Change Evidence</button>
+        <!-- MOCK_DATA_RETIREMENT_VALIDATION_DISABLED: <button type="button" data-section-target="make-buy">Make or Buy</button> -->
+        <button type="button" data-section-target="audit">Audit Log</button>
+      </nav>
+
+      <!-- ─── Overview ─── -->
+      <section class="ecn-section" id="tab-summary" aria-label="Overview">
+
+        <section id="source-record" class="surface source-record" aria-labelledby="source-record-title">
+          <h2 id="source-record-title">Overview</h2>
+          <dl id="source-record-fields" class="source-record-fields"><div><dt>Loading source details</dt><dd></dd></div></dl>
+        </section>
+
+        <section id="affected-sites" class="surface" aria-labelledby="affected-sites-title">
+          <h2 id="affected-sites-title">Plants</h2>
+          <ul id="affected-sites-list" class="affected-sites-list"><li class="helper-text">Loading manufacturing sites...</li></ul>
+        </section>
+
+      </section>
+
+      <!-- ─── Plants & BOM ─── -->
+      <section class="ecn-section" id="tab-plants" aria-label="Plants and BOM">
+
+        <section id="bom-changes" class="surface"><h2>BOM Change Evidence</h2><p class="helper-text">Loading…</p></section>
+
+      </section>
+
+      <!-- MOCK_DATA_RETIREMENT_VALIDATION_DISABLED_START: Procurement / Make-or-Buy section.
+      <section class="ecn-section" id="tab-procurement" aria-label="Procurement">
+
+        <div id="procurement-content"><p class="helper-text">Loading procurement data…</p></div>
+
+      </section>
+      MOCK_DATA_RETIREMENT_VALIDATION_DISABLED_END: Procurement / Make-or-Buy section. -->
+
+      <!-- ─── Audit Log ─── -->
+      <section class="ecn-section" id="tab-audit" aria-label="Audit Log">
+        <section id="audit-log-card" class="surface" aria-labelledby="audit-log-title">
+          <h2 id="audit-log-title">Audit Log</h2>
+          <div id="audit-log"><p class="helper-text">Loading audit events…</p></div>
+        </section>
+      </section>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         FLOATING FOOTER — always visible decision bar
+    ═══════════════════════════════════════════════════════ -->
+    <div slot="footerArea" class="decision-footer">
+      <ui5-bar design="FloatingFooter" id="decision-bar">
+        <ui5-button id="acceptance-rules-open" slot="startContent" design="Transparent">Acceptance rules</ui5-button>
+        <ui5-input
+          id="reviewer-name-footer"
+          slot="endContent"
+          placeholder="Your name"
+          maxlength="200"
+          class="reviewer-input"
+          accessible-name="Reviewer name"
+        ></ui5-input>
+        <ui5-button
+          id="send-back-footer"
+          slot="endContent"
+          design="Negative"
+          accessible-name="Send back to engineering"
+        >Send back</ui5-button>
+
+        <ui5-button
+          id="accept-ecn-footer"
+          slot="endContent"
+          design="Positive"
+          disabled
+        >Accept ECN</ui5-button>
+      </ui5-bar>
+    </div>
+
+  </ui5-dynamic-page>
+
+  <!-- Native UI5 modal keeps multiline rules above sticky page/navigation layers. -->
+  <ui5-dialog id="acceptance-rules" header-text="Acceptance rules" initial-focus="acceptance-rules-close">
+    <div class="acceptance-rules-content" role="region" aria-label="Acceptance rules explanation" tabindex="0">
+      <p id="accept-ecn-reason" role="status">Checking acceptance status…</p>
+      <p>The footer prevents acceptance when the acceptance plan reports a blocker or an engineering decision is already recorded. The Blocked status column in BOM Change Evidence identifies each missing purchasing entry. Choose the material number to open its details and required action.</p>
+      <ul>
+        <li>Incoming (new) parts must be listed in purchase-info-record data. Missing incoming entries block acceptance. This membership is the current surrogate for price evidence; it does not guarantee a numeric or current price.</li>
+        <li>Outgoing (old) material does not require price evidence for acceptance.</li>
+        <li>Enter your reviewer name in the decision footer, then choose Accept ECN and confirm the decision.</li>
+        <li>The server validates that the snapshot hash and version still match, and checks acceptance preconditions again when saving. If the snapshot changed, reload it before submitting the review.</li>
+        <li>The SAP update is simulated; accepting records an engineering review, not an actual SAP update.</li>
+      </ul>
+      <p>If the acceptance plan is loading or unavailable, this is not evidence that the ECN is ready. The existing footer behavior is unchanged; the server still validates a submitted review.</p>
+    </div>
+    <ui5-button id="acceptance-rules-close" slot="footer">Close</ui5-button>
+  </ui5-dialog>
+
+  <!-- Send-back dialog -->
+  <dialog id="send-back-dialog" aria-labelledby="send-back-title">
+    <h2 id="send-back-title">Send Back to Engineering</h2>
+    <label for="send-back-comments">What must change? <span aria-hidden="true">*</span></label>
+    <ui5-textarea
+      id="send-back-comments"
+      placeholder="Describe what must change before this ECN can be accepted"
+      maxlength="10000"
+      rows="4"
+    ></ui5-textarea>
+    <p id="send-back-error" role="alert" class="send-back-error"></p>
+    <div class="dialog-actions">
+      <ui5-button id="send-back-cancel" design="Default">Cancel</ui5-button>
+      <ui5-button id="send-back-confirm" design="Negative" type="Submit">Confirm send back</ui5-button>
+    </div>
+  </dialog>
+
+</article>

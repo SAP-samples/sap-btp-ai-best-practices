@@ -1,0 +1,45 @@
+---
+applications:
+  - name: ecn-impact-analysis-dashboard-api-new
+    path: api
+    buildpack: python_buildpack
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    instances: 1
+    memory: 4G
+    disk_quota: 2G
+    routes:
+      - route: ecn-impact-analysis-dashboard-api-new.cfapps.eu10-005.hana.ondemand.com
+    env:
+      ALLOWED_ORIGIN: https://ecn-impact-analysis-dashboard-new.cfapps.eu10-005.hana.ondemand.com
+      API_BASE_URL: https://ecn-impact-analysis-dashboard-api-new.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      API_KEY: ((api_key))
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      LLM_MAX_CONCURRENCY: "4"
+      LLM_REQUEST_TIMEOUT_SECONDS: "180"
+      MAX_JSON_UPLOAD_BYTES: "134217728"
+      MAX_WORKBOOK_UPLOAD_BYTES: "104857600"
+      MAX_WORKBOOK_ROWS: "100000"
+      MAX_WORKBOOK_CELLS: "3000000"
+      MAX_PROMPT_EVIDENCE_ITEMS: "100"
+      MAX_PROMPT_CHARACTERS: "120000"
+      LLM_MODEL: "gpt-5.4"
+      # The drawing workflow reuses LLM_MODEL, LLM_REQUEST_TIMEOUT_SECONDS,
+      # and LLM_MAX_CONCURRENCY above.
+      DRAWING_MAX_UPLOAD_BYTES: "20971520"
+  - name: ecn-impact-analysis-dashboard-new
+    path: ui/dist
+    buildpack: staticfile_buildpack
+    command: null
+    memory: 256M
+    routes:
+      - route: ecn-impact-analysis-dashboard-new.cfapps.eu10-005.hana.ondemand.com
