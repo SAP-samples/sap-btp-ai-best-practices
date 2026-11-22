@@ -1,0 +1,25 @@
+---
+applications:
+  - name: fmi-scheduling
+    memory: 1024M
+    disk_quota: 2048M
+    buildpacks:
+      - python_buildpack
+    command: gunicorn "backend.app:create_app()" --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    env:
+      FLASK_ENV: production
+      # SAP AI Core / GenAI Hub
+      AICORE_AUTH_URL: ((AICORE_AUTH_URL))
+      AICORE_CLIENT_ID: ((AICORE_CLIENT_ID))
+      AICORE_CLIENT_SECRET: ((AICORE_CLIENT_SECRET))
+      AICORE_BASE_URL: ((AICORE_BASE_URL))
+      AICORE_RESOURCE_GROUP: ((AICORE_RESOURCE_GROUP))
+      #Gmail
+      GMAIL_USER: ((GMAIL_USER))
+      GMAIL_APP_PASSWORD: ((GMAIL_APP_PASSWORD))
+      #S/4HANA OData
+      S4_BASE_URL: ((S4_BASE_URL))
+      S4_CLIENT: ((S4_CLIENT))
+      S4_USERNAME: ((S4_USERNAME))
+      S4_PASSWORD: ((S4_PASSWORD))
+      S4_VERIFY: ((S4_VERIFY))
