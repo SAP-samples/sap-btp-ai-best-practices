@@ -11,7 +11,7 @@
 
 ---
 
-This page is a companion to the [**Pro-Code AI Agents**](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx) best practice page. It focuses exclusively on the security, ethics, and governance aspects of deploying agentic AI systems within the SAP ecosystem. Threat categories and controls are cross-referenced to the **OWASP Top 10 for LLM Applications (2025)** where applicable.
+This page is a companion to the [**Pro-Code: Creating AI Agents**](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx) best practice page. It focuses exclusively on the security, ethics, and governance aspects of deploying agentic AI systems within the SAP ecosystem. Threat categories and controls are cross-referenced to the **OWASP Top 10 for LLM Applications (2025)** where applicable.
 
 ## 1. Overview
 

@@ -2,6 +2,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
 import { environment } from "./src/config/environment"; // Import environment config
+import sidebarItemsGenerator from "./sidebarItemsGenerator";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -73,7 +74,8 @@ const config: Config = {
       "classic",
       {
         docs: {
-          sidebarPath: "./sidebars.ts"
+          sidebarPath: "./sidebars.ts",
+          sidebarItemsGenerator
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           // editUrl:

@@ -1,6 +1,6 @@
-![Pro-Code AI Agents](https://cdn.hubblecontent.osi.office.net/m365content/publish/235d262e-6785-4a03-9953-65b69541c1ab/901627692.jpg)
+![Pro-Code: Creating AI Agents](https://cdn.hubblecontent.osi.office.net/m365content/publish/235d262e-6785-4a03-9953-65b69541c1ab/901627692.jpg)
 
-# Pro-Code AI Agents
+# Pro-Code: Creating AI Agents
 
 This best practice page focuses on building production-ready AI agents using code-based approaches within the SAP ecosystem. For security and governance of AI agents, see the dedicated [**Agentic AI Security and Governance**](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx) best practice page. For connecting agents to enterprise tools and data sources via the Model Context Protocol, see the [**Model Context Protocol (MCP)**](/sites/210313/SitePages/Model%20Context%20Protocol%20(MCP).aspx) best practice page.
 

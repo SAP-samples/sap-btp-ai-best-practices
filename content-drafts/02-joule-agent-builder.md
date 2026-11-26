@@ -1,6 +1,6 @@
-![Content-based Agents with SAP Joule Studio Agent Builder](https://cdn.hubblecontent.osi.office.net/m365content/publish/235d262e-6785-4a03-9953-65b69541c1ab/901627692.jpg)
+![Joule Studio Classic](https://cdn.hubblecontent.osi.office.net/m365content/publish/235d262e-6785-4a03-9953-65b69541c1ab/901627692.jpg)
 
-# Content-based Agents with SAP Joule Studio Agent Builder
+# Joule Studio Classic
 
 ## Steps
 
