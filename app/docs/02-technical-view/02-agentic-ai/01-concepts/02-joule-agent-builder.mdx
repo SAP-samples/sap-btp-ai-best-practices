@@ -1,6 +1,6 @@
 ---
-title: "Content-based Agents with SAP Joule Studio Agent Builder"
-description: "Best practices for building content-based agents using the SAP Joule Studio Agent Builder."
+title: "Joule Studio Classic"
+description: "Deprecated guidance for building content-based agents with Joule Studio Classic."
 hide_title: true
 ---
 
@@ -18,8 +18,14 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
 <PageViewTracker />
 
 <div className="hero-header">
-  <h1>Content-based Agents with SAP Joule Studio Agent Builder</h1>
+  <h1>Joule Studio Classic</h1>
 </div>
+
+:::warning Deprecated best practice
+
+For current guidance on creating AI agents, see [Creating AI Agents](/docs/technical-view/agentic-ai/concepts/joule-studio-ai-agents) and [Pro-Code: Creating AI Agents](/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents).
+
+:::
 
 <div className="section-with-background">
   <div className="row">
@@ -82,13 +88,13 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
 
 ### Description
 
-Joule Studio is a capability in SAP Build that lets organizations create and manage custom Joule skills and Joule agents. It supports building deterministic skills and interactive agents, managing versions, deploying updates, and defining permissions for who can use these capabilities.
+Joule Studio Classic is a capability in SAP Build that lets organizations create and manage custom Joule skills and Joule agents. It supports building deterministic skills and interactive agents, managing versions, deploying updates, and defining permissions for who can use these capabilities.
 
-Agent builder in Joule Studio focuses on creating custom Joule agents that can handle complex or multi-step tasks by combining instructions, model-backed planning and reasoning, and tools for execution.
+Agent builder in Joule Studio Classic focuses on creating custom Joule agents that can handle complex or multi-step tasks by combining instructions, model-backed planning and reasoning, and tools for execution.
 
 ### Expected Outcome
 
-When using Joule Studio to create custom Joule agents, the expected outcome is:
+When using Joule Studio Classic to create custom Joule agents, the expected outcome is:
 * A context-aware agent definition (name, description, expertise, instructions) that helps Joule identify the agent for a given user intent.
 * A configured set of tools the agent can use, including Joule skills, document grounding resource groups, MCP servers connected via destinations, and other custom agents as tools (subagents).
 * Execution within the user's security context using SAP Cloud Identity Services and principal propagation, so authorization checks and access restrictions apply end-to-end.
@@ -107,8 +113,8 @@ When using Joule Studio to create custom Joule agents, the expected outcome is:
 
 Some key concepts are part of Build Process Automation and can be found [here](https://help.sap.com/docs/build-process-automation/sap-build-process-automation-dev/using-sap-build-process-automation?state=DRAFT&version=Dev&locale=en-US).
 
-Here are the Joule Studio specific concepts:
-* **Joule Studio**: capability in SAP Build for designing, managing, and deploying Joule skills and Joule agents, including permission management.
+Here are the Joule Studio Classic specific concepts:
+* **Joule Studio Classic**: capability in SAP Build for designing, managing, and deploying Joule skills and Joule agents, including permission management.
 * **Joule agent**: an interactive capability designed to collaborate with Joule to tackle complex or multi-step tasks.
 * **Agent definition**: metadata plus expertise and instructions used to describe what the agent does and to guide its behavior.
 * **Tools**: capabilities the agent can call to execute work, including Joule skills, MCP servers via destinations, subagents as tools, and document grounding resource groups in SAP AI Core.
@@ -129,13 +135,13 @@ Here are the Joule Studio specific concepts:
 1. Set up a SAP Business Technology Platform (SAP BTP) subaccount
 2. Set up SAP Build ([Setup Guide](https://help.sap.com/docs/build-service/build-service-guide/initial-setup-of-sap-build?version=Cloud&locale=en-US))
 3. Set up subscription to Cloud Identity Services ([Setup Guide](https://help.sap.com/docs/cloud-identity-services/cloud-identity-services/initial-setup?locale=en-US&version=Cloud&q=Initial))
-4. Set up Joule Studio ([Setup Guide](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/04b323352fa645238211ce017f634d34.html?locale=en-US#set-up-joule-studio-using-the-booster))
+4. Set up Joule Studio Classic ([Setup Guide](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/04b323352fa645238211ce017f634d34.html?locale=en-US#set-up-joule-studio-using-the-booster))
 
 ### High-level reference architecture
 
-![Extend Joule with Joule Studio](@site/static/agentic-ai/joule-agent-builder/images/joule-studio-skills-architecture.jpeg)
+![Extend Joule with Joule Studio Classic](@site/static/agentic-ai/joule-agent-builder/images/joule-studio-skills-architecture.jpeg)
 
-This [reference architecture](https://architecture.learning.sap.com/docs/ref-arch/06ff6062dc/3) outlines how Joule Studio can be leveraged to integrate and extend SAP and non-SAP solutions across cloud and hybrid landscapes. By tapping into the expertise of citizen developers, Joule Studio facilitates the adaptation, improvement, and innovation of business processes, driving positive business outcomes through sophisticated AI capabilities.
+This [reference architecture](https://architecture.learning.sap.com/docs/ref-arch/06ff6062dc/3) outlines how Joule Studio Classic can be leveraged to integrate and extend SAP and non-SAP solutions across cloud and hybrid landscapes. By tapping into the expertise of citizen developers, Joule Studio Classic facilitates the adaptation, improvement, and innovation of business processes, driving positive business outcomes through sophisticated AI capabilities.
 
 ### Integrating and Extending Joule
 
@@ -160,21 +166,21 @@ Key guidelines:
 * Specify what is out of scope, including actions the agent must not perform.
 * Prefer one primary business process per agent. If multiple processes are needed, separate them into dedicated agents or skills.
 
-> *"With Joule Studio, agentic innovation moves closer to the heart of operations. At KPMG, we're helping to shape trusted solutions that transform business context into measurable value by building specialized AI agents for fulfillment orchestration, supply chain management, and more".*
+> *"With Joule Studio Classic, agentic innovation moves closer to the heart of operations. At KPMG, we're helping to shape trusted solutions that transform business context into measurable value by building specialized AI agents for fulfillment orchestration, supply chain management, and more".*
 > — [Valentino Köster, Global Head of SAP360 Program & AI, KPMG AG WPG, Germany](https://community.sap.com/t5/artificial-intelligence-blogs-posts/agent-builder-in-joule-studio-is-now-generally-available-build-your-own/ba-p/14289282)
 
 #### Choose between a single-agent setup and an orchestration approach
 
-Use an orchestration approach when the workflow is better handled by combining a main agent with specialized subagents and Joule skills. In Joule Studio, subagents are regular Joule agents that can be added to another agent as tools. This enables agent orchestration within a larger workflow.
+Use an orchestration approach when the workflow is better handled by combining a main agent with specialized subagents and Joule skills. In Joule Studio Classic, subagents are regular Joule agents that can be added to another agent as tools. This enables agent orchestration within a larger workflow.
 
 Recommended orchestration patterns:
 * A main agent that coordinates the workflow and calls specialized subagents as reusable tools for specific tasks.
 * [Specialized subagents](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/e1d5bd4898654a09b82f991755108bd1.html) with focused responsibilities, such as input collection, document or policy interpretation, or exception handling.
 * <Link to={useBaseUrl("/docs/technical-view/ai-services/custom-joule-skills")}>**Joule skills**</Link> for rule-based, deterministic tasks.
 
-Subagents are regular agents that can be added to another agent. Add existing Joule agents to another Joule agent to enable agent orchestration within Joule Studio. This allows a main agent to call specialized agents as reusable tools to handle specific tasks as part of a larger workflow.
+Subagents are regular agents that can be added to another agent. Add existing Joule agents to another Joule agent to enable agent orchestration within Joule Studio Classic. This allows a main agent to call specialized agents as reusable tools to handle specific tasks as part of a larger workflow.
 
-Design constraints (Joule Studio):
+Design constraints (Joule Studio Classic):
 * Subagents run synchronously and sequentially; parallel execution is not supported.
 * Cyclic dependencies (a subagent calling back the main agent) are not supported.
 
@@ -293,9 +299,9 @@ Key guidelines:
 
 #### Use Content-based sources and [document grounding](https://developers.sap.com/tutorials/joulestudio-document-grounding.html)
 
-Document grounding is appropriate when the agent must use enterprise documents as a trusted reference, such as policies, procedures, contracts, or manuals. Grounding reduces the risk of unsupported responses. In Joule Studio, this is supported through document grounding, where business documents are indexed in SAP AI Core and exposed to the agent through a document grounding tool. This enables the agent to retrieve relevant passages from the configured document set and use them as context for responses, instead of relying on general knowledge.
+Document grounding is appropriate when the agent must use enterprise documents as a trusted reference, such as policies, procedures, contracts, or manuals. Grounding reduces the risk of unsupported responses. In Joule Studio Classic, this is supported through document grounding, where business documents are indexed in SAP AI Core and exposed to the agent through a document grounding tool. This enables the agent to retrieve relevant passages from the configured document set and use them as context for responses, instead of relying on general knowledge.
 
-Document grounding introduces additional operational dependencies. Document sets must be maintained, and the integration requires configuration of SAP AI Core and a supported object store, as described in the Joule Studio document grounding setup. Plan for these prerequisites and validate the grounding behavior during testing of the agent.
+Document grounding introduces additional operational dependencies. Document sets must be maintained, and the integration requires configuration of SAP AI Core and a supported object store, as described in the Joule Studio Classic document grounding setup. Plan for these prerequisites and validate the grounding behavior during testing of the agent.
 
 Key guidelines:
 * Use grounding when the user expects answers that reflect approved documentation rather than general knowledge.
@@ -323,7 +329,7 @@ Key guidelines:
 
 ### 3.4 Security and Authorization Model
 
-Joule Studio [uses](https://help.sap.com/docs/build-process-automation/sap-build-process-automation/security) SAP Cloud Identity Services to ensure agents authenticate correctly and only perform tasks they're authorized to do. It enforces principal propagation so each skill or agent runs in the user's security context with the same access checks, and integrates with Joule and AI Core to publish custom agents, run them on models, and ground responses using document grounding and business data. You can also discover the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>related Best Practice</Link>.
+Joule Studio Classic [uses](https://help.sap.com/docs/build-process-automation/sap-build-process-automation/security) SAP Cloud Identity Services to ensure agents authenticate correctly and only perform tasks they're authorized to do. It enforces principal propagation so each skill or agent runs in the user's security context with the same access checks, and integrates with Joule and AI Core to publish custom agents, run them on models, and ground responses using document grounding and business data. You can also discover the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>related Best Practice</Link>.
 
 #### Run in the user security context
 
@@ -430,12 +436,12 @@ Key guidelines:
 
 ### 3.6 Observability and Operations
 
-* Use the [**Monitor AI Capabilities**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/48971111ec124bde97a3dafb06949c1d.html) functions in Joule Studio to review runtime-relevant information for deployed capabilities and to support operational analysis.
-* Use the [**SAP Audit Log service**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ed3f72f449a743a6b38ddf6d0a8f44f7.html) **for SAP Business Technology Platform (BTP)** as described for Joule Studio to record security-related events.
-* Use [**environments**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/26815f2ceb324b518ed47caec9c0624f.html) in Joule Studio to deploy and run Joule Studio projects and to control how projects are executed in a given runtime context. Use environment-specific configuration where applicable, including destinations used by action projects.
-* Manage and validate [**destinations**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ab5963ad9f124160909f886001285614.html) required by action projects following the Joule Studio guidance for destination management. This includes ensuring the destination configuration is available for the intended environment and runtime.
-* Use the testing capabilities provided in Joule Studio (for example, testing actions where applicable) to validate changes before using them in productive scenarios.
-* For operational issues, follow the documented [troubleshooting](https://help.sap.com/docs/joule/integrating-joule-with-sap/troubleshooting) guidance for Joule and Joule Studio. Use the documented troubleshooting steps as the first-level approach before escalating.
+* Use the [**Monitor AI Capabilities**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/48971111ec124bde97a3dafb06949c1d.html) functions in Joule Studio Classic to review runtime-relevant information for deployed capabilities and to support operational analysis.
+* Use the [**SAP Audit Log service**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ed3f72f449a743a6b38ddf6d0a8f44f7.html) **for SAP Business Technology Platform (BTP)** as described for Joule Studio Classic to record security-related events.
+* Use [**environments**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/26815f2ceb324b518ed47caec9c0624f.html) in Joule Studio Classic to deploy and run Joule Studio Classic projects and to control how projects are executed in a given runtime context. Use environment-specific configuration where applicable, including destinations used by action projects.
+* Manage and validate [**destinations**](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/ab5963ad9f124160909f886001285614.html) required by action projects following the Joule Studio Classic guidance for destination management. This includes ensuring the destination configuration is available for the intended environment and runtime.
+* Use the testing capabilities provided in Joule Studio Classic (for example, testing actions where applicable) to validate changes before using them in productive scenarios.
+* For operational issues, follow the documented [troubleshooting](https://help.sap.com/docs/joule/integrating-joule-with-sap/troubleshooting) guidance for Joule and Joule Studio Classic. Use the documented troubleshooting steps as the first-level approach before escalating.
 
 ### 3.7 Reliability and Error Handling, Testing and Debugging, Troubleshooting Strategy
 
@@ -454,7 +460,7 @@ Use tools as the execution layer. For validations and well-defined operations, p
 
 When a tool call fails, stop the execution path and surface the failure clearly. Do not continue "as if" the tool succeeded. If tool output is incomplete or inconsistent, handle it explicitly (for example, request the missing input or stop before execution).
 
-Test end-to-end scenarios that represent real user flows, including tool calls and confirmation points. Review [steps](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/127b1c287500451294cc1012f08c8fe4.html) and tool-call behavior in Joule Studio testing views before deployment. Capture test evidence for controlled change and approvals.
+Test end-to-end scenarios that represent real user flows, including tool calls and confirmation points. Review [steps](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/127b1c287500451294cc1012f08c8fe4.html) and tool-call behavior in Joule Studio Classic testing views before deployment. Capture test evidence for controlled change and approvals.
 
 Start with testing [simple parts](https://help.sap.com/docs/Joule_Studio/45f9d2b8914b4f0ba731570ff9a85313/127b1c287500451294cc1012f08c8fe4.html) of the process.
 
@@ -497,8 +503,8 @@ Key guidelines:
 ## <span className="step-number">4</span> <span className="step-title">Implementation Examples</span>
 
 Start your journey by learning how to get Joule in your account:
-* [Enabling Joule Studio in SAP Build for existing Joule customers](https://community.sap.com/t5/technology-blog-posts-by-sap/enabling-joule-studio-in-sap-build-for-existing-joule-customers/ba-p/14162550)
-* [Getting Started with Joule Studio in SAP Build - Part 1: Provisioning Joule Studio](https://community.sap.com/t5/technology-blog-posts-by-sap/getting-started-with-joule-studio-in-sap-build-part-1-provisioning-joule/ba-p/14157407)
+* [Enabling Joule Studio Classic in SAP Build for existing Joule customers](https://community.sap.com/t5/technology-blog-posts-by-sap/enabling-joule-studio-in-sap-build-for-existing-joule-customers/ba-p/14162550)
+* [Getting Started with Joule Studio Classic in SAP Build - Part 1: Provisioning Joule Studio Classic](https://community.sap.com/t5/technology-blog-posts-by-sap/getting-started-with-joule-studio-in-sap-build-part-1-provisioning-joule/ba-p/14157407)
 
 ...then look at how to create simple examples.
 
@@ -511,7 +517,7 @@ To implement Joule agents and Joule skills in a repeatable way, start with a str
 * **Launch SAP Build Lobby** and verify that the SAP Build workspace is accessible for the project flow.
 * **Configure destinations in SAP BTP and SAP Build Lobby** to enable governed connectivity to external systems and services.
 * **Create a development environment** to separate build and runtime contexts for controlled rollout.
-* **Create a Joule Studio project** (agents/skills project structure) as the unit of lifecycle management.
+* **Create a Joule Studio Classic project** (agents/skills project structure) as the unit of lifecycle management.
 * **Create the agent or skill and configure its settings** (including the required dependencies where applicable).
 * **Add tools to the agent** (for example actions, skills, MCP servers, or grounding tools depending on the use case).
 * **Test before deployment** using the provided testing steps in the guide flow (for example "Test your Joule Agent" / "Test your Joule Skills").
@@ -520,10 +526,10 @@ To implement Joule agents and Joule skills in a repeatable way, start with a str
 | **Description** | **Mission link** |
 |---|---|
 | Get Started with SAP Build Code and Joule using Generative AI (Trial Account) | [Link](https://discovery-center.cloud.sap/missiondetail/4441/4727/) |
-| Set Up Joule Studio and start with Joule Skills and Agents in BTP Enterprise Account | [Link](https://discovery-center.cloud.sap/missiondetail/4651/4940/) |
-| Build custom Joule skills for SAP and non-SAP systems using Joule Studio | [Link](https://discovery-center.cloud.sap/missiondetail/4643/?tab=projectboard) |
-| Build custom AI Agents with Joule Studio | [Link](https://discovery-center.cloud.sap/missiondetail/4665/4954/?tab=projectboard) |
-| Use Joule Studio with Document Grounding | [Link](https://developers.sap.com/tutorials/joulestudio-document-grounding.html) |
+| Set Up Joule Studio Classic and start with Joule Skills and Agents in BTP Enterprise Account | [Link](https://discovery-center.cloud.sap/missiondetail/4651/4940/) |
+| Build custom Joule skills for SAP and non-SAP systems using Joule Studio Classic | [Link](https://discovery-center.cloud.sap/missiondetail/4643/?tab=projectboard) |
+| Build custom AI Agents with Joule Studio Classic | [Link](https://discovery-center.cloud.sap/missiondetail/4665/4954/?tab=projectboard) |
+| Use Joule Studio Classic with Document Grounding | [Link](https://developers.sap.com/tutorials/joulestudio-document-grounding.html) |
 | Boosting AI-driven Business Transformation with Joule Agents | [Link](https://learning.sap.com/courses/boosting-ai-driven-business-transformation-with-joule-agents/describing-joule-agents) |
 
 Don't be afraid to experiment; the best knowledge comes from practical skills.
@@ -534,7 +540,7 @@ Don't be afraid to experiment; the best knowledge comes from practical skills.
 
 **If you experience a problem with this service, we suggest following the steps outlined below.**
 
-Verify the Service Status - check the availability of Joule Studio at [SAP Trust Center](https://www.sap.com/india/about/trust-center/cloud-service-status.html) or [Cloud Availability Center](https://support.sap.com/en/my-support/systems-installations/cac.html)
+Verify the Service Status - check the availability of Joule Studio Classic at [SAP Trust Center](https://www.sap.com/india/about/trust-center/cloud-service-status.html) or [Cloud Availability Center](https://support.sap.com/en/my-support/systems-installations/cac.html)
 
 For further details on specific SAP Business Technology Platform incidents, refer to [Root Cause Analyses](https://help.sap.com/viewer/product/SCP_RCA/Latest/en-US).
 

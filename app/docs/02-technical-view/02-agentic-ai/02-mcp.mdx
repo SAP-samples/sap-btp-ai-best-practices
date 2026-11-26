@@ -51,7 +51,7 @@ import RelatedProjects from "@site/src/components/RelatedProjects";
 
 ### Description
 
-This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. It also covers the SAP Integration Suite MCP Gateway as the governed path for exposing SAP and non-SAP APIs as MCP-compliant tools for external agent ecosystems. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
+This page is a companion to the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>**Pro-Code: Creating AI Agents**</Link> best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. It also covers the SAP Integration Suite MCP Gateway as the governed path for exposing SAP and non-SAP APIs as MCP-compliant tools for external agent ecosystems. For security considerations applicable to all agentic AI deployments, see the dedicated <Link to={useBaseUrl("/docs/technical-view/agentic-ai/agentic-ai-security-governance")}>Agentic AI Security and Governance</Link> best practice page.
 
 The **Model Context Protocol (MCP)** is an open standard that enables AI agents to connect with tools, external resources, and data sources through a single, standardized interface. Rather than building unique integrations for each service, each with its own authentication methods, data formats, and API patterns, MCP provides a universal protocol through which agents can discover, invoke, and orchestrate any compliant tool.
 
@@ -191,7 +191,7 @@ The quality of tool descriptions directly determines whether the LLM selects the
 * Avoid generic descriptions like "data tool" or "utility" that provide no guidance for tool selection.
 * Limit the number of tools exposed per MCP server to minimize LLM confusion. A focused server with 5–10 well-described tools outperforms one with 50 vaguely described tools.
 * For MCP Hub deployments, use the built-in AI-assisted tool name optimization features to refine descriptions for LLM comprehension.
-* Cross-reference the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>Pro-Code AI Agents</Link> best practice page for general tool design guidelines applicable beyond MCP.
+* Cross-reference the <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>Pro-Code: Creating AI Agents</Link> best practice page for general tool design guidelines applicable beyond MCP.
 
 ### 3.6 Joule Integration
 
@@ -314,7 +314,7 @@ npx @modelcontextprotocol/inspector
 ## <span className="post-article-first-title">Related Best Practices</span>
 
 <ul className="button-grid">
-  <IconLinkButton href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents" text="Pro-Code AI Agents" />
+  <IconLinkButton href="/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents" text="Pro-Code: Creating AI Agents" />
   <IconLinkButton href="/docs/technical-view/agentic-ai/agentic-ai-security-governance" text="Agentic AI Security & Governance" />
 </ul>
 

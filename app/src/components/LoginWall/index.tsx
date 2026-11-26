@@ -9,13 +9,17 @@ interface LoginWallProps {
   message?: string;
   title?: string;
   renderOnlyWhenLoggedIn?: boolean;
+  placement?: "overlay" | "below";
+  showPreview?: boolean;
 }
 
 const LoginWall: React.FC<LoginWallProps> = ({
   children,
   message = "Log in or create a free SAP account to unlock this content. Get started in moments!",
   title = "Unlock Free Content",
-  renderOnlyWhenLoggedIn = false
+  renderOnlyWhenLoggedIn = false,
+  placement = "overlay",
+  showPreview = false
 }) => {
   const { isLoggedIn, login, isLoading, token } = useAuth();
   const logoUrl = useBaseUrl("/img/logo.svg");
@@ -50,9 +54,12 @@ const LoginWall: React.FC<LoginWallProps> = ({
     return null;
   }
 
+  // Show only the opening article blocks as a non-interactive preview.
+  const preview = showPreview ? React.Children.toArray(children).filter(React.isValidElement).slice(0, 4) : null;
+
   return (
-    <div className={styles.loginWallContainer}>
-      {/* <div className={styles.fadedContent}>{children}</div> */}
+    <div className={`${styles.loginWallContainer}${placement === "below" ? ` ${styles.belowContent}` : ""}${showPreview ? ` ${styles.previewWall}` : ""}`}>
+      {showPreview && <div className={styles.contentPreview} aria-hidden="true" inert>{preview}</div>}
       <div className={styles.loginWallOverlay}>
         <div className={styles.loginWallPopup}>
           <div className={styles.headerContainer}>Login or create a free SAP account</div>

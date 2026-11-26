@@ -2,7 +2,7 @@
 
 # Model Context Protocol (MCP)
 
-This page is a companion to the [**Pro-Code AI Agents**](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx) best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. For security considerations applicable to all agentic AI deployments, see the dedicated [Agentic AI Security and Governance](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx) best practice page.
+This page is a companion to the [**Pro-Code: Creating AI Agents**](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx) best practice page. It provides a comprehensive reference for the Model Context Protocol (MCP), covering its architecture, SAP integration options, and implementation guidance for developers building agentic AI systems that connect to enterprise tools and data sources. For security considerations applicable to all agentic AI deployments, see the dedicated [Agentic AI Security and Governance](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx) best practice page.
 
 ## Steps
 
@@ -133,7 +133,7 @@ The quality of tool descriptions directly determines whether the LLM selects the
 * Avoid generic descriptions like "data tool" or "utility" that provide no guidance for tool selection.
 * Limit the number of tools exposed per MCP server to minimize LLM confusion. A focused server with 5–10 well-described tools outperforms one with 50 vaguely described tools.
 * For MCP Hub deployments, use the built-in AI-assisted tool name optimization features to refine descriptions for LLM comprehension.
-* Cross-reference the Pro-Code AI Agents best practice page for general tool design guidelines applicable beyond MCP.
+* Cross-reference the Pro-Code: Creating AI Agents best practice page for general tool design guidelines applicable beyond MCP.
 
 ### 3.6 Joule Integration
 SAP's AI copilot, Joule, supports consuming MCP servers through [Joule Studio](https://help.sap.com/docs/Joule_Studio). This enables agents built on Joule to discover and invoke tools exposed by MCP servers deployed on SAP BTP.
@@ -230,7 +230,7 @@ npx @modelcontextprotocol/inspector
 ---
 
 ## Related Best Practices
-* [Pro-Code AI Agents](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx)
+* [Pro-Code: Creating AI Agents](/sites/210313/SitePages/Pro-Code%20AI%20Agents.aspx)
 * [Agentic AI Security & Governance](/sites/210313/SitePages/Agentic%20AI%20Security%20%26%20Governance.aspx)
 
 ## Related AI Capabilities

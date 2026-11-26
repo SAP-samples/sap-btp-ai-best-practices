@@ -7,6 +7,7 @@ hide_title: true
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import PageContributors from "@site/src/components/PageContributors";
+import LoginWall from "@site/src/components/LoginWall";
 import Icon from "@site/src/components/Icon";
 import "@ui5/webcomponents-icons/dist/document-text.js";
 import "@ui5/webcomponents-icons/dist/video.js";
@@ -63,6 +64,8 @@ This best practice focuses on creating **AI agents with Joule Studio** and deplo
 ### Description
 
 Joule Studio is SAP's AI-native development environment for building agents, applications and workflows as part of SAP Business AI Platform. Agents built with Joule Studio are Python-based. Joule Studio uses a structured approach called **Intent-Based Development (IBD)** to start with a user's intent and produce a working Python-based AI Agent. The Agent is deployed in an SAP-managed runtime, registered with Joule Work automatically and becomes available to users in Joule Work.
+
+<LoginWall placement="below" showPreview>
 
 Joule Studio offers two design-time surfaces:
 
@@ -397,7 +400,7 @@ jl a2a card shows the deployed agent's Agent Card, and jl a2a message sends it a
 
 ## Related Best Practices
 
-- <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>Pro-Code AI Agents</Link>
+- <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents")}>Pro-Code: Creating AI Agents</Link>
 - <Link to={useBaseUrl("/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained")}>Agentic AI Concepts Explained</Link>
 
 <br />
@@ -409,3 +412,5 @@ jl a2a card shows the deployed agent's Agent Card, and jl a2a message sends it a
 <PageContributors contributorIds={["karthik-thirunavukkarasan"]} />
 
 </div>
+
+</LoginWall>

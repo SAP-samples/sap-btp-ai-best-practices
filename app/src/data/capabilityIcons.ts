@@ -112,6 +112,7 @@ const capabilityIcons: Record<string, string> = {
   "/docs/technical-view/agentic-ai": "machine",
   "/docs/technical-view/agentic-ai/concepts/agentic-ai-concepts-explained": "course-program",
   "/docs/technical-view/agentic-ai/concepts/joule-agent-builder": "da",
+  "/docs/technical-view/agentic-ai/concepts/joule-studio-ai-agents": "da",
   "/docs/technical-view/agentic-ai/concepts/pro-code-ai-agents": "syntax",
   "/docs/technical-view/agentic-ai/mcp": "connected",
   "/docs/technical-view/agentic-ai/agentic-ai-security-governance": "locked",
