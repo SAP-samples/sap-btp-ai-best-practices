@@ -1,0 +1,867 @@
+/* Scoped SharePoint article formatting retained from the EML source. */
+.article {
+  width: 100%;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system,
+    BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  color: #1a2733;
+  background-color: #fff;
+}
+
+.article table {
+  display: table;
+  margin: 0;
+}
+
+.article td,
+.article th {
+  border: none;
+  padding: 0;
+}
+
+.article tr {
+  border: none;
+  background: transparent;
+}
+
+.article img {
+  vertical-align: middle;
+}
+
+.article .sourceStyle001 {
+  object-fit: cover;
+  width: 100%;
+  max-width: 100%;
+}
+
+.article .sourceStyle002 {
+  background-color: #f4f9fe;
+  color: #1a2733;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.article .sourceStyle003 {
+  overflow: hidden;
+  cursor: text;
+  margin: 0;
+  padding: 1px 2px 0 2px;
+  text-align: left;
+  font-size: 16px;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  word-break: break-word;
+}
+
+.article .sourceStyle004 {
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  text-align: left;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+  margin-left: 0px;
+}
+
+.article .sourceStyle005 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1;
+  margin: 0;
+}
+
+.article .sourceStyle006 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 0.6em;
+  padding-bottom: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.article .sourceStyle007 {
+  font-size: 24px;
+}
+
+.article .sourceStyle008 {
+  font-weight: 600;
+}
+
+.article .sourceStyle009 {
+  color: #0066da;
+  text-decoration: underline;
+}
+
+.article .sourceStyle010 {
+  color: #0066da;
+}
+
+.article .sourceStyle011 {
+  font-size: 18px;
+}
+
+.article .sourceStyle012 {
+  text-decoration: underline;
+}
+
+.article .sourceStyle013 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.article .sourceStyle014 {
+  background-color: #f4f9fe;
+  color: #1a2733;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+}
+
+.article .sourceStyle015 {
+  width: 100%;
+}
+
+.article .sourceStyle016 {
+  color: #1a2733;
+}
+
+.article .sourceStyle017 {
+  padding: 1px;
+}
+
+.article .sourceStyle018 {
+  max-width: 700px;
+}
+
+.article .sourceStyle019 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.article .sourceStyle020 {
+  color: #1a2733;
+  padding: 10px 12px;
+  border-collapse: collapse;
+  flex: 1 1 42%;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.article .sourceStyle021 {
+  border-collapse: separate;
+  border-radius: 4px;
+  background-color: rgb(0, 112, 242);
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.article .sourceStyle022 {
+  color: #1a2733;
+  width: 36px;
+  height: 36px;
+  background-color: rgb(0, 112, 242);
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.article .sourceStyle023 {
+  color: #0066da;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.article .sourceStyle024 {
+  object-fit: cover;
+  width: 22px;
+  max-width: 100%;
+  height: 22px;
+  vertical-align: middle;
+}
+
+.article .sourceStyle025 {
+  color: #1a2733;
+  height: 40px;
+  padding-left: 12px;
+  background-color: rgb(0, 112, 242);
+}
+
+.article .sourceStyle026 {
+  font-weight: 400;
+  font-size: 16px;
+  word-break: break-word;
+  padding: 0;
+  margin: 0;
+}
+
+.article .sourceStyle027 {
+  color: #0066da;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.article .sourceStyle028 {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(255, 255, 255);
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin: 0px;
+  overflow-wrap: break-word;
+}
+
+.article .sourceStyle029 {
+  background-color: #ffffff;
+  color: #1a2733;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+}
+
+.article .sourceStyle030 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle031 {
+  color: #0070f2;
+  text-decoration: underline;
+}
+
+.article .sourceStyle032 {
+  color: #0070f2;
+}
+
+.article .sourceStyle033 {
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  text-align: left;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.article .sourceStyle034 {
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0.9em;
+}
+
+.article .sourceStyle035 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-top: 0;
+  padding-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle036 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  counter-reset: item;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: 0 !important;
+  padding: 0;
+  margin-top: 0;
+  padding-left: 50px;
+}
+
+.article .sourceStyle037 {
+  margin-bottom: 0;
+}
+
+.article .sourceStyle038 {
+  overflow-x: auto;
+  clear: both;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 4px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.article .sourceStyle039 {
+  background-color: transparent;
+  border-collapse: collapse;
+  width: 100%;
+  border: none !important;
+  border-color: #1a2733 !important;
+  border-width: 1px !important;
+  border-style: solid;
+  color: #1a2733;
+}
+
+.article .sourceStyle040 {
+  border-collapse: collapse;
+  border: none !important;
+  background-color: transparent;
+}
+
+.article .sourceStyle041 {
+  text-align: left !important;
+  padding-right: 8px !important;
+  border-collapse: collapse;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1a2733;
+  white-space: normal;
+  margin: 0;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  overflow-wrap: break-word;
+  padding-left: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #1a2733;
+  background-color: transparent;
+}
+
+.article .sourceStyle042 {
+  font-weight: 400;
+  font-size: 16px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 8px 0px;
+  color: #1a2733;
+  white-space: normal;
+  overflow-wrap: break-word;
+  margin-bottom: 0;
+  background-color: transparent;
+}
+
+.article .sourceStyle043 {
+  font-weight: 600;
+  background-color: transparent;
+}
+
+.article .sourceStyle044 {
+  color: #1a2733;
+  text-align: left !important;
+  padding-right: 8px !important;
+  border-collapse: collapse;
+  font-size: 16px;
+  font-weight: 400;
+  white-space: normal;
+  margin: 0;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  overflow-wrap: break-word;
+  padding-left: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #1a2733;
+  background-color: transparent;
+}
+
+.article .sourceStyle045 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.article .sourceStyle046 {
+  clear: both;
+  display: block;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  background-color: transparent;
+  position: relative;
+}
+
+.article .sourceStyle047 {
+  box-sizing: border-box;
+  object-fit: cover;
+  width: 700px;
+  max-width: 100%;
+  height: 338px;
+  border-radius: 4px;
+}
+
+.article .sourceStyle048 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  counter-reset: item;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: 0 !important;
+  padding: 0;
+  margin-top: 0;
+  padding-left: 50px;
+  margin-bottom: 0;
+}
+
+.article .sourceStyle049 {
+  font-style: italic;
+}
+
+.article .sourceStyle050 {
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  text-align: left;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0.9em;
+}
+
+.article .sourceStyle051 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  counter-reset: item;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: 0 !important;
+  padding: 0;
+  margin-top: 0;
+  list-style-type: circle;
+  padding-left: 25px !important;
+  margin-bottom: 0;
+}
+
+.article .sourceStyle052 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  counter-reset: item;
+  list-style-type: decimal;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: 0 !important;
+  padding: 0;
+  margin-top: 0;
+  padding-left: 50px;
+}
+
+.article .sourceStyle053 {
+  counter-increment: item;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.article .sourceStyle054 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 0.6em;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle055 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  counter-reset: item;
+  list-style-type: lower-alpha;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-left: 0 !important;
+  padding: 0;
+  padding-left: 25px !important;
+  margin-bottom: 0;
+}
+
+.article .sourceStyle056 {
+  counter-increment: item;
+  position: relative;
+  margin-bottom: 0;
+  list-style: inherit;
+  display: list-item;
+  list-style-type: inherit;
+}
+
+.article .sourceStyle057 {
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  text-align: left;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle058 {
+  box-sizing: border-box;
+  object-fit: cover;
+  width: 700px;
+  max-width: 100%;
+  height: 526px;
+  border-radius: 4px;
+}
+
+.article .sourceStyle059 {
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
+.article .sourceStyle060 {
+  color:rgb(0, 0, 0);
+}
+
+.article .sourceStyle061 {
+  font-weight: 400;
+  font-size: 16px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  color: #1a2733;
+  white-space: normal;
+  overflow-wrap: break-word;
+  margin-bottom: 8px;
+  background-color: transparent;
+  margin-top: 8px;
+}
+
+.article .sourceStyle062 {
+  font-size: 16px;
+  line-height: 1.4;
+  background-color: transparent;
+}
+
+.article .sourceStyle063 {
+  background-color: transparent;
+  color: rgb(0, 0, 0);
+}
+
+.article .sourceStyle064 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 20px;
+  margin: 0;
+}
+
+.article .sourceStyle065 {
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.25;
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
+.article .sourceStyle066 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  margin: 0;
+  margin-bottom: 16px;
+  padding-bottom: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.article .sourceStyle067 {
+  font-weight: 400;
+  font-size: 18px;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.25;
+  margin: 0;
+  margin-top: 0;
+  padding-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle068 {
+  background-color: #0070f2;
+  color: #ffffff;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+}
+
+.article .sourceStyle069 {
+  color: #242424;
+  background-color: #faf9f8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.article .sourceStyle070 {
+  color:#007acc;
+}
+
+.article .sourceStyle071 {
+  color:#a31515;
+}
+
+.article .sourceStyle072 {
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.3;
+  font-weight: 600 !important;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle073 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 6.5px;
+  padding-bottom: 6.5px;
+}
+
+.article .sourceStyle074 {
+  color: #1a2733;
+  padding: 10px 15px;
+  border-collapse: collapse;
+  flex: 1 1 42%;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.article .sourceStyle075 {
+  border-collapse: separate;
+  border-radius: 4px;
+  background-color: rgb(244, 249, 254);
+  border-spacing: 0px;
+  border: 1px solid rgb(237, 235, 233);
+  box-shadow: rgba(0, 0, 0, 0.14) 0px 2px 4px, rgba(0, 0, 0, 0.12) 0px 0px 2px;
+}
+
+.article .sourceStyle076 {
+  color: #1a2733;
+  width: 100%;
+  height: 142px;
+  background-color: rgb(237, 235, 233);
+  padding: 0px;
+  border-radius: 4px;
+}
+
+.article .sourceStyle077 {
+  object-fit: cover;
+  width: 100%;
+  max-width: 100%;
+  height: 142px;
+  vertical-align: middle;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.article .sourceStyle078 {
+  color: #1a2733;
+  height: 65px;
+  padding-left: 10px;
+  background-color: rgb(244, 249, 254);
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  padding-right: 10px;
+}
+
+.article .sourceStyle079 {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(26, 39, 51);
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin: 0px;
+  overflow-wrap: break-word;
+}
+
+.article .sourceStyle080 {
+  background-color: #0070f2;
+  color: #ffffff;
+  padding-right: 0px;
+  padding-left: 0px;
+  padding-top: 0px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.article .sourceStyle081 {
+  color: #ffffff;
+}
+
+.article .sourceStyle082 {
+  overflow: hidden;
+  min-height: initial;
+}
+
+.article .sourceStyle083 {
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  word-wrap: break-word;
+  line-height: 1.4;
+  font-weight: 600 !important;
+  text-align: left;
+  margin-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+.article .sourceStyle084 {
+  font-size: 20px;
+}
+
+.article .sourceStyle085 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.article .sourceStyle086 {
+  color: #ffffff;
+  width: 50%;
+  padding: 8px 8px 8px 0px;
+  flex: 1 1 45%;
+  min-width: 210px;
+  max-width: 350px;
+}
+
+.article .sourceStyle087 {
+  padding: 12px 12px 12px 0px;
+}
+
+.article .sourceStyle088 {
+  color: #ffffff;
+  padding-right: 10px;
+}
+
+.article .sourceStyle089 {
+  object-fit: cover;
+  width: 48px;
+  max-width: 100%;
+  height: 48px;
+  border-radius: 50%;
+  display: block;
+}
+
+.article .sourceStyle090 {
+  text-align: left;
+}
+
+.article .sourceStyle091 {
+  line-height: 20px;
+}
+
+.article .sourceStyle092 {
+  font-weight: 400;
+  font-size: 16px;
+  word-break: break-all;
+  margin: 0px;
+}
+
+.article .sourceStyle093 {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(255, 255, 255);
+  margin: 0px;
+  overflow-wrap: break-word;
+}
+
+.article .sourceStyle094 {
+  line-height: 16px;
+}
+
+.article .sourceStyle095 {
+  font-size: 12px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgb(255, 255, 255);
+  margin: 0px;
+  overflow-wrap: break-word;
+}
+
