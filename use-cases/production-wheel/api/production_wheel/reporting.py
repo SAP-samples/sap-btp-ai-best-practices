@@ -19,11 +19,9 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from production_wheel.candidates import CandidateMember, CandidatePool, ProductionVersion
+from production_wheel.cycle_stock import SINGLE, strategy_figures
 from production_wheel.metrics import (
-    changeover_contribution,
     effective_batch,
-    group_coverage,
-    group_frequency,
     pallet_allocations,
     proportional_allocations,
     coverage_summary,
@@ -140,6 +138,8 @@ def build_proposed_subgroups_rows(
         for group in materialized_groups
         for fini_id in group.member_ids
     }
+    # Volume -> class map of nearest_class runs (empty for exact matrices).
+    volume_classes = dict(getattr(config, "matrix_volume_classes", ()) or ())
     subgroup_codes: dict[str, str] = {}
     by_block: dict[tuple[str, str], list[GroupEvidence]] = {}
     for group in materialized_groups:
@@ -173,6 +173,14 @@ def build_proposed_subgroups_rows(
         selected = dict(group.selected_allocations).get(key[2]) if group else None
         fini_adjusted_coverage = (
             dict(group.fini_adjusted_coverage_days).get(key[2]) if group else None
+        )
+        runner_class = dict(group.fini_runner_classes).get(key[2]) if group else None
+        runner_multiple = dict(group.fini_runner_multiples).get(key[2]) if group else None
+        strategy_coverage = (
+            dict(group.fini_strategy_coverage_days).get(key[2]) if group else None
+        )
+        pallets_per_batch = (
+            dict(group.fini_pallets_per_batch).get(key[2]) if group else None
         )
         pallet = member.pallet_litres if member else None
         row.update(
@@ -209,6 +217,27 @@ def build_proposed_subgroups_rows(
                     else ""
                 ),
                 "frequency_per_week": group.frequency_per_week if group else "",
+                # Wheel RoC rule (production_wheel.wheel_roc): R in whole days, the
+                # FINI's wheel RoC R x k (drives batches and changeovers) and its
+                # inventory RoC after the one-pallet adjustment.
+                "wheel_roc_days": group.wheel_roc_days if group and group.wheel_roc_days is not None else "",
+                "fini_wheel_roc_days": (
+                    strategy_coverage if strategy_coverage is not None else ""
+                ),
+                "fini_inventory_roc_days": (
+                    fini_adjusted_coverage if fini_adjusted_coverage is not None else ""
+                ),
+                "pallets_per_batch": (
+                    pallets_per_batch if pallets_per_batch is not None else ""
+                ),
+                # Cycle stock strategy (production_wheel.cycle_stock): the FINI's
+                # runner multiple and its coverage under the group's strategy.
+                "cycle_stock_strategy": group.cycle_stock_strategy if group else "",
+                "runner_class": runner_class or "",
+                "runner_multiple": runner_multiple if runner_multiple is not None else "",
+                "strategy_coverage_days": (
+                    strategy_coverage if strategy_coverage is not None else ""
+                ),
                 "nominal_allocation_litres": nominal if nominal is not None else "",
                 "legacy_nominal_lot_allocation_litres": (
                     group.nominal_lot_litres * member.demand_litres / group.group_demand_litres
@@ -231,6 +260,12 @@ def build_proposed_subgroups_rows(
                 "pallet_formula": config.pallet_formula.value if group else "",
                 "j_ch_contribution": group.j_ch_contribution if group else "",
                 "package_volume_evidence": member.package_volume if member and modeled else "",
+                # nearest_class profiles: the matrix class this volume was placed in
+                # (production_wheel.volume_classes); blank for exact matrices.
+                "matrix_volume_class": (
+                    volume_classes.get(format(normalize_volume(member.package_volume).normalize(), "f"), "")
+                    if member and modeled else ""
+                ),
                 "group_package_volumes": _json(group.package_volumes) if group else "",
                 "pck_evidence": member.pck_code if member and modeled else "",
                 "equal_pck_diagnostic": int(group.equal_pck) if group else "",
@@ -292,7 +327,13 @@ def build_solution_groups_rows(
                 group.fini_adjusted_coverage_days
             ),
             "frequency_per_week": group.frequency_per_week,
+            "wheel_roc_days": group.wheel_roc_days,
+            "wheel_coverage_days": group.wheel_coverage_days,
+            "fini_pallets_per_batch": _json(group.fini_pallets_per_batch),
             "j_ch_contribution": group.j_ch_contribution,
+            "cycle_stock_strategy": group.cycle_stock_strategy,
+            "strategy_coverage_days": group.strategy_coverage_days,
+            "runner_multiples": _json(group.fini_runner_multiples),
             "nominal_allocations": _json(group.nominal_allocations),
             "selected_pallet_allocations": _json(group.selected_allocations),
             "package_volumes": _json(group.package_volumes),
@@ -526,8 +567,9 @@ def build_constraint_audit_rows(
         ("productive_weeks", config.productive_weeks),
         ("matrix_pairs", [pair.model_dump(mode="json") for pair in config.matrix_pairs]),
         ("assign_filling_lines", config.assign_filling_lines),
-        ("high_runner_threshold_days", config.high_runner_threshold_days),
+        ("runner_thresholds", config.runner_thresholds.model_dump(mode="json")),
         ("runner_basis", config.runner_basis),
+        ("cycle_stock_policy", config.cycle_stock_policy.model_dump(mode="json")),
     )
     rows = [
         {
@@ -655,6 +697,12 @@ def build_scenario_summary_row(
         "validation_warning_count": sum(issue.severity == "warning" for issue in validation.issues),
         "group_count": len(selected),
         "singleton_group_count": sum(group.group_size == 1 for group in selected),
+        # Cycle stock strategy per selected group (see production_wheel.cycle_stock).
+        "cycle_stock_mode": config.cycle_stock_policy.mode,
+        "single_roc_group_count": sum(group.cycle_stock_strategy == "single" for group in selected),
+        "runner_multiple_group_count": sum(
+            group.cycle_stock_strategy == "runner_multiple" for group in selected
+        ),
         "modeled_fini_count": sum(group.group_size for group in selected),
         "modeled_demand_litres": sum(demands),
         "coverage_mode": config.coverage_mode.value,
@@ -840,35 +888,28 @@ def build_baseline_summary(
         catalog_lots = lots.get((key[0], key[1], pv_id), set())
         if len(catalog_lots) != 1:
             raise ValueError(f"baseline group has no unique catalog lot: {key}/{pv_id}")
-        batch = float(effective_batch(next(iter(catalog_lots)), config.canonical_factor))
+        nominal_lot = next(iter(catalog_lots))
+        batch = float(effective_batch(nominal_lot, config.canonical_factor))
         demand_map = {
             member.fini_id: member.demand_litres for member in group_members
         }
         pallet_map = {
             member.fini_id: member.pallet_litres for member in group_members
         }
+        # Physical pallet allocation of one batch (diagnostic pallet_adjustment_litres).
         nominal = proportional_allocations(demand_map, batch)
         adjusted = pallet_allocations(nominal, pallet_map, config.pallet_formula)
         demand = sum(demand_map.values())
-        for basis in CoverageBasis:
-            coverage_views[basis].append(
-                float(
-                    group_coverage(
-                        basis,
-                        demand_map,
-                        batch,
-                        adjusted,
-                        config.demand_days,
-                    )
-                )
-            )
-        frequency = float(group_frequency(demand, batch, config.productive_weeks))
-        demands.append(demand)
-        fini_adjusted_coverages.extend(
-            config.demand_days * float(adjusted[fini_id]) / float(demand_map[fini_id])
-            for fini_id in sorted(adjusted)
+        # The baseline wheel uses Single RoC under the same wheel RoC rule as the proposal.
+        # TODO(managed-complexity): open question 5, evaluate the baseline with single RoC.
+        figures = strategy_figures(
+            SINGLE, group_members, nominal_lot, batch, config, {}, classify_members=False
         )
-        total_j_ch += float(changeover_contribution(frequency, len(group_members)))
+        for basis in CoverageBasis:
+            coverage_views[basis].append(figures.wheel.coverage(basis))
+        demands.append(demand)
+        fini_adjusted_coverages.extend(figures.wheel.fini_inventory_roc_days)
+        total_j_ch += figures.j_ch
         pallet_adjustment += float(sum(adjusted.values())) - batch
         if config.matrix_mode is not MatrixMode.OFF or config.matrix_pairs:
             group_exceptions = matrix_exceptions(

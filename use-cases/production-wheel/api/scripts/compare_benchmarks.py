@@ -7,11 +7,11 @@ and in production (where no benchmarks exist) it is simply not used.
 
 Example:
 
-    .venv/bin/python api/scripts/compare_benchmarks.py \\
-        --frontier-directory prototype/output/demo/solutions/greenfield-quick \\
-        --benchmark-point historical:20.0:30.0 \\
-        --benchmark-point coverage_witness:19.5:31.0 \\
-        --benchmark-point operations_witness:20.5:29.0
+    .venv/bin/python prototype/scripts/compare_benchmarks.py \\
+        --frontier-directory prototype/output/current-snapshot/solutions/probe-restricted \\
+        --benchmark-point historical:20.50:30.00 \\
+        --benchmark-point coverage_witness:20.25:29.80 \\
+        --benchmark-point operations_witness:20.50:29.40
 
 Writes ``<frontier-directory>/benchmark_overlay.csv`` and prints a JSON summary.
 Each ``--benchmark-point`` is ``LABEL:COVERAGE_DAYS:J_CH`` and may be repeated.

@@ -99,17 +99,24 @@ def test_greenfield_bundle_validates_without_historical_groups(tmp_path) -> None
     assert manifest["config"]["versions"]["schema_version"] == "PROTOTYPE_SCHEMA_V9"
     assert manifest["counts"]["structural_model_builds"] == 1
     assert manifest["counts"]["block_solver_calls"] < 10
-    assert len(global_rows) == 17
+    # Requested schedule rows; gap-splitting top-up rows follow when fewer than
+    # the retained-point target survive deduplication.
+    scheduled = [row for row in global_rows if row["request_kind"] == "schedule"]
+    assert len(scheduled) == 30
+    assert all(
+        row["request_kind"] == "top_up" for row in global_rows[len(scheduled):]
+    )
     assert manifest["global_epsilon_schedule"] == {
         "kind": "power_law_low_epsilon_dense",
         "exponent": 2.0,
-        "requested_points": 17,
+        "requested_points": 30,
+        "top_up_requests": len(global_rows) - len(scheduled),
         "retained_points": len(frontier.points),
     }
     global_steps = [
         float(right["requested_epsilon_j_ch"])
         - float(left["requested_epsilon_j_ch"])
-        for left, right in zip(global_rows, global_rows[1:])
+        for left, right in zip(scheduled, scheduled[1:])
     ]
     assert global_steps[0] < global_steps[-1]
 

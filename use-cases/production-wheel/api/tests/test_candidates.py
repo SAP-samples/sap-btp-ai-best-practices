@@ -472,7 +472,8 @@ def test_beam_expansion_and_round_robin_are_bounded_and_deterministic() -> None:
     """Size-four beam candidates use stable scorer round-robin at the ceiling."""
 
     items = [member(f"F{index}") for index in range(1, 7)]
-    config = restricted_config(limit=43, retained=2)
+    # Three shortlisted size-four sets but room for only two at the 43 ceiling.
+    config = restricted_config(limit=43, retained=3)
     first = generate_block_pool(items, [version()], config)
     second = generate_block_pool(tuple(reversed(items)), [version()], config)
     assert len(first.candidates) == 43

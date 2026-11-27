@@ -15,7 +15,7 @@ then applies the configured business objectives as exact lexicographic solves.
 from __future__ import annotations
 
 import math
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from decimal import Decimal
 from typing import Iterable, Sequence
 
@@ -24,16 +24,17 @@ from pyomo.contrib.appsi.base import TerminationCondition
 from pyomo.contrib.appsi.solvers.highs import Highs
 
 from production_wheel.candidates import Candidate, CandidateMember, CandidatePool
-from production_wheel.metrics import (
-    changeover_contribution,
-    group_coverage,
-    group_frequency,
-    pallet_allocations,
-    proportional_allocations,
-)
 from production_wheel.matrix import normalize_volume
 from production_wheel.schemas import CoverageMode, MatrixMode, RunConfig
-from production_wheel.business_rules import linear_rows
+from production_wheel.business_rules import linear_rows, runner_ratios
+from .solver_integrity import verify_solver_result
+from production_wheel.cycle_stock import (
+    RUNNER_MULTIPLE,
+    SINGLE,
+    expand_strategy_variants,
+    strategy_figures,
+    variant_hash,
+)
 
 _LOCK_TOLERANCE = 1e-7
 _PROOF_GAP_TOLERANCE = 1e-9
@@ -100,6 +101,8 @@ class CandidateCoefficients:
         relaxed_group: One when the candidate exceeds the historical cap seven.
         size_excess: Number of members above the historical cap seven.
         stable_rank: Canonical deterministic rank used only after business tiers.
+        max_runner_multiple: Largest runner multiple of a ``runner_multiple``
+            candidate (1 for single candidates, or when multiples change nothing).
     """
 
     coverage_days: float
@@ -111,6 +114,7 @@ class CandidateCoefficients:
     relaxed_group: int
     size_excess: int
     stable_rank: int
+    max_runner_multiple: int = 1
 
 
 @dataclass(frozen=True, slots=True)
@@ -316,10 +320,14 @@ def precompute_coefficients(
     Args:
         candidates: Candidate configurations in canonical solver order.
         members: Canonical member primitives for every candidate FINI.
-        config: Coverage basis, pallet formula, target band, and calendar settings.
+        config: Coverage basis, target band, calendar settings and cycle stock policy.
 
     Returns:
-        Coefficients aligned one-to-one with ``candidates``.
+        Coefficients aligned one-to-one with ``candidates``. Every candidate's
+        coverage and ``J_CH`` come from ``cycle_stock.strategy_figures`` (the
+        ``wheel_roc`` rule: whole-day RoC, pallets only in the inventory bases),
+        with the runner multiples of a ``runner_multiple`` candidate;
+        target-band violation and excess use that coverage.
 
     Raises:
         ValueError: A candidate references an unknown FINI or inconsistent demand.
@@ -328,6 +336,12 @@ def precompute_coefficients(
     by_key = {_member_key(member): member for member in members}
     if len(by_key) == 0:
         raise ValueError("members cannot be empty")
+    # Runner classes need the whole population of each block (its fastest FINI).
+    ratios = (
+        runner_ratios(by_key.values(), config)
+        if any(c.cycle_stock_strategy != SINGLE for c in candidates)
+        else {}
+    )
     result: list[CandidateCoefficients] = []
     for rank, candidate in enumerate(candidates, start=1):
         selected_members: list[CandidateMember] = []
@@ -335,29 +349,7 @@ def precompute_coefficients(
             if key not in by_key:
                 raise ValueError(f"candidate references unknown FINI: {key}")
             selected_members.append(by_key[key])
-        demands = {
-            member.fini_id: Decimal(str(member.demand_litres))
-            for member in selected_members
-        }
-        nominal = proportional_allocations(demands, candidate.effective_batch_litres)
-        adjusted = pallet_allocations(
-            nominal,
-            {
-                member.fini_id: Decimal(str(member.pallet_litres))
-                for member in selected_members
-            },
-            config.pallet_formula,
-        )
-        coverage = float(
-            group_coverage(
-                config.coverage_basis,
-                demands,
-                candidate.effective_batch_litres,
-                adjusted,
-                config.demand_days,
-            )
-        )
-        group_demand = sum(float(value) for value in demands.values())
+        group_demand = sum(member.demand_litres for member in selected_members)
         if not math.isclose(
             group_demand,
             candidate.group_demand_litres,
@@ -367,8 +359,22 @@ def precompute_coefficients(
             raise ValueError(
                 f"candidate demand does not match member primitives: {candidate.candidate_hash}"
             )
-        frequency = group_frequency(
-            group_demand, candidate.effective_batch_litres, config.productive_weeks
+        # One shared rule (production_wheel.wheel_roc): whole-day wheel RoC for
+        # batches per week, changeovers and runner multiples; pallets only for
+        # the inventory coverage bases.
+        figures = strategy_figures(
+            candidate.cycle_stock_strategy,
+            selected_members,
+            candidate.nominal_lot_litres,
+            candidate.effective_batch_litres,
+            config,
+            ratios,
+            classify_members=False,
+        )
+        coverage, j_ch, max_multiple = (
+            figures.coverage_days,
+            figures.j_ch,
+            figures.max_multiple,
         )
         excess = max(
             config.target_band.lower_days - coverage,
@@ -379,16 +385,68 @@ def precompute_coefficients(
             CandidateCoefficients(
                 coverage_days=coverage,
                 group_demand_litres=group_demand,
-                j_ch=float(changeover_contribution(frequency, len(candidate.member_ids))),
+                j_ch=j_ch,
                 target_violation=int(excess > 0),
                 target_excess_days=excess,
                 matrix_exceptions=len(candidate.matrix_exception_pairs),
                 relaxed_group=int(len(candidate.member_ids) > 7),
                 size_excess=max(len(candidate.member_ids) - 7, 0),
                 stable_rank=rank,
+                max_runner_multiple=max_multiple,
             )
         )
     return tuple(result)
+
+
+def strategy_candidates(
+    candidates: Sequence[Candidate],
+    members: Sequence[CandidateMember],
+    config: RunConfig,
+) -> tuple[tuple[Candidate, ...], tuple[CandidateCoefficients, ...]]:
+    """Return the solver's candidates with cycle stock versions, and their coefficients.
+
+    Every master problem calls this instead of ``precompute_coefficients``
+    directly, so all of them see the same versions (see
+    ``production_wheel.cycle_stock``).
+
+    - ``single`` mode: the candidates unchanged.
+    - ``runner_multiple``: every group of 2+ FINIs uses its multiple version.
+    - ``optimizer_choice``: eligible groups appear in both versions; a multiple
+      version whose multiples are all 1 is dropped (it would duplicate the
+      single one).
+
+    A multiple version that changes nothing is reported as ``single`` in
+    ``runner_multiple`` mode, with the same coefficients.
+
+    Args:
+        candidates: Eligible pool candidates in canonical solver order.
+        members: Modeled FINIs (whole blocks, so runner ratios are complete).
+        config: Run configuration with its frozen ``cycle_stock_policy``.
+
+    Returns:
+        ``(candidates, coefficients)`` aligned one-to-one.
+    """
+
+    if config.cycle_stock_policy.mode == SINGLE or not candidates:
+        return tuple(candidates), (
+            precompute_coefficients(candidates, members, config) if candidates else ()
+        )
+    by_key = {_member_key(member): member for member in members}
+    ratios = runner_ratios(by_key.values(), config)
+    expanded = expand_strategy_variants(candidates, by_key, config, ratios)
+    coefficients = precompute_coefficients(expanded, members, config)
+    originals = {variant_hash(candidate): candidate for candidate in candidates}
+    kept: list[tuple[Candidate, CandidateCoefficients]] = []
+    for candidate, coefficient in zip(expanded, coefficients, strict=True):
+        if candidate.cycle_stock_strategy == RUNNER_MULTIPLE and coefficient.max_runner_multiple == 1:
+            if config.cycle_stock_policy.mode != RUNNER_MULTIPLE:
+                continue
+            candidate = originals[candidate.candidate_hash]
+        kept.append((candidate, coefficient))
+    return tuple(c for c, _ in kept), tuple(
+        replace(coefficient, stable_rank=rank)
+        for rank, (_, coefficient) in enumerate(kept, start=1)
+    )
 
 
 def _relative_gap(incumbent: float | None, bound: float | None) -> float | None:
@@ -431,10 +489,14 @@ def _baseline_warm_start_indexes(
         baseline_groups.setdefault(
             (member.plant, member.sefi, member.baseline_group), []
         ).append(member)
-    candidate_index = {
-        (candidate.block_key, candidate.member_ids, candidate.pv_id): index
-        for index, candidate in enumerate(candidates)
-    }
+    # The baseline wheel has no cycle stock strategy: prefer the single version
+    # of a group; a group available only with runner multiples uses that one.
+    # TODO(managed-complexity): open question 5, evaluate the baseline with single RoC.
+    candidate_index: dict[tuple[object, ...], int] = {}
+    for index, candidate in enumerate(candidates):
+        key = (candidate.block_key, candidate.member_ids, candidate.pv_id)
+        if key not in candidate_index or candidate.cycle_stock_strategy == SINGLE:
+            candidate_index[key] = index
     selected: set[int] = set()
     for (plant, sefi, _), group_members in baseline_groups.items():
         aliases = {member.fixed_pv for member in group_members}
@@ -535,9 +597,16 @@ def _baseline_constraint_limits(
 
 
 def _solve_once(model: pyo.ConcreteModel, solver: Highs) -> _SolveSnapshot:
-    """Solve one objective level and read primals only after an incumbent check."""
+    """Solve one objective level and read primals only after an incumbent check.
+
+    Raises:
+        SolverResultInconsistentError: When the independent result check
+            contradicts what HiGHS reported (see ``solver_integrity``).
+    """
 
     results = solver.solve(model)
+    # Runs before load_vars: the model still holds the MIP start it was given.
+    verify_solver_result(model, results)
     incumbent = results.best_feasible_objective
     bound = results.best_objective_bound
     finite_incumbent = (
@@ -787,8 +856,9 @@ def solve_candidate_pools(
     completeness = (
         "complete" if all(pool.completeness == "complete" for pool in pools) else "restricted"
     )
-    candidates = _eligible_candidates(pools, config)
-    coefficients = precompute_coefficients(candidates, ordered_members, config) if candidates else ()
+    candidates, coefficients = strategy_candidates(
+        _eligible_candidates(pools, config), ordered_members, config
+    )
     constrained = config.coverage_mode in _BASELINE_CONSTRAINED_MODES
     baseline_start = (
         _baseline_warm_start_indexes(candidates, ordered_members)

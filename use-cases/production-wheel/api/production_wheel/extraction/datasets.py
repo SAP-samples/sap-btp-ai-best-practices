@@ -18,6 +18,7 @@ from typing import Any
 
 from openpyxl import load_workbook
 
+from production_wheel.extraction.admission_issues import exclusion_issues
 from production_wheel.extraction.common import as_text, find_table, sha256_file
 from production_wheel.extraction.dataset_tables import (
     apply_line_evidence,
@@ -28,6 +29,13 @@ from production_wheel.extraction.dataset_tables import (
     supporting_rows,
 )
 from production_wheel.extraction.enrichment_workbook import extract_pallet_candidates, resolve_pallets
+from production_wheel.extraction.frequencies import (
+    ALL_AVAILABLE,
+    available_codes,
+    frequency_inventory,
+    is_all_available,
+    undetermined_frequency_issues,
+)
 from production_wheel.extraction.primary_workbook import (
     _baseline_assignments,
     _canonical_fini,
@@ -38,6 +46,7 @@ from production_wheel.extraction.primary_workbook import (
 )
 
 from production_wheel.extraction.profile_inputs import enrich_profile_inputs
+from production_wheel.extraction.sap_lookups import extract_sap_lookups, merge_sap_lookups
 
 PARSER_VERSION = "production-wheel-dataset-v2"
 DEFAULT_SETTINGS = {
@@ -49,7 +58,18 @@ DEFAULT_SETTINGS = {
 
 
 def _settings(overrides: dict | None) -> tuple[dict, dict]:
-    """Validate import parameter overrides and return values plus origin labels."""
+    """Validate import parameter overrides and return values plus origin labels.
+
+    Args:
+        overrides: Planner-supplied subset of ``DEFAULT_SETTINGS``. The
+            ``modeled_frequencies`` value is either a list of weekly codes or the
+            keyword ``all_available``, which ``extract_workbooks`` later resolves
+            to every weekly code present in the uploaded workbook.
+    Returns:
+        Tuple of (effective settings, origin label per key: "user" or "default").
+    Raises:
+        ValueError: Unknown keys or values the import cannot use.
+    """
     supplied = overrides or {}
     unknown = set(supplied) - set(DEFAULT_SETTINGS)
     if unknown:
@@ -73,6 +93,10 @@ def _settings(overrides: dict | None) -> tuple[dict, dict]:
     ):
         raise ValueError("canonical_factor must be greater than zero and at most one")
     raw_codes = result["modeled_frequencies"]
+    if is_all_available(raw_codes):
+        # Resolved against the workbook's own codes once its FINI table is read.
+        result["modeled_frequencies"] = ALL_AVAILABLE
+        return result, {key: "user" if key in supplied else "default" for key in result}
     if not isinstance(raw_codes, (list, tuple)) or not raw_codes:
         raise ValueError("modeled_frequencies must be a nonempty list")
     codes = [normalize_production_frequency(value) for value in raw_codes]
@@ -181,9 +205,15 @@ def extract_workbooks(
                 raise ValueError(f"Required workbook table is missing: {required}")
         main = catalog["FINI_grouping_for_wheel"]
         plant = _plant(catalog, main)
+        inventory = frequency_inventory(main)
+        if parameters["modeled_frequencies"] == ALL_AVAILABLE:
+            # "Use all frequencies" means the codes this workbook actually contains.
+            parameters["modeled_frequencies"] = available_codes(inventory)
+            origins["modeled_frequencies"] = "user_all_available_in_workbook"
         tables = supporting_rows(catalog)
         rows, legacy = _canonical_fini(main, plant)
         issues = apply_line_evidence(rows, tables["line_corrections"])
+        issues.extend(undetermined_frequency_issues(inventory))
         versions = _production_versions(catalog["Production_versions___List"], plant)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
@@ -206,10 +236,14 @@ def extract_workbooks(
         for record in legacy:
             record["canonical_factor"] = parameters["canonical_factor"]
         candidates = []
+        sap_lookups: dict[str, list] = {}
         if enrichment_path is not None:
             candidates, _ = extract_pallet_candidates(
                 enrichment_path, {row["fini_plant_key"] for row in rows}
             )
+            # Reference data for SAP settings generation; absence is a warning only.
+            sap_lookups, lookup_issues = extract_sap_lookups(enrichment_path, plant)
+            issues.extend(lookup_issues)
         rows, resolutions, pallet_issues = resolve_pallets(rows, candidates)
         issues.extend(pallet_issues)
         for row in rows:
@@ -246,33 +280,23 @@ def extract_workbooks(
             pallet_resolution=resolutions,
             site_parameters=[{"plant": plant, **parameters}],
         )
-        duplicates = [
-            key
-            for key, count in collections.Counter(
-                row["fini_plant_key"] for row in rows
-            ).items()
-            if count > 1
-        ]
-        if duplicates:
-            issues.append(
-                {
-                    "rule_id": "FINI_KEY_UNIQUE",
-                    "severity": "error",
-                    "entity_key": "|".join(duplicates),
-                    "action": "Resolve duplicate FINI/plant identities",
-                }
-            )
-        for row in rows:
-            if row["model_status"] == "excluded":
+        merge_sap_lookups(tables, sap_lookups)
+        for key, count in collections.Counter(
+            row["fini_plant_key"] for row in rows
+        ).items():
+            if count > 1:
                 issues.append(
                     {
-                        "rule_id": "FINI_DATA_QUALITY",
-                        "severity": "warning",
-                        "entity_key": row["fini_plant_key"],
-                        "reason": row["exclusion_reason"],
-                        "action": "Review source evidence before admitting this FINI",
+                        "rule_id": "FINI_KEY_UNIQUE",
+                        "severity": "error",
+                        "entity": "fini",
+                        "entity_key": key,
+                        "observed": f"{count} rows",
+                        "expected": "1 row",
+                        "action": "Resolve duplicate FINI/plant identities",
                     }
                 )
+        issues.extend(exclusion_issues(rows))
         hashes = {"primary": sha256_file(primary_path)}
         if enrichment_path is not None:
             hashes["enrichment"] = sha256_file(enrichment_path)
@@ -281,6 +305,7 @@ def extract_workbooks(
             "format_id": detect_profile(catalog),
             "settings": parameters,
             "parameter_sources": origins,
+            "frequency_inventory": inventory,
             "counts": {name: len(records) for name, records in tables.items()},
             "input_hashes": hashes,
             "parser_version": PARSER_VERSION,
@@ -298,5 +323,38 @@ def extract_workbooks(
             },
         }
         return {"metadata": metadata, "tables": tables, "issues": issues}
+    finally:
+        workbook.close()
+
+
+def preview_workbook(primary_path: Path) -> dict:
+    """Read the facts a planner needs to choose extraction settings; saves nothing.
+
+    Args:
+        primary_path: Uploaded production workbook.
+    Returns:
+        Dict with ``plant``, ``defaults`` (``DEFAULT_SETTINGS``) and
+        ``frequency_inventory`` (see ``frequency_inventory``).
+    Raises:
+        ValueError: The FINI table is missing or the plant is ambiguous.
+    """
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)
+        workbook = load_workbook(primary_path, data_only=True, keep_links=False)
+    try:
+        try:
+            main = find_table(workbook, "FINI_grouping_for_wheel")
+        except KeyError as exc:
+            raise ValueError("Required workbook table is missing: FINI_grouping_for_wheel") from exc
+        catalog = {"FINI_grouping_for_wheel": main}
+        try:
+            catalog["Site"] = find_table(workbook, "Site")
+        except KeyError:
+            pass
+        return {
+            "plant": _plant(catalog, main),
+            "defaults": DEFAULT_SETTINGS,
+            "frequency_inventory": frequency_inventory(main),
+        }
     finally:
         workbook.close()

@@ -24,7 +24,7 @@ from .solver import (
     _infeasible_result,
     _member_key,
     _normalized_exception_volume_pairs,
-    precompute_coefficients,
+    strategy_candidates,
     solve_candidate_pools,
 )
 
@@ -197,8 +197,9 @@ def solve_baseline_neighborhood(
 
     ordered_pools = tuple(sorted(pools, key=lambda item: item.block_key))
     ordered_members = tuple(sorted(members, key=_member_key))
-    candidates = _eligible_candidates(ordered_pools, config)
-    coefficients = precompute_coefficients(candidates, ordered_members, config)
+    candidates, coefficients = strategy_candidates(
+        _eligible_candidates(ordered_pools, config), ordered_members, config
+    )
     baseline_indexes = _baseline_warm_start_indexes(candidates, ordered_members)
     completeness = (
         "complete"

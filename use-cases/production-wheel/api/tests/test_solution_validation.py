@@ -86,13 +86,24 @@ def test_validation_records_every_coverage_view_and_member_adjustment() -> None:
     assert validation.is_valid
     assert len(validation.groups) == 1
     group = validation.groups[0]
-    assert group.coverage_days == pytest.approx(112.5)
+    # Base RoC 250 x 900 / 2000 = 112.5 days; wheel RoC R = ROUND(112.5) = 113.
     assert group.base_group_coverage_days == pytest.approx(112.5)
-    assert group.adjusted_group_coverage_days == pytest.approx(131.875)
-    assert group.worst_fini_coverage_days == pytest.approx(500.0)
+    assert group.wheel_roc_days == 113
+    assert group.coverage_days == pytest.approx(113.0)
+    # Pallets per batch: F1 1000 x 0.95 / 100 = 9.5 (no change); F2 1000 x 0.05 / 200
+    # = 0.25, rounded like the workbook to 0.3, under 0.9, so its inventory RoC is
+    # floor(113 / 0.3) = 376.
+    assert dict(group.fini_pallets_per_batch) == pytest.approx({"F1": 9.5, "F2": 0.3})
     assert dict(group.fini_adjusted_coverage_days) == pytest.approx(
-        {"F1": 112.5, "F2": 500.0}
+        {"F1": 113.0, "F2": 376.0}
     )
+    assert group.adjusted_group_coverage_days == pytest.approx(
+        (1_900 * 113 + 100 * 376) / 2_000
+    )
+    assert group.worst_fini_coverage_days == pytest.approx(376.0)
+    # Batches per week = 5 days per week / R; J_CH = batches x (2 - 1).
+    assert group.frequency_per_week == pytest.approx(5 / 113)
+    assert group.j_ch_contribution == pytest.approx(5 / 113)
 
 
 def test_validation_preserves_empirical_unknown_without_inventing_no() -> None:

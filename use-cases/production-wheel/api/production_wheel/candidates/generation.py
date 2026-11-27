@@ -16,23 +16,16 @@ from production_wheel.matrix import (
     matrix_status_lookup,
     normalize_volume,
 )
-from production_wheel.metrics import (
-    changeover_contribution,
-    effective_batch,
-    group_coverage,
-    group_frequency,
-    pallet_allocations,
-    proportional_allocations,
-)
+from production_wheel.metrics import effective_batch
 from production_wheel.schemas import (
     CoverageBasis,
     MatrixMode,
-    PalletFormula,
     PVMode,
     RunConfig,
     TargetBand,
 )
-from production_wheel.business_rules import group_allowed
+from production_wheel.business_rules import group_allowed, runner_ratios
+from production_wheel.wheel_roc import WheelFigures, wheel_figures
 
 from .models import (
     BlockKey,
@@ -170,8 +163,8 @@ def _block_fingerprint(
                 ),
                 "pck_code": member.pck_code,
                 **({name: getattr(member, name) for name in (
-                    "lot_size_considered_litres", "xyz_x_dc_count", "xyz_y_dc_count", "xyz_z_dc_count",
-                    "primary_dc_count", "secondary_dc_count", "sales_scenario", "sales_network_scenario")}
+                    "lot_size_considered_litres", "reference_coverage_source_days",
+                    "xyz_x_dc_count", "xyz_y_dc_count", "xyz_z_dc_count", "primary_dc_count", "secondary_dc_count", "sales_scenario", "sales_network_scenario")}
                     if config.business_rules else {}),
             }
             for member in ordered
@@ -525,37 +518,29 @@ def _mandatory_memberships(
     return result
 
 
-def _coverage(
+def _wheel(
     candidate: Candidate,
     by_id: dict[str, CandidateMember],
-    basis: CoverageBasis,
-    formula: PalletFormula,
-    demand_days: int = 250,
-) -> float:
-    """Calculate one governed coverage view for beam ranking."""
+    demand_days: float,
+    productive_weeks: float,
+) -> WheelFigures:
+    """Return the Single RoC wheel figures of a candidate for beam ranking.
 
-    demands = {item: by_id[item].demand_litres for item in candidate.member_ids}
-    pallets = {item: by_id[item].pallet_litres for item in candidate.member_ids}
-    nominal = proportional_allocations(demands, candidate.effective_batch_litres)
-    allocations = pallet_allocations(nominal, pallets, formula)
-    return float(
-        group_coverage(
-            basis,
-            demands,
-            candidate.effective_batch_litres,
-            allocations,
-            demand_days,
-        )
+    The same rule as the solver coefficients (``production_wheel.wheel_roc``):
+    whole-day RoC for ``J_CH``, pallets only in the inventory coverage bases.
+    """
+
+    members = [by_id[item] for item in candidate.member_ids]
+    return wheel_figures(
+        candidate.member_ids,
+        [member.demand_litres for member in members],
+        [member.pallet_litres for member in members],
+        [1] * len(members),
+        candidate.nominal_lot_litres,
+        candidate.effective_batch_litres,
+        demand_days,
+        productive_weeks,
     )
-
-
-def _candidate_jch(candidate: Candidate, productive_weeks: float = 50) -> float:
-    """Calculate the governed changeover contribution for beam ranking."""
-
-    frequency = group_frequency(
-        candidate.group_demand_litres, candidate.effective_batch_litres, productive_weeks
-    )
-    return changeover_contribution(frequency, len(candidate.member_ids))
 
 
 def _baseline_changes(candidate: Candidate, by_id: dict[str, CandidateMember]) -> int:
@@ -583,18 +568,18 @@ def _scorer_keys(
     scores: dict[str, list[tuple[object, ...]]] = defaultdict(list)
     for candidate in configurations:
         identity = (candidate.member_ids, candidate.pv_id, candidate.nominal_lot_litres)
+        wheel = _wheel(candidate, by_id, config.demand_days, config.productive_weeks)
         for basis in CoverageBasis:
-            for formula in PalletFormula:
-                coverage = _coverage(candidate, by_id, basis, formula, config.demand_days)
-                suffix = f"{basis.value.lower()}:{formula.value.lower()}"
-                scores[f"coverage:{suffix}"].append((coverage, identity))
-                minimum = _BEAM_TARGET_BAND.minimum_days
-                maximum = _BEAM_TARGET_BAND.maximum_days
-                excess = max(minimum - coverage, coverage - maximum, 0.0)
-                scores[f"target_band:{suffix}"].append(
-                    (int(excess > 0), excess, coverage, identity)
-                )
-        scores["j_ch"].append((_candidate_jch(candidate, config.productive_weeks), identity))
+            coverage = wheel.coverage(basis)
+            suffix = basis.value.lower()
+            scores[f"coverage:{suffix}"].append((coverage, identity))
+            minimum = _BEAM_TARGET_BAND.minimum_days
+            maximum = _BEAM_TARGET_BAND.maximum_days
+            excess = max(minimum - coverage, coverage - maximum, 0.0)
+            scores[f"target_band:{suffix}"].append(
+                (int(excess > 0), excess, coverage, identity)
+            )
+        scores["j_ch"].append((wheel.j_ch, identity))
         scores["matrix_exceptions"].append(
             (len(candidate.matrix_exception_pairs), identity)
         )
@@ -912,8 +897,10 @@ def generate_block_pool(
     # A conditional rule need not hold for a partial group. Apply it after beam
     # expansion so a minimum-size rule cannot prune the seeds of valid groups.
     by_id = {m.fini_id: m for m in ordered}
+    # The relative runner view compares each FINI with its whole block, not its group.
+    ratios = runner_ratios(ordered, config)
     retained = tuple(c for c in pool.candidates if group_allowed(c,
-        [by_id[fid] for fid in c.member_ids], config))
+        [by_id[fid] for fid in c.member_ids], config, ratios))
     from dataclasses import replace
     return replace(rebuild_pool(pool, retained), completeness=pool.completeness)
 

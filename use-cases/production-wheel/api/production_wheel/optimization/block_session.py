@@ -33,7 +33,7 @@ from .solver import (
     _result_class,
     _singleton_warm_start_indexes,
     _solve_once,
-    precompute_coefficients,
+    strategy_candidates,
 )
 
 @dataclass(frozen=True, slots=True)
@@ -242,11 +242,12 @@ class BlockSolverSession:
         self.members = ordered_members
         self.config = config
         tick = time.perf_counter()
-        self.candidates = _eligible_candidates((pool,), config)
+        eligible = _eligible_candidates((pool,), config)
         self._candidate_order_seconds = time.perf_counter() - tick
         tick = time.perf_counter()
-        self.coefficients = precompute_coefficients(
-            self.candidates, ordered_members, config
+        # Adds runner-multiple versions of the groups when the cycle stock policy asks.
+        self.candidates, self.coefficients = strategy_candidates(
+            eligible, ordered_members, config
         )
         self._coefficient_preparation_seconds = time.perf_counter() - tick
         member_keys = tuple(_member_key(member) for member in ordered_members)

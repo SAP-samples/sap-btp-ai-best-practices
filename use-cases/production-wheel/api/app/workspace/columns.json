@@ -497,7 +497,10 @@
     "proof_scope": "NVARCHAR(5000)",
     "portfolio_hash": "NVARCHAR(5000)",
     "coverage_anchor_match": "DOUBLE",
-    "operations_anchor_match": "DOUBLE"
+    "operations_anchor_match": "DOUBLE",
+    "cycle_stock_mode": "NVARCHAR(5000)",
+    "single_roc_group_count": "DOUBLE",
+    "runner_multiple_group_count": "DOUBLE"
   },
   "groups": {
     "scenario_id": "NVARCHAR(5000)",
@@ -545,7 +548,13 @@
     "acceptance_status": "NVARCHAR(5000)",
     "failed_baseline_guardrails": "NVARCHAR(5000)",
     "point_index": "INTEGER",
-    "group_id": "NVARCHAR(5000)"
+    "group_id": "NVARCHAR(5000)",
+    "cycle_stock_strategy": "NVARCHAR(5000)",
+    "strategy_coverage_days": "DOUBLE",
+    "runner_multiples": "NVARCHAR(5000)",
+    "wheel_roc_days": "DOUBLE",
+    "wheel_coverage_days": "DOUBLE",
+    "fini_pallets_per_batch": "NVARCHAR(5000)"
   },
   "members": {
     "plant": "NVARCHAR(5000)",
@@ -624,6 +633,7 @@
     "pallet_formula": "NVARCHAR(5000)",
     "j_ch_contribution": "DOUBLE",
     "package_volume_evidence": "DOUBLE",
+    "matrix_volume_class": "NVARCHAR(5000)",
     "group_package_volumes": "NVARCHAR(5000)",
     "pck_evidence": "NCLOB",
     "equal_pck_diagnostic": "DOUBLE",
@@ -646,7 +656,15 @@
     "acceptance_status": "NVARCHAR(5000)",
     "failed_baseline_guardrails": "NVARCHAR(5000)",
     "point_index": "INTEGER",
-    "group_id": "NVARCHAR(5000)"
+    "group_id": "NVARCHAR(5000)",
+    "cycle_stock_strategy": "NVARCHAR(5000)",
+    "runner_class": "NVARCHAR(5000)",
+    "runner_multiple": "DOUBLE",
+    "strategy_coverage_days": "DOUBLE",
+    "wheel_roc_days": "DOUBLE",
+    "fini_wheel_roc_days": "DOUBLE",
+    "fini_inventory_roc_days": "DOUBLE",
+    "pallets_per_batch": "DOUBLE"
   },
   "pools": {
     "scenario_id": "NVARCHAR(5000)",
@@ -788,7 +806,8 @@
     "primary_relative_gap": "DOUBLE",
     "final_relative_gap": "DOUBLE",
     "proof_scope": "NVARCHAR(5000)",
-    "retained_nondominated": "NVARCHAR(5000)"
+    "retained_nondominated": "NVARCHAR(5000)",
+    "request_kind": "NVARCHAR(5000)"
   },
   "option_groups": {
     "option_id": "NVARCHAR(5000)",
@@ -844,7 +863,9 @@
     "coverage_violation_count": "DOUBLE",
     "coverage_excess_days": "DOUBLE",
     "matrix_exception_pair_count": "DOUBLE",
-    "solver_tie_break_rank": "DOUBLE"
+    "solver_tie_break_rank": "DOUBLE",
+    "cycle_stock_strategy": "NVARCHAR(5000)",
+    "max_runner_multiple": "DOUBLE"
   },
   "option_members": {
     "option_id": "NVARCHAR(5000)",
@@ -924,6 +945,7 @@
     "pallet_formula": "NVARCHAR(5000)",
     "j_ch_contribution": "DOUBLE",
     "package_volume_evidence": "DOUBLE",
+    "matrix_volume_class": "NVARCHAR(5000)",
     "group_package_volumes": "NVARCHAR(5000)",
     "pck_evidence": "NCLOB",
     "equal_pck_diagnostic": "DOUBLE",
@@ -962,5 +984,145 @@
     "volume_a": "NVARCHAR(64)",
     "volume_b": "NVARCHAR(64)",
     "status": "NVARCHAR(10)"
+  },
+  "dc_network": {
+    "material": "NVARCHAR(5000)",
+    "plant": "NVARCHAR(5000)",
+    "dc": "NVARCHAR(5000)",
+    "hub": "NVARCHAR(5000)",
+    "forecast_litres": "DOUBLE",
+    "has_forecast": "NVARCHAR(5000)",
+    "source_sheet": "NVARCHAR(5000)",
+    "source_row": "DOUBLE"
+  },
+  "dc_abc_classes": {
+    "material": "NVARCHAR(5000)",
+    "dc": "NVARCHAR(5000)",
+    "abc_class": "NVARCHAR(5000)",
+    "source_sheet": "NVARCHAR(5000)",
+    "source_row": "DOUBLE"
+  },
+  "dc_pallet_quantities": {
+    "material": "NVARCHAR(5000)",
+    "plant": "NVARCHAR(5000)",
+    "fini_plant_key": "NVARCHAR(5000)",
+    "pallet_qty": "DOUBLE",
+    "layer_qty": "DOUBLE",
+    "package_volume": "DOUBLE",
+    "source_sheet": "NVARCHAR(5000)",
+    "source_row": "DOUBLE"
+  },
+  "production_version_masses": {
+    "sefi_plant_key": "NVARCHAR(5000)",
+    "sefi": "NVARCHAR(5000)",
+    "plant": "NVARCHAR(5000)",
+    "production_version": "NVARCHAR(5000)",
+    "lot_size_kg": "DOUBLE",
+    "lot_size_litres": "DOUBLE",
+    "source_sheet": "NVARCHAR(5000)",
+    "source_row": "DOUBLE"
+  },
+  "sap_policy_rules": {
+    "plant": "NVARCHAR(5000)",
+    "setting": "NVARCHAR(5000)",
+    "abc_class": "NVARCHAR(5000)",
+    "value": "NVARCHAR(5000)",
+    "number": "DOUBLE"
+  },
+  "sap_dc_lot_sizes": {
+    "point_index": "INTEGER",
+    "plant": "NVARCHAR(5000)",
+    "material": "NVARCHAR(5000)",
+    "lot_size_code": "NVARCHAR(5000)",
+    "min_lot_size_at_dc": "DOUBLE",
+    "rounding_value": "DOUBLE",
+    "defined_in_wheel": "NVARCHAR(5000)",
+    "sales_scenario": "NVARCHAR(5000)",
+    "sales_network_scenario": "NVARCHAR(5000)",
+    "min_lot_identified": "NVARCHAR(5000)",
+    "cycle_days": "DOUBLE",
+    "cycle_source": "NVARCHAR(5000)",
+    "abc_class": "NVARCHAR(5000)",
+    "coverage_days": "DOUBLE",
+    "pallets_per_subgroup": "DOUBLE",
+    "coverage_days_pallet_adjusted": "DOUBLE",
+    "status": "NVARCHAR(5000)"
+  },
+  "sap_planning_calendar": {
+    "point_index": "INTEGER",
+    "action": "NVARCHAR(5000)",
+    "plant": "NVARCHAR(5000)",
+    "material": "NVARCHAR(5000)",
+    "sefi": "NVARCHAR(5000)",
+    "lot_size_procedure": "NVARCHAR(5000)",
+    "planning_calendar": "NVARCHAR(5000)",
+    "lot_size_profile": "NVARCHAR(5000)",
+    "sefi_forecast_litres": "DOUBLE",
+    "sefi_order": "DOUBLE",
+    "cumulative_share": "DOUBLE"
+  },
+  "sap_recipe_combinations": {
+    "point_index": "INTEGER",
+    "plant": "NVARCHAR(5000)",
+    "material": "NVARCHAR(5000)",
+    "recipe_combination": "NVARCHAR(5000)",
+    "sefi": "NVARCHAR(5000)",
+    "subgroup": "NVARCHAR(5000)",
+    "sort_material": "NVARCHAR(5000)"
+  },
+  "sap_apo_lot_sizes": {
+    "point_index": "INTEGER",
+    "sefi": "NVARCHAR(5000)",
+    "recipe_combination": "NVARCHAR(5000)",
+    "lot_size_kg": "DOUBLE",
+    "comment": "NVARCHAR(5000)",
+    "selected_pv": "NVARCHAR(5000)",
+    "status": "NVARCHAR(5000)"
+  },
+  "sap_changeover_kpis": {
+    "point_index": "INTEGER",
+    "plant": "NVARCHAR(5000)",
+    "level": "NVARCHAR(5000)",
+    "filling_line": "NVARCHAR(5000)",
+    "sefi": "NVARCHAR(5000)",
+    "subgroup": "NVARCHAR(5000)",
+    "fini_count": "DOUBLE",
+    "coverage_days": "DOUBLE",
+    "pack_basis": "NVARCHAR(5000)",
+    "common_lines": "NVARCHAR(5000)",
+    "batches_per_week": "DOUBLE",
+    "changeovers_per_week": "DOUBLE",
+    "pack_changeovers_per_week": "DOUBLE",
+    "same_pack_changeovers_per_week": "DOUBLE",
+    "volume_estimated_pack_changeovers_per_week": "DOUBLE",
+    "unclassified_changeovers_per_week": "DOUBLE",
+    "cycle_stock_strategy": "NVARCHAR(5000)",
+    "base_coverage_days": "DOUBLE",
+    "single_changeovers_per_week": "DOUBLE"
+  },
+  "sap_pv_conflicts": {
+    "point_index": "INTEGER",
+    "sefi": "NVARCHAR(5000)",
+    "subgroup": "NVARCHAR(5000)",
+    "selected_pvs": "NVARCHAR(5000)"
+  },
+  "sap_runner_adjustments": {
+    "point_index": "INTEGER",
+    "sefi": "NVARCHAR(5000)",
+    "plant": "NVARCHAR(5000)",
+    "subgroup": "NVARCHAR(5000)",
+    "material": "NVARCHAR(5000)",
+    "full_batch_coverage_days": "DOUBLE",
+    "base_coverage_days": "DOUBLE",
+    "sefi_ratio": "DOUBLE",
+    "subgroup_ratio": "DOUBLE",
+    "runner_class": "NVARCHAR(5000)",
+    "applied": "NVARCHAR(5000)",
+    "adjusted_coverage_days": "DOUBLE",
+    "status": "NVARCHAR(5000)",
+    "coverage_days": "DOUBLE",
+    "cycle_stock_strategy": "NVARCHAR(5000)",
+    "optimizer_runner_multiple": "DOUBLE",
+    "runner_multiple": "DOUBLE"
   }
 }

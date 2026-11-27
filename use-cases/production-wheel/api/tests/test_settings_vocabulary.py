@@ -58,3 +58,12 @@ def test_every_draft_setting_and_constraint_kind_is_documented():
                 | _field_names(ConstraintBase, seen) | kinds)
     missing = sorted(required - _documented_tokens())
     assert not missing, f'settings-vocabulary lacks entries for: {missing}'
+
+
+def test_every_rule_field_and_operator_is_documented():
+    """A new business-rule field or operator must get a plain-language entry."""
+    from production_wheel.rule_models import FIELDS, Expression
+    spans = set(re.findall(r'`([^`]+)`', SKILL.read_text()))
+    operators = set(typing.get_args(Expression.model_fields['op'].annotation)) - {'literal', 'field'}
+    missing = sorted((FIELDS | operators) - spans - _documented_tokens())
+    assert not missing, f'settings-vocabulary lacks rule entries for: {missing}'

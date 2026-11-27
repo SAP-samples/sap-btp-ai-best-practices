@@ -8,10 +8,10 @@ from production_wheel.schemas import SolveRequest
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 INPUT_VIEWS = frozenset(
-    "fini_master production_versions fini_line_eligibility pck_line_eligibility package_volume_catalog pallet_resolution enrichment_pallet_candidates validation_issues field_dictionary site_parameters baseline_assignments baseline_group_metrics baseline_groups_5_june legacy_fini_roc_by_pv sap_character_catalog sap_character_capacity sap_character_compatibility fini_new_recipe_combination fini_cycle_stock_at_dc fini_cycle_stock_without_pallet_conversion planning_calendar_inform planning_calendar_no_calendar apo_sefi_lot_size query_catalog external_dependencies sales_forecast_summary legacy_kpi line_corrections cycle_stock_lot_size_01 legacy_abc_cycle_stock legacy_average_batch_size legacy_baseline_groups legacy_changeover_estimation legacy_recipe_alternatives legacy_sales_forecast_summary legacy_solution_summary recipe_characters sefi_filling_line_evidence sefi_zone selling_dcs_per_material".split()
+    "fini_master production_versions fini_line_eligibility pck_line_eligibility package_volume_catalog pallet_resolution enrichment_pallet_candidates validation_issues field_dictionary site_parameters baseline_assignments baseline_group_metrics baseline_groups_5_june legacy_fini_roc_by_pv sap_character_catalog sap_character_capacity sap_character_compatibility fini_new_recipe_combination fini_cycle_stock_at_dc fini_cycle_stock_without_pallet_conversion planning_calendar_inform planning_calendar_no_calendar apo_sefi_lot_size query_catalog external_dependencies sales_forecast_summary legacy_kpi line_corrections cycle_stock_lot_size_01 legacy_abc_cycle_stock legacy_average_batch_size legacy_baseline_groups legacy_changeover_estimation legacy_recipe_alternatives legacy_sales_forecast_summary legacy_solution_summary recipe_characters sefi_filling_line_evidence sefi_zone selling_dcs_per_material dc_network dc_abc_classes dc_pallet_quantities production_version_masses".split()
 )
 RESULT_VIEWS = frozenset(
-    "solutions groups members pools constraints validation matrix_pairs block_options block_audits block_sessions block_failures global_audits option_groups option_members point_options".split()
+    "solutions groups members pools constraints validation matrix_pairs block_options block_audits block_sessions block_failures global_audits option_groups option_members point_options sap_dc_lot_sizes sap_planning_calendar sap_recipe_combinations sap_apo_lot_sizes sap_changeover_kpis sap_pv_conflicts sap_runner_adjustments".split()
 )
 
 
@@ -24,7 +24,10 @@ class StrictModel(BaseModel):
 class ExecutionBudget(StrictModel):
     """Bounded solver controls; seconds are per block unless stated otherwise."""
 
-    frontier_points: int = Field(default=17, ge=2, le=100)
+    frontier_points: int = Field(default=30, ge=2, le=100)
+    # Retained-point target: top-up solves fill frontier gaps until this many
+    # nondominated points survive (clamped to frontier_points).
+    min_frontier_points: int = Field(default=30, ge=2, le=100)
     block_options_per_block: int = Field(default=5, ge=2, le=100)
     per_block_total_seconds: float = Field(default=120, gt=0, le=86400)
     block_workers: int = Field(default=2, ge=1, le=16)

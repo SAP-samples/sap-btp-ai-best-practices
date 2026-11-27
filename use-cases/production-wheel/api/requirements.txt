@@ -11,13 +11,16 @@ python-dotenv>=1.2.2
 python-multipart>=0.0.9
 PyJWT>=2.10.1
 cryptography>=43.0.0
+# Validates the XSUAA user JWT forwarded by the approuter (app/security.py).
+sap-xssec==4.5.0
 
 # --- SAP Generative AI Hub + LangGraph agent (pins aligned to the agent template) ---
 sap-ai-sdk-gen[all]>=7.2.0
 langchain
 langchain-core>=0.3.20
 langchain-community>=0.3.10
-langchain-openai>=0.2.0
+# Stateless Responses replay depends on the store=False serializer in this version.
+langchain-openai>=1.3.5
 langchain-aws>=0.2.0
 langchain-google-vertexai>=2.0.0
 langgraph>=1.2.10
@@ -33,8 +36,12 @@ sqlalchemy-hana>=2.0.0
 hdbcli
 
 # --- Optimizer (production_wheel): Pyomo model solved with HiGHS ---
-pyomo>=6.9
-highspy>=1.8
+# Exact pins: highspy 1.16.0 returns wrong MIP results when it receives a MIP
+# start (it reports the start as optimal with a false objective, which Pyomo
+# then surfaces as "infeasible"). Upgrade only after tests/test_solver_integrity.py
+# and a full-portfolio run pass. See docs/solver-result-integrity.md.
+pyomo==6.10.1
+highspy==1.15.1
 openpyxl>=3.1.0
 numpy
 

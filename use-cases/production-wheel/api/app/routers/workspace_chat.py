@@ -15,6 +15,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.agent.tools.workspace_tools import workspace_tools
+from app.workspace.import_settings import PendingImport
 from app.workspace.dependencies import get_service
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -44,6 +45,8 @@ class ChatMessage(BaseModel):
     draft_id: str | None = None
     run_id: str | None = None
     point_index: int | None = Field(default=None, ge=1)
+    # Datasets page only: previewed workbook not yet extracted (null elsewhere).
+    pending_import: PendingImport | None = None
     history: list[ChatHistoryMessage] = Field(default_factory=list, max_length=40)
     context_summary: str | None = Field(default=None, max_length=12_000)
 
@@ -102,6 +105,18 @@ def _public_event(event: dict) -> dict | None:
         }
     if event_type == "run_created":
         return {key: event[key] for key in ("type", "run_id", "run") if key in event}
+    if event_type == "extraction_settings_proposal":
+        return {key: event[key] for key in ("type", "proposal_id", "preview_id", "primary_filename",
+            "summary", "overrides", "modeled_codes", "modeled_rows", "total_rows", "all_available",
+            "warnings") if key in event}
+    if event_type == "profile_proposal":
+        return {key: event[key] for key in ("type", "proposal_id", "profile_id", "profile_name",
+            "plant", "profile_revision", "summary", "change", "matrix_summary") if key in event}
+    # The assistant stored a decision or generated SAP settings: the page refreshes its SAP card.
+    if event_type == "decision_selected":
+        return {key: event[key] for key in ("type", "run_id", "selection") if key in event}
+    if event_type == "sap_settings_generated":
+        return {key: event[key] for key in ("type", "run_id", "point_index", "generated_at") if key in event}
     return None
 
 
@@ -111,6 +126,12 @@ def chat_error_message(error: Exception) -> str:
     if getattr(error, "status_code", None) == 429:
         return (
             "SAP AI Core's configured model reached its rate limit. Retry the chat after the quota recovers."
+            + independent
+        )
+    if getattr(error, "status_code", None) == 404:
+        return (
+            "SAP AI Core could not resolve a resource for the selected model request. "
+            "Retry the chat; if it repeats, check the AI Core deployment."
             + independent
         )
     if type(error).__name__ == "GraphRecursionError":

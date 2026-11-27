@@ -248,10 +248,14 @@ def test_global_solve_audit_keeps_every_requested_budget(tmp_path: Path) -> None
         block_worker_count=1,
     )
 
-    assert len(frontier.global_solve_audits) == 9
-    budgets = [
-        audit.requested_epsilon_j_ch for audit in frontier.global_solve_audits
-    ]
+    # The first nine audits are the requested schedule; this small frontier has
+    # fewer distinct portfolios, so gap-splitting top-up audits follow it.
+    requested = frontier.global_solve_audits[:9]
+    assert [audit.request_index for audit in requested] == list(range(1, 10))
+    assert len(frontier.global_solve_audits) > 9
+    assert frontier.frontier_shortfall
+    assert frontier.minimum_point_count == 9
+    budgets = [audit.requested_epsilon_j_ch for audit in requested]
     steps = [right - left for left, right in zip(budgets, budgets[1:])]
     assert budgets == sorted(budgets)
     assert steps[0] < steps[-1]
@@ -642,7 +646,7 @@ def test_default_config_is_empirical_base_group_diagnostic() -> None:
     assert config.pallet_formula is PalletFormula.MINIMUM_ONLY
     assert config.matrix_mode is MatrixMode.DIAGNOSTIC
     assert config.versions.matrix_version == "BASELINE_EMPIRICAL_MATRIX_V1"
-    assert config.versions.ruleset_version == "PROTOTYPE_RULESET_V5"
+    assert config.versions.ruleset_version == "PROTOTYPE_RULESET_V6"
     assert config.versions.schema_version == "PROTOTYPE_SCHEMA_V9"
 
 

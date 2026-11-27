@@ -65,7 +65,8 @@ export function mergeDraft(draft, fields) {
     coverage_mode: fields.coverage,
     coverage_basis:
       fields.basis || request.config?.coverage_basis || "BASE_GROUP",
-    matrix_mode: draft.plant_profile_id ? request.config?.matrix_mode : fields.matrix,
+    // A plant profile only seeds the compatibility mode; each scenario may change it.
+    matrix_mode: fields.matrix,
   };
   const cap = Number(fields.cap);
   if (!draft.plant_profile_id && (!Number.isInteger(cap) || cap < 7))

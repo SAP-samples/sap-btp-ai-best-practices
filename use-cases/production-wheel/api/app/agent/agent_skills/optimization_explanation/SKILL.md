@@ -46,17 +46,24 @@ Use the configured coverage/operations/Pareto mode and named priorities. The
 preferred_line objective is an explicit assignment preference in supported
 workspace runs, not an implied effect of a size cap. Do not invent weights,
 capacity limits, a monetary inventory model or an objective patch unsupported
-by the calling interface. Fixed-profile interpretation only emits supported hard
+by the calling interface. Capacity limits the planner states (for example tanks
+and lots per day) are modelled as hard `selection_bound` rules on
+`group.batches_per_day`; see the constraint-translation skill. Fixed-profile interpretation only emits supported hard
 rules and matrix policies; it cannot silently install an objective preference.
 
 ## Runner and source semantics
 
-High means individual coverage <= the profile threshold; low means greater.
-There is no medium. At the default threshold, exactly 15 days is high.
-Reference basis uses the source lot size considered divided by individual daily
-demand, without applying a second canonical factor. Candidate-PV basis uses
-that PV's effective batch divided by the individual's daily demand, as if it
-alone received the batch. It does NOT use the whole group's combined demand.
+Runner classes are high, medium and low, set by the profile's
+`runner_thresholds`. Two views are combined and the faster one wins. Days view:
+full-batch coverage <= `high_max_days` (default 10) is high, >= `low_min_days`
+(default 80) is low. Ratio view: coverage divided by the SEFI's fastest
+coverage, one decimal, <= `high_max_ratio` (3) is high, >= `low_min_ratio` (10)
+is low. In between is medium. The fastest FINI of every SEFI is therefore high.
+Reference basis uses the source "RoC 1 full SEFI batch" (source lot size
+considered divided by individual daily demand, no second canonical factor), the
+same value SAP settings classify with. Candidate-PV basis uses that PV's
+effective batch divided by the individual's daily demand, as if it alone
+received the batch. It does NOT use the whole group's combined demand.
 A candidate-PV runner class may differ between PVs.
 
 Daily demand and coverage depend on the uploaded forecast's demand-day horizon.
@@ -81,7 +88,7 @@ or insufficient total group capacity to cover the admitted population. Explain
 those and do not apply the proposed constraints; use contraint_translation.
 
 Do not infer a global contradiction from one rejected candidate, a missing fact,
-or different runner labels. High/low mixture and volume/PCK homogeneity can
+or different runner labels. Runner mixture and volume/PCK homogeneity can
 coexist. A line-specific contradiction needs evidence that affected required
 products cannot be grouped or routed any other allowed way. Check scope, possible
 PVs and alternatives before declaring impossibility. Examples from a meeting

@@ -151,11 +151,21 @@ def test_coverage_views_and_pallet_member_diagnostics_are_exported() -> None:
     )
 
     assert proposed[0]["active_coverage_basis"] == "BASE_GROUP"
-    assert proposed[0]["coverage_days"] == pytest.approx(112.5)
-    assert proposed[1]["fini_adjusted_coverage_days"] == pytest.approx(500.0)
+    # Wheel RoC R = ROUND(112.5) = 113; the second FINI fills 0.25 pallets per
+    # batch, rounded to 0.3 like the workbook, so its inventory RoC is
+    # floor(113 / 0.3) = 376.
+    assert proposed[0]["coverage_days"] == pytest.approx(113.0)
+    assert proposed[0]["wheel_roc_days"] == 113
+    assert proposed[1]["fini_wheel_roc_days"] == pytest.approx(113.0)
+    assert proposed[1]["pallets_per_batch"] == pytest.approx(0.3)
+    assert proposed[1]["fini_adjusted_coverage_days"] == pytest.approx(376.0)
+    assert proposed[1]["fini_inventory_roc_days"] == pytest.approx(376.0)
     assert groups[0]["base_group_coverage_days"] == pytest.approx(112.5)
-    assert groups[0]["adjusted_group_coverage_days"] == pytest.approx(131.875)
-    assert groups[0]["worst_fini_coverage_days"] == pytest.approx(500.0)
+    assert groups[0]["wheel_roc_days"] == 113
+    assert groups[0]["adjusted_group_coverage_days"] == pytest.approx(
+        (1_900 * 113 + 100 * 376) / 2_000
+    )
+    assert groups[0]["worst_fini_coverage_days"] == pytest.approx(376.0)
     assert summary["base_group_target_violation_count"] == 0
     assert summary["adjusted_group_target_violation_count"] == 0
     assert summary["worst_fini_target_violation_count"] == 1
@@ -173,9 +183,12 @@ def test_baseline_summary_recomputes_under_active_scenario_settings() -> None:
     )
     assert baseline["group_count"] == 1
     assert baseline["singleton_group_count"] == 0
-    assert baseline["maximum_coverage_days"] == 112.5
-    assert baseline["base_group_maximum_coverage_days"] == 112.5
-    assert baseline["adjusted_group_maximum_coverage_days"] == 112.5
+    # Same wheel RoC rule as the proposal: base RoC 112.5 days -> R = 113, and
+    # 5 pallets per batch per FINI leave the inventory RoC at 113.
+    assert baseline["maximum_coverage_days"] == 113.0
+    assert baseline["base_group_maximum_coverage_days"] == 113.0
+    assert baseline["adjusted_group_maximum_coverage_days"] == 113.0
+    assert baseline["j_ch"] == pytest.approx(5 / 113)
     assert baseline["matrix_exception_pair_count"] == 0
     assert baseline["matrix_unknown_pair_count"] == 0
     assert baseline["matrix_positive_evidence_pair_count"] == 1
@@ -409,3 +422,19 @@ def test_gap_accepted_tier_is_reported_as_a_proof_caveat() -> None:
     )
 
     assert summary["objective_tier_caveats"] == "target_violation_count"
+
+
+def test_member_rows_show_the_matrix_volume_class_of_class_runs() -> None:
+    """nearest_class runs report each product's matrix class; exact runs leave it blank."""
+
+    config, members, _, result, validation = _bundle()
+    source = _source_rows()[:2]
+    exact = build_proposed_subgroups_rows(source, members, validation.groups, result, config)
+    assert {row["matrix_volume_class"] for row in exact} == {""}
+    volumes = sorted({format(m.package_volume, "g") for m in members})
+    classed = config.model_copy(update={"volume_matching": "nearest_class",
+                                        "matrix_volume_classes": tuple((v, "CLASS-" + v) for v in volumes)})
+    rows = build_proposed_subgroups_rows(source, members, validation.groups, result, classed)
+    by_volume = {format(m.package_volume, "g"): m.fini_id for m in members}
+    assert all(row["matrix_volume_class"].startswith("CLASS-") for row in rows)
+    assert {row["matrix_volume_class"] for row in rows} == {"CLASS-" + v for v in by_volume}

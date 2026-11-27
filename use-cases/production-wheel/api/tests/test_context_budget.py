@@ -57,6 +57,9 @@ def test_oversized_tool_output_is_compacted_before_a_provider_request():
     assert isinstance(compact_tool, ToolMessage)
     assert compact_tool.tool_call_id == "call-1"
     assert "tool_output_omitted" in str(compact_tool.content)
+    # Guidance names the omitted tool and does not send the model back to it.
+    assert "The list_runs result was larger" in str(compact_tool.content)
+    assert "same oversized result" in str(compact_tool.content)
     assert prepared.final_request_bytes <= budget.summarize_at_bytes
     assert prepared.actions == ("compact_tool_outputs",)
 

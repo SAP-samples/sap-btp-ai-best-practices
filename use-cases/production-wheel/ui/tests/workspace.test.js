@@ -12,6 +12,7 @@ import {
   applyBrowserContextSummary,
   clearBrowserContext,
   formatChatMarkdown,
+  pageContext,
 } from "../src/workspace/chat.js";
 
 /** Minimal storage fixture with the same string contract as localStorage. */
@@ -69,6 +70,43 @@ test("browser-only chat compaction retains recent turns and reset clears its sum
   summary = clearBrowserContext(history);
   assert.equal(summary, null);
   assert.deepEqual(history, []);
+});
+
+test("assistant context is scoped to the visible page with explicit nulls", () => {
+  const state = {
+    plant_profile_id: "profile-a",
+    dataset_id: "dataset-a",
+    draft_id: "draft-a",
+    run_id: "run-a",
+    point_index: 7,
+    context_id: "page-session",
+    pending_profile_plant: "plant-x",
+  };
+  // Settings: only the plant profile; stale optimizer selections are cleared server-side.
+  assert.deepEqual(pageContext({ ...state, page: "settings" }), {
+    plant_profile_id: "profile-a",
+    dataset_id: null,
+    draft_id: null,
+    run_id: null,
+    point_index: null,
+  });
+  assert.deepEqual(pageContext({ ...state, page: "datasets" }), {
+    plant_profile_id: "profile-a",
+    dataset_id: "dataset-a",
+    draft_id: null,
+    run_id: null,
+    point_index: null,
+  });
+  // The optimizer keeps the full selection; non-context keys never leak into the body.
+  assert.deepEqual(pageContext({ ...state, page: "workspace" }), {
+    plant_profile_id: "profile-a",
+    dataset_id: "dataset-a",
+    draft_id: "draft-a",
+    run_id: "run-a",
+    point_index: 7,
+  });
+  assert.deepEqual(Object.values(pageContext({ ...state, page: "unknown" })), [null, null, null, null, null]);
+  assert.equal(pageContext({ page: "settings" }).plant_profile_id, null);
 });
 
 test("corrupt persisted state is safely ignored", () => {
@@ -180,6 +218,9 @@ test("line permissions preserve numeric, boolean and unknown source values", asy
   assert.equal(fieldValue("filling_line", "1"), "1");
   assert.equal(fieldValue("material", "00123"), "00123");
   assert.equal(fieldValue("eligible", "unexpected"), "unexpected");
+  assert.equal(fieldValue("cycle_stock_strategy", "runner_multiple"), "Runner multiple");
+  assert.equal(fieldValue("cycle_stock_strategy", "single"), "Single RoC");
+  assert.equal(fieldValue("cycle_stock_strategy", null), "—");
 });
 
 test("delete treats an already-deleted entity as success but surfaces other failures", async () => {

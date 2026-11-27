@@ -38,13 +38,31 @@ const fields = {
   active_coverage_basis: ["Coverage calculation basis", "Selected method used to calculate coverage."],
   j_ch: ["Changeover proxy", "Within-group changeover measure. Excludes singleton, between-group, sequence and cleaning setup costs; not total changeover time."],
   j_ch_contribution: ["Group changeover proxy contribution", "This group's contribution to the within-group changeover proxy. Repeated member-row values must not be summed."],
+  cycle_stock_mode: ["Cycle stock strategy setting", "Plant profile setting of the run: Single RoC, Runner multiples, or Optimizer chooses per group."],
+  cycle_stock_strategy: ["Cycle stock strategy", "Single RoC: every product of the group is filled in every batch and gets the group's coverage. Runner multiple: only the fastest product keeps it; slower products are filled every 2nd, 3rd... batch and get a whole multiple of it."],
+  strategy_coverage_days: ["Coverage under the strategy (days)", "Group row: coverage of the group under its cycle stock strategy and the run's coverage basis. Product row: wheel RoC x the product's runner multiple, without pallets."],
+  base_group_coverage_days: ["Batch coverage before rounding (days)", "Demand days x effective batch / group demand. The wheel RoC rounds it to whole days."],
+  wheel_roc_days: ["Wheel RoC (days)", "Batch coverage rounded to whole days like the workbook (at least 1 day). Batches per week, changeovers and runner multiples use it; pallets never change it."],
+  wheel_coverage_days: ["Wheel coverage without pallets (days)", "Demand-weighted mean of the products' wheel RoC x runner multiple."],
+  fini_wheel_roc_days: ["Product wheel RoC (days)", "Wheel RoC x the product's runner multiple. Always a whole multiple of the group's wheel RoC."],
+  pallets_per_batch: ["Pallets per batch", "Pallets one batch fills for the product: nominal lot x demand share / litres per pallet, rounded to 1 decimal."],
+  fini_pallets_per_batch: ["Pallets per batch by product", "Pallets one batch fills for each product of the group."],
+  fini_inventory_roc_days: ["Product inventory RoC with pallets (days)", "Product wheel RoC raised to cover at least one full pallet (below 0.9 pallets per batch: floor(RoC / pallets)). Used for inventory and DC lot sizes only."],
+  fini_adjusted_coverage_days: ["Product inventory RoC with pallets (days)", "Product coverage after the one-pallet adjustment. Used for inventory only, not for batches or changeovers."],
+  adjusted_group_coverage_days: ["Inventory coverage with pallets (days)", "Demand-weighted mean of the products' inventory RoC with pallets."],
+  runner_class: ["Runner class", "High, medium or low runner from the plant profile's runner cut-offs."],
+  runner_multiple: ["Runner multiple", "Batches one fill of this product covers: 1 = filled every batch, 2 = every 2nd batch. Always 1 with Single RoC."],
+  runner_multiples: ["Runner multiples", "Runner multiple of each product of the group."],
+  max_runner_multiple: ["Largest runner multiple", "Largest runner multiple in the group; 1 means multiples change nothing."],
+  single_roc_group_count: ["Single RoC groups", "Groups where every product gets the group's coverage."],
+  runner_multiple_group_count: ["Runner multiple groups", "Groups where slower products are filled only every few batches."],
   point_index: ["Solution point", "Identifier of a solution on the trade-off frontier."],
   group_count: ["Number of groups", "Total groups in the solution."],
   singleton_group_count: ["Single-product groups", "Groups containing exactly one finished product."],
   group_size: ["Finished products in group", "Number of finished products belonging to the group."],
   member_count: ["Number of group members", "Count of finished products in the group."],
   members: ["Group member identifiers", "Finished-product identifiers belonging to this group."],
-  frequency_per_week: ["Production runs per week", "Recurring modeled production frequency, not dated production orders."],
+  frequency_per_week: ["Production runs per week", "Days per week / wheel RoC (whole days). Recurring modeled frequency, not dated production orders."],
   validation_status: ["Structural validation status", "Checks of solution structure and constraints. This does not establish business acceptance or global optimality."],
   acceptance_status: ["Business acceptance status", "Assessment against the configured business acceptance criteria."],
   result_class: ["Solution evidence classification", "Classification of the result according to its validation and optimization evidence."],
@@ -70,7 +88,78 @@ const views = {
   block_audits: "Optimization evidence by block",
   global_audits: "Whole-solution optimization evidence",
   matrix_pairs: "Package compatibility evidence",
+  sap_dc_lot_sizes: "SAP cycle stock per DC",
+  sap_planning_calendar: "SAP planning calendar",
+  sap_recipe_combinations: "SAP recipe combinations",
+  sap_apo_lot_sizes: "SAP APO lot sizes",
+  sap_changeover_kpis: "SAP RoC and changeover KPI",
+  sap_pv_conflicts: "SAP production-version check",
+  sap_runner_adjustments: "SAP runner-adjusted coverage audit",
 };
+
+/**
+ * Readable names for compatibility modes. The API, solver and stored records keep the
+ * original values (HARD, FLEXIBLE, DIAGNOSTIC, OFF); only people see these labels.
+ * Listed in the order shown in selects, starting with the profile default.
+ */
+export const MATRIX_MODE_LABELS = {
+  FLEXIBLE: "Avoid allowed",
+  DIAGNOSTIC: "Prefer compatible",
+  HARD: "Strict",
+  OFF: "Ignore table",
+};
+
+/** Return the readable compatibility-mode name, or the raw value when it is unknown. */
+export function matrixModeLabel(mode) {
+  return MATRIX_MODE_LABELS[mode] || String(mode ?? "—");
+}
+
+/** Return <option> markup for a compatibility-mode select; values stay API identifiers. */
+export function matrixModeOptions() {
+  return Object.entries(MATRIX_MODE_LABELS)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`)
+    .join("");
+}
+
+/**
+ * Readable names for a plant profile's volume matching (production_wheel.volume_classes).
+ * exact: the matrix lists every package volume. nearest_class: the matrix lists
+ * reference volumes (stops) plus optional "<n" / ">n" classes.
+ */
+export const VOLUME_MATCHING_LABELS = {
+  nearest_class: "Nearest reference volume",
+  exact: "Exact volumes",
+};
+
+/** Return the readable volume-matching name; stored profiles without the setting are exact. */
+export function volumeMatchingLabel(mode) {
+  return VOLUME_MATCHING_LABELS[mode || "exact"] || String(mode);
+}
+
+/** Return <option> markup for the volume-matching select. */
+export function volumeMatchingOptions() {
+  return Object.entries(VOLUME_MATCHING_LABELS)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`)
+    .join("");
+}
+
+/**
+ * Sort key of a matrix axis label: "<1" before 1, ">15" after 15.
+ * @param {string|number} label Volume in litres or a "<n" / ">n" class.
+ * @returns {number[]} [value, kind] with kind -1 below, 0 stop, 1 above.
+ */
+export function volumeLabelKey(label) {
+  const text = String(label).replaceAll(" ", "");
+  if (text.startsWith("<")) return [Number(text.slice(1)), -1];
+  if (text.startsWith(">")) return [Number(text.slice(1)), 1];
+  return [Number(text), 0];
+}
+
+/** Compare two matrix axis labels for Array.sort. */
+export function compareVolumeLabels(a, b) {
+  const [left, leftKind] = volumeLabelKey(a), [right, rightKind] = volumeLabelKey(b);
+  return left - right || leftKind - rightKind;
+}
 
 /** Return a readable label for an API field, preserving unknown terms with expanded acronyms. */
 export function fieldLabel(value = "") {
@@ -86,8 +175,12 @@ export function fieldDescription(field) { return fields[field]?.[1] || ""; }
 /** Return a readable view name while retaining its API identifier as the select value. */
 export function viewLabel(view) { return views[view] || fieldLabel(view); }
 
-/** Format tri-state eligibility from HANA numeric or extractor boolean values without losing unknowns. */
+/** Readable names of a group's cycle stock strategy; stored values stay API identifiers. */
+export const CYCLE_STOCK_STRATEGY_LABELS = { single: "Single RoC", runner_multiple: "Runner multiple" };
+
+/** Format tri-state eligibility and cycle stock strategies without losing unknowns. */
 export function fieldValue(field, value) {
+  if (field === "cycle_stock_strategy" && CYCLE_STOCK_STRATEGY_LABELS[value]) return CYCLE_STOCK_STRATEGY_LABELS[value];
   if (field === "eligible") {
     if (value == null || value === "") return "Unknown";
     if ([true, 1, "1"].includes(value)) return "Yes";

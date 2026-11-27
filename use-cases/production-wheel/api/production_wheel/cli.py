@@ -30,7 +30,7 @@ Examples::
     .venv/bin/python -m production_wheel.cli solve \
       --run-directory prototype/output/<extraction-run> \
       --frontier customer_families_greenfield_pareto \
-      --frontier-points 17 --global-epsilon-exponent 2 \
+      --frontier-points 30 --global-epsilon-exponent 2 \
       --block-options-per-block 17 \
       --per-block-total-seconds 3600 \
       --exhaustive-block PL01/4000001 \
@@ -690,8 +690,8 @@ def build_parser() -> argparse.ArgumentParser:
     solve.add_argument(
         "--frontier-points",
         type=int,
-        default=17,
-        help="anchor-inclusive low-epsilon-biased global samples (default 17)",
+        default=30,
+        help="anchor-inclusive low-epsilon-biased global samples (default 30)",
     )
     solve.add_argument(
         "--global-epsilon-exponent",

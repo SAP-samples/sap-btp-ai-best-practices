@@ -6,6 +6,7 @@ Examples (from api/):
     ../.venv/bin/python -m app.workspace import-bundle job_runs/JOB/solution --dataset-directory job_runs/SNAPSHOT
     ../.venv/bin/python -m app.workspace retry-publication JOB
     ../.venv/bin/python -m app.workspace check-hana
+    ../.venv/bin/python -m app.workspace backfill-sap-lookups DATASET_ID [DATASET_ID ...]
 """
 
 import argparse
@@ -23,6 +24,8 @@ def main():
     sub.add_parser("check-hana")
     for name in ("execute", "retry-publication"):
         sub.add_parser(name).add_argument("run_id")
+    backfill = sub.add_parser("backfill-sap-lookups", help="Read SAP lookup tables into existing snapshots")
+    backfill.add_argument("dataset_ids", nargs="+")
     migration = sub.add_parser("import-bundle")
     migration.add_argument("solution_directory", type=Path)
     migration.add_argument("--dataset-directory", required=True, type=Path)
@@ -44,13 +47,26 @@ def main():
         else:
             worker_loop(service, stop=stop)
     elif args.command == "execute":
+        from .run_failures import record_failure
         from .worker import execute_run
 
-        execute_run(service, args.run_id)
+        try:
+            execute_run(service, args.run_id)
+        except BaseException as exc:
+            # Save the cause in HANA before exiting non-zero; the supervisor then
+            # marks the run failed with this summary instead of a bare exit code.
+            if not isinstance(exc, (KeyboardInterrupt, SystemExit)):
+                record_failure(service, args.run_id, exc)
+            raise
     elif args.command == "retry-publication":
         from .worker import retry_publication
 
         print(json.dumps(retry_publication(service, args.run_id), default=str))
+    elif args.command == "backfill-sap-lookups":
+        from tqdm import tqdm
+
+        for dataset_id in tqdm(args.dataset_ids, desc="Backfill SAP lookups"):
+            print(json.dumps(service.backfill_sap_lookups(dataset_id), default=str))
     elif args.command == "import-bundle":
         from .migration import import_history
         from tqdm import tqdm

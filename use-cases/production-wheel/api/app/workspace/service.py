@@ -6,6 +6,8 @@ import copy
 import threading
 
 from .datasets_service import DatasetService
+from .decisions_service import DecisionService
+from .sap_settings_service import SapSettingsService
 from .models import QuerySpec
 from .removal import RemovalService
 from .runs_service import RunService
@@ -13,7 +15,15 @@ from .plant_profiles import PlantProfileService
 from .ai_model_settings import AIModelSettingsService
 
 
-class WorkspaceService(DatasetService, RunService, RemovalService, PlantProfileService, AIModelSettingsService):
+class WorkspaceService(
+    DatasetService,
+    RunService,
+    DecisionService,
+    SapSettingsService,
+    RemovalService,
+    PlantProfileService,
+    AIModelSettingsService,
+):
     """Compose independently testable dataset, run, query and context services."""
 
     def __init__(self, repository):
@@ -96,11 +106,16 @@ class WorkspaceService(DatasetService, RunService, RemovalService, PlantProfileS
         return reference(topic)
 
     def context(self, context_id, patch=None):
-        """Keep selected IDs only for this API process and page-session key."""
+        """Keep selected IDs only for this API process and page-session key.
+
+        Besides IDs, ``pending_import`` holds the Datasets page's previewed but not
+        yet extracted workbook, so the assistant can propose extraction settings.
+        """
         if len(context_id) > 64:
             raise ValueError("context_id maximum length is 64")
         if patch is not None:
-            if set(patch) - {"dataset_id", "draft_id", "run_id", "point_index", "plant_profile_id"}:
+            if set(patch) - {"dataset_id", "draft_id", "run_id", "point_index", "plant_profile_id",
+                             "pending_import"}:
                 raise ValueError("unknown context field")
         with self._session_context_lock:
             value = self._session_contexts.setdefault(

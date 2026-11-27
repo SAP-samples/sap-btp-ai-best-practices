@@ -26,6 +26,8 @@ class HANAConnection:
         self.user = os.getenv("HANA_USER")
         self.password = os.getenv("HANA_PASSWORD")
         self.encrypt = os.getenv("HANA_ENCRYPT", "True").lower() == "true"
+        # Optional schema override; empty keeps the login user's default schema.
+        self.schema = os.getenv("HANA_SCHEMA", "")
 
         self.engine = None
         self.connection = None
@@ -66,7 +68,10 @@ class HANAConnection:
             )
 
             logger.info("Creating SQLAlchemy engine...")
-            self.engine = create_engine(connection_string, echo=False)
+            connect_args = {"currentSchema": self.schema} if self.schema else {}
+            self.engine = create_engine(
+                connection_string, echo=False, connect_args=connect_args
+            )
 
             logger.info("Establishing connection...")
             self.connection = self.engine.connect()

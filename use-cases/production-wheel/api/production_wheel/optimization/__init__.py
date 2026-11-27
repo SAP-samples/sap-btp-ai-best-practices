@@ -12,10 +12,12 @@ from .solver import (
     SelectedCandidate,
     SolveResult,
     precompute_coefficients,
+    strategy_candidates,
     solve_block_pool,
     solve_candidate_pools,
     solve_decomposed_pools,
 )
+from .solver_integrity import SolverResultInconsistentError, verify_solver_result
 
 __all__ = [
     "BlockSessionMetrics",
@@ -28,8 +30,11 @@ __all__ = [
     "ObjectiveLevel",
     "SelectedCandidate",
     "SolveResult",
+    "SolverResultInconsistentError",
     "precompute_coefficients",
+    "strategy_candidates",
     "solve_block_pool",
     "solve_candidate_pools",
     "solve_decomposed_pools",
+    "verify_solver_result",
 ]

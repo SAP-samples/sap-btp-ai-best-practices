@@ -109,13 +109,22 @@ def test_wheel_export_uses_source_columns_and_selected_solution():
     assert row["Common eligible lines"] == "- -  3   -   -   -"
     assert row["Point"] == 1
     assert row["Selected filling line"] == "3"
+    assert row["Manual adjusted RoC"] is None
     with pytest.raises(ValueError, match="point"):
         export_wheel(service, "r", 2)
+
+    # A subgroup using runner multiples fills the template's override column.
+    member = repo.rows("r", "members")[0]
+    repo.replace_tables("r", {"solutions": [{"point_index": 1}], "members": [{
+        **member, "cycle_stock_strategy": "runner_multiple", "runner_multiple": 2, "strategy_coverage_days": 24}]})
+    row = dict(zip(*list(load_workbook(io.BytesIO(export_wheel(service, "r", 1)), data_only=True)["Production wheel"].values)[:2]))
+    assert (row["Manual adjusted RoC"], row["Runner multiple"], row["Cycle stock strategy"]) == (24, 2, "runner_multiple")
+    assert row["RoC selected PV"] == 12
 
 
 def test_export_values_keep_unassigned_rows_blank_and_source_strings_literal():
     """Never carry old group assignments into excluded rows or execute source formulas."""
-    from app.workspace.wheel_export import _sheet, wheel_rows
+    from app.workspace.wheel_export import write_sheet, wheel_rows
 
     rows = wheel_rows(
         ["Material", "Subgroup", "Selected PV", "Filling line"],
@@ -134,7 +143,7 @@ def test_export_values_keep_unassigned_rows_blank_and_source_strings_literal():
     assert rows[0]["Selected PV"] is None
     assert rows[0]["Proposal status"] == "No proposed assignment"
     book = Workbook()
-    _sheet(book, "Safe", list(rows[0]), rows)
+    write_sheet(book, "Safe", list(rows[0]), rows)
     assert book["Safe"]["A2"].data_type == "s"
 
 

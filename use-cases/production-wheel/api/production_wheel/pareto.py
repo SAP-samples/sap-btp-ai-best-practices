@@ -29,6 +29,7 @@ from production_wheel.optimization import (
     SelectedCandidate,
     SolveResult,
     solve_candidate_pools,
+    verify_solver_result,
 )
 from production_wheel.schemas import CoverageMode, RunConfig
 from production_wheel.rule_models import SelectionBound
@@ -171,6 +172,9 @@ class GreenfieldGlobalSolveAudit:
     final_relative_gap: float | None
     proof_scope: str
     retained_nondominated: bool = False
+    # "schedule" for the requested low-epsilon budgets, "top_up" for gap-splitting
+    # solves added to reach the retained-point target.
+    request_kind: str = "schedule"
 
 
 @dataclass(frozen=True, slots=True)
@@ -195,6 +199,10 @@ class GreenfieldFrontierResult:
     large_block_candidate_threshold: int = 250_000
     global_epsilon_exponent: float = 2.0
     global_solve_audits: tuple[GreenfieldGlobalSolveAudit, ...] = ()
+    # Retained-point target after top-up solves, and whether the frontier had
+    # fewer distinct nondominated portfolios than that target.
+    minimum_point_count: int = 0
+    frontier_shortfall: bool = False
 
     @property
     def baseline_available(self) -> bool:
@@ -317,6 +325,7 @@ def _solve_master(
     }
 
     solved = solver.solve(model)
+    verify_solver_result(model, solved)
     incumbent = solved.best_feasible_objective
     if incumbent is None:
         return _MasterResult(
@@ -333,6 +342,7 @@ def _solve_master(
         model.cover.add(model.maximum_coverage <= float(incumbent) + tolerance)
         model.objective.set_value(j_ch)
         solved = solver.solve(model)
+        verify_solver_result(model, solved)
         if solved.best_feasible_objective is not None:
             primals = solved.solution_loader.get_primals(
                 vars_to_load=[model.x[index] for index in model.O]
@@ -922,6 +932,7 @@ def _solve_greenfield_master(
         "parallel": "off" if config.solver_limits.threads == 1 else "on",
     }
     primary = solver.solve(model)
+    verify_solver_result(model, primary)
     if primary.best_feasible_objective is None:
         return _GreenfieldMasterResult(
             (), primary.termination_condition.name, False, None, None, None, None, None, None
@@ -951,6 +962,7 @@ def _solve_greenfield_master(
         )
         model.objective.set_value(j_ch)
         secondary = solver.solve(model)
+        verify_solver_result(model, secondary)
         if secondary.best_feasible_objective is not None:
             final = secondary
             final_gap = _relative_gap(
@@ -1206,11 +1218,68 @@ def _low_epsilon_budgets(
     )
 
 
+def _next_top_up_budget(
+    retained_j_ch: Sequence[float],
+    low: float,
+    high: float,
+    exponent: float,
+    cleared_positions: Sequence[float],
+) -> tuple[float, float] | None:
+    """Pick the epsilon that splits the widest still-open frontier gap.
+
+    Gaps are measured in schedule space, i.e. after mapping each retained
+    ``J_CH`` back through the inverse of ``_low_epsilon_budgets``
+    (``u = ((j - low) / width) ** (1 / exponent)``), so top-up solves keep the
+    same low-``J_CH`` density bias as the initial budgets.
+
+    An epsilon solve at position ``p`` that returns no new retained point
+    proves the frontier has no point between the gap's left neighbour and
+    ``p`` (the master returns the best coverage with ``J_CH <= epsilon``).
+    Such probes are passed back as ``cleared_positions``; each gap stays open
+    only from its highest cleared position to its right neighbour, which turns
+    repeated top-ups into a bisection that cannot skip a hidden point.
+
+    Args:
+        retained_j_ch: ``J_CH`` of the currently retained nondominated points.
+        low: Operations-anchor ``J_CH`` (schedule position 0).
+        high: Coverage-anchor ``J_CH`` (schedule position 1).
+        exponent: Schedule exponent used for the initial budgets.
+        cleared_positions: Schedule positions already probed without adding a
+            retained point.
+
+    Returns:
+        ``(position, epsilon)`` for the next master solve, or ``None`` when the
+        anchors coincide or every gap is closed.
+    """
+
+    width = high - low
+    if width <= _TOLERANCE:
+        return None
+    positions = sorted(
+        {0.0, 1.0}
+        | {
+            round(min(max((value - low) / width, 0.0), 1.0) ** (1.0 / exponent), 9)
+            for value in retained_j_ch
+        }
+    )
+    gaps = []
+    for left, right in zip(positions, positions[1:]):
+        start = max([left, *(p for p in cleared_positions if left <= p < right)])
+        if right - start > 1e-6:
+            gaps.append((start, right))
+    if not gaps:
+        return None
+    # Ties go to the lower-J_CH gap, where most of the trade-off change happens.
+    start, right = max(gaps, key=lambda gap: (round(gap[1] - gap[0], 12), -gap[0]))
+    position = (start + right) / 2
+    return position, low + width * position**exponent
+
+
 def build_greenfield_frontier(
     pools: Sequence[CandidatePool],
     members: Iterable[CandidateMember],
     config: RunConfig,
-    point_count: int = 17,
+    point_count: int = 30,
     block_option_count: int = 5,
     per_block_stage_seconds: float | None = None,
     per_block_total_seconds: float | None = None,
@@ -1218,6 +1287,7 @@ def build_greenfield_frontier(
     large_block_candidate_threshold: int = 250_000,
     global_epsilon_exponent: float = 2.0,
     progress: ProgressCallback | None = None,
+    minimum_point_count: int = 30,
 ) -> GreenfieldFrontierResult:
     """Build the scalable demand-weighted coverage/``J_CH`` frontier.
 
@@ -1225,6 +1295,13 @@ def build_greenfield_frontier(
     each block, then chooses one partition per block for every global epsilon.
     Historical groups are not read by feasibility, option generation, or the
     portfolio master.
+
+    Duplicate or dominated portfolios are dropped after the first pass, so
+    fewer than ``point_count`` points can survive. Top-up solves then split the
+    widest schedule-space gap until ``min(minimum_point_count, point_count)``
+    points are retained, no open gap remains, or ``2 * target`` extra solves
+    were spent. ``frontier_shortfall`` reports a frontier with fewer distinct
+    nondominated portfolios than the target.
     """
 
     if point_count < 2:
@@ -1240,7 +1317,8 @@ def build_greenfield_frontier(
         from production_wheel.joint_frontier import build_joint_frontier
         return build_joint_frontier(pools, population, config, point_count=point_count,
             total_seconds=per_block_total_seconds, stage_seconds=per_block_stage_seconds,
-            exponent=global_epsilon_exponent, progress=progress)
+            exponent=global_epsilon_exponent, progress=progress,
+            minimum_point_count=minimum_point_count)
     block_result = build_greenfield_block_options(
         pools,
         population,
@@ -1320,7 +1398,11 @@ def build_greenfield_frontier(
         sum(option.coverage_numerator for option in operations_options),
         sum(option.j_ch for option in operations_options),
     )
-    for index, budget in enumerate(budgets, start=1):
+    def solve_at(
+        index: int, budget: float, position: float, kind: str = "schedule"
+    ) -> None:
+        """Solve the portfolio master at one epsilon and record point plus audit."""
+
         master = _solve_greenfield_master(options_by_block, config, budget)
         if not master.selected_options:
             raise RuntimeError(f"portfolio master produced no incumbent at J_CH {budget}")
@@ -1342,7 +1424,7 @@ def build_greenfield_frontier(
         global_audits.append(
             GreenfieldGlobalSolveAudit(
                 request_index=index,
-                normalized_position=(index - 1) / (len(budgets) - 1),
+                normalized_position=position,
                 schedule_exponent=global_epsilon_exponent,
                 requested_epsilon_j_ch=budget,
                 actual_j_ch=float(master.j_ch),
@@ -1355,11 +1437,35 @@ def build_greenfield_frontier(
                 primary_relative_gap=master.primary_gap,
                 final_relative_gap=master.final_gap,
                 proof_scope=point.proof_scope,
+                request_kind=kind,
             )
         )
         if progress:
-            progress("pareto", index, len(budgets))
+            progress("pareto", index, max(len(budgets), index))
+
+    for index, budget in enumerate(budgets, start=1):
+        solve_at(index, budget, (index - 1) / (len(budgets) - 1))
     points = _nondominated_points(raw_points)
+    target = min(minimum_point_count, point_count)
+    cleared_positions: list[float] = []
+    extra_solves = 0
+    while len(points) < target and extra_solves < 2 * target:
+        step = _next_top_up_budget(
+            [float(point.j_ch) for point in points],
+            low,
+            high,
+            global_epsilon_exponent,
+            cleared_positions,
+        )
+        if step is None:
+            break
+        position, budget = step
+        extra_solves += 1
+        retained_before = len(points)
+        solve_at(len(raw_points) + 1, budget, position, "top_up")
+        points = _nondominated_points(raw_points)
+        if len(points) <= retained_before:
+            cleared_positions.append(position)
     retained_hashes = {
         point.portfolio_hash for point in points if point.portfolio_hash
     }
@@ -1394,4 +1500,6 @@ def build_greenfield_frontier(
         large_block_candidate_threshold=large_block_candidate_threshold,
         global_epsilon_exponent=global_epsilon_exponent,
         global_solve_audits=tuple(marked_audits),
+        minimum_point_count=target,
+        frontier_shortfall=len(points) < target,
     )

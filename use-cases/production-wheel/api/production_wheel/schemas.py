@@ -16,6 +16,7 @@ from pydantic import (
     model_validator,
 )
 from production_wheel.rule_models import BusinessConstraint, GroupRule, SelectionBound, MatrixPair
+from production_wheel.runners import CycleStockPolicy, RunnerThresholds
 
 
 class CoverageMode(StrEnum):
@@ -315,7 +316,9 @@ class VersionIdentifiers(StrictModel):
     """Version identifiers carried into fingerprints and audit artifacts."""
 
     matrix_version: str = "BASELINE_EMPIRICAL_MATRIX_V1"
-    ruleset_version: str = "PROTOTYPE_RULESET_V5"
+    # V6: beam ranking and coefficients use the whole-day wheel RoC rule
+    # (production_wheel.wheel_roc), so V5 candidate pools are not reused.
+    ruleset_version: str = "PROTOTYPE_RULESET_V6"
     schema_version: str = "PROTOTYPE_SCHEMA_V9"
 
 
@@ -341,12 +344,42 @@ class RunConfig(StrictModel):
     demand_days: int = Field(default=250, gt=0)
     productive_weeks: float = Field(default=50, gt=0, allow_inf_nan=False)
     canonical_factor: float = Field(default=0.90, gt=0, le=1)
-    high_runner_threshold_days: float = Field(default=15, gt=0, allow_inf_nan=False)
+    # High / medium / low cut-offs of the plant profile (see production_wheel.runners).
+    runner_thresholds: RunnerThresholds = Field(default_factory=RunnerThresholds)
     runner_basis: Literal["reference", "candidate_pv"] = "reference"
+    # Single RoC or runner multiples per subgroup, frozen from the plant profile
+    # (see production_wheel.cycle_stock). Requests stored before it get "single".
+    cycle_stock_policy: CycleStockPolicy = Field(default_factory=CycleStockPolicy)
     assign_filling_lines: bool = False
     preferred_line: str | None = None
     matrix_pairs: tuple[MatrixPair, ...] = ()
+    # Plant profile volume matching frozen with the run (production_wheel.volume_classes).
+    # In "nearest_class" mode matrix_pairs are the class matrix expanded to the
+    # dataset's package volumes and matrix_volume_classes maps each volume to its
+    # class ((volume, class), ...); both are reporting evidence for the optimizer,
+    # which only reads matrix_pairs. Requests stored before it get "exact" and ().
+    volume_matching: Literal["exact", "nearest_class"] = "exact"
+    matrix_volume_classes: tuple[tuple[str, str], ...] = ()
     business_rules: tuple[BusinessConstraint, ...] = Field(default=(), max_length=100)
+
+    @model_validator(mode="before")
+    @classmethod
+    def drop_legacy_runner_threshold(cls, data):
+        """Accept requests stored before the three-tier runner classes.
+
+        Those requests carry a single two-tier ``high_runner_threshold_days``.
+        It has no three-tier equivalent, so it is dropped and the default
+        ``runner_thresholds`` apply if the request is parsed again.
+
+        Args:
+            data: Raw input mapping (or an already built config).
+
+        Returns:
+            The input without the legacy key.
+        """
+        if isinstance(data, dict) and "high_runner_threshold_days" in data:
+            data = {k: v for k, v in data.items() if k != "high_runner_threshold_days"}
+        return data
 
     @model_validator(mode="after")
     def validate_canonical_parameters(self) -> "RunConfig":
@@ -429,9 +462,12 @@ class RunConfig(StrictModel):
             payload.update(matrix_pairs=[p.model_dump() for p in self.matrix_pairs],
                 business_rules=[r.model_dump() for r in self.business_rules],
                 assign_filling_lines=self.assign_filling_lines,
-                high_runner_threshold_days=self.high_runner_threshold_days,
+                runner_thresholds=self.runner_thresholds.model_dump(),
                 runner_basis=self.runner_basis, demand_days=self.demand_days,
                 productive_weeks=self.productive_weeks, canonical_factor=self.canonical_factor)
+            # Only class-matched runs carry the class map, so hashes of earlier runs are unchanged.
+            if self.matrix_volume_classes:
+                payload.update(matrix_volume_classes=[list(item) for item in self.matrix_volume_classes])
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 

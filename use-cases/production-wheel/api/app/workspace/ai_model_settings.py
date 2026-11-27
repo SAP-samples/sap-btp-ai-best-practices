@@ -7,6 +7,7 @@ from app.agent.config import ModelSettings
 
 # These are the supported deployment identifiers in the configured AI Core group.
 AI_MODELS = (
+    ("gpt-6.1-sol", "GPT-6.1 Sol", "openai"),
     ("gpt-5.4", "GPT-5.4", "openai"),
     ("gpt-5.6-luna", "GPT-5.6 Luna", "openai"),
     ("gpt-5.6-terra", "GPT-5.6 Terra", "openai"),

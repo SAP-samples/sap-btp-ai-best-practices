@@ -384,6 +384,9 @@ def build_result_bundle(
             "per_block_total_seconds": result.per_block_total_seconds,
             "global_epsilon_exponent": result.global_epsilon_exponent,
             "large_block_candidate_threshold": result.large_block_candidate_threshold,
+            "minimum_frontier_points": result.minimum_point_count,
+            "frontier_points_retained": len(result.points),
+            "frontier_shortfall": result.frontier_shortfall,
         }
     )
     return ResultBundle(_json_safe(metadata), _json_safe(tables), artifacts)

@@ -24,19 +24,35 @@ Main capabilities:
 - **Runs.** Configure a run (scope, group-size cap, compatibility mode, typed
   constraints), launch it, and follow it while an independent worker solves it.
   Results, retained options and lineage are stored in HANA.
+- **Plant profiles.** Each plant has a named profile in HANA (Settings page):
+  demand horizon, runner classes, maximum group size, package-volume
+  compatibility matrix, approved plant constraints and SAP settings rules. Every
+  run takes its settings from one profile.
 - **Analytics.** Compare frontier points, inspect groups and members, review
   matrix exceptions, and export the proposed wheel.
+- **Decision scenarios and SAP settings.** The frontier is reduced to a short
+  list (`B` balanced, `CO1`..`CO3` changeover-oriented, `INV1`..`INV3`
+  inventory-oriented). After people select one, the app generates the SAP
+  settings for that wheel (cycle stock, planning calendar, recipe combination,
+  APO lot size, rate-of-cover KPIs), stores them in HANA and exports them as
+  XLSX. There is no automatic upload to SAP.
 - **Assistant.** A LangGraph ReAct agent on SAP Generative AI Hub prepares and
   validates run drafts from plain-language requests, launches them on explicit
-  instruction, and explains results. It cannot run SQL, Python or arbitrary
-  solver flags.
+  instruction, explains results, and drafts plant constraints and profile
+  changes that a user approves on a card. It cannot run SQL, Python or
+  arbitrary solver flags.
+- **Sign-in.** Users sign in through SAP BTP (XSUAA and an SAP application
+  router). Only users with the role collection `ProductionWheel_User` can open
+  the app or call the API.
 
 ## Architecture
 
 | Component | Path | Technology |
 |---|---|---|
-| UI | `ui/` | Vite, UI5 Web Components |
-| API | `api/app/` | FastAPI; workspace services in `api/app/workspace/`, agent in `api/app/agent/` |
+| UI | `ui/` | Vite, UI5 Web Components; built by `deploy.sh` and served by the approuter |
+| Application router | `approuter/` | SAP application router: BTP sign-in, session, forwards `/api/*` with the user's token |
+| Authorization | `xs-security.json` | XSUAA service: scope, role template and role collection `ProductionWheel_User` |
+| API | `api/app/` | FastAPI; validates the user JWT (`api/app/security.py`); workspace services in `api/app/workspace/`, agent in `api/app/agent/` |
 | Optimizer worker | `api/app/workspace/worker.py` | Runs queued jobs; embedded in the API locally, a separate app on Cloud Foundry |
 | Optimizer | `api/production_wheel/` | Pyomo + HiGHS (no commercial solver license), also usable offline through a CLI |
 | Storage | SAP HANA Cloud | `PRODUCTION_WHEEL_*` tables, created and validated on startup |
@@ -65,12 +81,13 @@ without code changes.
 ## Prerequisites
 
 - Python 3.12
-- Node.js 20.19 or later (required by Vite 7)
+- Node.js 22 (UI build and application router)
 - An SAP HANA Cloud instance and a database user that can create tables
 - An SAP AI Core instance with a Generative AI Hub deployment of the model named
   in `api/app/agent/config/agent.yaml` (only needed for the assistant)
-- For deployment: the Cloud Foundry CLI and a `Cloud Logging` service instance in
-  the target space
+- For deployment: the Cloud Foundry CLI, a `Cloud Logging` service instance in
+  the target space, and an entitlement for the "Authorization and Trust
+  Management Service" (`xsuaa`, plan `application`) in the subaccount
 
 ## Setup
 
@@ -88,12 +105,14 @@ Fill in `api/.env`:
 |---|---|
 | `AICORE_AUTH_URL`, `AICORE_CLIENT_ID`, `AICORE_CLIENT_SECRET`, `AICORE_BASE_URL`, `AICORE_RESOURCE_GROUP` | SAP AI Core service key values |
 | `HANA_ADDRESS`, `HANA_PORT`, `HANA_USER`, `HANA_PASSWORD`, `HANA_ENCRYPT` | SAP HANA Cloud connection |
+| `HANA_SCHEMA` | Optional schema the app reads and writes; empty means the `HANA_USER`'s own schema |
 | `HANA_SSL_VALIDATE_CERTIFICATE` | Optional, default `true` |
-| `API_KEY` | Shared key the UI sends in the `X-API-Key` header |
+| `AUTH_MODE` | `local` for laptop development: every request runs as the user `local-developer`, without BTP sign-in (refused when `APP_ENV=production`). Cloud Foundry uses `xsuaa`, the default |
 | `LOG_USER_HASH_SALT` | Optional salt for the hashed user id in token-usage logs |
 
-In `ui/.env`, set `VITE_API_KEY` to the same value as `API_KEY`, and
-`VITE_API_BASE_URL` to the API address (default `http://127.0.0.1:8000/`).
+In `ui/.env`, set `VITE_API_BASE_URL` to the local API address (default
+`http://127.0.0.1:8000/`). The UI holds no credential; deployed builds call the
+API through the approuter.
 
 Check the HANA connection and create the tables:
 
@@ -135,11 +154,16 @@ cd api
    workbook and the enrichment workbook as the optional one, then select
    **Upload and extract**. Review the extraction evidence and quality issues, then
    select **Publish dataset**.
-2. **Workspace page.** Open the published dataset, choose a plant profile and
+2. **Settings page.** Create a plant profile for the plant (or check the
+   existing one): demand days, runner classes, maximum group size, volume
+   matrix and SAP settings rules.
+3. **Workspace page.** Open the published dataset, choose the plant profile and
    scope, adjust settings, and launch a run. The worker keeps running when the
    browser disconnects.
-3. **Results.** Compare frontier points, inspect groups, and export the wheel.
-4. **Assistant.** Ask in plain language, for example:
+4. **Results.** Compare frontier points and the decision scenarios, inspect
+   groups, select one scenario, then generate and download its SAP settings or
+   export the wheel.
+5. **Assistant.** Ask in plain language, for example:
    "Prepare and validate a draft scoped to plant THDP with a group cap of 3 and
    three frontier points. Do not launch it."
 
@@ -176,6 +200,18 @@ outside this vocabulary are declined instead of submitted.
 
 `coverage_bound`, `freeze_assignment` and `volume_compatibility_override` are
 defined in the schema but not compiled yet, so the assistant refuses them.
+
+**Plant constraints.** Hard rules that every run of a plant must follow are
+added in the assistant chat, not typed into Settings. The assistant discusses
+the rule, asks for missing values, checks identifiers against the dataset, and
+shows an approval card. The rule is saved to the plant profile only when the
+user selects **Approve**; the Settings page lists the approved rules, each with
+a Remove button. Besides the kinds above, a plant rule can be a `group_rule`
+(for example "on line 6 group at most 2 FINIs") or a `selection_bound` over a
+group measure. A tank capacity limit ("tanks up to 8,000 L make at most 17 lots
+per day together") becomes one `selection_bound` per tank size on
+`group.batches_per_day`. It is enforced as a weekly average, not as a daily
+schedule.
 
 Some properties vary along the frontier rather than being constraints, for
 example the singleton count, which falls as `J_CH` rises. Run the frontier and
@@ -540,6 +576,17 @@ Modes:
   and reports them.
 - `OFF` ignores the matrix, for sensitivity analysis.
 
+In the workspace, each plant profile carries its own matrix and a **volume
+matching** setting:
+
+| Value | Matrix rows | Volume not in the matrix |
+|---|---|---|
+| `exact` | Every package volume | Stops the run (`profile_matrix_incomplete`) |
+| `nearest_class` | A few reference volumes ("stops", for example 1, 2.5, 5, 10 and 15 L), plus optional `<n` / `>n` classes | Takes the row of the nearest stop; on a tie, the smaller stop |
+
+New profiles use `nearest_class`, so a product with a new package volume no
+longer stops the run.
+
 ## How to interpret a solution
 
 Read `solution_report.md` first, then `scenario_summary.csv`.
@@ -607,27 +654,48 @@ npm --prefix ui test
 
 ## Deployment (Cloud Foundry)
 
-`manifest.yaml` defines three apps:
+`manifest.yaml` defines the private deployment, with sign-in:
 
 | App | Path | Purpose |
 |---|---|---|
-| `production-wheel-api` | `api` | FastAPI and agent (2 GB) |
+| `production-wheel-api` | `api` | FastAPI and agent (2 GB); validates the user JWT |
 | `production-wheel-worker` | `api` | Optimizer worker, no route (8 GB; size to your data) |
-| `production-wheel-ui` | `ui` | UI served by `vite preview` |
+| `production-wheel-ui` | `approuter` | SAP application router that users open; serves the built UI |
 
-Before the first deploy, replace the routes and the `ALLOWED_ORIGIN`,
-`API_BASE_URL`, `VITE_API_BASE_URL` and `VITE_APP_HOST` values in `manifest.yaml`
-with your own app names and Cloud Foundry apps domain. Then:
+The API and the approuter are bound to the XSUAA instance
+`production-wheel-xsuaa`, which `deploy.sh` creates from `xs-security.json`.
+
+Before the first deploy, replace the apps domain
+`cfapps.eu10-005.hana.ondemand.com` with your own Cloud Foundry apps domain in
+`manifest.yaml` (routes and the API destination URL) and in `xs-security.json`
+(`oauth2-configuration.redirect-uris`). `deploy.sh` stops when the two do not
+match. Then:
 
 ```bash
 cf login
-./deploy.sh
 ```
 
-`deploy.sh` reads `api/.env`, generates a fresh API key shared by the API and UI,
-pushes the three apps, binds the API to the `Cloud Logging` service instance and
-restarts it. The worker runs with `WORKSPACE_EMBEDDED_WORKER=false` on the API.
-One active job runs per worker instance.
+```bash
+./deploy.sh private
+```
+
+`deploy.sh` checks `api/.env`, builds the UI into `approuter/resources`, creates
+or updates the XSUAA service, pushes the three apps with the AI Core and HANA
+credentials from `api/.env`, binds the API to the `Cloud Logging` service
+instance and restarts it. The worker runs with `WORKSPACE_EMBEDDED_WORKER=false`
+on the API. One active job runs per worker instance.
+
+After the first deploy, assign the role collection `ProductionWheel_User` to the
+users who may sign in (BTP cockpit > Security > Role Collections). The sign-in
+page is the subaccount's identity provider: the SAP ID service by default, or a
+corporate identity provider when one is configured.
+
+`./deploy.sh public` deploys an open showcase of the same code **without
+sign-in** (`manifest-public.yaml`, apps `production-wheel-public-api` and
+`production-wheel-public-ui`). Anyone with the URL can use it and change its
+data. It shares the HANA schema and the worker of the private deployment, so
+deploy the private one first. Use it only for demos and stop it afterwards.
+Without an argument, `./deploy.sh` asks which deployment to push.
 
 ## Project structure
 
@@ -644,7 +712,10 @@ api/
 ui/
   src/                 Pages, workspace views, API client
   tests/
+approuter/             SAP application router (xs-app.json with sign-in, xs-app.public.json without)
 data/anonymized/       Demo workbooks
-manifest.yaml
+xs-security.json       XSUAA descriptor (scope, role collection, redirect URIs)
+manifest.yaml          Private deployment (sign-in)
+manifest-public.yaml   Public showcase deployment (no sign-in)
 deploy.sh
 ```

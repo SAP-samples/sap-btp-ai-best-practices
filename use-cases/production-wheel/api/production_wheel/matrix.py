@@ -322,6 +322,107 @@ def configured_matrix_version(config: RunConfig) -> str:
     return "PLANT_PROFILE_MATRIX_V1" if config.matrix_pairs else config.versions.matrix_version
 
 
+class ProfileMatrixCoverageError(ValueError):
+    """Raised when modeled products use package volumes absent from the profile matrix.
+
+    The optimizer never invents a compatibility status, so a profile matrix must
+    list every package volume of the modeled population.
+
+    Attributes:
+        coverage: The ``profile_matrix_coverage`` summary that failed, with the
+            missing volumes and how many modeled products use each one.
+    """
+
+    def __init__(self, coverage: Mapping[str, object]):
+        self.coverage = dict(coverage)
+        super().__init__(describe_matrix_coverage_gap(self.coverage))
+
+
+def profile_matrix_coverage(
+    config: RunConfig, members: Iterable[CandidateMember]
+) -> dict[str, object] | None:
+    """Compare the modeled package volumes with the volumes of the profile matrix.
+
+    Args:
+        config: Effective run configuration. Only explicit profile pairs
+            (``config.matrix_pairs``) are checked; legacy matrix versions build
+            their rows from the population itself and always cover it.
+        members: Modeled candidate members of the run or draft.
+
+    Returns:
+        ``None`` when the configuration has no profile matrix. Otherwise a dict
+        with ``matrix_volume_count``, ``modeled_volume_count``,
+        ``modeled_member_count``, ``missing_volumes`` (a list of
+        ``{"volume", "member_count"}`` sorted by volume),
+        ``affected_member_count``, ``complete`` (True when nothing is missing) and
+        ``volume_matching`` (the profile mode, so the message can name classes).
+    """
+
+    # A class-matched profile whose classes place no volume still has a matrix:
+    # report every volume as missing instead of falling back to a legacy matrix.
+    if not config.matrix_pairs and getattr(config, "volume_matching", "exact") != "nearest_class":
+        return None
+    matrix_volumes = {
+        normalize_volume(volume)
+        for pair in config.matrix_pairs
+        for volume in (pair.volume_a, pair.volume_b)
+    }
+    usage: dict[Decimal, int] = {}
+    for member in members:
+        volume = normalize_volume(member.package_volume)
+        usage[volume] = usage.get(volume, 0) + 1
+    missing = sorted(volume for volume in usage if volume not in matrix_volumes)
+    return {
+        "matrix_volume_count": len(matrix_volumes),
+        "modeled_volume_count": len(usage),
+        "modeled_member_count": sum(usage.values()),
+        "missing_volumes": [
+            {"volume": format(volume, "f"), "member_count": usage[volume]}
+            for volume in missing
+        ],
+        "affected_member_count": sum(usage[volume] for volume in missing),
+        "complete": not missing,
+        "volume_matching": getattr(config, "volume_matching", "exact"),
+    }
+
+
+def describe_matrix_coverage_gap(coverage: Mapping[str, object]) -> str:
+    """Return a planner-readable sentence for an incomplete profile matrix.
+
+    Args:
+        coverage: Output of ``profile_matrix_coverage`` with missing volumes.
+
+    Returns:
+        One message naming the missing volumes (largest product counts first,
+        at most 20) and the actions that resolve the gap.
+    """
+
+    missing = list(coverage.get("missing_volumes") or [])
+    ranked = sorted(missing, key=lambda item: (-int(item["member_count"]), float(item["volume"])))
+    listed = ", ".join(
+        f"{item['volume']} L ({item['member_count']} product{'' if item['member_count'] == 1 else 's'})"
+        for item in ranked[:20]
+    )
+    more = f" and {len(ranked) - 20} more" if len(ranked) > 20 else ""
+    if coverage.get("volume_matching") == "nearest_class":
+        return (
+            f"{len(missing)} package volumes of the modeled products fall outside every class of the "
+            f"plant profile's volume matrix ({coverage.get('affected_member_count')} of "
+            f"{coverage.get('modeled_member_count')} products): {listed}{more}. They lie below the "
+            "smallest or above the largest reference volume and the matrix has no '<n' / '>n' class "
+            "for them. Add that class (or a reference volume) to the profile's volume compatibility "
+            "matrix in Settings, or ask the Assistant to propose it."
+        )
+    return (
+        f"The plant profile volume matrix lists {coverage.get('matrix_volume_count')} volumes, "
+        f"but {len(missing)} package volumes of the modeled products are missing from it "
+        f"({coverage.get('affected_member_count')} of {coverage.get('modeled_member_count')} products): "
+        f"{listed}{more}. Add these volumes to the profile's volume compatibility matrix in "
+        "Settings (or ask the Assistant to propose them), or select a profile whose matrix "
+        "covers them."
+    )
+
+
 def configured_matrix(
     config: RunConfig,
     modeled_members: Iterable[CandidateMember],
@@ -334,7 +435,7 @@ def configured_matrix(
     N is a prohibition in every mode; AVOID is preference evidence outside HARD.
     """
     members = tuple(modeled_members)
-    if not config.matrix_pairs:
+    if not config.matrix_pairs and getattr(config, "volume_matching", "exact") != "nearest_class":
         return build_matrix_for_version(
             config.versions.matrix_version, members, baseline_evidence_members
         )
@@ -345,6 +446,11 @@ def configured_matrix(
             if key in pairs and pairs[key] != pair.status:
                 raise ValueError(f"conflicting profile matrix pair: {key}")
             pairs[key] = pair.status
+    # A volume absent from the whole matrix is a profile gap the planner can fix;
+    # raise the typed error so validation and failure reports can name it.
+    coverage = profile_matrix_coverage(config, members)
+    if coverage and not coverage["complete"]:
+        raise ProfileMatrixCoverageError(coverage)
     volumes = {normalize_volume(member.package_volume) for member in members}
     missing = [(left, right) for left in sorted(volumes) for right in sorted(volumes)
                if (left, right) not in pairs]

@@ -266,3 +266,69 @@ def test_hana_numeric_flags_and_array_lines_preserve_canonical_evidence(tmp_path
     tables["production_versions"][0]["active"] = "0.0"
     assert canonical_inputs_from_tables(tables).baseline_evidence_members == ()
     assert canonical_inputs_from_tables(tables).production_versions[0].active is False
+
+
+def test_many_duplicate_fini_keys_emit_bounded_per_key_issues(tmp_path):
+    """Emit one FINI_KEY_UNIQUE issue per duplicate key so HANA NVARCHAR(5000) never overflows."""
+    from app.workspace.finding_explanations import explain_finding
+    from app.workspace.repository import MemoryRepository
+    from app.workspace.service import WorkspaceService
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Inputs"
+    sheet.append(
+        [
+            "Material",
+            "SEFI",
+            "Plant",
+            "Filling line",
+            "Production Frequency",
+            "Total FINI forecast (litres)",
+            "Volume",
+            "Pallet in litres",
+            "Selected PV",
+        ]
+    )
+    duplicate_count = 500
+    for idx in range(duplicate_count):
+        material = f"{9000000 + idx}"
+        sheet.append([material, "200", "TEST", "L1", "01W", 10000, 5, 500, "PV - 1"])
+        sheet.append([material, "200", "TEST", "L1", "01W", 10000, 5, 500, "PV - 1"])
+    sheet.add_table(
+        Table(displayName="FINI_grouping_for_wheel", ref=f"A1:I{1 + duplicate_count * 2}")
+    )
+    versions = workbook.create_sheet("Versions")
+    versions.append(["SEFI", "Clasificador", "Lot size (Litres)"])
+    versions.append(["200", "PV - 1", 1000])
+    versions.add_table(Table(displayName="Production_versions___List", ref="A1:C2"))
+    path = tmp_path / "duplicates.xlsx"
+    workbook.save(path)
+
+    extracted = extract_workbooks(path)
+    dup_issues = [
+        issue for issue in extracted["issues"] if issue.get("rule_id") == "FINI_KEY_UNIQUE"
+    ]
+    assert len(dup_issues) == duplicate_count
+    assert all(
+        issue["severity"] == "error"
+        and issue["entity"] == "fini"
+        and issue["observed"] == "2 rows"
+        and issue["expected"] == "1 row"
+        and "|" not in issue["entity_key"]
+        and len(issue["entity_key"]) <= 5000
+        for issue in dup_issues
+    )
+
+    service = WorkspaceService(MemoryRepository())
+    dataset = service.register_dataset("dup-test", extracted, [(path.name, path.read_bytes())])
+    assert dataset["status"] == "invalid"
+
+    explained = explain_finding(
+        dataset,
+        extracted["tables"]["fini_master"],
+        extracted["tables"]["production_versions"],
+        "FINI_KEY_UNIQUE",
+    )
+    assert explained["affected_total"] == duplicate_count
+    assert explained["truncated"] is True

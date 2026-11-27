@@ -28,7 +28,7 @@ KINDS = {
     "contexts": "CONTEXTS",
 }
 PREFIX = "PRODUCTION_WHEEL_"
-STORAGE_VIEWS = INPUT_VIEWS | RESULT_VIEWS | {"plant_profile_matrix"}
+STORAGE_VIEWS = INPUT_VIEWS | RESULT_VIEWS | {"plant_profile_matrix", "sap_policy_rules"}
 
 
 def identifier(name: str) -> str:
@@ -39,7 +39,11 @@ def identifier(name: str) -> str:
 
 
 def connect_hana():
-    """Open the runtime user's default schema, using millisecond connection timeout."""
+    """Open a HANA connection with a millisecond connection timeout.
+
+    Queries resolve against ``HANA_SCHEMA`` when set (e.g. an admin login
+    working in an application schema), otherwise the login user's own schema.
+    """
     from dotenv import load_dotenv
     from hdbcli import dbapi
 
@@ -51,6 +55,8 @@ def connect_hana():
         password=os.environ["HANA_PASSWORD"],
         encrypt=os.getenv("HANA_ENCRYPT", "true").lower() == "true",
         connectTimeout=10000,
+        # Empty string keeps the login user's default schema.
+        currentSchema=os.getenv("HANA_SCHEMA", ""),
     )
 
 
@@ -321,10 +327,20 @@ class HanaRepository:
             },
             ["owner_id", "name"],
         )
-        from .schema_migrations import migrate_option_metrics
+        from .schema_migrations import (
+            migrate_cycle_stock_policy,
+            migrate_option_metrics,
+            migrate_runner_thresholds,
+            migrate_sap_settings,
+        )
 
         migrate_option_metrics(self.factory)
         self.ready = True
+        # Needs the ready repository (list/cas/rows), so it runs after the flag.
+        migrate_runner_thresholds(self)
+        migrate_cycle_stock_policy(self)
+        # Last: the two migrations above remove the rows their profile sections took over.
+        migrate_sap_settings(self)
 
     def insert(self, kind, key, value):
         """Insert an entity whose searchable identity/state fields are relational."""

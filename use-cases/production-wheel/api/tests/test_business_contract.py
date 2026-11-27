@@ -333,7 +333,7 @@ def test_customer_matrix_accepts_its_complete_volume_catalog() -> None:
     )
 
     assert validate_request(request).status is ValidationStatus.VALID
-    assert request.config.versions.ruleset_version == "PROTOTYPE_RULESET_V5"
+    assert request.config.versions.ruleset_version == "PROTOTYPE_RULESET_V6"
     assert request.config.versions.schema_version == "PROTOTYPE_SCHEMA_V9"
 
 

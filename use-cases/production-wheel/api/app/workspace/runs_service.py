@@ -9,7 +9,8 @@ from production_wheel.schemas import SolveRequest
 from .datasets_service import digest, now
 from .discovery import filter_records
 from .models import ExecutionBudget, RunDraft, RunSubmission
-from .plant_profiles import profile_config, check_profile_source
+from .plant_profiles import PROFILE_DEFAULT_KEYS, optimizer_view, profile_config, check_profile_source
+from .pv_mode_scope import pv_mode_differences
 
 
 def merge_dict(original, patch):
@@ -32,6 +33,31 @@ def supplied_paths(value, prefix=""):
             yield from supplied_paths(item, path)
         else:
             yield path
+
+
+_MISSING = object()
+
+# Profile-owned config keys added after drafts were first stored, with the value an
+# older draft implicitly used (RunConfig defaults, JSON form).
+LEGACY_PROFILE_KEY_DEFAULTS = {"volume_matching": "exact", "matrix_volume_classes": []}
+
+
+def _path_value(record, path):
+    """Return the value at a dotted path of a nested dict, or ``_MISSING``."""
+    value = record
+    for key in path.split("."):
+        if not isinstance(value, dict) or key not in value:
+            return _MISSING
+        value = value[key]
+    return value
+
+
+def _path_patch(path, value):
+    """Build the nested draft patch that sets one dotted path to ``value``."""
+    patch = value
+    for key in reversed(path.split(".")):
+        patch = {key: patch}
+    return patch
 
 
 class RunService:
@@ -111,6 +137,135 @@ class RunService:
         """Read the authoritative draft revision shown by dashboard and chat."""
         return self.repo.get("drafts", draft_id)
 
+    def draft_profile_status(self, draft):
+        """Compare the plant profile frozen in a draft with the profile's current revision.
+
+        A draft keeps the profile revision it was created with, so profile edits
+        made afterwards (settings, rules, volume matrix) do not reach it.
+
+        Args:
+            draft: Draft record, or a draft id.
+
+        Returns:
+            ``None`` for a draft without a profile; otherwise ``profile_id``,
+            ``profile_name``, ``draft_profile_revision``, ``current_profile_revision``
+            (``None`` when the profile no longer exists), ``removed`` and
+            ``outdated`` (a newer active revision changes optimization inputs), plus
+            ``message`` when outdated or removed, or ``note`` when the newer
+            revision only changed SAP settings rules (not outdated).
+        """
+        if isinstance(draft, str):
+            draft = self.get_draft(draft)
+        frozen = draft.get("plant_profile") or {}
+        profile_id = draft.get("plant_profile_id")
+        if not profile_id or not frozen:
+            return None
+        try:
+            current = self.repo.get("profiles", profile_id)
+        except KeyError:
+            current = None
+        removed = current is None or current.get("status") != "active"
+        draft_revision = frozen.get("revision")
+        current_revision = None if current is None else current.get("revision")
+        outdated = not removed and current_revision != draft_revision
+        sap_only = False
+        if outdated:
+            # SAP settings rules do not change optimization results and are read live
+            # when SAP settings are generated, so a revision that only edits them
+            # leaves the draft current.
+            latest = self.get_plant_profile(profile_id)
+            sap_only = optimizer_view(latest) == optimizer_view(frozen)
+            outdated = not sap_only
+        status = {
+            "profile_id": profile_id,
+            "profile_name": frozen.get("name"),
+            "draft_profile_revision": draft_revision,
+            "current_profile_revision": current_revision,
+            "removed": removed,
+            "outdated": outdated,
+        }
+        if outdated:
+            status["message"] = (
+                f"This draft uses plant profile \"{frozen.get('name')}\" revision {draft_revision}; "
+                f"the profile is now at revision {current_revision}. Profile changes made since "
+                "(settings, rules, volume matrix) do not apply to this draft. Recreate the draft "
+                "to use the current profile."
+            )
+        elif removed:
+            status["message"] = (
+                f"Plant profile \"{frozen.get('name')}\" was removed; select an active profile."
+            )
+        elif sap_only:
+            status["note"] = (
+                f"Plant profile \"{frozen.get('name')}\" changed only its SAP settings since this draft "
+                f"(revision {draft_revision} -> {current_revision}); they are read live when SAP settings "
+                "are generated, so the draft needs no update."
+            )
+        return status
+
+    def recreate_draft_with_current_profile(self, draft_id):
+        """Create a new draft from the current profile revision, keeping the scenario's own choices.
+
+        The old draft is left unchanged (runs may reference it). Values the user
+        set explicitly on the old draft (``parameter_sources`` origin ``explicit``,
+        e.g. production version mode, compatibility mode, budget, scenario
+        constraints) are re-applied one by one; a value the current profile no
+        longer accepts is skipped and reported.
+
+        Args:
+            draft_id: Draft whose dataset, profile and title are reused.
+
+        Returns:
+            ``{"draft", "previous_draft_id", "profile_status", "carried_over", "skipped"}``
+            where ``skipped`` lists ``{"path", "reason"}``.
+
+        Raises:
+            ValueError: the draft has no plant profile or the profile was removed.
+        """
+        previous = self.get_draft(draft_id)
+        status = self.draft_profile_status(previous)
+        if status is None:
+            raise ValueError("this draft has no plant profile to refresh")
+        if status["removed"]:
+            raise ValueError(status["message"])
+        created = self.create_draft(previous["dataset_id"], previous["plant_profile_id"], previous.get("title", ""))
+        # Values owned by the profile (matrix pairs, runner thresholds, rules, ...)
+        # must come from the new revision; the UI's Save draft marks them explicit too.
+        profile_keys = set(profile_config(created["plant_profile"], [])) - PROFILE_DEFAULT_KEYS
+        changed = {}
+        for path, source in sorted((previous.get("parameter_sources") or {}).items()):
+            parts = path.split(".")
+            if not isinstance(source, dict) or source.get("origin") != "explicit":
+                continue
+            if parts[0] not in ("request", "budget"):
+                continue
+            if parts[:2] == ["request", "config"] and len(parts) > 2 and parts[2] in profile_keys:
+                continue
+            value = _path_value(previous, path)
+            if value is not _MISSING and value != _path_value(created, path):
+                changed[path] = value
+        skipped = []
+        if changed:
+            patch = {}
+            for path, value in changed.items():
+                patch = merge_dict(patch, _path_patch(path, value))
+            try:
+                created = self.update_draft(created["draft_id"], created["revision"], patch)
+            except ValueError:
+                # One value is no longer accepted: apply them one by one and report it.
+                for path, value in changed.items():
+                    try:
+                        created = self.update_draft(created["draft_id"], created["revision"], _path_patch(path, value))
+                    except ValueError as exc:
+                        skipped.append({"path": path, "reason": str(exc)})
+        return {
+            "draft": created,
+            "previous_draft_id": draft_id,
+            "profile_status": self.draft_profile_status(created),
+            "carried_over": sorted(set(changed) - {item["path"] for item in skipped}),
+            "skipped": skipped,
+        }
+
     def update_draft(self, draft_id, revision, patch):
         """Apply a typed patch without overwriting concurrently edited drafts."""
         current = self.get_draft(draft_id)
@@ -171,13 +326,19 @@ class RunService:
             return
         rows = self.repo.rows(draft["dataset_id"], "fini_master")
         check_profile_source(profile, rows)
-        fixed = profile_config(profile, rows)
+        fixed = {
+            key: value for key, value in profile_config(profile, rows).items()
+            if key not in PROFILE_DEFAULT_KEYS
+        }
         config = draft["request"]["config"]
         if reject_overrides:
             for key, value in fixed.items():
                 if key == "assign_filling_lines" and not value:
                     continue
-                if config.get(key) != value:
+                # Drafts saved before volume classes lack these keys; read them as the
+                # RunConfig defaults (exact matching, no class map).
+                current = config.get(key, LEGACY_PROFILE_KEY_DEFAULTS.get(key))
+                if current != value:
                     raise ValueError(f"{key} is fixed by the plant profile; change the profile instead")
         fixed["assign_filling_lines"] = fixed["assign_filling_lines"] or config.get("assign_filling_lines", False)
         config.update(fixed)
@@ -225,7 +386,7 @@ class RunService:
             fixed = profile_config(draft["plant_profile"], self.repo.rows(draft["dataset_id"], "fini_master"))
             effective = compiled.config.model_dump(mode="json")
             for key, value in fixed.items():
-                if key == "assign_filling_lines" and not value:
+                if key in PROFILE_DEFAULT_KEYS or (key == "assign_filling_lines" and not value):
                     continue
                 if key == "group_size_overrides":
                     original_caps = {(row["plant"], row["sefi"]): row["maximum"] for row in value}
@@ -238,19 +399,40 @@ class RunService:
             raise ValueError("scope contains no eligible FINIs")
         return compiled
 
+    def pv_mode_scope(self, draft):
+        """Compare the draft's production version mode with the other mode.
+
+        Args:
+            draft: Persisted draft with ``dataset_id`` and ``request`` (config.pv_mode, scope).
+        Returns:
+            ``pv_mode_scope.pv_mode_differences`` for the draft's dataset and scope.
+        """
+        request = draft.get("source_request") or draft["request"]
+        rows = self.repo.rows(draft["dataset_id"], "fini_master")
+        return pv_mode_differences(rows, request.get("scope") or [], request.get("config", {}).get("pv_mode", "FIXED"))
+
     def validate_draft(self, draft_id):
         """Report effective request, modeled population, warnings, and blocking errors."""
         draft = self.get_draft(draft_id)
+        # Products the chosen production version mode leaves out but the other mode
+        # would include; the agent must tell the user before launching.
+        pv_scope = self.pv_mode_scope(draft)
+        # Warn when the profile changed after the draft was created; its frozen
+        # copy (and so this validation) does not include those changes.
+        profile_status = self.draft_profile_status(draft)
+        profile_warnings = [profile_status["message"]] if profile_status and profile_status.get("message") else []
         try:
-            compiled = self.compiled_draft(draft)
-            members = compiled.inputs.members_for(compiled.config)
+            compiled, members, coverage = self.checked_inputs(draft)
             return {
                 "valid": True,
                 "errors": [],
                 "warnings": [
+                    *profile_warnings,
+                    *pv_scope["warnings"],
                     "Per-block solver seconds do not guarantee total elapsed time.",
                     "Business acceptance is not automatically assessed.",
                 ],
+                "pv_mode_scope": pv_scope,
                 "effective_request": {
                     **draft["request"],
                     "config": compiled.config.model_dump(mode="json"),
@@ -260,17 +442,69 @@ class RunService:
                     "block_count": len({m.block_key for m in members}),
                 },
                 "applied_constraints": list(compiled.applied),
+                "matrix_coverage": coverage,
+                "profile_status": profile_status,
                 "revision": draft["revision"],
             }
         except ValueError as exc:
             return {
                 "valid": False,
                 "errors": [str(exc)],
-                "warnings": [],
+                "warnings": [*profile_warnings, *pv_scope["warnings"]],
+                "pv_mode_scope": pv_scope,
                 "effective_request": draft["request"],
                 "counts": {},
+                "profile_status": profile_status,
+                # Present only when the profile matrix misses modeled volumes.
+                "matrix_coverage": getattr(exc, "coverage", None),
                 "revision": draft["revision"],
             }
+
+    def checked_inputs(self, record):
+        """Compile a draft or run record and verify its profile matrix covers the population.
+
+        Args:
+            record: Draft or run record accepted by ``compiled_draft``.
+
+        Returns:
+            ``(compiled, members, coverage)`` where ``coverage`` is the
+            ``profile_matrix_coverage`` summary (``None`` without a profile matrix).
+
+        Raises:
+            ProfileMatrixCoverageError: modeled package volumes are missing from
+                the profile matrix (the solve would stop on them).
+            ValueError: any other compile error of the request.
+        """
+        from production_wheel.matrix import ProfileMatrixCoverageError, profile_matrix_coverage
+
+        compiled = self.compiled_draft(record)
+        members = compiled.inputs.members_for(compiled.config)
+        coverage = profile_matrix_coverage(compiled.config, members)
+        if coverage and not coverage["complete"]:
+            raise ProfileMatrixCoverageError(coverage)
+        return compiled, members, coverage
+
+    def recheck_run_inputs(self, run_id):
+        """Re-run the pre-launch input checks against one run's frozen configuration.
+
+        Used to explain failed runs that predate saved failure reports. Reads only;
+        the run record is never changed. Takes several seconds on a full dataset.
+
+        Args:
+            run_id: Existing run identifier.
+
+        Returns:
+            ``{"run_id", "valid", "errors", "matrix_coverage", "counts"}``.
+        """
+        run = self.get_run(run_id)
+        try:
+            _, members, coverage = self.checked_inputs(run)
+            return {"run_id": run_id, "valid": True, "errors": [], "matrix_coverage": coverage,
+                    "counts": {"modeled_fini_count": len(members),
+                               "block_count": len({m.block_key for m in members})}}
+        except ValueError as exc:
+            return {"run_id": run_id, "valid": False, "errors": [str(exc)],
+                    "matrix_coverage": getattr(exc, "coverage", None), "counts": {}}
 
     def submit(self, submission):
         """Register a queued job before execution, deduplicating exact launch retries."""
@@ -380,7 +614,12 @@ class RunService:
         return run_status(self.get_run(run_id))
 
     def run_failure_diagnostics(self, run_id):
-        """Return bounded checkpoint diagnostics without exposing the checkpoint blob."""
+        """Return bounded failure evidence without exposing raw artifacts.
+
+        Combines the publication checkpoint (block failures), the solve process
+        failure report and the saved solve log tail, whichever exist.
+        """
+        from .run_failures import LOG_TAIL_ARTIFACT, read_artifact, read_failure_report
         from .run_views import failure_diagnostics
 
         run = self.get_run(run_id)
@@ -388,7 +627,12 @@ class RunService:
             checkpoint = self.repo.artifact(run_id, "publication-checkpoint.json")
         except KeyError:
             checkpoint = None
-        return failure_diagnostics(run, checkpoint)
+        return failure_diagnostics(
+            run,
+            checkpoint,
+            failure_report=read_failure_report(self, run_id),
+            log_tail=read_artifact(self, run_id, LOG_TAIL_ARTIFACT),
+        )
 
     def run_matrix_page(self, run_id, offset=0, limit=50, status=None):
         """Return one filtered page of the run's frozen compatibility matrix."""

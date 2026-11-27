@@ -5,7 +5,12 @@ import { renderGlossary } from "./glossary.js";
 
 /** A server-side, searchable, sortable, paginated evidence table; no local data storage. */
 export class QueryTable {
-  /** Create controls in target; context supplies current dataset/run/point identifiers. */
+  /**
+   * Create controls in target; context supplies current dataset/run/point identifiers.
+   * @param {HTMLElement} target Container that receives the table controls.
+   * @param {{context: (view: string) => object, views: string[], fail: (error: unknown) => void, onSelect?: (row: object) => void}} settings
+   *   `context` returns the identifiers sent with each query; `onSelect` is optional.
+   */
   constructor(target, { context, views, fail, onSelect }) {
     this.context = context;
     this.fail = fail;
@@ -17,12 +22,15 @@ export class QueryTable {
     this.total = 0;
     target.innerHTML = `<div class="table-toolbar"><label>View <select data-view></select></label><label>Search column <select data-field><option value="">Choose a column</option></select></label><label>Contains <input data-search placeholder="Search evidence"></label><ui5-button data-go>Search</ui5-button></div><p data-view-help class="muted"></p><details data-glossary><summary>Column glossary</summary><div data-definitions></div></details><div class="table-scroll" tabindex="0"><table><thead></thead><tbody></tbody></table></div><div class="pagination"><ui5-button data-prev>Previous</ui5-button><span data-count role="status"></span><ui5-button data-next>Next</ui5-button></div>`;
     this.target = target;
+    /** @type {HTMLSelectElement} */
     this.view = target.querySelector("[data-view]");
     options(
       this.view,
       views.map((view) => [view, viewLabel(view)]),
     );
+    /** @type {HTMLSelectElement} */
     this.field = target.querySelector("[data-field]");
+    /** @type {HTMLInputElement} */
     this.search = target.querySelector("[data-search]");
     this.view.addEventListener("change", () => {
       this.offset = 0;
@@ -51,6 +59,29 @@ export class QueryTable {
         this.refresh().catch(fail);
       }
     });
+  }
+
+  /**
+   * Open a view programmatically, optionally searched and sorted, and scroll to it.
+   *
+   * @param {string} view One of the table's views.
+   * @param {{field?: string, value?: string, sort?: object[]}} preset Search field and
+   *   "contains" value (both or neither) and sort order; paging restarts.
+   */
+  async show(view, { field = "", value = "", sort = [] } = {}) {
+    this.view.value = view;
+    this.offset = 0;
+    this.sort = sort;
+    // Column options are only filled after a query; add the preset column so it can be selected.
+    if (field && ![...this.field.options].some((option) => option.value === field)) {
+      const option = el("option", fieldLabel(field));
+      option.value = field;
+      this.field.append(option);
+    }
+    this.field.value = field;
+    this.search.value = field ? value : "";
+    this.target.scrollIntoView({ behavior: "smooth", block: "start" });
+    await this.refresh();
   }
 
   /** Remove evidence and invalidate in-flight responses when selection changes. */
@@ -155,8 +186,8 @@ export class QueryTable {
     this.total = Number(result.total || 0);
     this.target.querySelector("[data-count]").textContent =
       `${this.total ? this.offset + 1 : 0}–${this.offset + rows.length} of ${this.total} records${Object.values(result.units || {}).some(Boolean) ? " · Hover column headers for units" : ""}`;
-    this.target.querySelector("[data-prev]").disabled = this.offset === 0;
-    this.target.querySelector("[data-next]").disabled =
+    /** @type {UI5ButtonElement} */ (this.target.querySelector("[data-prev]")).disabled = this.offset === 0;
+    /** @type {UI5ButtonElement} */ (this.target.querySelector("[data-next]")).disabled =
       this.offset + this.limit >= this.total;
   }
 }

@@ -81,6 +81,8 @@ class CandidateMember:
     baseline_group: str | None = None
     pck_code: str | None = None
     lot_size_considered_litres: float | None = None
+    # Source "RoC 1 full SEFI batch": rounded full-batch coverage used for runner classes.
+    reference_coverage_source_days: float | None = None
     xyz_x_dc_count: int | None = None
     xyz_y_dc_count: int | None = None
     xyz_z_dc_count: int | None = None
@@ -108,6 +110,9 @@ class CandidateMember:
                 raise ValueError(f"{name} must be a non-negative integer or unknown")
         if self.lot_size_considered_litres is not None and (not math.isfinite(self.lot_size_considered_litres) or self.lot_size_considered_litres <= 0):
             raise ValueError("lot_size_considered_litres must be finite and positive or unknown")
+        # Non-positive source coverage is treated as missing by the runner classifier.
+        if self.reference_coverage_source_days is not None and not math.isfinite(self.reference_coverage_source_days):
+            raise ValueError("reference_coverage_source_days must be finite or unknown")
 
     @property
     def block_key(self) -> BlockKey:
@@ -141,7 +146,7 @@ class CandidateMember:
             baseline_group=_value(record, "baseline_group", "baseline_group_key"),
             pck_code=_value(record, "pck_code"),
             **{name: (None if _value(record, name) in (None, "") else float(_value(record, name)))
-               for name in ("lot_size_considered_litres", "xyz_x_dc_count", "xyz_y_dc_count",
+               for name in ("lot_size_considered_litres", "reference_coverage_source_days", "xyz_x_dc_count", "xyz_y_dc_count",
                             "xyz_z_dc_count", "primary_dc_count", "secondary_dc_count")},
             sales_scenario=_value(record, "sales_scenario"),
             sales_network_scenario=_value(record, "sales_network_scenario"),
@@ -209,6 +214,10 @@ class Candidate:
     matrix_unknown_pairs: tuple[MatrixEvidence, ...] = ()
     matrix_evidence_pairs: tuple[MatrixEvidence, ...] = ()
     selected_line: str | None = None
+    # "single" (pool candidates) or "runner_multiple" (version created by
+    # production_wheel.cycle_stock right before coefficients; own candidate_hash,
+    # same membership_hash as its single version).
+    cycle_stock_strategy: str = "single"
 
 
 @dataclass(frozen=True, slots=True)

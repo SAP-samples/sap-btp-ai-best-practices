@@ -488,3 +488,162 @@ def test_existing_draft_mutation_requires_revision():
             {"draft_id": "existing", "patch": {"budget": {"frontier_points": 5}}}
         )
     assert service.calls == []
+
+
+def test_profile_proposals_validate_without_saving_and_emit_cards():
+    """Proposal tools validate against the stored profile, emit a card event and never write."""
+    import pytest
+    from test_plant_profiles import fixture, line_cap_rule
+    service, _, profile = fixture()
+    events = []
+    tools = {tool.name: tool for tool in workspace_tools(service, "context-p", events.append)}
+    with pytest.raises(ValueError, match="plant profile"):
+        tools["get_plant_profile_details"].invoke({})
+    service.context("context-p", {"plant_profile_id": profile["profile_id"]})
+    details = tools["get_plant_profile_details"].invoke({})
+    assert details["revision"] == profile["revision"] and details["matrix_volumes"]
+    result = tools["propose_profile_constraint"].invoke({"action": "add_constraint",
+        "summary": "Cap line L1 groups at two FINIs.", "constraint": line_cap_rule()})
+    assert result["status"] == "awaiting_user_approval"
+    card = events[-1]
+    assert card["type"] == "profile_proposal" and card["profile_revision"] == profile["revision"]
+    assert card["change"]["constraint"]["constraint_id"] == "line-six-cap"
+    assert service.get_plant_profile(profile["profile_id"])["rules"] == profile["rules"]
+    count = len(events)
+    with pytest.raises(ValueError):
+        tools["propose_profile_constraint"].invoke({"action": "add_constraint", "summary": "bad",
+            "constraint": {**line_cap_rule(), "assertion": {"op": "field", "field": "group.unknown"}}})
+    with pytest.raises(ValueError, match="description"):
+        tools["propose_profile_constraint"].invoke({"action": "add_constraint", "summary": "x",
+            "constraint": {**line_cap_rule(), "description": ""}})
+    with pytest.raises(ValueError, match="does not exist"):
+        tools["propose_profile_constraint"].invoke({"action": "remove_constraint", "summary": "x",
+            "constraint_id": "missing"})
+    assert len(events) == count
+    tools["propose_profile_settings"].invoke({"summary": "Smaller groups and a 3-volume matrix.",
+        "settings_patch": {"maximum_group_size": 2},
+        "volume_compatibility": {"volumes": ["1", "2", "3"], "compatible_groups": [["1", "2"]], "default_status": "N"}})
+    change = events[-1]["change"]
+    assert change["settings"] == {"maximum_group_size": 2} and len(change["matrix_rows"]) == 9
+    applied = service.apply_plant_profile_change(profile["profile_id"], profile["revision"], change)
+    assert applied["settings"]["maximum_group_size"] == 2
+
+
+def test_assistant_extends_profile_matrix_with_dataset_volumes():
+    """Coverage lists dataset volumes; a rule-based proposal keeps current pairs and shows a summary."""
+    from test_plant_profiles import fixture
+    from app.workspace.matrix_description import expand_matrix_description
+    service, source, profile = fixture()
+    narrow = expand_matrix_description({"volumes": ["999"], "default_status": "N"})
+    profile = service.apply_plant_profile_change(profile["profile_id"], profile["revision"],
+        {"action": "update_settings", "settings": {"volume_matching": "exact"}, "matrix_rows": narrow})
+    events = []
+    tools = {tool.name: tool for tool in workspace_tools(service, "context-m", events.append)}
+    service.context("context-m", {"plant_profile_id": profile["profile_id"], "dataset_id": source["dataset_id"]})
+    coverage = tools["get_dataset_volume_coverage"].invoke({})
+    missing = [item["volume"] for item in coverage["missing_volumes"]]
+    assert missing and coverage["profile_volumes_unused"] == ["999"]
+    result = tools["propose_profile_settings"].invoke({"summary": "Add the dataset volumes.",
+        "volume_compatibility": {"dataset_id": source["dataset_id"], "keep_existing_pairs": True,
+            "default_status": "N", "rules": [{"kind": "max_difference_percent", "percent": 50}]}})
+    summary = result["matrix_summary"]
+    assert summary["added_volumes"] == sorted(missing, key=float) and summary["changed_pair_count"] == 0
+    assert events[-1]["matrix_summary"] == summary
+    assert service.get_plant_profile(profile["profile_id"])["matrix_rows"] == profile["matrix_rows"]
+
+
+def test_chat_forwards_profile_proposals():
+    """The NDJSON whitelist forwards proposal cards and drops unknown keys."""
+    from app.routers.workspace_chat import _public_event
+    event = _public_event({"type": "profile_proposal", "proposal_id": "p", "profile_id": "x",
+        "profile_name": "n", "plant": "P", "profile_revision": 1, "summary": "s",
+        "change": {"action": "remove_constraint", "constraint_id": "c"}, "secret": "no"})
+    assert event["change"]["constraint_id"] == "c" and "secret" not in event
+
+
+def test_explicit_null_selection_clears_stale_session_context():
+    """A Settings turn sending null draft/run/point removes values left by the optimizer page."""
+    from types import SimpleNamespace
+
+    from app.routers import workspace_chat
+    from app.workspace.service import WorkspaceService
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+
+    seen = []
+
+    class Runtime:
+        """Record the selection visible to tools when the turn runs."""
+
+        def __init__(self, service, context_id):
+            """Keep the real service and page-session key."""
+            self.service, self.context_id = service, context_id
+
+        async def ainvoke(self, *args, **kwargs):
+            """Capture the merged session context instead of calling a model."""
+            seen.append(self.service.context(self.context_id))
+            return SimpleNamespace(output_text="ok")
+
+        async def aclose(self):
+            """Release no external resources in this test."""
+
+    async def factory(service, context_id, on_event):
+        """Construct the recording runtime without a provider."""
+        return Runtime(service, context_id)
+
+    service = WorkspaceService(repository=None)
+    app = FastAPI()
+    app.include_router(workspace_chat.router)
+    app.dependency_overrides[workspace_chat.get_service] = lambda: service
+    app.dependency_overrides[workspace_chat.get_runtime_factory] = lambda: factory
+    optimizer = {"plant_profile_id": "p1", "dataset_id": "d1", "draft_id": "dr1", "run_id": "r1", "point_index": 7}
+    settings = {"plant_profile_id": "p1", "dataset_id": None, "draft_id": None, "run_id": None, "point_index": None}
+    with TestClient(app) as client:
+        for selection in (optimizer, settings):
+            response = client.post("/api/chat", json={"message": "hi", "context_id": "c-null", **selection})
+            assert response.status_code == 200
+    assert seen[0] == {"context_id": "c-null", **optimizer}
+    assert seen[1] == {"context_id": "c-null", **settings}
+
+
+def test_assistant_recreates_outdated_draft_and_selects_it():
+    """The tool returns the new draft, selects it in the conversation and notifies the page."""
+    from test_plant_profiles import fixture
+    service, source, profile = fixture()
+    draft = service.create_draft(source["dataset_id"], profile["profile_id"])
+    service.update_plant_profile(profile["profile_id"], {"revision": 1, "name": "Renamed"})
+    events = []
+    tools = {tool.name: tool for tool in workspace_tools(service, "context-r", events.append)}
+    result = tools["recreate_draft_with_current_profile"].invoke({"draft_id": draft["draft_id"]})
+    new_id = result["draft"]["draft_id"]
+    assert result["draft"]["plant_profile"]["revision"] == 2
+    assert service.context("context-r")["draft_id"] == new_id
+    assert events[-1]["type"] == "draft_changed" and events[-1]["draft_id"] == new_id
+
+
+def test_assistant_adds_a_class_stop_and_previews_reclassified_products():
+    """In a class profile the assistant previews stops, proposes a 2 L stop and shows who moves."""
+    import pytest
+    from test_volume_classes import class_service
+    service, source, profile = class_service([1.1, 2.2, 4, 20])
+    events = []
+    tools = {tool.name: tool for tool in workspace_tools(service, "context-c", events.append)}
+    service.context("context-c", {"plant_profile_id": profile["profile_id"], "dataset_id": source["dataset_id"]})
+    details = tools["get_plant_profile_details"].invoke({})
+    assert details["volume_matching"] == "nearest_class" and details["matrix_volumes"][0] == "<1"
+    preview = tools["get_dataset_volume_coverage"].invoke(
+        {"proposed_stops": ["<1", "1", "2", "2.5", "5", "10", "15", ">15"]})
+    assert preview["reclassified_volumes"] == [{"volume": "2.2", "product_count": 1, "from": "2.5", "to": "2"}]
+    result = tools["propose_profile_settings"].invoke({"summary": "Add a 2 L stop that behaves like 2.5.",
+        "volume_compatibility": {"volumes": ["2"], "keep_existing_pairs": True, "default_status": "AVOID",
+                                 "inherit_from": {"2": "2.5"}}})
+    summary = result["matrix_summary"]
+    assert summary["added_volumes"] == ["2"] and summary["changed_pair_count"] == 0
+    assert summary["volume_matching"] == "nearest_class" and summary["unclassified_volumes"] == []
+    assert summary["reclassified_volumes"] == preview["reclassified_volumes"]
+    assert events[-1]["matrix_summary"] == summary
+    assert service.get_plant_profile(profile["profile_id"])["revision"] == profile["revision"]
+    with pytest.raises(ValueError, match="classified"):
+        tools["propose_profile_settings"].invoke({"summary": "Add dataset volumes.",
+            "volume_compatibility": {"dataset_id": source["dataset_id"], "keep_existing_pairs": True,
+                                     "default_status": "N"}})

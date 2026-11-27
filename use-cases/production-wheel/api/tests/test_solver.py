@@ -146,7 +146,8 @@ def test_exact_cover_and_max_match_direct_partition_choice() -> None:
     assert result.warm_start_kind == "singleton"
     assert result.warm_start_group_count == 2
     assert [item.candidate.member_ids for item in result.selected] == [("F1", "F2")]
-    assert result.objective_levels[0].value == pytest.approx(112.5)
+    # Base RoC 112.5 days is rounded to the whole-day wheel RoC 113.
+    assert result.objective_levels[0].value == pytest.approx(113.0)
     covered = [fini for item in result.selected for fini in item.candidate.member_ids]
     assert sorted(covered) == ["F1", "F2"]
 
@@ -370,7 +371,13 @@ def test_greenfield_heuristic_is_deterministic_exact_and_epsilon_feasible() -> N
 
 
 def test_coefficients_use_selected_pallet_formula_and_coverage_basis() -> None:
-    """Coefficient calculation delegates to the governed KPI formulas."""
+    """Coefficients follow the wheel RoC rule under every coverage basis.
+
+    Lot 100 L x 0.9 = 90 L effective batch for 1000 L over 250 days: base RoC
+    22.5 days, wheel RoC R = 23 (Excel ROUND). One batch fills 100 / 200 = 0.5
+    pallets, under the 0.9 threshold, so the inventory RoC is floor(23 / 0.5) = 46.
+    ``pallet_formula`` only sets the reported physical allocation, not coverage.
+    """
 
     members = (member("F1", demand=1_000, pallet=200),)
     base = RunConfig(
@@ -384,14 +391,20 @@ def test_coefficients_use_selected_pallet_formula_and_coverage_basis() -> None:
         members,
         base.model_copy(update={"pallet_formula": PalletFormula.WHOLE_PALLET_ROUNDING}),
     )[0]
-    assert minimum.coverage_days == pytest.approx(50.0)
-    assert whole.coverage_days == pytest.approx(50.0)
+    assert minimum.coverage_days == pytest.approx(46.0)
+    assert whole.coverage_days == pytest.approx(46.0)
     worst = precompute_coefficients(
         pool.candidates,
         members,
         base.model_copy(update={"coverage_basis": CoverageBasis.WORST_FINI}),
     )[0]
-    assert worst.coverage_days == pytest.approx(50.0)
+    assert worst.coverage_days == pytest.approx(46.0)
+    wheel = precompute_coefficients(
+        pool.candidates,
+        members,
+        base.model_copy(update={"coverage_basis": CoverageBasis.BASE_GROUP}),
+    )[0]
+    assert wheel.coverage_days == pytest.approx(23.0)
 
 
 def test_empirical_diagnostic_zero_exception_tier_needs_no_solver_pass() -> None:
@@ -1063,7 +1076,9 @@ def test_baseline_neighbourhood_uses_global_j_ch_tolerance_residual() -> None:
     result = solve_decomposed_pools((pool_a, pool_b), members, config)
 
     assert result.baseline_constraint_limits is not None
-    assert result.baseline_constraint_limits.j_ch_limit == pytest.approx(0.48)
+    # Baseline group B: base RoC 250 x 10 / 200 = 12.5 -> R = 13, 5 / 13 batches
+    # per week, one changeover per batch; limit = 1.2 x 5 / 13.
+    assert result.baseline_constraint_limits.j_ch_limit == pytest.approx(1.2 * 5 / 13)
     assert {item.candidate.member_ids for item in result.selected} == {
         ("A1", "A2"),
         ("B1", "B2"),

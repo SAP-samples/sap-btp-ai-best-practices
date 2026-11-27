@@ -106,6 +106,10 @@ def extract_pallet_candidates(
     return candidates, metadata
 
 
+# FINI keys listed in one discrepancy finding (about 15 characters each in an NVARCHAR(5000) column).
+MAX_LISTED_DISCREPANCIES = 200
+
+
 def resolve_pallets(
     fini_rows: Iterable[Mapping[str, Any]],
     candidates: Iterable[Mapping[str, Any]],
@@ -184,7 +188,8 @@ def resolve_pallets(
                 "rule_id": "PALLET_NONBLANK_SOURCE_DISCREPANCY",
                 "severity": "warning",
                 "entity": "fini",
-                "entity_key": "|".join(nonblank_discrepancies[:10]),
+                # Every affected FINI is listed (bounded for the NVARCHAR column); observed keeps the total.
+                "entity_key": "|".join(nonblank_discrepancies[:MAX_LISTED_DISCREPANCIES]),
                 "observed": len(nonblank_discrepancies),
                 "expected": 0,
                 "action": "retain primary value and expose enrichment discrepancy for review",

@@ -22,7 +22,15 @@ from app.agent.config import load_config
 from app.agent.memory import NullConversationStore
 from app.agent.runtime import AgentRuntime, _structured_output_kwargs
 from app.agent.skills import SkillLoader
-from app.workspace.profile_interpretation import Interpretation
+from pydantic import BaseModel
+
+from production_wheel.rule_models import BusinessConstraint
+
+
+class Interpretation(BaseModel):
+    """Structured payload carrying the discriminated rule union that needs tool transport."""
+
+    rules: list[BusinessConstraint]
 
 
 def test_interpretation_schema_still_needs_tool_transport():

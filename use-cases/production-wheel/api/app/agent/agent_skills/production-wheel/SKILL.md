@@ -30,6 +30,9 @@ optimization and analysis of the coverage/changeover frontier.
 4. Call `validate_run_draft` and address reported unsupported constraints or data
    issues. Use `get_optimizer_reference(topic)` for registered schemas, formulas,
    constraints and supported query views. Do not guess field names or capabilities.
+   Always validate before a launch, also when the user asks to "just run it with
+   the defaults", and read its `pv_mode_scope` (see "Production version mode and
+   population" below).
 5. When the user requests execution, call `launch_optimization` with the exact
    current draft revision and a stable idempotency key. Reuse the same key for a
    retry of the same intended launch. A returned run ID is an independent job.
@@ -61,6 +64,47 @@ A user's specified group cap belongs to the relevant plant/SEFI scope. The defau
 historical cap of seven is not evidence that every source plant has the same rule.
 Greenfield runs use source primitives and authorized constraints; historical
 assignments are evidence only and do not become hidden optimization constraints.
+
+## Production version mode and population
+
+The production version setting (`pv_mode`) changes which finished products a run
+includes, not only how lot sizes are chosen:
+
+- **FIXED** (default of a new draft): each FINI keeps its "Selected PV" from the
+  production workbook. FINIs without a usable "Selected PV" are left out.
+- **OPTIMIZED**: the optimizer chooses one production version (lot size) per group
+  from the SEFI's catalog. FINIs without a "Selected PV" are included when their
+  SEFI has a production version with one positive lot size. Batch sizes can then
+  differ from the current ones, so results are not like-for-like with the current
+  wheel on those groups.
+
+`validate_run_draft` returns `pv_mode_scope`. When `only_in_other_mode` is not
+empty, do not launch yet. Tell the user, in plain words, which products the chosen
+mode leaves out (name them, up to ten, and give the total) and why, what the other
+mode would change, and ask which mode to use. Example:
+
+> User: Optimize this dataset with the default settings.
+> Assistant (after validating): The default production version setting is FIXED.
+> It leaves out 3 products that have no selected production version: 1000001,
+> 1000002 and 1000003. OPTIMIZED would include them by letting the optimizer
+> choose the production version of each group. Keep FIXED, or switch to OPTIMIZED?
+> User: Then use a setting that includes them.
+> Assistant: updates the draft with `pv_mode: "OPTIMIZED"`, validates again,
+> explains that OPTIMIZED lets the optimizer pick each group's production version
+> (so batch sizes may change), and launches when the user confirms.
+
+When `only_in_this_mode` is not empty, mention that switching would drop those
+products. If the user already chose the mode knowing these products, launch
+without asking again. Never change `pv_mode` without the user's decision.
+
+## Plant profile constraints versus scenario constraints
+
+A plant profile holds the fixed settings and hard constraints every run for that
+plant must follow. Scenario constraints in a draft only add restrictions for one
+run. To change the profile, follow contraint_translation: propose with
+`propose_profile_constraint` or `propose_profile_settings`. These tools save
+nothing; the user approves the card in the chat, and existing drafts and runs
+keep the profile revision they were created with.
 
 ## Analyze persisted results
 

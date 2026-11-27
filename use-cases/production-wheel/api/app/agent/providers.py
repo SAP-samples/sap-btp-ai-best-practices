@@ -12,11 +12,12 @@ from .config import ModelSettings
 
 
 class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
-    """Remove a SAP-wrapper default unsupported by OpenAI Responses calls.
+    """Serialize self-contained Responses requests for SAP AI Core.
 
     SAP AI SDK 7.2.0 always contributes the Chat Completions ``n`` parameter.
-    The native Responses client rejects that keyword, so it is removed only
-    after LangChain has selected and serialized a Responses API request.
+    The native Responses client rejects that keyword. AI Core also cannot
+    reliably resolve replayed response item IDs, even with ``store=False``.
+    Keep full content and tool-call links but remove storage-dependent IDs.
     """
 
     def _get_request_payload(
@@ -26,11 +27,30 @@ class ResponsesCompatibleChatOpenAI(SAPChatOpenAI):
         stop: list[str] | None = None,
         **kwargs: Any,
     ) -> dict[str, Any]:
-        """Return the normal LangChain payload without Responses-incompatible ``n``."""
+        """Return serialized input without unsupported parameters or stored-item IDs.
+
+        Args:
+            input_: LangChain messages or another supported prompt input.
+            stop: Optional stop sequences forwarded to the normal serializer.
+            kwargs: Bound model/tool parameters for this request.
+        Returns:
+            Provider payload. Responses history keeps encrypted reasoning,
+            assistant text and function ``call_id`` links without item ``id``
+            fields; Chat Completions retain their normal serialization.
+        """
 
         payload = super()._get_request_payload(input_, stop=stop, **kwargs)
         if self._use_responses_api(payload):
             payload.pop("n", None)
+            # Item IDs address provider-side storage; call_id joins each local
+            # function call to its output and must be preserved. LangChain's
+            # store=False handles text IDs, but retains reasoning/function IDs.
+            replay_types = {"message", "reasoning", "function_call", "custom_tool_call"}
+            payload["input"] = [
+                {key: value for key, value in item.items() if key != "id"}
+                if item.get("type") in replay_types else item
+                for item in payload["input"]
+            ]
         return payload
 
 
@@ -63,6 +83,10 @@ def create_chat_model(settings: ModelSettings) -> BaseChatModel:
         return ResponsesCompatibleChatOpenAI(
             proxy_model_name=settings.name,
             use_responses_api=settings.use_responses_api,
+            # Conversation state is supplied by the application. Request opaque
+            # reasoning content so it can be replayed without provider storage.
+            **({"store": False, "include": ["reasoning.encrypted_content"]}
+               if settings.use_responses_api else {}),
             callbacks=[_usage_callback(settings, "responses" if settings.use_responses_api else "chat.completions")],
             **common,
         )

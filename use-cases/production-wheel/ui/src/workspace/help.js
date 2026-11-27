@@ -1,7 +1,12 @@
 import { request } from "../services/api.js";
 import { el } from "./dom.js";
 
-/** Attach keyboard-accessible info buttons and a dismissible help dialog to settings. */
+/**
+ * Attach accessible help buttons without discarding controls or supporting content.
+ * @param {Element} target Mounted page containing a .configuration section.
+ * @param {string} endpoint API path returning help entries keyed by control ID.
+ * @returns {Promise<void>} Resolves after decorating the connected page's fields.
+ */
 export async function mountConfigurationHelp(target, endpoint = "/api/configuration-help") {
   const owner = target.querySelector(".configuration");
   const guide = await request(endpoint);
@@ -32,12 +37,23 @@ export async function mountConfigurationHelp(target, endpoint = "/api/configurat
       dialog.showModal();
     });
     const originalLabel = control.closest("label");
+    // Section headings (no wrapping label) get the info button inline.
+    if (!originalLabel) {
+      control.append(" ", button);
+      continue;
+    }
     const field = el("div", null, "setting-field");
     const heading = el("div", null, "setting-heading");
-    const label = el("label", originalLabel.firstChild.textContent.trim());
+    const labelNodes = [...originalLabel.childNodes];
+    // A checkbox can precede its label text, so read all direct text nodes.
+    const label = el("label", labelNodes
+      .filter((node) => node.nodeType === Node.TEXT_NODE)
+      .map((node) => node.textContent).join("").trim());
     label.htmlFor = control.id;
     heading.append(label, button);
     originalLabel.replaceWith(field);
-    field.append(heading, control);
+    // Move every element, including hints such as #matrix-default. Keeping the
+    // original nodes also preserves control state and already-attached listeners.
+    field.append(heading, ...labelNodes.filter((node) => node.nodeType !== Node.TEXT_NODE));
   }
 }

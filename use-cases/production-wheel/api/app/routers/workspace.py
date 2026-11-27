@@ -11,7 +11,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from zipfile import BadZipFile, ZipFile
 
-import openai
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import Field
@@ -114,6 +113,47 @@ def list_datasets(
     }
 
 
+def _store_workbook(upload: UploadFile, directory: Path, index: int) -> tuple[str, bytes, Path]:
+    """Check one uploaded workbook's size and format and write it to a temporary folder.
+
+    Args:
+        upload: Multipart workbook from the browser.
+        directory: Temporary directory owned by the calling request.
+        index: Position used for the temporary file name.
+    Returns:
+        Tuple of (original file name, raw bytes, temporary path).
+    Raises:
+        HTTPException: 413 for oversized or zip-bomb files, 422 for non-XLSX content.
+    """
+    content = upload.file.read(50 * 1024 * 1024 + 1)
+    if len(content) > 50 * 1024 * 1024:
+        raise HTTPException(413, "Each workbook must be under 50 MiB")
+    try:
+        with ZipFile(io.BytesIO(content)) as archive:
+            if sum(entry.file_size for entry in archive.infolist()) > 512 * 1024 * 1024:
+                raise HTTPException(413, "Expanded workbook exceeds 512 MiB")
+    except BadZipFile as exc:
+        raise HTTPException(422, "Upload must be an XLSX workbook") from exc
+    filename = Path(upload.filename or f"source-{index}.xlsx").name
+    path = directory / f"{index}.xlsx"
+    path.write_bytes(content)
+    return filename, content, path
+
+
+@router.post("/datasets/preview")
+def preview_dataset(primary: UploadFile = File(...)):
+    """Read the production workbook's plant and frequency inventory; saves nothing.
+
+    The Datasets page calls this when a workbook is chosen so the planner and the
+    Workspace Assistant see which frequency codes exist before extraction.
+    """
+    from production_wheel.extraction.datasets import preview_workbook
+
+    with TemporaryDirectory(prefix="wheel-preview-") as directory:
+        filename, _, path = _store_workbook(primary, Path(directory), 0)
+        return {"filename": filename, **call(preview_workbook, path)}
+
+
 @router.post("/datasets")
 def upload_dataset(
     primary: UploadFile = File(...),
@@ -138,21 +178,7 @@ def upload_dataset(
             if upload is None:
                 paths.append(None)
                 continue
-            content = upload.file.read(50 * 1024 * 1024 + 1)
-            if len(content) > 50 * 1024 * 1024:
-                raise HTTPException(413, "Each workbook must be under 50 MiB")
-            try:
-                with ZipFile(io.BytesIO(content)) as archive:
-                    if (
-                        sum(entry.file_size for entry in archive.infolist())
-                        > 512 * 1024 * 1024
-                    ):
-                        raise HTTPException(413, "Expanded workbook exceeds 512 MiB")
-            except BadZipFile as exc:
-                raise HTTPException(422, "Upload must be an XLSX workbook") from exc
-            filename = Path(upload.filename or f"source-{index}.xlsx").name
-            path = Path(directory) / f"{index}.xlsx"
-            path.write_bytes(content)
+            filename, content, path = _store_workbook(upload, Path(directory), index)
             paths.append(path)
             sources.append((filename, content))
         extracted = call(extract_workbooks, paths[0], paths[1], parameters)
@@ -169,17 +195,6 @@ def upload_dataset(
             "The workbook was extracted, but saving the snapshot failed. "
             "No new snapshot was registered. Check the backend log before retrying.",
         ) from exc
-
-
-@router.post("/datasets/settings/interpret")
-async def interpret_dataset_settings(body: dict, service=Depends(get_service)):
-    """Translate planner free text into validated extraction overrides; saves nothing."""
-    from app.workspace.dataset_settings_interpretation import interpret_dataset_settings as run
-
-    try:
-        return await run(service, body.get("text", ""))
-    except ValueError as exc:
-        raise HTTPException(422, str(exc)) from exc
 
 
 @router.get("/datasets/{dataset_id}")
@@ -204,6 +219,18 @@ def create_draft(body: DraftCreate, service=Depends(get_service)):
 def get_draft(draft_id: str, service=Depends(get_service)):
     """Read authoritative values and revision for dashboard or agent."""
     return call(service.get_draft, draft_id)
+
+
+@router.get("/run-drafts/{draft_id}/profile-status")
+def get_draft_profile_status(draft_id: str, service=Depends(get_service)):
+    """Report whether the draft's frozen plant profile is older than the current profile."""
+    return call(service.draft_profile_status, draft_id)
+
+
+@router.post("/run-drafts/{draft_id}/recreate-with-current-profile")
+def recreate_draft_with_current_profile(draft_id: str, service=Depends(get_service)):
+    """Create a new draft with the current profile revision, keeping explicit scenario choices."""
+    return call(service.recreate_draft_with_current_profile, draft_id)
 
 
 @router.patch("/run-drafts/{draft_id}")
@@ -445,19 +472,6 @@ def create_plant_profile(body: dict, service=Depends(get_service)):
     return call(service.create_plant_profile, body)
 
 
-@router.post("/plant-profiles/interpret")
-async def interpret_plant_profile(body: dict, service=Depends(get_service)):
-    """Preview a read-only structured interpretation without saving or launching."""
-    from app.workspace.profile_interpretation import interpret_profile
-    try:
-        return await interpret_profile(service, body)
-    except ValueError as exc:
-        raise HTTPException(422, str(exc)) from exc
-    except openai.APIError as exc:
-        # Surface provider failures as a handled error so CORS headers reach the browser.
-        raise HTTPException(502, f"AI model request failed: {getattr(exc, 'message', exc)}") from exc
-
-
 @router.get("/plant-profiles/{profile_id}")
 def inspect_plant_profile(profile_id: str, service=Depends(get_service)):
     """Inspect one active profile and its revision."""
@@ -468,6 +482,18 @@ def inspect_plant_profile(profile_id: str, service=Depends(get_service)):
 def update_plant_profile(profile_id: str, body: dict, service=Depends(get_service)):
     """Save reviewed profile changes against the exact current revision."""
     return call(service.update_plant_profile, profile_id, body)
+
+
+class ProfileChangeRequest(StrictModel):
+    """A user-approved profile change bound to the revision it was proposed against."""
+    revision: int = Field(ge=1)
+    change: dict
+
+
+@router.post("/plant-profiles/{profile_id}/changes")
+def apply_plant_profile_change(profile_id: str, body: ProfileChangeRequest, service=Depends(get_service)):
+    """Apply one approved constraint/settings change (assistant card or Settings list)."""
+    return call(service.apply_plant_profile_change, profile_id, body.revision, body.change)
 
 
 class ProfileRemoval(StrictModel):

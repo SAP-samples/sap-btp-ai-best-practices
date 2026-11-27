@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from pathlib import Path
 from typing import Any, Callable, Sequence
 
@@ -31,6 +32,7 @@ from .models import AgentResult, Attachment
 from .providers import create_chat_model
 from .skills import SkillLoader, catalogue_prompt
 
+_LOGGER = logging.getLogger(__name__)
 
 class AgentState(MessagesState, total=False):
     """Hold messages plus invocation-specific prompt and skill metadata."""
@@ -291,13 +293,36 @@ class AgentRuntime:
                         )
                     ]
                 }
-            response = await model_with_tools.ainvoke(
-                [SystemMessage(content=state["system_prompt"]), *prepared.messages]
-            )
+            system = SystemMessage(content=state["system_prompt"])
+            # Prior AI messages rewritten without reasoning; replaced in state by ID.
+            rewritten: list[BaseMessage] = []
+            try:
+                response = await model_with_tools.ainvoke([system, *prepared.messages])
+            except Exception as error:
+                if not _is_reasoning_replay_error(error):
+                    raise
+                # A load-balanced backend could not decrypt a reasoning item returned
+                # by an earlier call. Text and tool calls carry the turn's state, so
+                # retry once without replayed reasoning; a second failure propagates.
+                _LOGGER.warning(
+                    "Retrying model call without replayed reasoning items context_id=%s",
+                    state["context_id"],
+                )
+                response = await model_with_tools.ainvoke(
+                    [system, *_without_reasoning(prepared.messages)]
+                )
+                # Keep later steps of this turn from replaying the rejected items.
+                rewritten = [
+                    stripped
+                    for original, stripped in zip(
+                        state["messages"], _without_reasoning(state["messages"])
+                    )
+                    if stripped is not original
+                ]
             emit_context_telemetry(
                 state["context_id"], prepared, getattr(response, "usage_metadata", None)
             )
-            update: dict[str, Any] = {"messages": [response]}
+            update: dict[str, Any] = {"messages": [*rewritten, response]}
             if prepared.context_summary is not None:
                 update["context_summary"] = prepared.context_summary
                 update["history_compacted"] = True
@@ -330,6 +355,54 @@ def _structured_output_kwargs(provider: str) -> dict[str, str]:
     """
 
     return {"method": "function_calling"} if provider == "openai" else {}
+
+
+def _is_reasoning_replay_error(error: Exception) -> bool:
+    """Recognize a provider rejection of a replayed encrypted reasoning item.
+
+    Args:
+        error: Exception raised by the chat model call.
+    Returns:
+        True only for HTTP 400 ``invalid_encrypted_content``; every other
+        error keeps its normal failure path.
+    """
+
+    return (
+        getattr(error, "status_code", None) == 400
+        and getattr(error, "code", None) == "invalid_encrypted_content"
+    )
+
+
+def _without_reasoning(messages: Sequence[BaseMessage]) -> list[BaseMessage]:
+    """Return messages whose AI entries no longer carry replayable reasoning items.
+
+    Args:
+        messages: Conversation messages about to be sent to the model.
+    Returns:
+        Same-length list. AI messages holding ``reasoning`` content blocks or an
+        ``additional_kwargs["reasoning"]`` item are copied without them (same ID,
+        text and tool calls); all other messages are returned as the same object.
+    """
+
+    result: list[BaseMessage] = []
+    for message in messages:
+        if not isinstance(message, AIMessage):
+            result.append(message)
+            continue
+        content = message.content
+        if isinstance(content, list):
+            content = [
+                block
+                for block in content
+                if not (isinstance(block, dict) and block.get("type") == "reasoning")
+            ]
+        has_kwarg = "reasoning" in message.additional_kwargs
+        if content == message.content and not has_kwarg:
+            result.append(message)
+            continue
+        extra = {k: v for k, v in message.additional_kwargs.items() if k != "reasoning"}
+        result.append(message.model_copy(update={"content": content, "additional_kwargs": extra}))
+    return result
 
 
 def _human_message(

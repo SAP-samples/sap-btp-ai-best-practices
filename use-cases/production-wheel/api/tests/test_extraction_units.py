@@ -109,6 +109,23 @@ def test_pallet_resolution_is_primary_first_and_requires_one_positive_candidate(
     }
 
 
+def test_pallet_discrepancy_lists_every_affected_fini() -> None:
+    """The finding names all differing FINIs, not a sample, and counts them."""
+
+    fini = [
+        {"plant": "P", "material": str(n), "fini_plant_key": f"{n}/P", "model_status": "modeled",
+         "pallet_litres_primary": 50.0}
+        for n in range(12)
+    ]
+    candidates = [{"fini_plant_key": f"{n}/P", "pallet_litres": 60.0} for n in range(12)]
+
+    _, _, issues = resolve_pallets(fini, candidates)
+
+    (issue,) = issues
+    assert issue["observed"] == 12
+    assert issue["entity_key"].split("|") == [f"{n}/P" for n in range(12)]
+
+
 def test_populated_nonpositive_primary_pallet_is_not_overwritten() -> None:
     """A populated invalid primary value is preserved and blocks modeled use."""
 
@@ -235,3 +252,27 @@ shared Other = Files[CommonInput];
         ("url", "https://example.test"),
         ("parameterized_file", "CommonInput"),
     }
+
+
+def test_exclusion_issues_split_optimized_only_finis_from_data_quality():
+    """A FINI excluded only because FIXED lacks its PV gets FINI_OPTIMIZED_PV_ONLY."""
+    from production_wheel.extraction.admission_issues import exclusion_issues
+
+    rows = [
+        # No Selected PV, but the SEFI has a PV with one positive lot size.
+        {"fini_plant_key": "1/P1", "model_status": "excluded", "exclusion_reason": "missing_fixed_pv",
+         "optimized_pv_model_status": "modeled"},
+        # No Selected PV and no usable PV in the catalog: excluded in both modes.
+        {"fini_plant_key": "2/P1", "model_status": "excluded", "exclusion_reason": "missing_fixed_pv",
+         "optimized_pv_model_status": "excluded"},
+        # Out of scope by frequency setting and modeled rows raise no finding.
+        {"fini_plant_key": "3/P1", "model_status": "out_of_scope",
+         "exclusion_reason": "production_frequency_16w_out_of_scope", "optimized_pv_model_status": "out_of_scope"},
+        {"fini_plant_key": "4/P1", "model_status": "modeled", "optimized_pv_model_status": "modeled"},
+    ]
+    issues = exclusion_issues(rows)
+    assert [(issue["rule_id"], issue["entity_key"], issue["reason"]) for issue in issues] == [
+        ("FINI_OPTIMIZED_PV_ONLY", "1/P1", "missing_fixed_pv"),
+        ("FINI_DATA_QUALITY", "2/P1", "missing_fixed_pv"),
+    ]
+    assert all(issue["severity"] == "warning" for issue in issues)

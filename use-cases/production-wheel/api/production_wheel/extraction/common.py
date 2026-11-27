@@ -215,6 +215,18 @@ def extract_power_query_m(path: Path) -> str | None:
     return None
 
 
+def _part_path(base: str, target: str) -> str:
+    """Resolve an OOXML relationship target to a zip member name.
+
+    Excel writes targets relative to the source part (``worksheets/sheet1.xml``);
+    other writers such as openpyxl use absolute part names (``/xl/worksheets/sheet1.xml``).
+    """
+
+    if target.startswith("/"):
+        return posixpath.normpath(target.lstrip("/"))
+    return posixpath.normpath(posixpath.join(base, target))
+
+
 def xlsx_table_catalog(path: Path) -> list[dict[str, Any]]:
     """Read Excel table names, sheets, ranges, and row counts from OOXML parts.
 
@@ -235,7 +247,7 @@ def xlsx_table_catalog(path: Path) -> list[dict[str, Any]]:
         workbook_root = ET.fromstring(archive.read("xl/workbook.xml"))
         workbook_rels = ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))
         workbook_targets = {
-            relation.attrib["Id"]: posixpath.normpath(posixpath.join("xl", relation.attrib["Target"]))
+            relation.attrib["Id"]: _part_path("xl", relation.attrib["Target"])
             for relation in workbook_rels.findall(f"{{{package_ns}}}Relationship")
         }
         sheet_paths = {
@@ -252,9 +264,7 @@ def xlsx_table_catalog(path: Path) -> list[dict[str, Any]]:
             for relation in relation_root.findall(f"{{{package_ns}}}Relationship"):
                 if not relation.attrib.get("Type", "").endswith("/table"):
                     continue
-                table_path = posixpath.normpath(
-                    posixpath.join(posixpath.dirname(sheet_path), relation.attrib["Target"])
-                )
+                table_path = _part_path(posixpath.dirname(sheet_path), relation.attrib["Target"])
                 table_root = ET.fromstring(archive.read(table_path))
                 reference = table_root.attrib["ref"]
                 _min_col, min_row, _max_col, max_row = range_boundaries(reference)

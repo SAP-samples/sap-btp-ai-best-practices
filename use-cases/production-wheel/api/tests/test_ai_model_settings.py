@@ -16,7 +16,7 @@ def test_model_choice_persists_with_revision_and_maps_provider():
     repository = MemoryRepository()
     service = WorkspaceService(repository)
     first = service.get_ai_model_settings()
-    assert first["model"] == DEFAULT_AI_MODEL == "gpt-5.4"
+    assert first["model"] == DEFAULT_AI_MODEL == "gpt-6.1-sol"
     assert [item["name"] for item in first["models"]] == [item[0] for item in AI_MODELS]
     assert first["revision"] == 0
     saved = service.save_ai_model_settings("anthropic--claude-4.6-sonnet", 0)
@@ -39,7 +39,7 @@ def test_model_choice_http_contract():
     app.include_router(router)
     app.dependency_overrides[get_service] = lambda: service
     client = TestClient(app)
-    assert client.get("/api/ai-model-settings").json()["model"] == "gpt-5.4"
+    assert client.get("/api/ai-model-settings").json()["model"] == "gpt-6.1-sol"
     saved = client.put("/api/ai-model-settings", json={"model": "gpt-5.6-terra", "revision": 0})
     assert saved.status_code == 200
     assert saved.json()["revision"] == 1
@@ -47,7 +47,7 @@ def test_model_choice_http_contract():
     assert client.put("/api/ai-model-settings", json={"model": "unknown", "revision": 1}).status_code == 422
 
 
-def test_packaged_default_is_gpt_54():
+def test_packaged_default_matches_settings_default():
     """The unsaved fallback used by direct agent configuration matches the UI."""
     from pathlib import Path
 

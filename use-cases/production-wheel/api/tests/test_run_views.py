@@ -21,7 +21,7 @@ def test_run_summary_excludes_replay_payload_and_reports_matrix_summary():
             "settings": {
                 "horizon_days": 80,
                 "demand_days_per_week": 5,
-                "high_runner_threshold_days": 15,
+                "runner_thresholds": {"high_max_days": 10, "low_min_days": 80, "high_max_ratio": 3, "low_min_ratio": 10},
                 "runner_basis": "reference",
                 "matrix_mode": "FLEXIBLE",
                 "maximum_group_size": 7,
@@ -31,7 +31,7 @@ def test_run_summary_excludes_replay_payload_and_reports_matrix_summary():
                 {"volume_a": "A", "volume_b": "B", "status": "allowed"}
             ],
         },
-        "request": {"config": {"matrix_pairs": [{"volume_a": "A"}]}},
+        "request": {"config": {"matrix_pairs": [{"volume_a": "A"}], "matrix_mode": "DIAGNOSTIC"}},
         "source_request": {"config": {"matrix_pairs": [{"volume_a": "A"}]}},
         "validation": {"effective_request": {"config": {"matrix_pairs": [{"volume_a": "A"}]}}},
         "budget": {"frontier_points": 17},
@@ -52,6 +52,8 @@ def test_run_summary_excludes_replay_payload_and_reports_matrix_summary():
     assert summary["run_id"] == "run-1"
     assert summary["configuration"]["matrix_pair_count"] == 1
     assert summary["configuration"]["horizon_days"] == 80
+    # The run request wins over the profile default when a scenario overrode the mode.
+    assert summary["configuration"]["matrix_mode"] == "DIAGNOSTIC"
     assert summary["configuration"]["fixed_rule_ids"] == ["runner-mix"]
     assert set(summary).isdisjoint(
         {"plant_profile", "request", "source_request", "validation", "budget", "metadata"}

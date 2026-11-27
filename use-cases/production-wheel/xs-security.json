@@ -1,0 +1,29 @@
+{
+  "xsappname": "production-wheel",
+  "tenant-mode": "dedicated",
+  "description": "Production Wheel Optimizer: sign-in and access role",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.User",
+      "description": "Use the Production Wheel Optimizer workspace"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "User",
+      "description": "Access to the Production Wheel Optimizer workspace",
+      "scope-references": ["$XSAPPNAME.User"]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "ProductionWheel_User",
+      "description": "Users allowed to sign in to the Production Wheel Optimizer",
+      "role-template-references": ["$XSAPPNAME.User"]
+    }
+  ],
+  "oauth2-configuration": {
+    "token-validity": 3600,
+    "redirect-uris": ["https://*.cfapps.eu10-005.hana.ondemand.com/**"]
+  }
+}

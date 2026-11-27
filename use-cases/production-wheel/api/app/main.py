@@ -31,8 +31,9 @@ app = FastAPI(
     version="2.0.0",
 )
 
-# Every workspace route uses the same server-side API-key boundary.
-from .security import get_api_key
+# Every user-facing route requires a signed-in user with the access role
+# (XSUAA JWT forwarded by the approuter; see app/security.py).
+from .security import require_user
 from .observability import (
     RequestUsageContext,
     extract_client_host_from_request,
@@ -41,11 +42,18 @@ from .observability import (
 )
 from .routers.workspace import router as workspace_router
 from .routers.workspace_chat import router as chat_router
+from .routers.decisions import router as decisions_router
+from .routers.sap_settings import router as sap_settings_router
 from .routers.constraint_code import router as constraint_code_router
-app.include_router(workspace_router, dependencies=[Depends(get_api_key)])
-app.include_router(chat_router, dependencies=[Depends(get_api_key)])
-# Control endpoints authenticate normally; task callbacks accept only a scoped,
-# expiring capability so runner containers never receive the application key.
+from .routers.user_session import router as user_session_router
+app.include_router(workspace_router, dependencies=[Depends(require_user)])
+app.include_router(chat_router, dependencies=[Depends(require_user)])
+app.include_router(decisions_router, dependencies=[Depends(require_user)])
+app.include_router(sap_settings_router, dependencies=[Depends(require_user)])
+# GET /api/me declares require_user itself, because it returns the user.
+app.include_router(user_session_router)
+# Control endpoints require a signed-in user; task callbacks accept only a
+# scoped, expiring capability so runner containers never receive user tokens.
 app.include_router(constraint_code_router)
 
 # Define allowed origins for CORS

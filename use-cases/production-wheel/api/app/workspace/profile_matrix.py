@@ -1,4 +1,11 @@
-"""In-memory Excel exchange and finite natural-language volume matrix proposals."""
+"""In-memory Excel exchange and validation of complete volume compatibility matrices.
+
+Planner descriptions of a matrix are compiled in ``matrix_description``.
+
+Axis labels are package volumes in litres. Profiles in ``nearest_class`` volume
+matching also accept the tail classes ``"<n"`` and ``">n"`` (see
+``production_wheel.volume_classes``); exact profiles accept numbers only.
+"""
 
 from io import BytesIO
 from typing import Literal
@@ -8,77 +15,98 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
-from pydantic import Field
-from production_wheel.rule_models import MatrixPair
-from .models import StrictModel
+from pydantic import BaseModel, ConfigDict, model_validator
+from production_wheel.volume_classes import check_labels, label_sort_key, parse_label
 
 MAX_WORKBOOK_BYTES = 2_000_000
 
 
-def volume_ids(values):
-    """Normalize positive decimal volume identities, rejecting duplicates and oversized axes."""
-    result = [MatrixPair(volume_a=str(v), volume_b=str(v), status='Y').volume_a for v in values]
+class ProfileMatrixPair(BaseModel):
+    """One profile matrix cell: two axis labels (volumes or tail classes) and a status.
+
+    Labels are normalized (``"2.50"`` -> ``"2.5"``, ``"< 1"`` -> ``"<1"``). Whether
+    tails are allowed depends on the profile's volume matching and is checked by
+    ``validate_matrix_rows``. The diagonal must be ``Y``.
+    """
+
+    model_config = ConfigDict(extra='forbid', frozen=True)
+
+    volume_a: str
+    volume_b: str
+    status: Literal['Y', 'AVOID', 'N']
+
+    @model_validator(mode='before')
+    @classmethod
+    def normalize(cls, data):
+        """Normalize both labels before field validation."""
+        if isinstance(data, dict):
+            data = {**data, **{k: parse_label(data[k]) for k in ('volume_a', 'volume_b') if k in data}}
+        return data
+
+    @model_validator(mode='after')
+    def compatible_diagonal(self):
+        """Require ``Y`` on the diagonal."""
+        if self.volume_a == self.volume_b and self.status != 'Y':
+            raise ValueError('matrix diagonal must be compatible')
+        return self
+
+
+def volume_ids(values, allow_classes=True):
+    """Normalize axis labels, rejecting duplicates and oversized axes.
+
+    Args:
+        values: Labels in axis order.
+        allow_classes: Accept ``"<n"`` / ``">n"`` tails.
+
+    Returns:
+        Normalized labels in the given order.
+    """
+    result = [parse_label(v, allow_classes) for v in values]
     if not 1 <= len(result) <= 100 or len(set(result)) != len(result):
         raise ValueError('Use 1–100 unique positive volumes in litres')
     return result
 
 
-def validate_matrix_rows(rows):
-    """Return a complete symmetric matrix with normalized axes and compatible diagonals."""
-    values = [MatrixPair.model_validate(row) for row in rows]
+def validate_matrix_rows(rows, volume_matching='nearest_class'):
+    """Return a complete symmetric matrix with normalized axes and compatible diagonals.
+
+    Args:
+        rows: ``{volume_a, volume_b, status}`` cells (both halves).
+        volume_matching: ``exact`` (numbers only) or ``nearest_class`` (tails
+            allowed; ``"<n"`` must name the smallest stop, ``">n"`` the largest).
+
+    Returns:
+        Normalized rows as dicts, in the given order.
+    """
+    allow = volume_matching != 'exact'
+    values = [ProfileMatrixPair.model_validate(row if isinstance(row, dict) else row.model_dump()) for row in rows]
     pairs = {(r.volume_a, r.volume_b): r.status for r in values}
-    volumes = volume_ids(sorted({v for pair in pairs for v in pair}, key=float))
+    labels = {v for pair in pairs for v in pair}
+    volumes = volume_ids(sorted(labels, key=label_sort_key), allow)
+    if allow:
+        check_labels(volumes)
     if len(pairs) != len(values) or any((a, b) not in pairs or pairs[a, b] != pairs.get((b, a))
                                       for a in volumes for b in volumes):
         raise ValueError('Volume matrix must be complete, unique and symmetric; fill both halves')
     return [r.model_dump() for r in values]
 
 
-class MatrixDescription(StrictModel):
-    """Explicit replacement matrix: listed volumes, compatible families, default and exceptions."""
-
-    volumes: list[str] = Field(min_length=1, max_length=100)
-    compatible_groups: list[list[str]] = Field(default_factory=list, max_length=100)
-    default_status: Literal['Y', 'AVOID', 'N']
-    overrides: list[MatrixPair] = Field(default_factory=list, max_length=10000)
-
-
-def expand_matrix_description(description):
-    """Compile reviewed families into all ordered pairs without executing model code."""
-    spec = MatrixDescription.model_validate(description)
-    volumes = volume_ids(spec.volumes)
-    pairs = {(a, b): 'Y' if a == b else spec.default_status for a in volumes for b in volumes}
-    for family in spec.compatible_groups:
-        family = volume_ids(family)
-        if not set(family) <= set(volumes):
-            raise ValueError('Compatible family refers to an unlisted volume')
-        for a in family:
-            for b in family:
-                pairs[a, b] = 'Y'
-    overrides = {}
-    for row in spec.overrides:
-        if row.volume_a not in volumes or row.volume_b not in volumes:
-            raise ValueError('Matrix exception refers to an unlisted volume')
-        key = tuple(sorted((row.volume_a, row.volume_b)))
-        if key in overrides and overrides[key] != row.status:
-            raise ValueError('Conflicting symmetric matrix exceptions')
-        overrides[key] = row.status
-        pairs[row.volume_a, row.volume_b] = pairs[row.volume_b, row.volume_a] = row.status
-    return validate_matrix_rows([{'volume_a': a, 'volume_b': b, 'status': status}
-                                 for (a, b), status in pairs.items()])
+def _axis_value(label):
+    """Excel header value: a number for a volume, text for a ``<n`` / ``>n`` class."""
+    return label if label[:1] in '<>' else float(label)
 
 
 def matrix_workbook(rows):
     """Generate the editable Excel template from accepted profile rows using the app's Excel library."""
     rows = validate_matrix_rows(rows)
-    volumes = sorted({r['volume_a'] for r in rows}, key=float)
+    volumes = sorted({r['volume_a'] for r in rows}, key=label_sort_key)
     pairs = {(r['volume_a'], r['volume_b']): r['status'] for r in rows}
     workbook = Workbook()
     sheet = workbook.active
     sheet.title = 'Volume compatibility'
-    sheet.append(['Volume (litres)', *[float(v) for v in volumes]])
+    sheet.append(['Volume (litres)', *[_axis_value(v) for v in volumes]])
     for a in volumes:
-        sheet.append([float(a), *[pairs[a, b] for b in volumes]])
+        sheet.append([_axis_value(a), *[pairs[a, b] for b in volumes]])
     sheet.freeze_panes = 'B2'
     sheet.column_dimensions['A'].width = 20
     for column in range(2, len(volumes) + 2):
@@ -100,6 +128,7 @@ def matrix_workbook(rows):
     for text in (
         'Volume compatibility template',
         'Edit the Volume compatibility sheet. Volumes are positive numbers in litres.',
+        'Nearest class profiles: rows are reference volumes plus optional <n (below the smallest) and >n (above the largest) classes; each product takes the row of its nearest reference volume.',
         'Y = compatible. AVOID = discouraged (blocked in HARD mode). N = forbidden in every mode.',
         'Fill every pair using Y, AVOID or N. Both halves must match; diagonal cells must be Y.',
         'To add or remove volumes, edit BOTH the header row and the matching first-column rows. Maximum 100 volumes.',

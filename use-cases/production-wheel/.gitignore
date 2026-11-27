@@ -133,3 +133,7 @@ data/*
 prototype/output/
 api/job_runs/*
 outputs/
+# Approuter: UI build copied in by deploy.sh, local dependencies and local-only
+# service credentials (default-env.json holds an XSUAA service key).
+approuter/resources/
+approuter/default-env.json

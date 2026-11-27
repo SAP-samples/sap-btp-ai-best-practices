@@ -7,11 +7,11 @@ from app.agent.config import load_config
 from app.agent.tools.workspace_tools import workspace_tools
 
 
-def test_default_model_is_gpt_54_with_high_effort():
-    """The packaged fallback follows the requested GPT-5.4 default."""
+def test_default_model_is_gpt_61_sol_with_high_effort():
+    """The packaged fallback follows the requested GPT-6.1 Sol default."""
     config = load_config(Path(__file__).parents[1] / "app/agent/config/agent.yaml")
     assert (config.model.provider, config.model.name, config.model.reasoning_effort) == (
-        "openai", "gpt-5.4", "high")
+        "openai", "gpt-6.1-sol", "high")
 
 
 def test_wait_tool_returns_only_after_completion_and_emits_progress():

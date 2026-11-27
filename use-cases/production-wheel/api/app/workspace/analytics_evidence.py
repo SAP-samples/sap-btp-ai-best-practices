@@ -9,6 +9,8 @@ from typing import Any, Mapping
 from production_wheel.metrics import pallet_allocations
 from production_wheel.schemas import PalletFormula
 
+from .wheel_evidence import has_wheel_rule, wheel_derivations
+
 
 def _number(value: Any) -> float | None:
     """Return a finite numeric source value, or null if unavailable."""
@@ -376,6 +378,15 @@ def explain_assignment(
         group.get("coverage_days"),
         ["groups.active_coverage_basis", "groups.coverage_days"],
     )
+    if has_wheel_rule(group):
+        # Runs made with the wheel RoC rule: whole-day RoC for frequency and
+        # changeovers, pallets only in the inventory RoC (wheel_evidence).
+        wheel_group, wheel_members = wheel_derivations(
+            group, group_members, config, _derivation, _number
+        )
+        derivations.update(wheel_group)
+        for item in member_derivations:
+            item.update(wheel_members.get(str(item["material"]), {}))
     matrix = [
         row
         for row in _point_rows(repo, run_id, point_index, "matrix_pairs")

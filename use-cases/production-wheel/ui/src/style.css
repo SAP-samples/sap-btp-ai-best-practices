@@ -89,12 +89,77 @@ a {
   color: var(--teal);
   border-color: var(--teal);
 }
+/* Signed-in user name and "Sign out" link at the right end of the header. */
+.user-session {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.user-name {
+  color: var(--muted);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sign-out {
+  color: var(--teal);
+  font-weight: 600;
+}
+.user-name[hidden],
+.sign-out[hidden] {
+  display: none;
+}
+/* The session-expired banner is an action: sign in again. */
+#notice[data-kind="session"] {
+  font-weight: 600;
+  text-decoration: underline;
+}
 .app-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 330px;
 }
 .app-layout.chat-closed {
   grid-template-columns: minmax(0, 1fr);
+}
+/* Grid cell of the page content; holds the loading overlay above <main>. */
+.main-column {
+  min-width: 0;
+}
+/*
+ * Page loading overlay. The outer element is sticky under the header with zero height,
+ * so the card floats over the top of the page without pushing the content down and
+ * stays visible while the user scrolls.
+ */
+.page-loading {
+  position: sticky;
+  top: 84px;
+  z-index: 4;
+  height: 0;
+  display: flex;
+  justify-content: center;
+}
+.page-loading[hidden] {
+  display: none;
+}
+.page-loading-card {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px #16303d1f;
+  color: var(--ink);
+  font-weight: 500;
+}
+/* The page underneath is dimmed; inert (set in loading.js) blocks clicks and focus. */
+main.page-is-loading {
+  opacity: 0.45;
+  transition: opacity 0.15s ease-in;
 }
 main {
   padding: 34px;
@@ -340,6 +405,85 @@ ui5-button[design="Emphasized"] {
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
+/* Dataset count boxes open their view in the evidence table. */
+.metric-button {
+  border: 1px solid transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.metric-button:hover,
+.metric-button:focus-visible {
+  border-color: var(--line);
+}
+.metric-button[aria-pressed="true"] {
+  border-color: var(--teal);
+  box-shadow: inset 3px 0 0 var(--teal);
+}
+/* Plain-language extraction findings of the dataset review. */
+.findings {
+  margin: 18px 0;
+}
+.findings-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.findings-heading h3 {
+  margin: 0;
+}
+.finding {
+  margin-top: 10px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid #e9730c;
+  border-radius: 7px;
+}
+.finding-error {
+  border-left-color: #bb0000;
+}
+.finding p {
+  margin: 6px 0 0;
+}
+.finding-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.finding-severity {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #a65b0a;
+}
+.finding-error .finding-severity {
+  color: #bb0000;
+}
+/* Scope notes: products left out by the extraction settings, not data problems. */
+.finding-info {
+  border-left-color: var(--teal);
+}
+.finding-info .finding-severity {
+  color: var(--teal);
+}
+.finding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+.scope-notes {
+  margin-top: 14px;
+}
+.scope-notes summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.finding-items {
+  overflow-wrap: anywhere;
+}
 .evidence {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -491,7 +635,9 @@ progress {
   color: #775c20;
   font-size: 10px;
 }
-.chat-message strong {
+/* Only the role label / card heading (a direct child); bold text inside the
+   message body keeps the body's own font size. */
+.chat-message > strong {
   font-size: 10px;
   color: var(--teal);
 }
@@ -630,6 +776,9 @@ progress {
     gap: 14px;
     font-size: 12px;
   }
+  .user-name {
+    display: none;
+  }
   main {
     padding: 20px;
   }
@@ -695,7 +844,9 @@ progress {
 .configuration-help { max-width: min(680px, 90vw); max-height: 80vh; overflow: auto; border: 1px solid #b8cbd3; border-radius: 12px; padding: 1.5rem; color: #173344; line-height: 1.6; }
 .configuration-help::backdrop { background: #17334466; }
 .configuration-help h3 { margin-bottom: .3rem; }
+.configuration-help p { white-space: pre-line; }
 
+.form-grid .form-section { grid-column: 1 / -1; margin: 6px 0 0; font-weight: 600; }
 .setting-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 15px; }
 .ai-model-settings { margin-top: 1.5rem; }
 .ai-model-settings label { max-width: 35rem; }
@@ -721,3 +872,124 @@ progress {
 .rule-markdown { min-width: 0; overflow-wrap: anywhere; }
 .rule-markdown table { display: block; max-width: 100%; overflow-x: auto; }
 .rule-markdown pre { overflow-x: auto; }
+
+/* Decision scenarios: class colour bar per row, stored selection and show-all toggle. */
+.decision-row td:first-child {
+  font-weight: 700;
+  border-left: 4px solid var(--decision-color, transparent);
+}
+.decision-changeover_oriented {
+  --decision-color: #007d8a;
+}
+.decision-balanced {
+  --decision-color: #e9730c;
+}
+.decision-inventory_oriented {
+  --decision-color: #8b47d7;
+}
+.decision-row.selected {
+  background: #fff4e8;
+}
+label.toggle {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+/* SAP settings panel: tab status colours. */
+.sap-status-ready td:nth-child(2) {
+  color: #107e3e;
+  font-weight: 700;
+}
+.sap-status-partial td:nth-child(2) {
+  color: #b95100;
+  font-weight: 700;
+}
+.sap-status-blocked td:nth-child(2) {
+  color: #aa0808;
+  font-weight: 700;
+}
+/* Plant constraints approved through the assistant (Settings) and its approval cards (chat). */
+.plant-constraints .section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.constraint-list {
+  display: grid;
+  gap: 0.75rem;
+}
+.constraint-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sapList_BorderColor, #d9d9d9);
+  border-radius: 0.5rem;
+}
+.constraint-item p {
+  margin: 0.25rem 0;
+}
+.proposal-card {
+  border: 1px solid var(--sapList_BorderColor, #d9d9d9);
+  border-left: 4px solid var(--sapButton_Emphasized_Background, #0a6ed1);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+.proposal-card.approved {
+  border-left-color: var(--sapPositiveColor, #107e3e);
+}
+.proposal-card.rejected {
+  border-left-color: var(--sapNeutralColor, #6a6d70);
+}
+/* Optimizer workspace: draft created with an older plant profile revision. */
+.profile-freshness {
+  border: 1px solid var(--sapWarningBorderColor, #e9730c);
+  border-left-width: 4px;
+  border-radius: 0.5rem;
+  background: var(--sapWarningBackground, #fef7f1);
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+}
+.profile-freshness p {
+  margin: 0 0 0.5rem;
+}
+.proposal-card .actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Datasets page: production frequencies read from the chosen workbook. */
+.inventory-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.25rem 0 0.75rem;
+  font-size: 0.875rem;
+}
+.inventory-table th,
+.inventory-table td {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--sapList_BorderColor, #d9d9d9);
+}
+.inventory-table td:nth-child(3) {
+  text-align: right;
+}
+#applied-settings {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+/* SAP settings section of the plant profile form (sap_settings_form.js). */
+.sap-settings-form { margin-top: 1.5rem; }
+.sap-class-table select { min-width: 13rem; }
+.sap-class-table input { width: 7rem; }
+.sap-class-table th[scope="row"] { white-space: nowrap; text-align: left; }
+
+/* After-run SAP settings offer (sap_offer.js) and the SAP card's missing-inputs block. */
+.sap-offer { margin: 0 0 1rem; }
+.sap-offer-title, .sap-inputs-title { font-weight: 600; margin: 0 0 0.5rem; }
+.sap-offer ul, .sap-inputs ul { margin: 0 0 0.75rem; padding-left: 1.25rem; }
+.sap-inputs { margin: 0.5rem 0 1rem; }

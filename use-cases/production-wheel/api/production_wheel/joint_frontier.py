@@ -7,17 +7,22 @@ from production_wheel.optimization import solve_candidate_pools
 from production_wheel.schemas import CoverageMode
 
 
-def build_joint_frontier(pools, members, config, *, point_count=17,
-                         total_seconds=None, stage_seconds=None, exponent=2.0, progress=None):
+def build_joint_frontier(pools, members, config, *, point_count=30,
+                         total_seconds=None, stage_seconds=None, exponent=2.0, progress=None,
+                         minimum_point_count=30):
     """Solve coupled rules without assuming independent block optima or singletons.
 
     Inputs are generated libraries and canonical members. Outputs retain each
     selected block partition for the normal result bundle. Proof applies to the
     complete/restricted joint library, never to a fabricated block decomposition.
+    Like the greenfield master, top-up solves split the widest schedule-space gap
+    until ``min(minimum_point_count, point_count)`` points are retained, no open
+    gap remains, the deadline passes, or ``2 * target`` extra solves were spent.
     """
     from production_wheel.pareto import (GreenfieldFrontierResult, ParetoPoint,
         GreenfieldBlockFailure, GreenfieldGlobalSolveAudit, _block_option,
-        _portfolio_hash, _selected_axes, _nondominated_points, _low_epsilon_budgets)
+        _portfolio_hash, _selected_axes, _nondominated_points, _low_epsilon_budgets,
+        _next_top_up_budget)
 
     started = time.monotonic()
     deadline = started + (total_seconds or config.solver_limits.suite_time_limit_seconds)
@@ -71,16 +76,37 @@ def build_joint_frontier(pools, members, config, *, point_count=17,
         preferred_minimum = sum(s.candidate.group_demand_litres for s in coverage.selected
             if s.candidate.selected_line == config.preferred_line)
     operations = retain(solve(CoverageMode.GREENFIELD_OPERATIONS), "joint_operations_anchor")
+    def audit(index, position, epsilon, point, kind="schedule"):
+        """Record one epsilon request and the portfolio it returned."""
+        audits.append(GreenfieldGlobalSolveAudit(index, position, exponent,
+            epsilon, point.j_ch, point.demand_weighted_mean_coverage_days,
+            point.portfolio_hash, point.status, point.termination_condition,
+            point.solve_result.primary_relative_gap, point.relative_gap, point.proof_scope,
+            request_kind=kind))
+
+    target = min(minimum_point_count, point_count)
     if coverage and operations and coverage.j_ch > operations.j_ch + 1e-7:
         for index, epsilon in enumerate(_low_epsilon_budgets(operations.j_ch, coverage.j_ch, point_count, exponent)[1:-1], 1):
             if time.monotonic() >= deadline:
                 break
             point = retain(solve(CoverageMode.PARETO, epsilon), f"joint_epsilon_{index}", epsilon)
             if point:
-                audits.append(GreenfieldGlobalSolveAudit(index, index / (point_count - 1), exponent,
-                    epsilon, point.j_ch, point.demand_weighted_mean_coverage_days,
-                    point.portfolio_hash, point.status, point.termination_condition,
-                    point.solve_result.primary_relative_gap, point.relative_gap, point.proof_scope))
+                audit(index, index / (point_count - 1), epsilon, point)
+        retained, cleared, extra = _nondominated_points(points), [], 0
+        while len(retained) < target and extra < 2 * target and time.monotonic() < deadline:
+            step = _next_top_up_budget([float(p.j_ch) for p in retained], operations.j_ch,
+                coverage.j_ch, exponent, cleared)
+            if step is None:
+                break
+            position, epsilon = step
+            extra += 1
+            point = retain(solve(CoverageMode.PARETO, epsilon), f"joint_top_up_{extra}", epsilon)
+            if point:
+                audit(point_count - 1 + extra, position, epsilon, point, "top_up")
+            refreshed = _nondominated_points(points)
+            if len(refreshed) <= len(retained):
+                cleared.append(position)
+            retained = refreshed
     retained = _nondominated_points(points)
     hashes = {p.portfolio_hash for p in retained}
     audits = tuple(replace(a, retained_nondominated=a.portfolio_hash in hashes) for a in audits)
@@ -92,4 +118,5 @@ def build_joint_frontier(pools, members, config, *, point_count=17,
         time.monotonic() - started, per_block_stage_seconds=stage_seconds,
         per_block_total_seconds=total_seconds, block_failures=failures,
         block_execution_mode="joint_candidate_master", global_epsilon_exponent=exponent,
-        global_solve_audits=audits)
+        global_solve_audits=audits, minimum_point_count=target,
+        frontier_shortfall=len(retained) < target)

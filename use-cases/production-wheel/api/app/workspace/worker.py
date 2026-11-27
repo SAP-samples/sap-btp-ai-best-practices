@@ -22,6 +22,7 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from .datasets_service import now
+from .run_failures import LogTail, public_failure_message, read_failure_report, save_log_tail
 
 logger = logging.getLogger(__name__)
 ACTIVE = ("running", "persisting")
@@ -148,6 +149,8 @@ def execute_run(service, run_id):
             per_block_total_seconds=budget["per_block_total_seconds"],
             block_worker_count=budget["block_workers"],
             global_epsilon_exponent=budget["global_epsilon_exponent"],
+            # Budgets frozen before this field existed keep the default in force then (15).
+            minimum_point_count=budget.get("min_frontier_points", 15),
             pool_transform=compiled.filter_pools,
             progress=progress,
         )
@@ -219,7 +222,11 @@ def supervise_once(service, worker_id, run_id=None, stop=None):
         [sys.executable, "-m", "app.workspace", "execute", run_id],
         start_new_session=True,
         cwd=Path(__file__).resolve().parents[2],
+        # stderr carries progress bars and tracebacks: forward it live to this
+        # terminal and keep its tail so a failure can be explained later.
+        stderr=subprocess.PIPE,
     )
+    tail = LogTail(getattr(process, "stderr", None))
     try:
         while process.poll() is None:
             if stop is not None and stop.is_set():
@@ -231,6 +238,7 @@ def supervise_once(service, worker_id, run_id=None, stop=None):
             # Enforce local resource limits even while HANA cannot be reached.
             if time.monotonic() - started > run["budget"]["wall_time_seconds"]:
                 _stop_child(process)
+                save_log_tail(service, run_id, tail, process.returncode)
                 service.finish_run(
                     run_id,
                     "failed",
@@ -268,13 +276,17 @@ def supervise_once(service, worker_id, run_id=None, stop=None):
             "cancelled",
             "failed",
         ):
+            # The solve process saved its own report if Python could still run;
+            # the output tail also covers deaths by signal (e.g. out of memory).
+            report = read_failure_report(service, run_id)
+            save_log_tail(service, run_id, tail, process.returncode)
             service.finish_run(
                 run_id,
                 "failed",
                 "publication_failed"
                 if current["stage"] == "persisting"
                 else "solver_failed",
-                f"Solve process exited with code {process.returncode}; inspect worker log.",
+                public_failure_message(report, process.returncode),
             )
         return True
     finally:

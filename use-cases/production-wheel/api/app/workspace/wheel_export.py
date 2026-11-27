@@ -46,11 +46,17 @@ PROPOSAL_FIELDS = {
     "Subgroup": "proposed_subgroup_code",
     "New recipe subgroup": "proposed_subgroup_code",
     "Selected PV": "selected_pv",
-    "RoC selected PV": "fini_adjusted_coverage_days",
+    "RoC selected PV": "wheel_roc_days",
     "SEFI litres lot size of selected PV": "nominal_lot_litres",
     "Sefi qty as per recipe subgroup": "selected_pallet_allocation_litres",
-    "Pallets as per subgroup": "selected_pallet_count",
+    "Pallets as per subgroup": "pallets_per_batch",
     "Batches per week": "frequency_per_week",
+}
+# Runs made before the wheel RoC rule (production_wheel.wheel_roc) have no
+# wheel_roc_days / pallets_per_batch: their exports keep the values they had.
+LEGACY_PROPOSAL_FIELDS = {
+    "wheel_roc_days": "fini_adjusted_coverage_days",
+    "pallets_per_batch": "selected_pallet_count",
 }
 EXTRA_FIELDS = {
     "Plant": "plant",
@@ -64,7 +70,17 @@ EXTRA_FIELDS = {
     "Nominal FINI allocation litres": "nominal_allocation_litres",
     "Changeover contribution": "j_ch_contribution",
     "Selected filling line": "selected_line",
+    "Cycle stock strategy": "cycle_stock_strategy",
+    "Runner multiple": "runner_multiple",
+    "Inventory RoC with pallets (days)": "fini_inventory_roc_days",
+    # Matrix class of the product's volume in nearest-reference profiles
+    # (production_wheel.volume_classes); blank for exact matrices and older runs.
+    "Volume class": "matrix_volume_class",
 }
+# The customer's SAP settings template reads this column and uses it instead of
+# "RoC selected PV" when it is filled. It carries the FINI's coverage under
+# runner multiples (production_wheel.cycle_stock), so the template needs no change.
+MANUAL_ROC = "Manual adjusted RoC"
 
 
 def source_layout(service, dataset_id: str) -> tuple[list[str], dict]:
@@ -133,6 +149,8 @@ def wheel_rows(
         selected = bool(member.get("proposed_subgroup"))
         for header, field in PROPOSAL_FIELDS.items():
             if header in headers:
+                if member.get(field) in (None, "") and field in LEGACY_PROPOSAL_FIELDS:
+                    field = LEGACY_PROPOSAL_FIELDS[field]
                 row[header] = member.get(field) if selected else None
         group_demand = member.get("group_demand_litres")
         if "% forecast within subgroup" in headers:
@@ -163,6 +181,12 @@ def wheel_rows(
                 else None
             )
         row.update({label: member.get(field) for label, field in EXTRA_FIELDS.items()})
+        # Proposal-dependent: a source override belongs to the old wheel's subgroups.
+        row[MANUAL_ROC] = (
+            member.get("strategy_coverage_days")
+            if selected and member.get("cycle_stock_strategy") == "runner_multiple"
+            else None
+        )
         if not selected:
             row["Proposal status"] = "No proposed assignment"
         raw = row.get("Filling line") or member.get("filling_line_raw")
@@ -182,7 +206,7 @@ def wheel_rows(
     return output
 
 
-def _sheet(book, name: str, headers: list[str], rows: list[dict]) -> None:
+def write_sheet(book, name: str, headers: list[str], rows: list[dict]) -> None:
     """Write typed values with readable headers, filters and frozen identity columns."""
     sheet = book.create_sheet(name)
     sheet.append(headers)
@@ -222,6 +246,7 @@ def export_wheel(service, run_id: str, point_index: int) -> bytes:
         dict.fromkeys(
             [
                 *headers,
+                MANUAL_ROC,
                 *EXTRA_FIELDS,
                 "Effective eligible lines",
                 "Common eligible lines",
@@ -233,7 +258,7 @@ def export_wheel(service, run_id: str, point_index: int) -> bytes:
     )
     book = Workbook()
     book.remove(book.active)
-    _sheet(book, "Production wheel", columns, rows)
+    write_sheet(book, "Production wheel", columns, rows)
     notes = [
         {"Field": "Run / point", "Meaning": f"{run_id} / {point_index}"},
         {
@@ -246,7 +271,23 @@ def export_wheel(service, run_id: str, point_index: int) -> bytes:
         },
         {
             "Field": "RoC selected PV",
-            "Meaning": "Pallet-adjusted FINI coverage in days. Group coverage days separately uses the selected coverage basis.",
+            "Meaning": "Wheel RoC of the subgroup in whole days: the batch coverage rounded like the workbook (Excel ROUND, at least 1 day). Batches per week = days per week / this RoC. Pallets do not change it. Group coverage days separately uses the selected coverage basis.",
+        },
+        {
+            "Field": MANUAL_ROC,
+            "Meaning": "Filled only for subgroups using runner multiples: the FINI's wheel RoC in days = RoC selected PV x its runner multiple (1 = filled every batch, 2 = every 2nd batch). The SAP settings template uses it instead of RoC selected PV. Blank for Single RoC subgroups.",
+        },
+        {
+            "Field": "Pallets as per subgroup",
+            "Meaning": "Pallets one batch fills for the FINI: nominal lot x FINI share of subgroup demand / litres per pallet, rounded to 1 decimal, as in the workbook.",
+        },
+        {
+            "Field": "Inventory RoC with pallets (days)",
+            "Meaning": "The FINI's wheel RoC raised to cover at least one full pallet (workbook fxAdjustedRoC: below 0.9 pallets per batch the RoC becomes floor(RoC / pallets)). Used only for inventory and DC lot sizes, never for batches per week or changeovers.",
+        },
+        {
+            "Field": "Volume class",
+            "Meaning": "Profiles with nearest reference volume matching: the row of the volume compatibility matrix this product uses. Below the smallest reference volume the <n class, above the largest the >n class, otherwise the nearest reference volume (on a tie the smaller one). Blank when the profile lists every volume exactly.",
         },
         {
             "Field": "Filling line",
@@ -261,7 +302,7 @@ def export_wheel(service, run_id: str, point_index: int) -> bytes:
             "Meaning": "Structural validity does not establish business acceptance or a complete globally optimal frontier. Review the run metadata and audit views.",
         },
     ]
-    _sheet(book, "Export notes", ["Field", "Meaning"], notes)
+    write_sheet(book, "Export notes", ["Field", "Meaning"], notes)
     book["Export notes"].column_dimensions["B"].width = 110
     for cells in book["Export notes"].iter_rows(min_row=2):
         cells[1].alignment = Alignment(wrap_text=True, vertical="top")

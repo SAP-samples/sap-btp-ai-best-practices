@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from app.security import get_api_key
+from app.security import require_user
 from app.workspace.dependencies import get_service
 from production_wheel.constraints.code_experiment import MAX_INPUT_BYTES
 from production_wheel.constraints.code_experiment_cf import ConstraintCodeBroker, decode
@@ -29,14 +29,14 @@ async def body(request):
 
 
 def capability(request):
-    """Extract only a job-scoped bearer capability; never accept the application API key."""
+    """Extract only a job-scoped bearer capability; never accept a user session token."""
     prefix, separator, token = request.headers.get("Authorization", "").partition(" ")
     if prefix != "Bearer" or not separator or not 20 <= len(token) <= 128:
         raise HTTPException(403, "job capability required")
     return token
 
 
-@router.post("", dependencies=[Depends(get_api_key)])
+@router.post("", dependencies=[Depends(require_user)])
 async def create_job(request: Request, broker=Depends(get_broker)):
     """Queue an explicit authenticated developer experiment; no automatic task launch."""
     packet = await body(request)
@@ -48,7 +48,7 @@ async def create_job(request: Request, broker=Depends(get_broker)):
         raise HTTPException(422, str(error)) from error
 
 
-@router.get("/{identifier}", dependencies=[Depends(get_api_key)])
+@router.get("/{identifier}", dependencies=[Depends(require_user)])
 def inspect_job(identifier: str, broker=Depends(get_broker)):
     """Return lifecycle and disposed-task output to authenticated developer callers."""
     try:

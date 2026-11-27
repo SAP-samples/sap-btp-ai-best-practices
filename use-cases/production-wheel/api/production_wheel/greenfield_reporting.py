@@ -349,7 +349,14 @@ def write_greenfield_frontier_artifacts(
             "global_epsilon_schedule": {
                 "kind": "power_law_low_epsilon_dense",
                 "exponent": result.global_epsilon_exponent,
-                "requested_points": len(result.global_solve_audits),
+                "requested_points": sum(
+                    audit.request_kind == "schedule"
+                    for audit in result.global_solve_audits
+                ),
+                "top_up_requests": sum(
+                    audit.request_kind == "top_up"
+                    for audit in result.global_solve_audits
+                ),
                 "retained_points": len(result.points),
             },
             "time_limit_scope": (
@@ -446,8 +453,12 @@ def validate_greenfield_frontier_artifacts(
         "global_solve_requests", 0
     ):
         errors.append("global solve audit count does not match the manifest")
+    # Top-up requests fill gaps out of order by design; the ordering and density
+    # checks apply to the requested schedule only (older artifacts lack the kind).
     requested_epsilons = [
-        float(row["requested_epsilon_j_ch"]) for row in global_rows
+        float(row["requested_epsilon_j_ch"])
+        for row in global_rows
+        if row.get("request_kind", "schedule") == "schedule"
     ]
     if requested_epsilons != sorted(requested_epsilons):
         errors.append("global epsilon requests are not ordered")

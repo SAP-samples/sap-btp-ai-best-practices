@@ -253,6 +253,8 @@ def _hana_connection() -> Any:
         sslValidateCertificate=_as_bool(
             os.getenv("HANA_SSL_VALIDATE_CERTIFICATE", "true")
         ),
+        # Same schema as the workspace tables; empty keeps the user's default.
+        currentSchema=os.getenv("HANA_SCHEMA", ""),
     )
 
 

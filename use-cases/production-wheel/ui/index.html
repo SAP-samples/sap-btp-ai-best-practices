@@ -22,10 +22,23 @@
         <ui5-button id="toggle-chat" design="Transparent" aria-expanded="true"
           >Assistant</ui5-button
         >
+        <!-- Signed-in user and sign-out link; filled by workspace/user_session.js. -->
+        <div class="user-session">
+          <span id="user-name" class="user-name" hidden></span
+          ><a id="sign-out" class="sign-out" href="/do/logout" hidden>Sign out</a>
+        </div>
       </header>
       <div id="notice" role="alert" hidden></div>
       <div class="app-layout">
-        <main id="main"></main>
+        <div class="main-column">
+          <div id="page-loading" class="page-loading" role="status" aria-live="polite" hidden>
+            <div class="page-loading-card">
+              <ui5-busy-indicator active size="M"></ui5-busy-indicator>
+              <span id="page-loading-text"></span>
+            </div>
+          </div>
+          <main id="main"></main>
+        </div>
         <aside id="chat-panel" aria-label="Optimizer assistant">
           <div class="chat-header">
             <div>

@@ -32,13 +32,12 @@ from production_wheel.matrix import (
     normalize_volume,
 )
 from production_wheel.metrics import (
-    changeover_contribution,
     effective_batch,
-    group_coverage,
-    group_frequency,
     pallet_allocations,
     proportional_allocations,
 )
+from production_wheel.business_rules import runner_ratios
+from production_wheel.cycle_stock import SINGLE, strategy_figures, variant_hash
 from production_wheel.optimization import SolveResult
 from production_wheel.schemas import CoverageBasis, MatrixMode, PVMode, RunConfig
 
@@ -88,6 +87,27 @@ class GroupEvidence:
 
     All KPI fields come from canonical member demand, pallet, line, package,
     and PV primitives. Allocation tuples are sorted by FINI identifier.
+
+    Coverage, frequency and changeovers follow the wheel RoC rule
+    (``production_wheel.wheel_roc``):
+
+    - ``base_group_coverage_days``: continuous base RoC (``demand_days x
+      effective batch / demand``) that SAP settings round to ``R``;
+    - ``wheel_roc_days``: ``R``, the base RoC in whole days;
+    - ``frequency_per_week``: ``days per week / R``;
+    - ``coverage_days`` and ``j_ch_contribution``: the run's coverage basis and
+      ``J_CH`` under the group's cycle stock strategy (``strategy_coverage_days``
+      repeats the coverage under a name exports use);
+    - ``wheel_coverage_days``: demand-weighted ``R x k`` (``BASE_GROUP`` view);
+    - ``adjusted_group_coverage_days`` / ``worst_fini_coverage_days``: mean and
+      largest FINI inventory RoC (pallet-adjusted).
+
+    Per-FINI tuples give the runner class, the runner multiple (1 = filled every
+    batch), the wheel RoC ``R x k`` (``fini_strategy_coverage_days``), the
+    pallets one batch fills (``fini_pallets_per_batch``) and the inventory RoC
+    (``fini_adjusted_coverage_days``). ``nominal_allocations`` and
+    ``selected_allocations`` are the physical split of one batch and its
+    ``pallet_formula`` allocation (diagnostics; they do not drive coverage).
     """
 
     group_id: str
@@ -120,6 +140,14 @@ class GroupEvidence:
     baseline_changed: bool
     pv_changed: bool
     selected_line: str | None = None
+    cycle_stock_strategy: str = "single"
+    strategy_coverage_days: float | None = None
+    fini_runner_classes: tuple[tuple[str, str | None], ...] = ()
+    fini_runner_multiples: tuple[tuple[str, int], ...] = ()
+    fini_strategy_coverage_days: tuple[tuple[str, float], ...] = ()
+    wheel_roc_days: int | None = None
+    wheel_coverage_days: float | None = None
+    fini_pallets_per_batch: tuple[tuple[str, float | None], ...] = ()
 
     @property
     def group_size(self) -> int:
@@ -335,6 +363,14 @@ def validate_solution(
         for pool in pool_rows
         for candidate in pool.candidates
     }
+    if config.cycle_stock_policy.mode != SINGLE:
+        # Runner-multiple versions are derived from pool candidates (cycle_stock).
+        pool_candidates |= {
+            variant_hash(candidate)
+            for pool in pool_rows
+            for candidate in pool.candidates
+        }
+    ratios = runner_ratios(ordered_members, config)
     valid_versions = _valid_optimized_versions(production_versions)
     baseline_by_fini = _baseline_members(ordered_members)
     covered: list[tuple[str, str, str]] = []
@@ -582,33 +618,27 @@ def validate_solution(
             member.fini_id: Decimal(str(member.pallet_litres))
             for member in selected_members
         }
+        # Physical split of one batch and its pallet allocation (diagnostic
+        # columns only; the inventory days follow the wheel RoC rule below).
         nominal = proportional_allocations(demands, effective)
         adjusted = pallet_allocations(nominal, pallets, config.pallet_formula)
         demand = float(sum(demands.values(), Decimal(0)))
-        coverage_views = {
-            basis: float(
-                group_coverage(
-                    basis,
-                    demands,
-                    effective,
-                    adjusted,
-                    config.demand_days,
-                )
-            )
-            for basis in CoverageBasis
-        }
-        coverage = coverage_views[config.coverage_basis]
-        fini_adjusted_coverage = tuple(
-            (
-                fini_id,
-                float(Decimal(config.demand_days) * adjusted[fini_id] / demands[fini_id]),
-            )
-            for fini_id in sorted(adjusted)
+        # Wheel RoC rule (production_wheel.wheel_roc): R in whole days drives
+        # batches per week, changeovers and runner multiples; pallets only raise
+        # the inventory RoC of each FINI.
+        figures = strategy_figures(
+            candidate.cycle_stock_strategy,
+            selected_members,
+            candidate.nominal_lot_litres,
+            effective,
+            config,
+            ratios,
         )
-        frequency = float(
-            group_frequency(demand, effective, config.productive_weeks)
-        )
-        j_ch = float(changeover_contribution(frequency, len(member_ids)))
+        wheel = figures.wheel
+        coverage_views = dict(wheel.coverage_by_basis)
+        coverage = figures.coverage_days
+        frequency = wheel.frequency_per_week
+        j_ch = figures.j_ch
         checks = (
             ("GROUP_DEMAND_COEFFICIENT", candidate.group_demand_litres, demand),
             ("COVERAGE_COEFFICIENT", selected.coefficients.coverage_days, coverage),
@@ -690,12 +720,14 @@ def validate_solution(
                 common_lines=stable_lines,
                 selected_line=candidate.selected_line,
                 coverage_days=coverage,
-                base_group_coverage_days=coverage_views[CoverageBasis.BASE_GROUP],
+                base_group_coverage_days=wheel.base_coverage_days,
                 adjusted_group_coverage_days=coverage_views[
                     CoverageBasis.ADJUSTED_GROUP
                 ],
                 worst_fini_coverage_days=coverage_views[CoverageBasis.WORST_FINI],
-                fini_adjusted_coverage_days=fini_adjusted_coverage,
+                fini_adjusted_coverage_days=tuple(
+                    sorted(wheel.by_fini(wheel.fini_inventory_roc_days).items())
+                ),
                 frequency_per_week=frequency,
                 j_ch_contribution=j_ch,
                 nominal_allocations=tuple(
@@ -723,6 +755,22 @@ def validate_solution(
                 pv_changed=any(
                     member.fixed_pv != candidate.pv_id
                     for member in selected_members
+                ),
+                cycle_stock_strategy=candidate.cycle_stock_strategy,
+                strategy_coverage_days=coverage,
+                fini_runner_classes=tuple(
+                    (item.fini_id, item.runner_class) for item in figures.members
+                ),
+                fini_runner_multiples=tuple(
+                    (item.fini_id, item.multiple) for item in figures.members
+                ),
+                fini_strategy_coverage_days=tuple(
+                    sorted(figures.member_coverage().items())
+                ),
+                wheel_roc_days=wheel.roc_days,
+                wheel_coverage_days=coverage_views[CoverageBasis.BASE_GROUP],
+                fini_pallets_per_batch=tuple(
+                    sorted(wheel.by_fini(wheel.fini_pallets_per_batch).items())
                 ),
             )
         )

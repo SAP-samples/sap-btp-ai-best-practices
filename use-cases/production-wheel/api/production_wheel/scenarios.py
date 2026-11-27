@@ -512,7 +512,7 @@ def run_greenfield_frontier(
     inputs: CanonicalInputs,
     config: RunConfig | None = None,
     *,
-    point_count: int = 17,
+    point_count: int = 30,
     block_option_count: int = 5,
     per_block_stage_seconds: float | None = None,
     per_block_total_seconds: float | None = None,
@@ -521,6 +521,7 @@ def run_greenfield_frontier(
     global_epsilon_exponent: float = 2.0,
     pool_transform: PoolTransform | None = None,
     progress: ProgressCallback | None = None,
+    minimum_point_count: int = 30,
 ) -> GreenfieldFrontierResult:
     """Generate baseline-independent pools and coordinate a Pareto frontier.
 
@@ -535,6 +536,8 @@ def run_greenfield_frontier(
         large_block_candidate_threshold: Pools at or above this count run alone.
         global_epsilon_exponent: Power-law density bias toward low ``J_CH``.
         progress: Optional phase callback.
+        minimum_point_count: Retained-point target reached with top-up solves
+            (clamped to ``point_count``).
 
     Returns:
         Validation-ready anchors, block partitions, and frontier points.
@@ -565,6 +568,7 @@ def run_greenfield_frontier(
         large_block_candidate_threshold=large_block_candidate_threshold,
         global_epsilon_exponent=global_epsilon_exponent,
         progress=progress,
+        minimum_point_count=minimum_point_count,
     )
 
 

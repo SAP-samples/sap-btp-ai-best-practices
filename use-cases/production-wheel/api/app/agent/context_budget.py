@@ -300,7 +300,15 @@ def _tool_omission_summary(content: Any, original_bytes: int, name: str) -> dict
         "tool_name": name,
         "original_estimated_bytes": original_bytes,
         **shape,
-        "guidance": "Use a run-scoped status, diagnostics, result, query, or matrix-page tool to retrieve only the needed evidence.",
+        "guidance": (
+            f"The {name} result was larger than the per-tool context limit and was "
+            "replaced by this shape summary. Calling the same tool again returns the "
+            "same oversized result. Read only the evidence you need with a narrower "
+            "tool: for runs, the status, diagnostics, result, query or matrix-page "
+            "tools; for datasets, query_optimizer_data or explain_dataset_finding. "
+            "If no narrower tool covers it, tell the user which result could not be "
+            "read instead of guessing its content."
+        ),
     }
 
 
