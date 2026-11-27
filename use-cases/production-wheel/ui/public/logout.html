@@ -1,0 +1,57 @@
+<!doctype html>
+<!--
+  Page shown after "Sign out". The approuter ends the session at /do/logout and
+  then redirects here (approuter/xs-app.json "logout.logoutPage"). This route is
+  public (authenticationType "none"), so the page must not load app code or data.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signed out · Production Wheel</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f5f8f9;
+        color: #173342;
+        font-family: "DM Sans", Arial, sans-serif;
+      }
+      main {
+        background: white;
+        border: 1px solid #dce6e9;
+        border-radius: 8px;
+        padding: 36px 40px;
+        max-width: 420px;
+        margin: 16px;
+        text-align: center;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 12px;
+      }
+      p {
+        color: #647a86;
+        margin: 0 0 24px;
+      }
+      a {
+        display: inline-block;
+        background: #007d8a;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>You have signed out</h1>
+      <p>Your Production Wheel session has ended. Close this tab, or sign in again to continue.</p>
+      <a href="/">Sign in again</a>
+    </main>
+  </body>
+</html>

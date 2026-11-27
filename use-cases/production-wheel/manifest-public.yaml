@@ -1,0 +1,72 @@
+---
+# Cloud Foundry deployment of the PUBLIC showcase of the Production Wheel Optimizer.
+#
+# Same code as manifest.yaml, without sign-in: anyone with the URL can use the app,
+# read and change its data and use the AI assistant. It exists only to show the
+# application externally. Customers and productive use deploy manifest.yaml
+# (./deploy.sh private).
+#
+# Deploy with: ./deploy.sh public
+#
+# Differences from manifest.yaml (the private deployment):
+#   - App names and routes carry "-public", so both deployments can run side by
+#     side in the same space.
+#   - No XSUAA binding. The API runs with AUTH_MODE=public and the approuter loads
+#     approuter/xs-app.public.json (XS_APP_CONFIG), which has no sign-in.
+#   - No worker app. The public API uses the SAME HANA schema as the private
+#     deployment (shared data), and the private worker (production-wheel-worker)
+#     runs the queued optimizer runs of both. Runs launched from the public app
+#     stay "queued" while the private worker is stopped.
+#
+# TODO before the first deploy in a new landscape: replace the apps domain
+# cfapps.eu10-005.hana.ondemand.com below (routes and the API destination URL).
+applications:
+  - name: production-wheel-public-api
+    path: api
+    buildpack: python_buildpack
+    stack: cflinuxfs5
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    memory: 2G
+    disk_quota: 2G
+    routes:
+      - route: production-wheel-public-api.cfapps.eu10-005.hana.ondemand.com
+    env:
+      API_BASE_URL: https://production-wheel-public-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      # Open showcase: every request is the fixed user "public" (api/app/security.py).
+      AUTH_MODE: public
+      # Runs are executed by the private deployment's worker (shared HANA schema).
+      WORKSPACE_EMBEDDED_WORKER: "false"
+      PRODUCTION_WHEEL_WORKSPACE: /home/vcap/app/job_runs
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
+  - name: production-wheel-public-ui
+    # SAP application router without sign-in. Serves the UI built by deploy.sh into
+    # approuter/resources and forwards /api/* to the public API.
+    path: approuter
+    buildpack: nodejs_buildpack
+    stack: cflinuxfs5
+    command: npm start
+    memory: 256M
+    routes:
+      - route: production-wheel-public-ui.cfapps.eu10-005.hana.ondemand.com
+    env:
+      # Routes without sign-in (approuter/start.js reads this).
+      XS_APP_CONFIG: xs-app.public.json
+      # timeout (ms): long enough for chat streams and large uploads (15 min,
+      # the Cloud Foundry router limit). No token to forward.
+      destinations: >
+        [{"name": "production-wheel-api",
+          "url": "https://production-wheel-public-api.cfapps.eu10-005.hana.ondemand.com",
+          "timeout": 900000}]
+      # Maximum duration (ms) of one browser connection to the approuter.
+      INCOMING_CONNECTION_TIMEOUT: 900000

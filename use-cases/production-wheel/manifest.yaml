@@ -1,0 +1,104 @@
+---
+# Cloud Foundry deployment for the Production Wheel Optimizer.
+# Three isolated apps:
+#   - production-wheel-api: FastAPI + agent backend (path: api). Accepts only
+#     signed-in users (XSUAA JWT, see api/app/security.py).
+#   - production-wheel-worker: optimizer worker (path: api), no route.
+#   - production-wheel-ui: SAP application router (path: approuter). Signs users
+#     in through SAP BTP, serves the built UI and forwards /api calls with the
+#     user's token. Users open this URL.
+# All user-facing apps are bound to the XSUAA instance production-wheel-xsuaa
+# (created by deploy.sh from xs-security.json). Access is granted by assigning the
+# role collection ProductionWheel_User in the BTP cockpit.
+# Deploy with ./deploy.sh private, which builds the UI, creates/updates the XSUAA
+# service, reads credentials from api/.env and runs cf push. See
+# docs/user-authentication.md.
+#
+# This is the PRIVATE deployment, the one for customers and productive use.
+# manifest-public.yaml (./deploy.sh public) deploys an open showcase copy of the
+# same code without sign-in, under other app names and URLs.
+#
+# TODO before the first deploy in a new landscape: replace the apps domain
+# cfapps.eu10-005.hana.ondemand.com below (routes and the API destination URL) AND
+# in xs-security.json (oauth2-configuration.redirect-uris) with your Cloud Foundry
+# apps domain. deploy.sh stops if the two do not match.
+applications:
+  - name: production-wheel-api
+    path: api
+    buildpack: python_buildpack
+    stack: cflinuxfs5
+    command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # The optimizer solves a Pyomo/HiGHS MILP in a forked subprocess; a full plant
+    # frontier needs well above the previous 512M. Raise this for larger blocks.
+    memory: 2G
+    disk_quota: 2G
+    routes:
+      - route: production-wheel-api.cfapps.eu10-005.hana.ondemand.com
+    # Validates the user JWT forwarded by the approuter.
+    services:
+      - production-wheel-xsuaa
+    env:
+      API_BASE_URL: https://production-wheel-api.cfapps.eu10-005.hana.ondemand.com
+      APP_ENV: production
+      WORKSPACE_EMBEDDED_WORKER: "false"
+      # Directory for async solve artifacts (extraction runs + frontier bundles);
+      # ephemeral per instance and counted against disk_quota.
+      PRODUCTION_WHEEL_WORKSPACE: /home/vcap/app/job_runs
+      AICORE_AUTH_URL: ((aicore_auth_url))
+      AICORE_CLIENT_ID: ((aicore_client_id))
+      AICORE_CLIENT_SECRET: ((aicore_client_secret))
+      AICORE_BASE_URL: ((aicore_base_url))
+      AICORE_RESOURCE_GROUP: ((aicore_resource_group))
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
+  - name: production-wheel-worker
+    path: api
+    buildpack: python_buildpack
+    stack: cflinuxfs5
+    command: python -m app.workspace worker
+    no-route: true
+    health-check-type: process
+    # Full-population candidate generation and four solver processes need a
+    # separate memory allocation; adjust to the target landscape after sizing.
+    memory: 8G
+    disk_quota: 2G
+    instances: 1
+    env:
+      APP_ENV: production
+      HANA_ADDRESS: ((hana_address))
+      HANA_PORT: ((hana_port))
+      HANA_USER: ((hana_user))
+      HANA_PASSWORD: ((hana_password))
+      HANA_ENCRYPT: ((hana_encrypt))
+      HANA_SCHEMA: ((hana_schema))
+  - name: production-wheel-ui
+    # SAP application router. Serves the UI built by deploy.sh into
+    # approuter/resources and forwards /api/* to the API destination below.
+    path: approuter
+    buildpack: nodejs_buildpack
+    stack: cflinuxfs5
+    command: npm start
+    memory: 256M
+    routes:
+      - route: production-wheel-ui.cfapps.eu10-005.hana.ondemand.com
+    services:
+      - production-wheel-xsuaa
+    env:
+      # Routes with sign-in (approuter/start.js reads this; also its default).
+      XS_APP_CONFIG: xs-app.json
+      # forwardAuthToken: send the signed-in user's JWT to the API.
+      # timeout (ms): long enough for chat streams and large uploads (15 min,
+      # the Cloud Foundry router limit).
+      destinations: >
+        [{"name": "production-wheel-api",
+          "url": "https://production-wheel-api.cfapps.eu10-005.hana.ondemand.com",
+          "forwardAuthToken": true,
+          "timeout": 900000}]
+      # Minutes of inactivity before the user must sign in again.
+      SESSION_TIMEOUT: 30
+      # Maximum duration (ms) of one browser connection to the approuter.
+      INCOMING_CONNECTION_TIMEOUT: 900000
