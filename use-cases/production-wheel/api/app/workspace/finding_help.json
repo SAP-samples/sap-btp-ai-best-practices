@@ -1,0 +1,97 @@
+{
+  "FINI_DATA_QUALITY": {
+    "title": "Finished products excluded by data quality",
+    "severity": "warning",
+    "cause": "The production workbook lacks a value the optimizer needs for these finished products (FINIs). The reason code names the missing value.",
+    "effect": "Excluded with both production version settings (FIXED and OPTIMIZED): no optimization run includes them. Warnings do not block publishing.",
+    "fix": "Correct the named column in the production workbook and import the workbook again.",
+    "reasons": {
+      "missing_material": {"source": "FINI grouping for wheel: \"Material\"", "cause": "The material code is empty.", "fix": "Fill in the material code."},
+      "missing_sefi": {"source": "FINI grouping for wheel: \"SEFI\"", "cause": "The SEFI is empty, so the product cannot be placed in a plant/SEFI block.", "fix": "Fill in the SEFI."},
+      "missing_demand": {"source": "FINI grouping for wheel: \"Total FINI forecast (litres)\"", "cause": "The forecast is empty.", "fix": "Fill in the forecast."},
+      "nonpositive_demand": {"source": "FINI grouping for wheel: \"Total FINI forecast (litres)\"", "cause": "The forecast is zero or negative, so there is no demand to plan.", "fix": "Correct the forecast if the product is still sold."},
+      "missing_line_evidence": {"source": "FINI grouping for wheel: \"Filling line\" and the line corrections", "cause": "The filling line is empty or cannot be read, and no line correction covers the product.", "fix": "Fill in the filling lines, for example \"23 - 24\"."},
+      "no_eligible_line": {"source": "FINI grouping for wheel: \"Filling line\" and the line corrections", "cause": "After applying the line corrections no eligible filling line remains.", "fix": "Review the filling lines and the corrections."},
+      "missing_package_volume": {"source": "FINI grouping for wheel: \"Volume\"", "cause": "The package volume is empty.", "fix": "Fill in the package volume."},
+      "nonpositive_package_volume": {"source": "FINI grouping for wheel: \"Volume\"", "cause": "The package volume is zero or negative.", "fix": "Correct the package volume."},
+      "missing_pallet_data": {"source": "FINI grouping for wheel: \"Pallet in litres\", or the enrichment workbook", "cause": "No workbook gives a pallet size.", "fix": "Fill in the pallet size in either workbook."},
+      "nonpositive_pallet_data": {"source": "FINI grouping for wheel: \"Pallet in litres\", or the enrichment workbook", "cause": "The pallet size is zero or negative.", "fix": "Correct the pallet size."},
+      "missing_fixed_pv": {"source": "FINI grouping for wheel: \"Selected PV\"; production versions list: \"Lot size (Litres)\"", "cause": "\"Selected PV\" is empty, so FIXED runs do not know which lot size to use, and the SEFI has no production version with one positive lot size, so OPTIMIZED runs cannot choose one either.", "fix": "Fill in \"Selected PV\", or the lot size of the SEFI's production versions."},
+      "fixed_pv_not_unique_positive_lot": {"source": "FINI grouping for wheel: \"Selected PV\"; production versions list: \"Lot size (Litres)\"", "cause": "The selected production version has no lot size, or several different lot sizes, in the production versions list.", "fix": "Give the selected production version one positive lot size."}
+    }
+  },
+  "FINI_OPTIMIZED_PV_ONLY": {
+    "title": "Finished products only usable with the OPTIMIZED production version",
+    "severity": "warning",
+    "cause": "These finished products have no usable \"Selected PV\", but their SEFI has at least one production version with one positive lot size.",
+    "effect": "The planner chooses per run. Production version FIXED (the default of a new draft) leaves them out. OPTIMIZED includes them and lets the optimizer choose the production version (lot size) of each group from the SEFI's catalog, so batch sizes can differ from the current ones. Warnings do not block publishing.",
+    "fix": "Use OPTIMIZED in the run to include them, or fill in \"Selected PV\" in the production workbook and import again to include them with FIXED.",
+    "reasons": {
+      "missing_fixed_pv": {"source": "FINI grouping for wheel: \"Selected PV\"; production versions list: \"Lot size (Litres)\"", "cause": "\"Selected PV\" is empty.", "fix": "Fill in \"Selected PV\" to use them with FIXED."},
+      "fixed_pv_not_unique_positive_lot": {"source": "FINI grouping for wheel: \"Selected PV\"; production versions list: \"Lot size (Litres)\"", "cause": "The selected production version has no single positive lot size, but another version of the SEFI has one.", "fix": "Give the selected production version one positive lot size to use them with FIXED."}
+    }
+  },
+  "PRODUCTION_FREQUENCY_UNDETERMINED": {
+    "title": "Production frequency without a weekly code",
+    "severity": "scope note",
+    "cause": "The \"Production Frequency\" value (for example \"999.Not possible to determine\") is not a weekly code such as 01W, so no frequency setting can select these products.",
+    "effect": "Out of scope for this snapshot with every frequency setting. The extraction settings already showed them as \"No (no weekly code)\"; the review lists them as a scope note, not as a warning.",
+    "fix": "Give the products a weekly frequency in the production workbook and import it again."
+  },
+  "FREQUENCY_NOT_SELECTED": {
+    "title": "Production frequency not selected in the extraction settings",
+    "severity": "scope note",
+    "cause": "The product has a weekly frequency code that the extraction settings did not include (modeled_frequencies).",
+    "effect": "Out of scope for this snapshot. This is the user's choice, not a data problem.",
+    "fix": "Import the workbook again and select these codes in the extraction settings (the Assistant can propose them)."
+  },
+  "PALLET_NONBLANK_SOURCE_DISCREPANCY": {
+    "title": "Different pallet size in the enrichment workbook",
+    "severity": "warning",
+    "cause": "The enrichment workbook gives one or more pallet sizes that differ from the production workbook.",
+    "effect": "The production workbook value is kept; the optimization does not change.",
+    "fix": "Only needed if the production workbook value is wrong: correct it and import again."
+  },
+  "SAP_LOOKUP_MISSING": {
+    "title": "SAP lookup table missing from the enrichment workbook",
+    "severity": "warning",
+    "cause": "A lookup table used only for SAP settings generation is not in the enrichment workbook.",
+    "effect": "The optimizer does not need it. The SAP settings tabs that use it stay blocked until the table is uploaded or the value is set in the plant policy.",
+    "fix": "Add the table to the enrichment workbook, or set the value as a plant policy rule."
+  },
+  "FINI_KEY_UNIQUE": {
+    "title": "Finished product appears more than once",
+    "severity": "error",
+    "cause": "The same material and plant occur in several rows of the production workbook.",
+    "effect": "Error: the snapshot cannot be published.",
+    "fix": "Remove the duplicate rows and import the workbook again."
+  },
+  "CONFLICTING_LINE_CORRECTIONS": {
+    "title": "Conflicting filling-line corrections",
+    "severity": "error",
+    "cause": "Several correction rows give different filling lines for the same product.",
+    "effect": "Their eligible lines are unknown and the snapshot cannot be published.",
+    "fix": "Make the corrections agree and import the workbook again."
+  },
+  "INVALID_XYZ_COUNTS": {
+    "title": "Invalid XYZ DC count",
+    "severity": "warning",
+    "cause": "The XYZ column must hold three whole numbers (X-Y-Z).",
+    "effect": "The source text is kept and the counts are treated as unknown.",
+    "fix": "Correct the XYZ column if the counts are needed."
+  },
+  "INVALID_DC_COUNT": {
+    "title": "Invalid DC count",
+    "severity": "warning",
+    "cause": "Primary and secondary DC counts must be whole numbers of zero or more.",
+    "effect": "The source text is kept and the count is treated as unknown.",
+    "fix": "Correct the DC count columns if the counts are needed."
+  },
+  "INCONSISTENT_SOURCE_HORIZON": {
+    "title": "Products imply a different demand horizon",
+    "severity": "warning",
+    "cause": "Their total forecast divided by daily demand does not match the other rows.",
+    "effect": "No demand horizon is derived from the source; demand days come from the extraction settings or the default.",
+    "fix": "Review the forecast and daily-demand columns."
+  }
+}

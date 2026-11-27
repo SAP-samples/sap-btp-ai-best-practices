@@ -1,0 +1,4 @@
+# Installed by the Node.js buildpack during staging.
+node_modules/
+# Local-only service credentials for running the approuter on a laptop.
+default-env.json

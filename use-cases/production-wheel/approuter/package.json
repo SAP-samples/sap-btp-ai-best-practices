@@ -1,0 +1,15 @@
+{
+  "name": "production-wheel-approuter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAP application router: serves the built UI and forwards /api calls to the API. Private deployment: signs users in through SAP BTP (XSUAA) and forwards their JWT (xs-app.json). Public showcase: no sign-in (xs-app.public.json). start.js picks the routes from XS_APP_CONFIG.",
+  "scripts": {
+    "start": "node start.js"
+  },
+  "engines": {
+    "node": "^22.23.4"
+  },
+  "dependencies": {
+    "@sap/approuter": "23.5.0"
+  }
+}
